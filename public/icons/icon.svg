@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Full-bleed brand background. Maskable-safe: the house glyph stays within
+       the center ~80% safe zone so OS icon masks (circle/squircle) never clip it. -->
+  <rect width="512" height="512" fill="#0d9488"/>
+  <g fill="#ffffff">
+    <!-- House -->
+    <path d="M256 118 L392 228 V378 a16 16 0 0 1-16 16 H136 a16 16 0 0 1-16-16 V228 Z" fill="#ffffff" opacity="0.98"/>
+    <path d="M256 118 L108 236 l20 25 128-102 128 102 20-25 z" fill="#ffffff"/>
+    <!-- Wrench notch, reversed out of the house to read as "services" -->
+    <path d="M256 258 a34 34 0 1 0 0.1 0z M256 276 a16 16 0 1 1-0.1 0z" fill="#0d9488"/>
+    <rect x="244" y="286" width="24" height="72" rx="8" fill="#0d9488"/>
+  </g>
+</svg>

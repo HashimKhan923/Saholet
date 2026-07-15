@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Offline</title>
+    <style>
+        :root { color-scheme: light; }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            font-family: -apple-system, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #334155;
+            padding: 24px;
+        }
+        .card {
+            max-width: 420px; text-align: center; background: #fff; border: 1px solid #e2e8f0;
+            border-radius: 20px; padding: 40px 28px; box-shadow: 0 1px 2px rgba(0,0,0,.04);
+        }
+        .logo {
+            width: 56px; height: 56px; border-radius: 16px; background: #0d9488; margin: 0 auto 20px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        h1 { font-size: 20px; margin: 0 0 8px; color: #0f172a; }
+        p { font-size: 14px; line-height: 1.6; margin: 0 0 20px; color: #64748b; }
+        button {
+            border: 0; background: #0d9488; color: #fff; font-weight: 600; font-size: 14px;
+            padding: 12px 20px; border-radius: 10px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="logo">
+            <svg viewBox="0 0 24 24" width="26" height="26"><path d="M4 11.5 12 5l8 6.5V20a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1v-8.5z" fill="#fff"/></svg>
+        </div>
+        <h1>You’re offline</h1>
+        <p>We couldn’t load this page. Check your connection and try again — the app will work as soon as you’re back online.</p>
+        <button onclick="location.reload()">Retry</button>
+    </div>
+</body>
+</html>
