@@ -224,7 +224,7 @@
             @forelse ($categories as $i => $category)
                 @php $iconTone = $categoryPalette[$category->icon] ?? $categoryPalette['default']; @endphp
                 <a href="{{ route('services.index') }}"
-                   class="reveal card-lift group relative isolate aspect-[4/5] overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-800"
+                   class="reveal card-lift group relative isolate block aspect-[4/5] overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-800"
                    style="--reveal-delay: {{ ($i % 4) * 70 }}ms">
                     @if ($category->image_url)
                         <img src="{{ $category->image_url }}" alt="" loading="lazy"
