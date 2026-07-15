@@ -49,9 +49,13 @@
                     <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/60">
                         <td class="px-5 py-3">
                             <div class="flex items-center gap-3">
-                                <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-950/50 dark:text-brand-400">
-                                    <x-service-icon :name="$category->icon" class="h-5 w-5" />
-                                </span>
+                                @if ($category->image_url)
+                                    <img src="{{ $category->image_url }}" alt="" class="h-9 w-9 rounded-lg object-cover">
+                                @else
+                                    <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-950/50 dark:text-brand-400">
+                                        <x-service-icon :name="$category->icon" class="h-5 w-5" />
+                                    </span>
+                                @endif
                                 <span class="font-medium text-slate-900 dark:text-white">{{ $category->name }}</span>
                             </div>
                         </td>

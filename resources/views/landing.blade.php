@@ -207,16 +207,48 @@
             <p class="mt-3 text-slate-600 dark:text-slate-400">{{ __('messages.landing.services_sub') }}</p>
         </div>
 
+        @php
+            $categoryPalette = [
+                'electrical' => 'bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400',
+                'plumbing'   => 'bg-sky-50 text-sky-600 dark:bg-sky-950/60 dark:text-sky-400',
+                'ac'         => 'bg-cyan-50 text-cyan-600 dark:bg-cyan-950/60 dark:text-cyan-400',
+                'carpentry'  => 'bg-orange-50 text-orange-700 dark:bg-orange-950/60 dark:text-orange-400',
+                'cleaning'   => 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400',
+                'painting'   => 'bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400',
+                'appliance'  => 'bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400',
+                'pest'       => 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
+                'default'    => 'bg-brand-50 text-brand-600 dark:bg-brand-950/60 dark:text-brand-400',
+            ];
+        @endphp
         <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             @forelse ($categories as $i => $category)
+                @php $iconTone = $categoryPalette[$category->icon] ?? $categoryPalette['default']; @endphp
                 <a href="{{ route('services.index') }}"
-                   class="reveal card-lift group rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800"
+                   class="reveal card-lift group relative isolate aspect-[4/5] overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-800"
                    style="--reveal-delay: {{ ($i % 4) * 70 }}ms">
-                    <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition duration-300 group-hover:scale-105 group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/60 dark:text-brand-400">
-                        <x-service-icon :name="$category->icon" class="h-6 w-6" />
+                    @if ($category->image_url)
+                        <img src="{{ $category->image_url }}" alt="" loading="lazy"
+                             class="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-white via-white/85 via-45% to-transparent dark:from-slate-950 dark:via-slate-950/85"></div>
+                    @else
+                        <div class="absolute inset-0 bg-gradient-to-br from-brand-50 to-white dark:from-slate-900 dark:to-slate-800"></div>
+                    @endif
+
+                    <span class="absolute right-3 top-3 z-10 flex h-8 w-8 -translate-y-1 items-center justify-center rounded-full bg-white/90 text-slate-500 opacity-0 shadow-sm backdrop-blur transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 dark:bg-slate-900/90 dark:text-slate-300">
+                        <svg viewBox="0 0 24 24" class="h-4 w-4 rtl:-scale-x-100" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M8 7h9v9" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </span>
-                    <p class="mt-4 text-sm font-semibold text-slate-800 transition group-hover:text-brand-700 dark:text-slate-200 dark:group-hover:text-brand-400">{{ $category->name }}</p>
-                    <p class="mt-1 line-clamp-1 text-xs text-slate-400">{{ $category->services?->count() }} {{ __('messages.nav.services') }}</p>
+
+                    <div class="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-3 p-4">
+                        <span class="flex h-11 w-11 items-center justify-center rounded-xl shadow-sm transition duration-300 group-hover:scale-105 {{ $iconTone }}">
+                            <x-service-icon :name="$category->icon" class="h-5 w-5" />
+                        </span>
+                        <div>
+                            <p class="font-display text-base font-bold text-slate-900 transition group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-400">{{ $category->name }}</p>
+                            <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                                {{ $category->description ?: trans_choice('messages.landing.services_count', $category->services?->count() ?? 0, ['count' => $category->services?->count() ?? 0]) }}
+                            </p>
+                        </div>
+                    </div>
                 </a>
             @empty
                 <p class="col-span-full text-sm text-slate-500 dark:text-slate-400">{{ __('messages.landing.services_sub') }}</p>

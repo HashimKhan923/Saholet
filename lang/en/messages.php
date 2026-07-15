@@ -38,6 +38,7 @@ return [
     'landing' => [
         'services_title' => 'Services we’ll cover',
         'services_sub' => 'A preview of the categories coming to the platform.',
+        'services_count' => '{0} No services yet|{1} :count service|[2,*] :count services',
         'browse_all' => 'Browse all services',
         'how_title' => 'How it will work',
         'how_sub' => 'Three simple steps from problem to solved.',

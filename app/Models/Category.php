@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Category extends Model
@@ -14,9 +15,14 @@ class Category extends Model
         'slug',
         'description',
         'icon',
+        'image',
         'commission_rate',
         'is_active',
         'sort_order',
+    ];
+
+    protected $appends = [
+        'image_url',
     ];
 
     protected function casts(): array
@@ -25,6 +31,11 @@ class Category extends Model
             'is_active' => 'boolean',
             'commission_rate' => 'decimal:2',
         ];
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->image ? Storage::disk('public')->url($this->image) : null;
     }
 
     public function services(): HasMany
