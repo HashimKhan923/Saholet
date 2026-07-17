@@ -493,7 +493,7 @@
                 </a>
             </div>
         </div>
-          <div class="mx-auto max-w-7xl my-4 ">
+          <div class="mx-auto max-w-7xl mt-5 ">
             <img
             src="/images/AppBanner.jpeg"
             alt="Sahoulat Banner"
