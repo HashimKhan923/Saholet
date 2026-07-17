@@ -67,7 +67,7 @@ class JazzCashGateway implements PaymentGateway
             'pp_TxnCurrency' => 'PKR',
             'pp_TxnDateTime' => $now->format('YmdHis'),
             'pp_BillReference' => $payment->reference,
-            'pp_Description' => 'Sahoulet payment ' . $payment->reference,
+            'pp_Description' => 'sahoulat payment ' . $payment->reference,
             'pp_TxnExpiryDateTime' => $now->copy()->addDay()->format('YmdHis'),
             'pp_ReturnURL' => route('payments.return', ['gateway' => 'jazzcash']),
             'ppmpf_1' => (string) $payment->id,

@@ -27,7 +27,7 @@ return [
     // Landing
     'hero' => [
         'badge' => 'Trusted home services, on demand',
-        'title' => 'Reliable pros for every job at home.',
+        'title' => 'Pakistan Most Trusted Home Services Platform',
         'subtitle' => 'AC repair, plumbing, electrical, cleaning and more — book verified professionals across Pakistan with upfront pricing, live tracking, and secure payments.',
         'explore' => 'Explore services',
         'how' => 'How it works',
@@ -56,7 +56,7 @@ return [
         // Stats band
         'stats_pros' => 'Verified professionals',
         'stats_bookings' => 'Jobs completed',
-        'stats_cities' => 'Cities covered',
+        'stats_cities' => 'Areas covered',
         'stats_rating' => 'Average rating',
 
         // Cities marquee
@@ -88,16 +88,31 @@ return [
         'testimonials_sub' => 'Real feedback from real bookings.',
 
         // FAQ
+        
         'faq_title' => 'Frequently asked questions',
-        'faq_q1' => 'How are professionals verified?',
-        'faq_a1' => 'Every provider submits CNIC and skill documents through KYC onboarding. Our admin team reviews and approves each profile before it can take a single booking.',
-        'faq_q2' => 'How do payments work?',
-        'faq_a2' => 'Prices are fixed and shown upfront. You pay the professional directly — cash, JazzCash, EasyPaisa, or Raast — once the work is done to your satisfaction.',
-        'faq_q3' => 'What if something goes wrong?',
-        'faq_a3' => 'Open a dispute from your booking and our support team steps in. Every job also has in-app chat and live location tracking for full transparency.',
-        'faq_q4' => 'Which cities do you cover?',
-        'faq_a4' => 'We’re rolling out city by city, starting with Karachi, Lahore, and Islamabad. Check the services page for live availability in your area.',
+'faq_q1' => 'What cities does Sahoulat operate in?',
+'faq_a1' => 'We are currently launching in Karachi and expanding to Lahore, Islamabad, Rawalpindi, and Multan. Select your city in the header to check availability.',
 
+'faq_q2' => 'How are your professionals verified?',
+'faq_a2' => 'Every pro on Sahoulat undergoes a thorough background check, CNIC verification, skill assessment, and in-person training before they can accept bookings.',
+
+'faq_q3' => 'What if I am not satisfied with the service?',
+'faq_a3' => 'We offer a full post-service guarantee. If you are not happy, we will send another professional at no extra cost, or provide a refund as per our policy.',
+
+'faq_q4' => 'Can I book a service for the same day?',
+'faq_a4' => 'Yes! Same-day and emergency bookings are available 7 days a week across all our active cities, subject to professional availability.',
+
+'faq_q5' => 'How does pricing work?',
+'faq_a5' => 'All prices are transparent and shown upfront before you confirm. There are no hidden charges or surprise fees after the job is done.',
+
+'faq_q6' => 'How do I pay for the service?',
+'faq_a6' => 'We accept cash on delivery, EasyPaisa, JazzCash, and bank transfers. Online card payment is coming soon.',
+
+'faq_q7' => 'Can I track my professional in real time?',
+'faq_a7' => 'Yes, once your booking is confirmed you can track your professional live on the map through our app. The website tracking feature is launching very soon.',
+
+'faq_q8' => 'I am a service professional. How do I join?',
+'faq_a8' => 'Click the "Join as a Service Pro" button on this page or in the navigation. Fill in the short form and our team will contact you within 24 hours.',
         // Final CTA
         'cta_title' => 'Your home, handled.',
         'cta_sub' => 'Join thousands of households booking trusted help in minutes.',

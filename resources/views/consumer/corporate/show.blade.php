@@ -29,7 +29,7 @@
     @if (auth()->user()->isCorporateOwner())
         <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <h2 class="font-display text-sm font-bold text-slate-900 dark:text-white">Add a teammate</h2>
-            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">They must already have a Sahoulet consumer account with this email.</p>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">They must already have a sahoulat consumer account with this email.</p>
             <form method="POST" action="{{ route('consumer.corporate.members.invite') }}" class="mt-3 flex gap-2">
                 @csrf
                 <input type="email" name="email" required placeholder="teammate@company.com"
