@@ -32,7 +32,7 @@
         </div>
         <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">
             You earn <strong>PKR {{ number_format(config('referrals.referrer_reward'), 0) }}</strong> and they earn
-            <strong>PKR {{ number_format(config('referrals.referred_reward'), 0) }}</strong> credit once they complete their first payment on Sahoulet.
+            <strong>PKR {{ number_format(config('referrals.referred_reward'), 0) }}</strong> credit once they complete their first payment on sahoulat.
         </p>
     </div>
 

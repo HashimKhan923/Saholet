@@ -15,7 +15,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @if ($isRtl)
         <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&display=swap" rel="stylesheet">
     @endif
@@ -37,7 +37,7 @@
 
         {{-- Logo --}}
         <a href="{{ route('home') }}" class="animate-fade-up mb-8" aria-label="{{ config('app.name') }} — home">
-            <img src="{{ asset('images/sahoulat-logo.jpg') }}"
+            <img src="{{ asset('images/Logo.png') }}"
                  alt="{{ config('app.name') }} — سہولت آپ کے لیے"
                  class="h-20 w-auto"
                  width="267" height="80" decoding="async">

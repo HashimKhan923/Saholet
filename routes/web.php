@@ -91,6 +91,10 @@ Route::get('careers/{listing:slug}', [CareerController::class, 'show'])->name('c
 // Public maintenance/AMC subscription plans
 Route::get('plans', [SubscriptionPlanController::class, 'index'])->name('subscription-plans.index');
 
+// Legal pages
+Route::view('privacy-policy', 'legal.privacy')->name('legal.privacy');
+Route::view('terms-and-conditions', 'legal.terms')->name('legal.terms');
+
 // Redirect-gateway return/webhook callback (JazzCash, EasyPaisa) — off-site,
 // signature-verified inside the controller, not session/CSRF authenticated.
 Route::match(['get', 'post'], 'payments/{gateway}/return', [PaymentReturnController::class, 'handle'])->name('payments.return');

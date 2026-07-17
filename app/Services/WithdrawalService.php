@@ -12,10 +12,10 @@ use Illuminate\Support\Str;
 /**
  * Payouts here are manual: a request debits the provider's available balance
  * immediately (so the same funds can't be requested twice), an admin sends
- * the money via real bank transfer/JazzCash outside Sahoulet, then marks the
+ * the money via real bank transfer/JazzCash outside sahoulat, then marks the
  * request paid. Rejecting a request reverses the ledger hold. No automated
  * disbursement API is wired up — that requires a payout-specific merchant
- * agreement Sahoulet doesn't have, distinct from the checkout gateways.
+ * agreement sahoulat doesn't have, distinct from the checkout gateways.
  */
 class WithdrawalService
 {

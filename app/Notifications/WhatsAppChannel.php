@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
  * Note: Meta only allows freeform text messages within a 24-hour customer
  * service window (i.e. the recipient messaged the business number recently).
  * Business-initiated notifications outside that window — which is most of
- * what Sahoulet sends — require a pre-approved message template instead of
+ * what sahoulat sends — require a pre-approved message template instead of
  * plain text. This channel sends plain text, which will work in the sandbox/
  * test-number setup; swap the payload for a `template` message once you have
  * approved templates for production.

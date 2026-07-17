@@ -70,7 +70,7 @@ class CorporateAccountController extends Controller
         $member = User::where('email', $data['email'])->first();
 
         if (! $member) {
-            return back()->with('error', 'No Sahoulet account found with that email. They need to sign up first.');
+            return back()->with('error', 'No sahoulat account found with that email. They need to sign up first.');
         }
 
         if ($member->id === $owner->id) {
@@ -94,7 +94,7 @@ class CorporateAccountController extends Controller
             $member,
             'corporate',
             'Added to a company account',
-            "You've been added to {$owner->corporateAccount->name}'s company account on Sahoulet. Your bookings now roll up to their consolidated billing.",
+            "You've been added to {$owner->corporateAccount->name}'s company account on sahoulat. Your bookings now roll up to their consolidated billing.",
             route('consumer.corporate.show')
         );
 
