@@ -55,6 +55,43 @@
 </head>
 <body class="min-h-screen bg-slate-50 font-sans text-slate-700 antialiased dark:bg-slate-950 dark:text-slate-300">
 
+    {{-- ========================================================= Topbar --}}
+    <div class="sticky top-0 z-40 bg-brand-700 text-xs text-white dark:bg-brand-950">
+        <div class="mx-auto flex h-9 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+            {{-- Contact --}}
+            <div class="flex items-center gap-4 sm:gap-5">
+                <a href="https://wa.me/923313578446" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 opacity-90 transition hover:opacity-100">
+                    <svg viewBox="0 0 24 24" class="h-3 w-3 fill-current"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+                    <span class="hidden font-medium sm:inline">+92 331 3578446</span>
+                </a>
+                <a href="mailto:info@sahoulat.com" class="flex items-center gap-1.5 opacity-90 transition hover:opacity-100">
+                    <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7L22 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="hidden sm:inline">info@sahoulat.com</span>
+                </a>
+            </div>
+
+            {{-- Socials + language --}}
+            <div class="flex items-center gap-3">
+                <a href="https://www.facebook.com/people/Sahoulat/61591342542475/" target="_blank" rel="noopener" aria-label="Facebook" class="grid h-6 w-6 place-items-center rounded bg-white/15 transition-colors hover:bg-white/30">
+                    <svg viewBox="0 0 24 24" class="h-3 w-3 fill-current"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                </a>
+                <a href="https://www.instagram.com/sahoulatpk/" target="_blank" rel="noopener" aria-label="Instagram" class="grid h-6 w-6 place-items-center rounded bg-white/15 transition-colors hover:bg-white/30">
+                    <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+                </a>
+                <a href="https://wa.me/923313578446" target="_blank" rel="noopener" aria-label="WhatsApp" class="grid h-6 w-6 place-items-center rounded bg-white/15 transition-colors hover:bg-white/30">
+                    <svg viewBox="0 0 24 24" class="h-3 w-3 fill-current"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+                </a>
+                <div class="mx-1 h-4 w-px bg-white/20"></div>
+                @foreach ($locales as $code => $meta)
+                    <a href="{{ route('locale.switch', $code) }}"
+                       class="rounded px-2 py-0.5 text-xs font-semibold transition-all {{ $code === $current ? 'bg-white text-brand-700' : 'text-white/70 hover:text-white' }}">
+                        {{ $meta['native'] }}
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
     {{-- ========================================================= Header --}}
     <header x-data="{
             open: false,
@@ -66,8 +103,8 @@
                 localStorage.setItem('theme', this.dark ? 'dark' : 'light');
             },
         }"
-        class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur dark:border-slate-800/80 dark:bg-slate-900/90">
-      
+        class="sticky top-9 z-40 border-b border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
         <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:h-[5.5rem] sm:px-6 lg:px-8">
 
             {{-- Brand / logo --}}
@@ -81,13 +118,15 @@
             </a>
 
             {{-- Desktop nav --}}
-            <nav class="hidden items-center gap-7 md:flex">
+            <nav class="hidden items-center gap-6 md:flex">
                 <a href="{{ route('services.index') }}" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('services.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.services') }}</a>
                 <a href="{{ route('providers.index') }}" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('providers.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.providers.nav_label') }}</a>
                 <a href="{{ route('careers.index') }}" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('careers.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.careers') }}</a>
                 <a href="{{ route('subscription-plans.index') }}" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('subscription-plans.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.plans') }}</a>
                 @if (request()->routeIs('home'))
                     <a href="#how" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.nav.how') }}</a>
+                    <a href="#why-us" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.landing.why_eyebrow') }}</a>
+                    <a href="#faq" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.landing.faq_eyebrow') }}</a>
                     <a href="#contact" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.nav.contact') }}</a>
                 @endif
             </nav>
@@ -97,27 +136,9 @@
                 {{-- Theme toggle --}}
                 <x-theme-toggle />
 
-                {{-- Language switcher --}}
-                <div x-data="{ langOpen: false }" class="relative">
-                    <button @click="langOpen = !langOpen" @click.outside="langOpen = false"
-                        class="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-brand-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-brand-400">
-                        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" stroke-linecap="round"/></svg>
-                        <span>{{ $locales[$current]['native'] ?? strtoupper($current) }}</span>
-                    </button>
-                    <div x-show="langOpen" x-cloak x-transition
-                        class="absolute {{ $isRtl ? 'left-0' : 'right-0' }} mt-2 w-36 rounded-xl border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-700 dark:bg-slate-800">
-                        @foreach ($locales as $code => $meta)
-                            <a href="{{ route('locale.switch', $code) }}"
-                               class="block px-3 py-2 text-sm transition hover:bg-slate-50 dark:hover:bg-slate-700 {{ $code === $current ? 'font-semibold text-brand-700 dark:text-brand-400' : 'text-slate-600 dark:text-slate-300' }}">
-                                {{ $meta['native'] }}
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
-
                 @guest
-                    <a href="{{ route('login') }}" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.nav.login') }}</a>
-                    <a href="{{ route('register') }}" class="btn-shine inline-flex items-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
+                    <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-xl border-2 border-brand-600 px-4 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-600 hover:text-white dark:text-brand-400 dark:hover:text-white">{{ __('messages.nav.login') }}</a>
+                    <a href="{{ route('register') }}" class="btn-shine inline-flex items-center justify-center rounded-xl border-2 border-brand-600 bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
                         {{ __('messages.nav.signup') }}
                     </a>
                 @endguest
@@ -179,14 +200,16 @@
                 <a href="{{ route('subscription-plans.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.plans') }}</a>
                 @if (request()->routeIs('home'))
                     <a href="#how" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.how') }}</a>
+                    <a href="#why-us" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.landing.why_eyebrow') }}</a>
+                    <a href="#faq" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.landing.faq_eyebrow') }}</a>
                     <a href="#contact" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.contact') }}</a>
                 @endif
 
                 <x-theme-toggle mobile />
 
                 @guest
-                    <a href="{{ route('login') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.login') }}</a>
-                    <a href="{{ route('register') }}" @click="open = false" class="mt-1 block rounded-lg bg-brand-600 px-3 py-2 text-center text-sm font-semibold text-white transition hover:bg-brand-700">{{ __('messages.nav.signup') }}</a>
+                    <a href="{{ route('login') }}" @click="open = false" class="block rounded-lg border-2 border-brand-600 px-3 py-2 text-center text-sm font-semibold text-brand-700 transition hover:bg-brand-600 hover:text-white dark:text-brand-400 dark:hover:text-white">{{ __('messages.nav.login') }}</a>
+                    <a href="{{ route('register') }}" @click="open = false" class="mt-1 block rounded-lg border-2 border-brand-600 bg-brand-600 px-3 py-2 text-center text-sm font-semibold text-white transition hover:bg-brand-700">{{ __('messages.nav.signup') }}</a>
                 @endguest
                 @auth
                     <a href="{{ route('notifications.index') }}" @click="open = false" class="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">
@@ -202,14 +225,6 @@
                         <button type="submit" class="block w-full rounded-lg border border-slate-200 px-3 py-2 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">{{ __('messages.nav.logout') }}</button>
                     </form>
                 @endauth
-
-                {{-- Language --}}
-                <div class="mt-2 border-t border-slate-100 pt-2 dark:border-slate-800">
-                    <p class="px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-400">{{ __('messages.lang.language') }}</p>
-                    @foreach ($locales as $code => $meta)
-                        <a href="{{ route('locale.switch', $code) }}" class="block rounded-lg px-3 py-2 text-sm transition hover:bg-slate-50 dark:hover:bg-slate-800 {{ $code === $current ? 'font-semibold text-brand-700 dark:text-brand-400' : 'text-slate-600 dark:text-slate-300' }}">{{ $meta['native'] }}</a>
-                    @endforeach
-                </div>
             </nav>
         </div>
     </header>
@@ -233,8 +248,8 @@
 
     {{-- ========================================================= Footer --}}
     <footer id="contact" class="border-t border-slate-200 bg-black dark:border-slate-800 dark:bg-slate-900">
-        <div class="mx-auto max-w-7xl px-4 pt-14 pb-4 sm:px-6 lg:px-8">
-            <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+        <div class="mx-auto max-w-7xl px-4 pt-10 pb-4 sm:px-6 lg:px-8">
+            <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
 
                 {{-- Brand column --}}
                 <div class="lg:col-span-2">
@@ -274,7 +289,17 @@
                     </nav>
                 </div>
 
-               
+                {{-- Company --}}
+                <div>
+                    <p class="text-sm font-bold uppercase text-white dark:text-white">{{ __('messages.footer.col_company') }}</p>
+                    <nav class="mt-4 space-y-2.5">
+                        <a href="{{ route('home') }}#how" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">{{ __('messages.nav.how') }}</a>
+                        <a href="{{ route('home') }}#why-us" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">{{ __('messages.landing.why_eyebrow') }}</a>
+                        <a href="{{ route('home') }}#faq" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">{{ __('messages.landing.faq_eyebrow') }}</a>
+                        <a href="{{ route('legal.privacy') }}" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">Privacy Policy</a>
+                        <a href="{{ route('legal.terms') }}" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">Terms &amp; Conditions</a>
+                    </nav>
+                </div>
 
                 {{-- Contact --}}
                 <div>
@@ -282,7 +307,7 @@
                                            {{ __('messages.footer.get_in_touch') }}</p>
                     <div class="mt-4 space-y-2.5 text-sm text-white dark:text-slate-400">
                         <a href="mailto:info@sahoulat.com" class="block transition hover:text-brand-700 dark:hover:text-brand-400">info@sahoulat.com</a>
-                        <a href="tel:+923000000000" class="block transition hover:text-brand-700 dark:hover:text-brand-400">+92 331 3578446</a>
+                        <a href="https://wa.me/923313578446" class="block transition hover:text-brand-700 dark:hover:text-brand-400">+92 331 3578446</a>
                         <a href="https://www.google.com/maps/place/Sahoulat/@25.0297021,67.3047431,1010m/data=!3m2!1e3!4b1!4m6!3m5!1s0x3eb34b7ea3c7553b:0x7deaeb9437cf9ae3!8m2!3d25.0297021!4d67.307318!16s%2Fg%2F11zgt5m2j_?entry=ttu&g_ep=EgoyMDI2MDcxNC4wIKXMDSoASAFQAw%3D%3D" class="block transition hover:text-brand-700 dark:hover:text-brand-400">
                             Bahria Town Karachi, Pakistan
                         </a>

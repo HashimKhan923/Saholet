@@ -134,7 +134,7 @@
                 <p><span class="font-semibold text-slate-700 dark:text-slate-300">15.2 Severability:</span> If any provision of these Terms is held invalid or unenforceable, the remaining provisions will remain in full force.</p>
                 <p><span class="font-semibold text-slate-700 dark:text-slate-300">15.3 No Waiver:</span> Our failure to enforce any right or provision of these Terms is not a waiver of that right or provision.</p>
                 <p><span class="font-semibold text-slate-700 dark:text-slate-300">15.4 Assignment:</span> You may not assign these Terms without our prior written consent. We may assign these Terms freely in connection with a merger, acquisition, or sale of assets.</p>
-                <p><span class="font-semibold text-slate-700 dark:text-slate-300">15.5 Contact:</span> Questions about these Terms can be sent to <a href="mailto:info@sahoulat.com" class="font-medium text-brand-700 hover:underline dark:text-brand-400">info@sahoulat.com</a> or <a href="tel:+923313578446" class="font-medium text-brand-700 hover:underline dark:text-brand-400">+92 331 3578446</a>.</p>
+                <p><span class="font-semibold text-slate-700 dark:text-slate-300">15.5 Contact:</span> Questions about these Terms can be sent to <a href="mailto:info@sahoulat.com" class="font-medium text-brand-700 hover:underline dark:text-brand-400">info@sahoulat.com</a> or <a href="https://wa.me/923313578446" class="font-medium text-brand-700 hover:underline dark:text-brand-400">+92 331 3578446</a>.</p>
             </div>
         </div>
 

@@ -5,6 +5,7 @@
 @section('content')
 <section class="border-b border-slate-100 bg-gradient-to-b from-brand-50 to-slate-50 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950">
     <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <img src="{{ asset('images/Services.jpeg') }}" alt="Sahoulat services" class="mb-8 w-full rounded-2xl md:object-cover object-contain shadow-sm md:h-100 h-32" loading="eager">
         <h1 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Browse services</h1>
         <p class="mt-3 max-w-2xl text-slate-600 dark:text-slate-400">Verified professionals across Pakistan. Explore categories below and view details for each service.</p>
     </div>

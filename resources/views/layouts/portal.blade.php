@@ -8,7 +8,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#2e783d">
+    <meta name="theme-color" content="#1a7a35">
 
     <script>
         (function () {
