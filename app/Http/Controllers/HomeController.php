@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Faq;
 use App\Models\ProviderProfile;
 use App\Models\Review;
 use App\Models\ServiceArea;
@@ -47,11 +48,14 @@ class HomeController extends Controller
                 ->get();
         });
 
+        $faqs = Cache::remember('landing.faqs', 600, fn () => Faq::active()->ordered()->get());
+
         return view('landing', [
             'categories' => $categories,
             'cheapestService' => $cheapestService,
             'stats' => $stats,
             'testimonials' => $testimonials,
+            'faqs' => $faqs,
         ]);
     }
 }

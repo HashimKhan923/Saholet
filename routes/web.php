@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ContractController as AdminContractController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\DisputeController as AdminDisputeController;
+use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
+use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\FraudController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\ServiceAreaController;
@@ -26,6 +28,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\BookingRoomController;
 use App\Http\Controllers\CareerController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CareerResumeController;
 use App\Http\Controllers\Consumer\AddressController as ConsumerAddressController;
 use App\Http\Controllers\Consumer\BookingController as ConsumerBookingController;
@@ -94,6 +97,10 @@ Route::get('plans', [SubscriptionPlanController::class, 'index'])->name('subscri
 // Legal pages
 Route::view('privacy-policy', 'legal.privacy')->name('legal.privacy');
 Route::view('terms-and-conditions', 'legal.terms')->name('legal.terms');
+
+// Contact us
+Route::get('contact', [ContactController::class, 'create'])->name('contact');
+Route::post('contact', [ContactController::class, 'store'])->name('contact.store')->middleware('throttle:6,1');
 
 // Redirect-gateway return/webhook callback (JazzCash, EasyPaisa) — off-site,
 // signature-verified inside the controller, not session/CSRF authenticated.
@@ -287,6 +294,11 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
         Route::get('requests', [AdminRequestsInboxController::class, 'index'])->name('requests.index');
         Route::resource('categories', CategoryController::class)->except(['show']);
         Route::resource('services', AdminServiceController::class)->except(['show']);
+        Route::resource('faqs', AdminFaqController::class)->except(['show']);
+
+        Route::get('contact-messages', [AdminContactMessageController::class, 'index'])->name('contact-messages.index');
+        Route::get('contact-messages/{contactMessage}', [AdminContactMessageController::class, 'show'])->name('contact-messages.show');
+        Route::delete('contact-messages/{contactMessage}', [AdminContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
 
         Route::resource('career-categories', AdminCareerCategoryController::class)->except(['show']);
         Route::resource('careers', AdminCareerListingController::class)->except(['show']);

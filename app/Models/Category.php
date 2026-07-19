@@ -16,6 +16,7 @@ class Category extends Model
         'description',
         'icon',
         'image',
+        'banner',
         'commission_rate',
         'is_active',
         'sort_order',
@@ -23,6 +24,7 @@ class Category extends Model
 
     protected $appends = [
         'image_url',
+        'banner_url',
     ];
 
     protected function casts(): array
@@ -36,6 +38,11 @@ class Category extends Model
     public function getImageUrlAttribute(): ?string
     {
         return $this->image ? Storage::disk('public')->url($this->image) : null;
+    }
+
+    public function getBannerUrlAttribute(): ?string
+    {
+        return $this->banner ? Storage::disk('public')->url($this->banner) : null;
     }
 
     public function services(): HasMany

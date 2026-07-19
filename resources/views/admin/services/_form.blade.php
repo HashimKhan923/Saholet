@@ -8,7 +8,7 @@
     </div>
 @endif
 
-<form method="POST" action="{{ $action }}" class="space-y-5" x-data="{ submitting: false }" @submit="submitting = true">
+<form method="POST" action="{{ $action }}" enctype="multipart/form-data" class="space-y-5" x-data="{ submitting: false }" @submit="submitting = true">
     @csrf
     @if ($method !== 'POST')
         @method($method)
@@ -45,6 +45,13 @@
                 @error('description') border-red-400 focus:border-red-500 focus:ring-red-200 dark:border-red-500 @else border-slate-300 focus:border-brand-500 focus:ring-brand-200 dark:border-slate-700 @enderror">{{ old('description', $service?->description) }}</textarea>
         <x-field-error name="description" />
     </div>
+
+    <x-admin.image-upload-field
+        name="thumbnail"
+        label="Thumbnail"
+        help="Shown next to this service in listings. Square or landscape photos work best (JPG, PNG or WebP, up to 4 MB)."
+        :current-url="$service?->thumbnail_url"
+        :has-current="(bool) $service?->thumbnail" />
 
     <div class="grid gap-5 sm:grid-cols-2">
         <div>

@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Service;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ServiceController extends Controller
@@ -44,9 +45,16 @@ class ServiceController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validateData($request);
+        unset($data['remove_thumbnail']);
 
         $data['slug'] = Service::generateSlug($data['name']);
         $data['is_active'] = $request->boolean('is_active');
+
+        if ($request->hasFile('thumbnail')) {
+            $data['thumbnail'] = $request->file('thumbnail')->store('services', 'public');
+        } else {
+            unset($data['thumbnail']);
+        }
 
         Service::create($data);
 
@@ -65,9 +73,24 @@ class ServiceController extends Controller
     public function update(Request $request, Service $service): RedirectResponse
     {
         $data = $this->validateData($request);
+        unset($data['remove_thumbnail']);
 
         $data['slug'] = Service::generateSlug($data['name'], $service->id);
         $data['is_active'] = $request->boolean('is_active');
+
+        if ($request->hasFile('thumbnail')) {
+            if ($service->thumbnail) {
+                Storage::disk('public')->delete($service->thumbnail);
+            }
+            $data['thumbnail'] = $request->file('thumbnail')->store('services', 'public');
+        } elseif ($request->boolean('remove_thumbnail')) {
+            if ($service->thumbnail) {
+                Storage::disk('public')->delete($service->thumbnail);
+            }
+            $data['thumbnail'] = null;
+        } else {
+            unset($data['thumbnail']);
+        }
 
         $service->update($data);
 
@@ -78,6 +101,10 @@ class ServiceController extends Controller
 
     public function destroy(Service $service): RedirectResponse
     {
+        if ($service->thumbnail) {
+            Storage::disk('public')->delete($service->thumbnail);
+        }
+
         $service->delete();
 
         return redirect()
@@ -91,6 +118,8 @@ class ServiceController extends Controller
             'category_id' => ['required', 'exists:categories,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
+            'thumbnail' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'remove_thumbnail' => ['nullable', 'boolean'],
             'base_price' => ['required', 'numeric', 'min:0', 'max:9999999'],
             'duration_minutes' => ['required', 'integer', 'min:5', 'max:1440'],
             'is_active' => ['nullable', 'boolean'],

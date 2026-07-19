@@ -113,4 +113,15 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Contact Form Recipient
+    |--------------------------------------------------------------------------
+    |
+    | Where the public "Contact us" form sends its notification email.
+    |
+    */
+
+    'contact_to' => env('MAIL_CONTACT_TO', 'info@sahoulat.com'),
+
 ];

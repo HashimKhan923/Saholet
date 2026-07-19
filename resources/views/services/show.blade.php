@@ -33,6 +33,10 @@
 
     <div class="mt-6 grid gap-8 lg:grid-cols-3">
         <div class="lg:col-span-2">
+            @if ($service->thumbnail_url)
+                <img src="{{ $service->thumbnail_url }}" alt="" class="mb-6 h-56 w-full rounded-2xl object-cover sm:h-72">
+            @endif
+
             <div class="flex items-start gap-4">
                 <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-950/40 dark:text-brand-400">
                     <x-service-icon :name="$service->category->icon" class="h-7 w-7" />

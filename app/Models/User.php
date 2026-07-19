@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Mail\ResetPasswordMail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class User extends Authenticatable
@@ -161,5 +163,13 @@ class User extends Authenticatable
             self::ROLE_JOB_SEEKER => 'job-seeker.dashboard',
             default => 'consumer.dashboard',
         };
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $url = route('password.reset', ['token' => $token, 'email' => $this->email]);
+        $expireMinutes = (int) config('auth.passwords.users.expire', 60);
+
+        Mail::to($this->email)->send(new ResetPasswordMail($url, $expireMinutes));
     }
 }

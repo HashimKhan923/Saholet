@@ -48,7 +48,18 @@
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                 @forelse ($services as $service)
                     <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/60">
-                        <td class="px-5 py-3 font-medium text-slate-900 dark:text-white">{{ $service->name }}</td>
+                        <td class="px-5 py-3 font-medium text-slate-900 dark:text-white">
+                            <div class="flex items-center gap-3">
+                                @if ($service->thumbnail_url)
+                                    <img src="{{ $service->thumbnail_url }}" alt="" class="h-9 w-9 rounded-lg object-cover">
+                                @else
+                                    <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-300 dark:bg-slate-800 dark:text-slate-600">
+                                        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="9" r="1.5"/></svg>
+                                    </span>
+                                @endif
+                                <span>{{ $service->name }}</span>
+                            </div>
+                        </td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $service->category->name }}</td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">Rs. {{ number_format($service->base_price, 0) }}</td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $service->duration_minutes }} min</td>

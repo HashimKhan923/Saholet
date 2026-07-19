@@ -44,16 +44,13 @@ class CategoryController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validateData($request);
-        unset($data['remove_image']);
+        unset($data['remove_image'], $data['remove_banner']);
 
         $data['slug'] = Category::generateSlug($data['name']);
         $data['is_active'] = $request->boolean('is_active');
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('categories', 'public');
-        } else {
-            unset($data['image']);
-        }
+        $this->applyUpload($request, null, $data, 'image', 'categories');
+        $this->applyUpload($request, null, $data, 'banner', 'categories');
 
         Category::create($data);
 
@@ -70,24 +67,13 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category): RedirectResponse
     {
         $data = $this->validateData($request);
-        unset($data['remove_image']);
+        unset($data['remove_image'], $data['remove_banner']);
 
         $data['slug'] = Category::generateSlug($data['name'], $category->id);
         $data['is_active'] = $request->boolean('is_active');
 
-        if ($request->hasFile('image')) {
-            if ($category->image) {
-                Storage::disk('public')->delete($category->image);
-            }
-            $data['image'] = $request->file('image')->store('categories', 'public');
-        } elseif ($request->boolean('remove_image')) {
-            if ($category->image) {
-                Storage::disk('public')->delete($category->image);
-            }
-            $data['image'] = null;
-        } else {
-            unset($data['image']);
-        }
+        $this->applyUpload($request, $category, $data, 'image', 'categories');
+        $this->applyUpload($request, $category, $data, 'banner', 'categories');
 
         $category->update($data);
 
@@ -104,8 +90,10 @@ class CategoryController extends Controller
                 ->with('error', 'Cannot delete a category that still has services. Remove or reassign its services first.');
         }
 
-        if ($category->image) {
-            Storage::disk('public')->delete($category->image);
+        foreach (['image', 'banner'] as $field) {
+            if ($category->{$field}) {
+                Storage::disk('public')->delete($category->{$field});
+            }
         }
 
         $category->delete();
@@ -113,6 +101,23 @@ class CategoryController extends Controller
         return redirect()
             ->route('admin.categories.index')
             ->with('success', 'Category deleted.');
+    }
+
+    private function applyUpload(Request $request, ?Category $category, array &$data, string $field, string $folder): void
+    {
+        if ($request->hasFile($field)) {
+            if ($category?->{$field}) {
+                Storage::disk('public')->delete($category->{$field});
+            }
+            $data[$field] = $request->file($field)->store($folder, 'public');
+        } elseif ($category && $request->boolean('remove_' . $field)) {
+            if ($category->{$field}) {
+                Storage::disk('public')->delete($category->{$field});
+            }
+            $data[$field] = null;
+        } else {
+            unset($data[$field]);
+        }
     }
 
     private function validateData(Request $request): array
@@ -123,6 +128,8 @@ class CategoryController extends Controller
             'icon' => ['required', Rule::in(array_keys(config('services_catalog.icons')))],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'remove_image' => ['nullable', 'boolean'],
+            'banner' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'remove_banner' => ['nullable', 'boolean'],
             'commission_rate' => ['nullable', 'numeric', 'min:0', 'max:50'],
             'sort_order' => ['required', 'integer', 'min:0', 'max:9999'],
             'is_active' => ['nullable', 'boolean'],

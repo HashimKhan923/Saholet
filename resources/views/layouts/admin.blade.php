@@ -21,6 +21,14 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="11" r="3"/><path d="M12 2c4 0 7 3 7 7 0 4.5-7 13-7 13S5 13.5 5 9c0-4 3-7 7-7z" stroke-linejoin="round"/></svg>
     </x-portal-nav-link>
 
+    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ __('messages.admin_nav.content_section') }}</p>
+    <x-portal-nav-link :href="route('admin.faqs.index')" :label="__('messages.admin_nav.faqs')" :active="request()->routeIs('admin.faqs.*')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.5 2.5 0 0 1 4.8 1c0 1.5-2.3 1.8-2.3 3.3" stroke-linecap="round"/><circle cx="12" cy="17" r="0.6" fill="currentColor" stroke="none"/></svg>
+    </x-portal-nav-link>
+    <x-portal-nav-link :href="route('admin.contact-messages.index')" :label="__('messages.admin_nav.contact_messages')" :active="request()->routeIs('admin.contact-messages.*')" :badge="$sidebarUnreadContactMessages ?? null">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 6.5 8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </x-portal-nav-link>
+
     <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ __('messages.admin_nav.operations_section') }}</p>
     <x-portal-nav-link :href="route('admin.contracts.index')" :label="__('messages.admin_nav.contracts')" :active="request()->routeIs('admin.contracts.*')" :badge="$sidebarPendingContracts ?: null">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 4h6l4 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 12h6M9 16h6" stroke-linecap="round"/></svg>

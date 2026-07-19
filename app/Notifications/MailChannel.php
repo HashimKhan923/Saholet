@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Mail\SystemNotification;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 
@@ -29,10 +30,10 @@ class MailChannel implements NotificationChannel
             return;
         }
 
-        // Plain-text mail via the default mailer; best-effort (Notifier wraps in try/catch).
-        Mail::raw($payload['body'] . ($payload['url'] ? "\n\n" . $payload['url'] : ''), function ($message) use ($recipient, $payload) {
-            $message->to($recipient->email)->subject($payload['title']);
-        });
+        // Branded HTML mail via the default mailer; best-effort (Notifier wraps in try/catch).
+        Mail::to($recipient->email)->send(
+            new SystemNotification($payload['title'], $payload['body'], $payload['url'] ?? null)
+        );
     }
 
     private function recipientMailer(): ?string

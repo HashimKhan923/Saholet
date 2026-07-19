@@ -6,6 +6,7 @@ use App\Models\Bid;
 use App\Models\Booking;
 use App\Models\CareerApplication;
 use App\Models\Category;
+use App\Models\ContactMessage;
 use App\Models\Contract;
 use App\Models\Dispute;
 use App\Models\EmergencyRequest;
@@ -81,6 +82,7 @@ class AppServiceProvider extends ServiceProvider
             $newApplications = CareerApplication::where('status', CareerApplication::STATUS_SUBMITTED)->count();
             $pendingSubscriptions = Subscription::where('status', Subscription::STATUS_PENDING_ASSIGNMENT)->count();
             $pendingWithdrawals = WithdrawalRequest::where('status', WithdrawalRequest::STATUS_PENDING)->count();
+            $unreadContactMessages = ContactMessage::whereNull('read_at')->count();
 
             $view->with('sidebarPendingProviders', $pendingProviders);
             $view->with('sidebarOpenDisputes', $openDisputes);
@@ -88,6 +90,7 @@ class AppServiceProvider extends ServiceProvider
             $view->with('sidebarNewApplications', $newApplications);
             $view->with('sidebarPendingSubscriptions', $pendingSubscriptions);
             $view->with('sidebarPendingWithdrawals', $pendingWithdrawals);
+            $view->with('sidebarUnreadContactMessages', $unreadContactMessages);
             $view->with('sidebarTotalRequests', $pendingProviders + $openDisputes + $pendingContracts + $newApplications + $pendingSubscriptions + $pendingWithdrawals);
         });
 

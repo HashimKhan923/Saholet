@@ -32,31 +32,54 @@
         @endphp
         <div class="mb-14 last:mb-0"
             x-show="q === '' || @js($categorySearch).includes(q.toLowerCase()) || @js($servicesSearch).some(s => s.includes(q.toLowerCase()))">
-            <div class="flex items-center gap-3">
-                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-950/50 dark:text-brand-400">
-                    <x-service-icon :name="$category->icon" class="h-6 w-6" />
-                </span>
-                <div>
-                    <h2 class="font-display text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $category->name }}</h2>
-                    @if ($category->description)
-                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ $category->description }}</p>
-                    @endif
+            @if ($category->banner_url)
+                <div class="relative overflow-hidden rounded-2xl">
+                    <img src="{{ $category->banner_url }}" alt="" class="h-40 w-full object-cover sm:h-48" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent"></div>
+                    <div class="absolute inset-x-0 bottom-0 flex items-center gap-3 p-5">
+                        <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur">
+                            <x-service-icon :name="$category->icon" class="h-6 w-6" />
+                        </span>
+                        <div>
+                            <h2 class="font-display text-xl font-extrabold tracking-tight text-white">{{ $category->name }}</h2>
+                            @if ($category->description)
+                                <p class="text-sm text-white/80">{{ $category->description }}</p>
+                            @endif
+                        </div>
+                    </div>
                 </div>
-            </div>
+            @else
+                <div class="flex items-center gap-3">
+                    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-950/50 dark:text-brand-400">
+                        <x-service-icon :name="$category->icon" class="h-6 w-6" />
+                    </span>
+                    <div>
+                        <h2 class="font-display text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $category->name }}</h2>
+                        @if ($category->description)
+                            <p class="text-sm text-slate-500 dark:text-slate-400">{{ $category->description }}</p>
+                        @endif
+                    </div>
+                </div>
+            @endif
 
             <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($category->services as $service)
                     @php $serviceSearch = mb_strtolower($category->name . ' ' . $service->name . ' ' . $service->description); @endphp
                     <a href="{{ route('services.show', $service) }}"
                        x-show="q === '' || @js($serviceSearch).includes(q.toLowerCase())"
-                       class="group flex flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
-                        <h3 class="text-sm font-semibold text-slate-900 group-hover:text-brand-700 dark:text-white">{{ $service->name }}</h3>
-                        @if ($service->description)
-                            <p class="mt-1.5 line-clamp-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">{{ $service->description }}</p>
+                       class="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
+                        @if ($service->thumbnail_url)
+                            <img src="{{ $service->thumbnail_url }}" alt="" class="h-32 w-full object-cover" loading="lazy">
                         @endif
-                        <div class="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800">
-                            <span class="text-sm font-semibold text-brand-700 dark:text-brand-400">Rs. {{ number_format($service->base_price, 0) }}</span>
-                            <span class="text-xs text-slate-400">~ {{ $service->duration_minutes }} min</span>
+                        <div class="flex flex-1 flex-col p-5">
+                            <h3 class="text-sm font-semibold text-slate-900 group-hover:text-brand-700 dark:text-white">{{ $service->name }}</h3>
+                            @if ($service->description)
+                                <p class="mt-1.5 line-clamp-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">{{ $service->description }}</p>
+                            @endif
+                            <div class="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800">
+                                <span class="text-sm font-semibold text-brand-700 dark:text-brand-400">Rs. {{ number_format($service->base_price, 0) }}</span>
+                                <span class="text-xs text-slate-400">~ {{ $service->duration_minutes }} min</span>
+                            </div>
                         </div>
                     </a>
                 @endforeach

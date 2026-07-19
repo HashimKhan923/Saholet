@@ -127,8 +127,8 @@
                     <a href="#how" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.nav.how') }}</a>
                     <a href="#why-us" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.landing.why_eyebrow') }}</a>
                     <a href="#faq" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.landing.faq_eyebrow') }}</a>
-                    <a href="#contact" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.nav.contact') }}</a>
                 @endif
+                <a href="{{ route('contact') }}" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('contact') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.contact') }}</a>
             </nav>
 
             {{-- Right side --}}
@@ -202,8 +202,8 @@
                     <a href="#how" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.how') }}</a>
                     <a href="#why-us" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.landing.why_eyebrow') }}</a>
                     <a href="#faq" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.landing.faq_eyebrow') }}</a>
-                    <a href="#contact" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.contact') }}</a>
                 @endif
+                <a href="{{ route('contact') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.contact') }}</a>
 
                 <x-theme-toggle mobile />
 
@@ -247,7 +247,7 @@
     </main>
 
     {{-- ========================================================= Footer --}}
-    <footer id="contact" class="border-t border-slate-200 bg-black dark:border-slate-800 dark:bg-slate-900">
+    <footer class="border-t border-slate-200 bg-black dark:border-slate-800 dark:bg-slate-900">
         <div class="mx-auto max-w-7xl px-4 pt-10 pb-4 sm:px-6 lg:px-8">
             <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
 
