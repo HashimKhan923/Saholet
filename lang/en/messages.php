@@ -22,6 +22,7 @@ return [
         'blurb' => 'On-demand home services across Pakistan. Verified professionals, transparent pricing, and secure payments.',
         'get_in_touch' => 'Get in touch',
         'rights' => 'All rights reserved.',
+        'col_company' => 'Company',
     ],
 
     // Landing
@@ -34,20 +35,28 @@ return [
         'verified' => 'Verified & KYC-checked pros',
         'secure' => 'Secure payments',
         'tracking' => 'Live tracking',
+        'eyebrow' => 'Trusted home services, on demand',
+        'line1' => 'Pakistan\'s Complete',
+        'line2' => 'Home & Facility',
+        'line3' => 'Services Platform',
+        'urdu' => 'سہولت آپ کے لیے',
     ],
     'landing' => [
-        'services_title' => 'Services we’ll cover',
-        'services_sub' => 'A preview of the categories coming to the platform.',
+        'services_title' => 'All Home Services, One Platform',
+        'services_sub' => 'From everyday repairs to specialised installations we cover every corner of your home.',
         'services_count' => '{0} No services yet|{1} :count service|[2,*] :count services',
         'browse_all' => 'Browse all services',
+        'how_eyebrow' => 'How it works',
         'how_title' => 'How it will work',
-        'how_sub' => 'Three simple steps from problem to solved.',
+        'how_sub' => 'Four simple steps from problem to solved.',
         'step1_title' => 'Choose a service',
         'step1_desc' => 'Pick what you need and tell us where — book instantly or post a job for bids.',
         'step2_title' => 'Get matched to a verified pro',
         'step2_desc' => 'We connect you to KYC-checked professionals near you, with transparent pricing.',
         'step3_title' => 'Relax — job done',
         'step3_desc' => 'Track arrival live, pay securely, and rate the work when it’s complete.',
+        'step4_title' => 'Rate your experience',
+        'step4_desc' => 'Leave a review to help other homeowners choose the right professional.',
 
                 // Search
         'search_placeholder' => 'What do you need? AC repair, plumbing, cleaning…',
@@ -78,7 +87,21 @@ return [
         'flow_sos_desc' => 'Burst pipe at midnight? Broadcast an emergency and the nearest available pro accepts instantly.',
         'flow_sos_cta' => 'Raise an emergency',
 
+        // Why Sahoulat
+        'why_eyebrow' => 'Why Sahoulat',
+        'why_title' => 'Why homeowners choose us',
+        'why_sub' => 'We built Sahoulat around the things that actually matter when you let someone into your home.',
+        'why_r1_t' => 'Verified professionals',
+        'why_r1_d' => 'Every pro passes a background check, CNIC verification, and skills assessment before going live.',
+        'why_r2_t' => 'Transparent pricing',
+        'why_r2_d' => 'See the price upfront before you confirm — no hidden charges or surprise fees after the job.',
+        'why_r3_t' => 'Fast response',
+        'why_r3_d' => 'Same-day and emergency bookings are available across all our active cities, 7 days a week.',
+        'why_r4_t' => 'Secure & guaranteed',
+        'why_r4_d' => 'Cashless payments and a full service guarantee — if you\'re not happy, we\'ll make it right.',
+
         // Careers band
+        'careers_badge' => 'We\'re hiring',
         'careers_title' => 'We’re hiring',
         'careers_sub' => 'Join our team or one of our partner crews. Browse open roles and apply in minutes — no experience filing paperwork required.',
         'careers_btn' => 'Browse open roles',
@@ -88,7 +111,7 @@ return [
         'testimonials_sub' => 'Real feedback from real bookings.',
 
         // FAQ
-        
+        'faq_eyebrow' => 'FAQ',
         'faq_title' => 'Frequently asked questions',
 'faq_q1' => 'What cities does Sahoulat operate in?',
 'faq_a1' => 'We are currently launching in Karachi and expanding to Lahore, Islamabad, Rawalpindi, and Multan. Select your city in the header to check availability.',
@@ -121,7 +144,20 @@ return [
         'cta_pro_sub' => 'Grow your business with steady jobs, fair commissions, and weekly payouts.',
         'cta_pro_btn' => 'Join as a pro',
 
-        
+        // Join as Pro
+        'join_eyebrow' => 'For Service Professionals',
+        'join_title' => 'Grow Your Business with Sahoulat',
+        'join_sub' => 'Are you a skilled electrician, plumber, carpenter, AC technician or any other home service professional? Join Sahoulat and get more customers, better earnings, and a trusted brand behind you.',
+        'join_b1_t' => 'Free Registration',
+        'join_b1_d' => 'Sign up at zero cost. No joining fee, no hidden charges.',
+        'join_b2_t' => 'More Work, More Earn',
+        'join_b2_d' => 'Get job requests directly from customers near you.',
+        'join_b3_t' => 'Low Commission',
+        'join_b3_d' => 'We keep our cut minimal so you earn maximum.',
+        'join_b4_t' => 'Build Your Reputation',
+        'join_b4_d' => 'Accumulate ratings and reviews to grow faster.',
+        'join_cta' => 'Apply to Join as a Service Pro',
+        'join_cta_sub' => 'Takes less than 5 minutes',
     ],
 
     // Public provider directory

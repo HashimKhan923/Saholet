@@ -133,7 +133,7 @@
                 <p class="font-semibold text-slate-900 dark:text-white">Sahoulat</p>
                 <p class="mt-1">Bahria Town Karachi, Pakistan</p>
                 <p class="mt-1">Email: <a href="mailto:info@sahoulat.com" class="font-medium text-brand-700 hover:underline dark:text-brand-400">info@sahoulat.com</a></p>
-                <p class="mt-1">Phone: <a href="tel:+923313578446" class="font-medium text-brand-700 hover:underline dark:text-brand-400">+92 331 3578446</a></p>
+                <p class="mt-1">Phone: <a href="https://wa.me/923313578446" class="font-medium text-brand-700 hover:underline dark:text-brand-400">+92 331 3578446</a></p>
             </div>
         </div>
 

@@ -9,20 +9,20 @@
     --font-urdu: "Noto Nastaliq Urdu", "Nunito", ui-sans-serif, system-ui, sans-serif;
 
     /*
-     * Brand — Sahoulat green, sampled from the logo wordmark.
-     * The whole app themes off this scale.
+     * Brand — Sahoulat green, anchored on the primary #1a7a35.
+     * The whole app themes off this scale; 600 is the primary, 700+ are hover/active shades.
      */
-    --color-brand-50:  #f2f9f3;
-    --color-brand-100: #e0f1e2;
-    --color-brand-200: #c2e3c7;
-    --color-brand-300: #94cd9e;
-    --color-brand-400: #62b06f;
-    --color-brand-500: #3f934e;
-    --color-brand-600: #2e783d;
-    --color-brand-700: #276033;
-    --color-brand-800: #224d2c;
-    --color-brand-900: #1d3f26;
-    --color-brand-950: #0c2312;
+    --color-brand-50:  #f3fcf5;
+    --color-brand-100: #def7e5;
+    --color-brand-200: #baeec8;
+    --color-brand-300: #89e1a2;
+    --color-brand-400: #54d478;
+    --color-brand-500: #29a34c;
+    --color-brand-600: #1a7a35;
+    --color-brand-700: #15612a;
+    --color-brand-800: #104c21;
+    --color-brand-900: #0d3d1b;
+    --color-brand-950: #082610;
 
     /*
      * Accent — Sahoulat red, sampled from the logo swoosh.
