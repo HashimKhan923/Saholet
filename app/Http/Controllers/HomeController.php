@@ -19,12 +19,23 @@ class HomeController extends Controller
 
     public function index(): View
     {
-        $categories = $this->catalog->categories()->take(8);
+        $allCategories = $this->catalog->categories();
+        $categories = $allCategories->take(8);
 
         $cheapestService = $categories
             ->flatMap(fn ($category) => $category->services)
             ->sortBy('base_price')
             ->first();
+
+        // Flat, client-side searchable index for the hero search suggestions.
+        $serviceSearchIndex = $allCategories->flatMap(function ($category) {
+            return $category->services->map(fn ($service) => [
+                'name' => $service->name,
+                'category' => $category->name,
+                'url' => route('services.show', $service),
+                'haystack' => mb_strtolower($service->name . ' ' . $category->name),
+            ]);
+        })->values();
 
         // Lightweight landing stats, cached for 10 minutes.
         $stats = Cache::remember('landing.stats', 600, function (): array {
@@ -56,6 +67,7 @@ class HomeController extends Controller
             'stats' => $stats,
             'testimonials' => $testimonials,
             'faqs' => $faqs,
+            'serviceSearchIndex' => $serviceSearchIndex,
         ]);
     }
 }
