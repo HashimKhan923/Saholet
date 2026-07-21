@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath // empty' | { read -r f; case \"$f\" in *routes/api.php|*app/Http/Controllers/Api/*) printf '%s' '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"This change touched the API layer. Update API_DOCUMENTATION.md with the new/changed endpoint (method, auth requirement, params, response shape) and regenerate API_DOCUMENTATION.pdf from it before considering this task done.\"}}' ;; esac; }",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

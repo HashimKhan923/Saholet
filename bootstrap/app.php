@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\Api\EnsureNotSuspended as ApiEnsureNotSuspended;
+use App\Http\Middleware\Api\EnsureUserHasRole as ApiEnsureUserHasRole;
 use App\Http\Middleware\EnsureNotSuspended;
 use App\Http\Middleware\EnsureUserHasRole;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -12,6 +14,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
@@ -26,6 +29,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => EnsureUserHasRole::class,
             'guest' => RedirectIfAuthenticated::class,
             'not.suspended' => EnsureNotSuspended::class,
+            'api.role' => ApiEnsureUserHasRole::class,
+            'api.not.suspended' => ApiEnsureNotSuspended::class,
         ]);
 
         // JazzCash/EasyPaisa POST their return callback from off-site — they
