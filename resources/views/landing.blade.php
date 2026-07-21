@@ -663,7 +663,7 @@
         </div>
           <div class="mx-auto max-w-7xl mt-5 ">
             <img
-            src="/images/AppBanner.jpeg"
+            src="/images/AppBanner.png"
             alt="Sahoulat Banner"
             class="w-full object-cover rounded-2xl"
                 >
