@@ -11,8 +11,8 @@
     <meta name="theme-color" content="#1a7a35">
     <title>@yield('title', config('app.name'))</title>
 
-    <link rel="icon" type="image/png" href="{{ asset('images/Icon.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/Icon.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/Icon.png') . '?v=' . filemtime(public_path('images/Icon.png')) }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/Icon.png') . '?v=' . filemtime(public_path('images/Icon.png')) }}">
     <link rel="manifest" href="{{ route('pwa.manifest') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,7 +39,7 @@
 
         {{-- Logo --}}
         <a href="{{ route('home') }}" class="animate-fade-up mb-8" aria-label="{{ config('app.name') }} — home">
-            <img src="{{ asset('images/Logo.png') }}"
+            <img src="{{ asset('images/Logo.png') }}?v={{ filemtime(public_path('images/Logo.png')) }}"
                  alt="{{ config('app.name') }} — سہولت آپ کے لیے"
                  class="h-20 w-auto"
                  width="267" height="80" decoding="async">

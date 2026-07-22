@@ -9,7 +9,7 @@
         '@type' => 'LocalBusiness',
         'name' => config('app.name'),
         'url' => url('/'),
-        'image' => asset('images/Logo.png'),
+        'image' => asset('images/Logo.png') . '?v=' . filemtime(public_path('images/Logo.png')),
         'description' => 'On-demand home services across Pakistan — AC repair, plumbing, electrical, cleaning and more. Verified professionals, instant booking, secure payments.',
         'areaServed' => ['Karachi'],
     ];
@@ -99,7 +99,7 @@
             {{-- ── RIGHT: image + overlays ── --}}
             <div class="relative col-span-1 lg:col-span-2">
                 <div class="relative overflow-hidden rounded-3xl dark:border-slate-800">
-                    <img src="/images/Hero.png" alt="Sahoulat Hero" class="w-full object-cover" loading="eager">
+                    <img src="/images/Hero.png?v={{ filemtime(public_path('images/Hero.png')) }}" alt="Sahoulat Hero" class="w-full object-cover" loading="eager">
                     <div class="absolute inset-0 bg-gradient-to-t from-brand-800/60 via-transparent to-transparent"></div>
 
                     
@@ -370,7 +370,7 @@
             @endforeach
         </div>
 
-        <img src="/images/HeroBanner.jpeg" alt="Sahoulat professionals at work" class="mt-8 w-full rounded-2xl object-cover shadow-sm" loading="lazy">
+        <img src="/images/HeroBanner.jpeg?v={{ filemtime(public_path('images/HeroBanner.jpeg')) }}" alt="Sahoulat professionals at work" class="mt-8 w-full rounded-2xl object-cover shadow-sm" loading="lazy">
     </div>
 </section>
 
@@ -426,7 +426,7 @@
 
             {{-- Right: banner image --}}
             <div class="reveal self-center overflow-hidden rounded-3xl ">
-                <img src="/images/why.jpeg" alt="Sahoulat professional team" class="h-full w-full object-cover">
+                <img src="/images/why.jpeg?v={{ filemtime(public_path('images/why.jpeg')) }}" alt="Sahoulat professional team" class="h-full w-full object-cover">
             </div>
         </div>
     </div>
@@ -465,7 +465,7 @@
             {{-- Left: image --}}
             <div class="relative order-2 lg:order-1">
                 <div class="reveal overflow-hidden rounded-3xl shadow-xl">
-                    <img src="{{ asset('images/JoinBanner.jpeg') }}" alt="Sahoulat service professional at work" class="w-full object-cover">
+                    <img src="{{ asset('images/JoinBanner.jpeg') }}?v={{ filemtime(public_path('images/JoinBanner.jpeg')) }}" alt="Sahoulat service professional at work" class="w-full object-cover">
                 </div>
             </div>
 
@@ -663,7 +663,7 @@
         </div>
           <div class="mx-auto max-w-7xl mt-5 ">
             <img
-            src="/images/AppBanner.png"
+            src="/images/AppBanner.png?v={{ filemtime(public_path('images/AppBanner.png')) }}"
             alt="Sahoulat Banner"
             class="w-full object-cover rounded-2xl"
                 >
