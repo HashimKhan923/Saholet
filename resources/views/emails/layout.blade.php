@@ -12,7 +12,7 @@
                 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background:#ffffff; border-radius:12px; overflow:hidden; border:1px solid #e2e8f0;">
                     <tr>
                         <td style="background:#1a7a35; padding:24px 32px; text-align:center;">
-                            <img src="{{ asset('images/WhiteLogo.png') }}" alt="{{ config('app.name') }}" style="height:48px;">
+                            <img src="{{ asset('images/WhiteLogo.png') }}?v={{ filemtime(public_path('images/WhiteLogo.png')) }}" alt="{{ config('app.name') }}" style="height:48px;">
                         </td>
                     </tr>
                     <tr>

@@ -22,7 +22,7 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link rel="apple-touch-icon" href="{{ asset('images/Logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/Logo.png') }}?v={{ filemtime(public_path('images/Logo.png')) }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,10 +52,13 @@
             <div class="relative flex h-20 shrink-0 items-center justify-center overflow-hidden border-b border-slate-100 px-5 dark:border-slate-800">
                 <div class="pointer-events-none absolute -start-10 -top-14 h-32 w-32 rounded-full  blur-2xl"></div>
                 <a href="{{ route('home') }}" class="relative flex shrink-0 items-center" aria-label="{{ config('app.name') }} — home">
-                    <span class="rounded-xl bg-white p-1 ">
-                        <img src="{{ asset('images/Logo.png') }}"
+                    <span class="rounded-xl p-1 ">
+                        <img src="{{ asset('images/Logo.png') }}?v={{ filemtime(public_path('images/Logo.png')) }}"
                              alt="{{ config('app.name') }}"
-                             class="h-12 w-auto" width="80" height="48" decoding="async">
+                             class="h-12 w-auto dark:hidden" width="80" height="48" decoding="async">
+                        <img src="{{ asset('images/WhiteLogo.png') }}?v={{ filemtime(public_path('images/WhiteLogo.png')) }}"
+                             alt="{{ config('app.name') }}"
+                             class="hidden h-12 w-auto dark:block" width="80" height="48" decoding="async">
                     </span>
                 </a>
             </div>
@@ -109,8 +112,9 @@
 
                 <div class="flex h-16 items-center justify-between border-b border-slate-200 px-5 dark:border-slate-800">
                     <a href="{{ route('home') }}" class="flex items-center">
-                        <span class="rounded-xl bg-white p-1 ring-1 ring-slate-200/70 dark:ring-slate-700">
-                            <img src="{{ asset('images/Logo.png') }}" alt="{{ config('app.name') }}" class="h-10 w-auto" width="67" height="40" decoding="async">
+                        <span class="rounded-xl p-1 ring-1 ring-slate-200/70 dark:ring-slate-700">
+                            <img src="{{ asset('images/Logo.png') }}?v={{ filemtime(public_path('images/Logo.png')) }}" alt="{{ config('app.name') }}" class="h-10 w-auto dark:hidden" width="67" height="40" decoding="async">
+                            <img src="{{ asset('images/WhiteLogo.png') }}?v={{ filemtime(public_path('images/WhiteLogo.png')) }}" alt="{{ config('app.name') }}" class="hidden h-10 w-auto dark:block" width="67" height="40" decoding="async">
                         </span>
                     </a>
                     <button @click="sidebarOpen = false" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800" aria-label="Close menu">

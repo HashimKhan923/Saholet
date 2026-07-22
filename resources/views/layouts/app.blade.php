@@ -29,7 +29,7 @@
     <meta property="og:title" content="@yield('title', config('app.name'))">
     <meta property="og:description" content="@yield('meta_description', 'On-demand home services across Pakistan — verified professionals, instant booking, secure payments.')">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:image" content="{{ asset('images/Logo.png') }}">
+    <meta property="og:image" content="{{ asset('images/Logo.png') }}?v={{ filemtime(public_path('images/Logo.png')) }}">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="@yield('title', config('app.name'))">
     <meta name="twitter:description" content="@yield('meta_description', 'On-demand home services across Pakistan.')">
@@ -37,11 +37,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     {{-- Favicon --}}
-    <link rel="icon" type="image/png" href="{{ asset('images/Icon.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/Icon.png') . '?v=' . filemtime(public_path('images/Icon.png')) }}">
 
     {{-- PWA --}}
     <link rel="manifest" href="{{ route('pwa.manifest') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/Icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/Icon.png') . '?v=' . filemtime(public_path('images/Icon.png')) }}">
 
     {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -112,10 +112,14 @@
 
             {{-- Brand / logo --}}
             <a href="{{ route('home') }}" class="flex shrink-0 items-center" aria-label="{{ config('app.name') }} — home">
-                <span class="rounded-2xl bg-white p-1  transition  dark:ring-slate-700">
-                    <img src="{{ asset('images/Logo.png') }}"
+                <span class="rounded-2xl p-1  transition  dark:ring-slate-700">
+                    <img src="{{ asset('images/Logo.png') }}?v={{ filemtime(public_path('images/Logo.png')) }}"
                          alt="{{ config('app.name') }} — سہولت آپ کے لیے"
-                         class="h-16 w-auto sm:h-16"
+                         class="h-16 w-auto sm:h-16 dark:hidden"
+                         width="107" height="64" decoding="async">
+                    <img src="{{ asset('images/WhiteLogo.png') }}?v={{ filemtime(public_path('images/WhiteLogo.png')) }}"
+                         alt="{{ config('app.name') }} — سہولت آپ کے لیے"
+                         class="hidden h-16 w-auto sm:h-16 dark:block"
                          width="107" height="64" decoding="async">
                 </span>
             </a>
@@ -261,7 +265,7 @@
                 {{-- Brand column --}}
                 <div class="lg:col-span-2">
                     <div class="inline-flex rounded-2xl p-2 ">
-                        <img src="{{ asset('images/WhiteLogo.png') }}"
+                        <img src="{{ asset('images/WhiteLogo.png') }}?v={{ filemtime(public_path('images/WhiteLogo.png')) }}"
                              alt="{{ config('app.name') }} — سہولت آپ کے لیے"
                              class="h-16 w-auto"
                              width="187" height="56" loading="lazy" decoding="async">
