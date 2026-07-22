@@ -49,10 +49,10 @@
         <aside class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:border-e lg:border-slate-200/80 lg:bg-white dark:lg:border-slate-800/80 dark:lg:bg-slate-900">
 
             {{-- Brand --}}
-            <div class="relative flex h-20 shrink-0 items-center overflow-hidden border-b border-slate-100 px-5 dark:border-slate-800">
-                <div class="pointer-events-none absolute -start-10 -top-14 h-32 w-32 rounded-full bg-brand-500/10 blur-2xl"></div>
+            <div class="relative flex h-20 shrink-0 items-center justify-center overflow-hidden border-b border-slate-100 px-5 dark:border-slate-800">
+                <div class="pointer-events-none absolute -start-10 -top-14 h-32 w-32 rounded-full  blur-2xl"></div>
                 <a href="{{ route('home') }}" class="relative flex shrink-0 items-center" aria-label="{{ config('app.name') }} — home">
-                    <span class="rounded-xl bg-white p-1 shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-700">
+                    <span class="rounded-xl bg-white p-1 ">
                         <img src="{{ asset('images/Logo.png') }}"
                              alt="{{ config('app.name') }}"
                              class="h-12 w-auto" width="80" height="48" decoding="async">
@@ -79,9 +79,13 @@
             {{-- Bottom user card --}}
             <div class="border-t border-slate-100 p-3 dark:border-slate-800">
                 <a href="{{ route('profile.edit') }}" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 transition hover:bg-slate-50 dark:hover:bg-slate-800">
-                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-xs font-bold text-white shadow-sm ring-2 ring-white dark:ring-slate-900">
-                        {{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}
-                    </span>
+                    @if (auth()->user()->avatar_url)
+                        <img src="{{ auth()->user()->avatar_url }}" alt="" class="h-9 w-9 shrink-0 rounded-xl object-cover shadow-sm ring-2 ring-white dark:ring-slate-900">
+                    @else
+                        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-xs font-bold text-white shadow-sm ring-2 ring-white dark:ring-slate-900">
+                            {{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}
+                        </span>
+                    @endif
                     <div class="min-w-0 flex-1">
                         <p class="truncate text-sm font-semibold text-slate-900 dark:text-white">{{ auth()->user()->name }}</p>
                         <p class="truncate text-xs text-slate-400">{{ auth()->user()->email }}</p>
@@ -130,7 +134,11 @@
 
                 <div class="border-t border-slate-100 p-3 dark:border-slate-800">
                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 transition hover:bg-slate-50 dark:hover:bg-slate-800">
-                        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-xs font-bold text-white shadow-sm ring-2 ring-white dark:ring-slate-900">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
+                        @if (auth()->user()->avatar_url)
+                            <img src="{{ auth()->user()->avatar_url }}" alt="" class="h-9 w-9 shrink-0 rounded-xl object-cover shadow-sm ring-2 ring-white dark:ring-slate-900">
+                        @else
+                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-xs font-bold text-white shadow-sm ring-2 ring-white dark:ring-slate-900">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
+                        @endif
                         <div class="min-w-0 flex-1">
                             <p class="truncate text-sm font-semibold text-slate-900 dark:text-white">{{ auth()->user()->name }}</p>
                             <p class="text-xs text-slate-400">{{ __('messages.profile.title') }}</p>
@@ -183,9 +191,13 @@
                     <div x-data="{ userOpen: false }" class="relative">
                         <button @click="userOpen = ! userOpen" @click.outside="userOpen = false"
                             class="flex items-center gap-2 rounded-xl px-2 py-1.5 transition hover:bg-slate-100 dark:hover:bg-slate-800">
-                            <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-600 text-xs font-bold text-white shadow-sm">
-                                {{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}
-                            </span>
+                            @if (auth()->user()->avatar_url)
+                                <img src="{{ auth()->user()->avatar_url }}" alt="" class="h-8 w-8 rounded-xl object-cover shadow-sm">
+                            @else
+                                <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-600 text-xs font-bold text-white shadow-sm">
+                                    {{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}
+                                </span>
+                            @endif
                             <span class="hidden text-sm font-medium text-slate-700 dark:text-slate-200 sm:block">{{ auth()->user()->name }}</span>
                             <svg viewBox="0 0 24 24" class="hidden h-4 w-4 text-slate-400 sm:block" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>

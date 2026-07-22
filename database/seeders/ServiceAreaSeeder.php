@@ -10,9 +10,7 @@ class ServiceAreaSeeder extends Seeder
     public function run(): void
     {
         $areas = [
-            ['name' => 'Karachi Metro', 'city' => 'Karachi'],
-            ['name' => 'Lahore Metro', 'city' => 'Lahore'],
-            ['name' => 'Islamabad Capital', 'city' => 'Islamabad'],
+            ['name' => 'Karachi', 'city' => 'Karachi'],
         ];
 
         foreach ($areas as $area) {

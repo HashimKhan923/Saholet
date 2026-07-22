@@ -21,7 +21,7 @@
 
         <div class="min-w-0 flex-1">
             <p class="truncate text-xs font-medium text-slate-700 dark:text-slate-300" x-text="fileName || 'Drag & drop or click to choose a file'"></p>
-            <p class="text-[11px] text-slate-400">JPG, PNG or PDF</p>
+            <p class="text-[11px] text-slate-400">JPG, PNG or PDF — clear photo, at least 1000×700px</p>
         </div>
 
         <input type="file" x-ref="input" name="{{ $name }}" accept="{{ $accept }}" @if ($required) required @endif

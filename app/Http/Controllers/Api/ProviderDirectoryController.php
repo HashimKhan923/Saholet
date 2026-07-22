@@ -24,7 +24,7 @@ class ProviderDirectoryController extends Controller
             ->approved()
             ->with([
                 'user:id,name',
-                'providerServices' => fn ($q) => $q->where('is_active', true)->with('service:id,name,slug'),
+                'providerServices' => fn ($q) => $q->where('is_active', true)->with('service.category'),
             ]);
 
         if (! empty($validated['q'])) {

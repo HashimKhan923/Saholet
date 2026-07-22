@@ -37,14 +37,14 @@
     <x-admin.image-upload-field
         name="image"
         label="Card image"
-        help="Shown behind the category card on the homepage. Landscape photos work best (JPG, PNG or WebP, up to 4 MB)."
+        help="Shown behind the category card on the homepage. Square photos work best — recommended at least 800×800px (JPG, PNG or WebP, up to 4 MB)."
         :current-url="$category?->image_url"
         :has-current="(bool) $category?->image" />
 
     <x-admin.image-upload-field
         name="banner"
         label="Banner"
-        help="Wide header image shown on the category/services page. Landscape photos work best (JPG, PNG or WebP, up to 4 MB)."
+        help="Wide header image shown on the category/services page. Recommended at least 1600×480px, landscape (JPG, PNG or WebP, up to 4 MB)."
         :current-url="$category?->banner_url"
         :has-current="(bool) $category?->banner"
         box="h-16 w-40" />

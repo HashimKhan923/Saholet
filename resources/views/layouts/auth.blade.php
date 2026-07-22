@@ -11,6 +11,8 @@
     <meta name="theme-color" content="#1a7a35">
     <title>@yield('title', config('app.name'))</title>
 
+    <link rel="icon" type="image/png" href="{{ asset('images/Icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/Icon.png') }}">
     <link rel="manifest" href="{{ route('pwa.manifest') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">

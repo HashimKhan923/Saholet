@@ -8,6 +8,7 @@
         <svg viewBox="0 0 24 24" class="h-6 w-6 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 16V4M7 9l5-5 5 5M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <p class="text-xs font-medium text-slate-600 dark:text-slate-300">Drag & drop photos, or click to choose</p>
         <p class="text-[11px] text-slate-400" x-text="`${photos.length}/{{ $max }} added — JPG or PNG, up to 5MB each`"></p>
+        <p class="text-[11px] text-slate-400">Square photos work best — recommended at least 800×800px</p>
 
         <input type="file" x-ref="input" name="{{ $name }}[]" accept="image/jpeg,image/png" multiple
             @change="handleChange($event)" @click.stop class="hidden">

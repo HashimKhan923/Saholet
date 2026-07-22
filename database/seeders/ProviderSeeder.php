@@ -13,11 +13,11 @@ class ProviderSeeder extends Seeder
     public function run(): void
     {
         $services = Service::where('is_active', true)->get();
-        $cities = ['Karachi', 'Lahore', 'Islamabad'];
+        $cities = ['Karachi'];
 
         for ($i = 1; $i <= 20; $i++) {
             $user = User::updateOrCreate(
-                ['email' => "provider{$i}@gmail.com"],
+                ['email' => "provider{$i}@sahoulat.com"],
                 [
                     'name' => "Provider {$i}",
                     'phone' => '+92300' . str_pad((string) $i, 7, '0', STR_PAD_LEFT),

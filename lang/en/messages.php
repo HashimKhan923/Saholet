@@ -309,6 +309,7 @@ return [
         'faqs' => 'FAQs',
         'contact_messages' => 'Contact messages',
         'operations_section' => 'Operations',
+        'bookings' => 'Bookings',
         'contracts' => 'Contracts',
         'subscriptions' => 'Subscriptions',
         'corporate_accounts' => 'Corporate accounts',

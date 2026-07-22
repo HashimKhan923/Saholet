@@ -26,18 +26,31 @@
     {{-- Personal details card --}}
     <div class="reveal rounded-3xl border border-slate-200 bg-white p-7 dark:border-slate-800 dark:bg-slate-900">
         <div class="flex items-center gap-4">
-            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-600 font-display text-xl font-extrabold text-white shadow-md shadow-brand-600/25">
-                {{ mb_substr($user->name, 0, 1) }}
-            </span>
+            @if ($user->avatar_url)
+                <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="h-14 w-14 rounded-2xl object-cover shadow-md shadow-brand-600/25">
+            @else
+                <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-600 font-display text-xl font-extrabold text-white shadow-md shadow-brand-600/25">
+                    {{ mb_substr($user->name, 0, 1) }}
+                </span>
+            @endif
             <div>
                 <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('messages.profile.details') }}</h2>
                 <p class="text-xs uppercase tracking-wide text-slate-400">{{ $user->role }}</p>
             </div>
         </div>
 
-        <form method="POST" action="{{ route('profile.update') }}" class="mt-6 space-y-5">
+        <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="mt-6 space-y-5">
             @csrf
             @method('PUT')
+
+            <x-admin.image-upload-field
+                name="avatar"
+                label="Profile photo"
+                help="Square photo works best — recommended at least 400×400px (JPG, PNG or WebP, up to 4MB)."
+                :current-url="$user->avatar_url"
+                :has-current="(bool) $user->avatar_url"
+                box="h-20 w-20"
+            />
 
             <div>
                 <label for="name" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('messages.auth.full_name') }}</label>

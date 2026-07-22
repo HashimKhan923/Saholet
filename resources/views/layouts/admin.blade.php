@@ -30,6 +30,9 @@
     </x-portal-nav-link>
 
     <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ __('messages.admin_nav.operations_section') }}</p>
+    <x-portal-nav-link :href="route('admin.bookings.index')" :label="__('messages.admin_nav.bookings')" :active="request()->routeIs('admin.bookings.*')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 11h16" stroke-linecap="round"/></svg>
+    </x-portal-nav-link>
     <x-portal-nav-link :href="route('admin.contracts.index')" :label="__('messages.admin_nav.contracts')" :active="request()->routeIs('admin.contracts.*')" :badge="$sidebarPendingContracts ?: null">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 4h6l4 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 12h6M9 16h6" stroke-linecap="round"/></svg>
     </x-portal-nav-link>

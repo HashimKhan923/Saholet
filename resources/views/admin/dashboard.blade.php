@@ -14,10 +14,10 @@
                 <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('messages.admin_dashboard.approved_providers') }}</p>
                 <p class="mt-1 font-display text-xl font-extrabold text-slate-900 dark:text-white">{{ $metrics['providers_approved'] }}</p>
             </div>
-            <div class="rounded-xl bg-slate-50 p-4 dark:bg-slate-800">
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('messages.admin_dashboard.total_bookings') }}</p>
+            <a href="{{ route('admin.bookings.index') }}" class="group rounded-xl bg-slate-50 p-4 transition hover:bg-brand-50 dark:bg-slate-800 dark:hover:bg-brand-950/40">
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 group-hover:text-brand-700 dark:text-slate-400 dark:group-hover:text-brand-400">{{ __('messages.admin_dashboard.total_bookings') }}</p>
                 <p class="mt-1 font-display text-xl font-extrabold text-slate-900 dark:text-white">{{ $metrics['bookings_total'] }}</p>
-            </div>
+            </a>
             <div class="rounded-xl bg-brand-50 p-4 dark:bg-brand-950/40">
                 <p class="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-400">{{ __('messages.admin_dashboard.commission_earned') }}</p>
                 <p class="mt-1 font-display text-xl font-extrabold text-brand-900 dark:text-brand-300">Rs. {{ number_format($metrics['commission_earned'], 0) }}</p>
@@ -27,7 +27,12 @@
 
     {{-- Operations --}}
     <h2 class="mt-10 font-display text-sm font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('messages.admin_dashboard.operations_section') }}</h2>
-    <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <a href="{{ route('admin.bookings.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
+            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/50 dark:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 11h16" stroke-linecap="round"/></svg></span>
+            <h3 class="mt-4 font-display text-base font-bold text-slate-900 dark:text-white">Bookings</h3>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Every booking across direct, bids, contracts, subscriptions & emergencies.</p>
+        </a>
         <a href="{{ route('admin.categories.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
             <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/50 dark:text-brand-400"><x-service-icon name="default" class="h-6 w-6" /></span>
             <h3 class="mt-4 font-display text-base font-bold text-slate-900 dark:text-white">{{ __('messages.admin_dashboard.categories_title') }}</h3>

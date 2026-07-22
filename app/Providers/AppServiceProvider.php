@@ -49,7 +49,6 @@ class AppServiceProvider extends ServiceProvider
 
         // Use our Tailwind pagination partial.
         Paginator::defaultView('vendor.pagination.tailwind');
-        Paginator::useBootstrapThree(); // no-op guard; overridden by defaultView above
 
         // Centralizes the "must be an approved provider" gate that used to be
         // reimplemented per-controller (JobController, BidController,

@@ -293,6 +293,7 @@ return [
         'faqs' => 'اکثر پوچھے گئے سوالات',
         'contact_messages' => 'رابطہ پیغامات',
         'operations_section' => 'آپریشنز',
+        'bookings' => 'بکنگز',
         'contracts' => 'کنٹریکٹس',
         'subscriptions' => 'سبسکرپشنز',
         'corporate_accounts' => 'کارپوریٹ اکاؤنٹس',

@@ -43,7 +43,7 @@ class SecurityHeaders
                 "script-src 'self' 'unsafe-inline' 'unsafe-eval'{$viteDevOrigins}",
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com{$viteDevOrigins}",
                 "font-src 'self' https://fonts.gstatic.com",
-                "img-src 'self' data: https:",
+                "img-src 'self' data: blob: https:",
                 "connect-src 'self' {$ws} https://nominatim.openstreetmap.org{$viteDevOrigins}",
                 "frame-ancestors 'self'",
                 "base-uri 'self'",

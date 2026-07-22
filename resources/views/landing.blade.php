@@ -11,7 +11,7 @@
         'url' => url('/'),
         'image' => asset('images/Logo.png'),
         'description' => 'On-demand home services across Pakistan — AC repair, plumbing, electrical, cleaning and more. Verified professionals, instant booking, secure payments.',
-        'areaServed' => ['Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Multan', 'Hyderabad', 'Peshawar', 'Quetta', 'Sialkot'],
+        'areaServed' => ['Karachi'],
     ];
     if ($stats['rating'] > 0) {
         $orgSchema['aggregateRating'] = [
@@ -322,7 +322,7 @@
 </section>
 
 {{-- ==================================================== How it works --}}
-<section id="how" class="bg-brand-50/60 py-16 dark:bg-slate-900/40 sm:py-24">
+<section id="how" class="bg-brand-50/60 md:py-16 py-8 dark:bg-slate-900/40 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="reveal mb-12 max-w-2xl {{ $isUrdu ? 'text-right' : '' }}">
             <div class="mb-3 inline-flex items-center gap-2 {{ $isUrdu ? 'flex-row-reverse' : '' }}">
@@ -635,7 +635,7 @@
 </section>
 
 {{-- ====================================================== Final CTAs --}}
-<section class="pb-20">
+<section class="md:pb-20">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="grid gap-6 lg:grid-cols-5">
             {{-- Consumer CTA --}}

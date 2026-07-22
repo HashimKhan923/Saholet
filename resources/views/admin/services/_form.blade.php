@@ -49,7 +49,7 @@
     <x-admin.image-upload-field
         name="thumbnail"
         label="Thumbnail"
-        help="Shown next to this service in listings. Square or landscape photos work best (JPG, PNG or WebP, up to 4 MB)."
+        help="Shown next to this service in listings and on its detail page. Recommended at least 1200×675px, landscape (JPG, PNG or WebP, up to 4 MB)."
         :current-url="$service?->thumbnail_url"
         :has-current="(bool) $service?->thumbnail" />
 

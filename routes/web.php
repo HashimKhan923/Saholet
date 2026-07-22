@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\CareerApplicationController as AdminCareerApplicationController;
 use App\Http\Controllers\Admin\CareerCategoryController as AdminCareerCategoryController;
 use App\Http\Controllers\Admin\CareerListingController as AdminCareerListingController;
@@ -322,6 +323,9 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
         Route::get('withdrawals/{withdrawal}', [AdminWithdrawalController::class, 'show'])->name('withdrawals.show');
         Route::post('withdrawals/{withdrawal}/paid', [AdminWithdrawalController::class, 'markPaid'])->name('withdrawals.paid');
         Route::post('withdrawals/{withdrawal}/reject', [AdminWithdrawalController::class, 'reject'])->name('withdrawals.reject');
+
+        Route::get('bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
+        Route::get('bookings/{booking}', [AdminBookingController::class, 'show'])->name('bookings.show');
 
         Route::get('contracts', [AdminContractController::class, 'index'])->name('contracts.index');
         Route::get('contracts/{contract}', [AdminContractController::class, 'show'])->name('contracts.show');

@@ -10,7 +10,7 @@ class AdminUserSeeder extends Seeder
     public function run(): void
     {
         User::updateOrCreate(
-            ['email' => 'admin@gharfix.pk'],
+            ['email' => 'admin@sahoulat.com'],
             [
                 'name' => 'Platform Admin',
                 'phone' => '+920000000000',
