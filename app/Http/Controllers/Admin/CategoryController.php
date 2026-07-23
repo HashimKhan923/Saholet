@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Services\CatalogCache;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -12,6 +13,8 @@ use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
+    public function __construct(private CatalogCache $catalog) {}
+
     public function index(Request $request): View
     {
         $q = trim((string) $request->query('q', ''));
@@ -53,6 +56,7 @@ class CategoryController extends Controller
         $this->applyUpload($request, null, $data, 'banner', 'categories');
 
         Category::create($data);
+        $this->catalog->flush();
 
         return redirect()
             ->route('admin.categories.index')
@@ -76,6 +80,7 @@ class CategoryController extends Controller
         $this->applyUpload($request, $category, $data, 'banner', 'categories');
 
         $category->update($data);
+        $this->catalog->flush();
 
         return redirect()
             ->route('admin.categories.index')
@@ -97,6 +102,7 @@ class CategoryController extends Controller
         }
 
         $category->delete();
+        $this->catalog->flush();
 
         return redirect()
             ->route('admin.categories.index')

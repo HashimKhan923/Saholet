@@ -9,7 +9,7 @@
     <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-50 to-slate-50 dark:from-brand-950 dark:to-slate-950"></div>
     <div class="absolute inset-0 -z-10 bg-dot-grid opacity-50"></div>
     <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <img src="{{ asset('images/Professionals.jpeg') }}?v={{ filemtime(public_path('images/Professionals.jpeg')) }}" alt="Sahoulat professionals" class="animate-fade-up mb-8 h-auto w-full rounded-2xl shadow-sm md:h-100 md:object-cover" loading="eager">
+        <img src="{{ asset('images/Professionals.jpeg') }}" alt="Sahoulat professionals" class="animate-fade-up mb-8 w-full rounded-2xl md:object-cover object-contain shadow-sm md:h-100 h-32" loading="eager">
         <h1 class="animate-fade-up font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.providers.title') }}</h1>
         <p class="animate-fade-up mt-3 max-w-2xl text-slate-600 dark:text-slate-400">{{ __('messages.providers.subtitle') }}</p>
 
@@ -20,12 +20,15 @@
                 <input type="search" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="{{ __('messages.providers.search_placeholder') }}"
                     class="block w-full rounded-xl border border-slate-300 bg-white py-2.5 pe-3.5 ps-10 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
             </div>
-            <select name="city" class="rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-700 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
-                <option value="">{{ __('messages.providers.all_cities') }}</option>
-                @foreach ($cities as $city)
-                    <option value="{{ $city }}" @selected(($filters['city'] ?? '') === $city)>{{ $city }}</option>
-                @endforeach
-            </select>
+            <div class="relative">
+                <select name="city" class="appearance-none rounded-xl border border-slate-300 bg-white py-2.5 ps-3.5 pe-9 text-sm text-slate-700 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                    <option value="">{{ __('messages.providers.all_cities') }}</option>
+                    @foreach ($cities as $city)
+                        <option value="{{ $city }}" @selected(($filters['city'] ?? '') === $city)>{{ $city }}</option>
+                    @endforeach
+                </select>
+                <svg viewBox="0 0 24 24" class="pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
             <button type="submit" class="btn-shine rounded-xl bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
                 {{ __('messages.landing.search_btn') }}
             </button>

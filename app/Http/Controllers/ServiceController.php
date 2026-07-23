@@ -15,7 +15,20 @@ class ServiceController extends Controller
     {
         $categories = $this->catalog->categories();
 
-        return view('services.index', compact('categories'));
+        $categories->each(fn ($category) => $category->services->each(
+            fn ($service) => $service->setRelation('category', $category)
+        ));
+
+        $searchIndex = $categories->flatMap(function ($category) {
+            return $category->services->map(fn ($service) => [
+                'name' => $service->name,
+                'category' => $category->name,
+                'url' => route('services.show', $service),
+                'haystack' => mb_strtolower($service->name . ' ' . $category->name),
+            ]);
+        })->values();
+
+        return view('services.index', compact('categories', 'searchIndex'));
     }
 
     public function show(Service $service): View

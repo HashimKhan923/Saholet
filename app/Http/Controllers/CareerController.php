@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CareerApplication;
 use App\Models\CareerCategory;
 use App\Models\CareerListing;
 use Illuminate\Http\Request;
@@ -32,14 +33,19 @@ class CareerController extends Controller
             $query->where('city', $validated['city']);
         }
 
-        $listings = $query->latest()->paginate(12)->withQueryString();
+        $listings = $query->latest()->get();
 
         $categories = CareerCategory::active()->orderBy('sort_order')->orderBy('name')->get();
+
+        $appliedIds = (auth()->check() && auth()->user()->isJobSeeker())
+            ? CareerApplication::where('user_id', auth()->id())->pluck('career_listing_id')->all()
+            : [];
 
         return view('careers.index', [
             'listings' => $listings,
             'categories' => $categories,
             'filters' => $validated,
+            'appliedIds' => $appliedIds,
         ]);
     }
 

@@ -29,6 +29,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\BookingRoomController;
 use App\Http\Controllers\CareerController;
+use App\Http\Controllers\CategoryController as PublicCategoryController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CareerResumeController;
 use App\Http\Controllers\Consumer\AddressController as ConsumerAddressController;
@@ -83,6 +84,7 @@ Route::get('sitemap.xml', [PublicController::class, 'sitemap'])->name('sitemap')
 // Public service catalog
 Route::get('services', [ServiceController::class, 'index'])->name('services.index');
 Route::get('services/{service:slug}', [ServiceController::class, 'show'])->name('services.show');
+Route::get('categories/{category:slug}', [PublicCategoryController::class, 'show'])->name('categories.show');
 
 // Public provider directory (Step 5)
 Route::get('providers', [ProviderDirectoryController::class, 'index'])->name('providers.index');

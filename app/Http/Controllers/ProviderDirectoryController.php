@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
 use App\Models\ProviderProfile;
 use App\Models\Review;
 use Illuminate\Http\Request;
@@ -77,6 +78,8 @@ class ProviderDirectoryController extends Controller
             ->limit(10)
             ->get();
 
-        return view('providers.show', compact('provider', 'reviews'));
+        $completedJobs = $provider->bookings()->where('status', Booking::STATUS_COMPLETED)->count();
+
+        return view('providers.show', compact('provider', 'reviews', 'completedJobs'));
     }
 }

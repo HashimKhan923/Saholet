@@ -57,42 +57,8 @@
                 </p>
 
                 {{-- Search bar --}}
-                <div class="relative mb-4 max-w-lg"
-                     x-data="{
-                        q: '',
-                        open: false,
-                        items: @js($serviceSearchIndex),
-                        get matches() {
-                            const term = this.q.trim().toLowerCase();
-                            if (term.length < 2) return [];
-                            return this.items.filter(i => i.haystack.includes(term)).slice(0, 8);
-                        }
-                     }"
-                     @click.outside="open = false">
-                    <form action="{{ route('services.index') }}" method="GET">
-                        <div class="flex items-center overflow-hidden rounded-xl border-2 border-slate-200 bg-white shadow-sm transition-colors focus-within:border-brand-600 dark:border-slate-700 dark:bg-slate-900">
-                            <svg viewBox="0 0 24 24" class="ms-4 h-4 w-4 flex-shrink-0 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/></svg>
-                            <input type="search" name="q" x-model="q" @focus="open = true" autocomplete="off"
-                                placeholder="{{ __('messages.landing.search_placeholder') }}"
-                                class="min-w-0 flex-1 bg-transparent px-3 py-3.5 text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:text-white {{ $isUrdu ? 'font-urdu text-right text-base' : '' }}">
-                            <button type="submit" class="flex-shrink-0 bg-brand-600 px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand-700 {{ $isUrdu ? 'font-urdu text-base' : '' }}">
-                                {{ __('messages.landing.search_btn') }}
-                            </button>
-                        </div>
-                    </form>
-
-                    {{-- Live suggestions --}}
-                    <div x-show="open && matches.length" x-cloak
-                         x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
-                         class="absolute inset-x-0 top-full z-20 mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white py-1.5 shadow-lg dark:border-slate-700 dark:bg-slate-900">
-                        <template x-for="item in matches" :key="item.url">
-                            <a :href="item.url"
-                               class="flex items-center justify-between gap-3 px-4 py-2.5 text-sm text-slate-700 transition hover:bg-brand-50 dark:text-slate-200 dark:hover:bg-brand-950/40 {{ $isUrdu ? 'font-urdu flex-row-reverse text-right' : '' }}">
-                                <span x-text="item.name"></span>
-                                <span class="shrink-0 text-xs text-slate-400" x-text="item.category"></span>
-                            </a>
-                        </template>
-                    </div>
+                <div class="mb-4">
+                    <x-service-search :index="$serviceSearchIndex" :action="route('services.index')" />
                 </div>
             </div>
 
@@ -218,7 +184,7 @@
         <div class="mt-10 grid grid-cols-2 gap-5 lg:grid-cols-4">
             @forelse ($categories as $i => $category)
                 @php $iconTone = $categoryPalette[$category->icon] ?? $categoryPalette['default']; @endphp
-                <a href="{{ route('services.index') }}"
+                <a href="{{ route('categories.show', $category) }}"
                    class="reveal card-lift group relative isolate block aspect-square overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-sm ring-1 ring-black/5 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-2xl hover:ring-brand-400/30 dark:border-slate-800 dark:bg-slate-800"
                    style="--reveal-delay: {{ ($i % 4) * 70 }}ms">
                     @if ($category->image_url)

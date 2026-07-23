@@ -23,7 +23,7 @@
 @endpush
 
 @section('content')
-<section class="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+<section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
 
     <nav class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
         <a href="{{ route('services.index') }}" class="hover:text-brand-600 dark:hover:text-brand-400">Services</a>
@@ -31,8 +31,8 @@
         <span class="font-medium text-slate-700 dark:text-slate-200">{{ $service->category->name }}</span>
     </nav>
 
-    <div class="mt-6 grid gap-8 lg:grid-cols-3">
-        <div class="lg:col-span-2">
+    <div class="mt-6 grid gap-8 lg:grid-cols-2">
+        <div>
             @if ($service->thumbnail_url)
                 <img src="{{ $service->thumbnail_url }}" alt="" class="mb-6 h-56 w-full rounded-2xl object-cover sm:h-72">
             @endif
@@ -54,10 +54,39 @@
                 </div>
             @endif
 
-            <div class="mt-8">
+            @if ($related->isNotEmpty())
+                <div class="mt-8">
+                    <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">More in {{ $service->category->name }}</h2>
+                    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                        @foreach ($related as $item)
+                            <a href="{{ route('services.show', $item) }}"
+                               class="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
+                                <p class="text-sm font-semibold text-slate-900 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-400">{{ $item->name }}</p>
+                                <p class="mt-1 text-sm font-semibold text-brand-700 dark:text-brand-400">Rs. {{ number_format($item->base_price, 0) }}</p>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        </div>
+
+        <aside class="lg:sticky lg:top-36 lg:self-start">
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex items-baseline justify-between">
+                    <span class="text-sm text-slate-500 dark:text-slate-400">Starting from</span>
+                    <span class="font-display text-2xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($service->base_price, 0) }}</span>
+                </div>
+                <div class="mt-4 flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5 text-sm dark:bg-slate-800">
+                    <span class="text-slate-500 dark:text-slate-400">Est. duration</span>
+                    <span class="font-medium text-slate-800 dark:text-slate-200">~ {{ $service->duration_minutes }} min</span>
+                </div>
+                <p class="mt-4 text-center text-xs text-slate-500 dark:text-slate-400">Choose a provider to pick a time and book.</p>
+            </div>
+
+            <div class="mt-6">
                 <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Available providers</h2>
 
-                <div class="mt-4 space-y-3">
+                <div class="mt-4 max-h-[calc(100vh-22rem)] space-y-3 overflow-y-auto pe-1">
                     @forelse ($providers as $offering)
                         @php $p = $offering->providerProfile; @endphp
                         <div class="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-slate-900">
@@ -94,35 +123,6 @@
                 </div>
 
                 <div class="mt-6">{{ $providers->links() }}</div>
-            </div>
-
-            @if ($related->isNotEmpty())
-                <div class="mt-8">
-                    <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">More in {{ $service->category->name }}</h2>
-                    <div class="mt-4 grid gap-4 sm:grid-cols-2">
-                        @foreach ($related as $item)
-                            <a href="{{ route('services.show', $item) }}"
-                               class="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
-                                <p class="text-sm font-semibold text-slate-900 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-400">{{ $item->name }}</p>
-                                <p class="mt-1 text-sm font-semibold text-brand-700 dark:text-brand-400">Rs. {{ number_format($item->base_price, 0) }}</p>
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
-        </div>
-
-        <aside class="lg:col-span-1">
-            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <div class="flex items-baseline justify-between">
-                    <span class="text-sm text-slate-500 dark:text-slate-400">Starting from</span>
-                    <span class="font-display text-2xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($service->base_price, 0) }}</span>
-                </div>
-                <div class="mt-4 flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5 text-sm dark:bg-slate-800">
-                    <span class="text-slate-500 dark:text-slate-400">Est. duration</span>
-                    <span class="font-medium text-slate-800 dark:text-slate-200">~ {{ $service->duration_minutes }} min</span>
-                </div>
-                <p class="mt-4 text-center text-xs text-slate-500 dark:text-slate-400">Choose a provider to pick a time and book.</p>
             </div>
         </aside>
     </div>

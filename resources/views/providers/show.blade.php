@@ -64,19 +64,35 @@
                         <span>{{ $provider->experience_years }}+ yrs experience</span>
                     @endif
                     @if ($provider->reviews_count > 0)
-                        <span class="inline-flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-200">
-                            <svg viewBox="0 0 24 24" class="h-4 w-4 text-amber-400" fill="currentColor"><path d="m12 2 2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 16.9 5.9 20.4l1.5-6.8L2.2 9l6.9-.7L12 2z"/></svg>
-                            {{ number_format((float) $provider->rating_avg, 1) }}
-                            <span class="font-normal text-slate-400">· {{ $provider->reviews_count }} {{ __('messages.providers.reviews') }}</span>
+                        <span class="inline-flex items-center gap-1.5">
+                            <x-rating-stars :rating="$provider->rating_avg" :count="$provider->reviews_count" />
                         </span>
                     @endif
                 </div>
             </div>
         </div>
+
+        {{-- Stats row --}}
+        <div class="animate-fade-up-delayed mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <x-stat-card label="Experience" :value="(float) ($provider->experience_years ?? 0)" suffix=" yrs" tone="brand">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </x-stat-card>
+            <x-stat-card label="Rating" :value="(float) $provider->rating_avg" :decimals="1" tone="amber">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="m12 2 2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 16.9 5.9 20.4l1.5-6.8L2.2 9l6.9-.7L12 2z"/></svg>
+            </x-stat-card>
+            <x-stat-card label="Reviews" :value="(float) $provider->reviews_count" tone="sky">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </x-stat-card>
+            <x-stat-card label="Jobs done" :value="(float) $completedJobs" tone="violet">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 5 5 9-10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </x-stat-card>
+        </div>
     </div>
 </section>
 
-<section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+<section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8"
+    x-data="{ lightboxOpen: false, lightboxSrc: null, lightboxCaption: null,
+        openLightbox(src, caption) { this.lightboxSrc = src; this.lightboxCaption = caption; this.lightboxOpen = true; } }">
     <div class="grid gap-8 lg:grid-cols-3">
 
         {{-- Left column: about + reviews --}}
@@ -84,34 +100,50 @@
 
             {{-- About --}}
             @if ($provider->bio)
-                <div class="reveal rounded-3xl border border-slate-200 bg-white p-7 dark:border-slate-800 dark:bg-slate-900">
-                    <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('messages.providers.about') }}</h2>
+                <div class="reveal card-lift rounded-3xl border border-slate-200 bg-white p-7 dark:border-slate-800 dark:bg-slate-900">
+                    <div class="flex items-center gap-2.5">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-950/50 dark:text-brand-400">
+                            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6" stroke-linecap="round"/></svg>
+                        </span>
+                        <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('messages.providers.about') }}</h2>
+                    </div>
                     <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ $provider->bio }}</p>
                 </div>
             @endif
 
             {{-- Portfolio --}}
             @if ($provider->portfolioPhotos->isNotEmpty())
-                <div class="reveal rounded-3xl border border-slate-200 bg-white p-7 dark:border-slate-800 dark:bg-slate-900" style="--reveal-delay: 60ms">
-                    <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('messages.providers.portfolio_title') }}</h2>
+                <div class="reveal card-lift rounded-3xl border border-slate-200 bg-white p-7 dark:border-slate-800 dark:bg-slate-900" style="--reveal-delay: 60ms">
+                    <div class="flex items-center gap-2.5">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600 dark:bg-sky-950/50 dark:text-sky-400">
+                            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('messages.providers.portfolio_title') }}</h2>
+                    </div>
                     <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
                         @foreach ($provider->portfolioPhotos as $photo)
-                            <a href="{{ $photo->url() }}" target="_blank" rel="noopener" class="group relative aspect-square overflow-hidden rounded-xl">
+                            <button type="button" @click="openLightbox({{ \Illuminate\Support\Js::from($photo->url()) }}, {{ \Illuminate\Support\Js::from($photo->caption) }})"
+                               class="group relative aspect-square overflow-hidden rounded-xl">
                                 <img src="{{ $photo->url() }}" alt="{{ $photo->caption ?: $displayName }}" class="h-full w-full object-cover transition group-hover:scale-105">
                                 @if ($photo->caption)
                                     <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/80 to-transparent px-2.5 py-2 opacity-0 transition group-hover:opacity-100">
                                         <p class="truncate text-[11px] font-medium text-white">{{ $photo->caption }}</p>
                                     </div>
                                 @endif
-                            </a>
+                            </button>
                         @endforeach
                     </div>
                 </div>
             @endif
 
             {{-- Reviews --}}
-            <div class="reveal rounded-3xl border border-slate-200 bg-white p-7 dark:border-slate-800 dark:bg-slate-900" style="--reveal-delay: 80ms">
-                <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('messages.providers.reviews') }}</h2>
+            <div class="reveal card-lift rounded-3xl border border-slate-200 bg-white p-7 dark:border-slate-800 dark:bg-slate-900" style="--reveal-delay: 80ms">
+                <div class="flex items-center gap-2.5">
+                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400">
+                        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="m12 2 2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 16.9 5.9 20.4l1.5-6.8L2.2 9l6.9-.7L12 2z"/></svg>
+                    </span>
+                    <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('messages.providers.reviews') }}</h2>
+                </div>
 
                 @forelse ($reviews as $review)
                     <div class="mt-5 border-t border-slate-100 pt-5 first:mt-4 dark:border-slate-800">
@@ -125,11 +157,7 @@
                                     <p class="text-xs text-slate-400">{{ $review->created_at->diffForHumans() }}</p>
                                 </div>
                             </div>
-                            <span class="flex gap-0.5 text-amber-400" aria-label="{{ $review->rating }} / 5">
-                                @for ($s = 1; $s <= 5; $s++)
-                                    <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 {{ $s <= $review->rating ? '' : 'opacity-25' }}" fill="currentColor"><path d="m12 2 2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 16.9 5.9 20.4l1.5-6.8L2.2 9l6.9-.7L12 2z"/></svg>
-                                @endfor
-                            </span>
+                            <x-rating-stars :rating="$review->rating" />
                         </div>
                         @if ($review->comment)
                             <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ $review->comment }}</p>
@@ -143,7 +171,7 @@
 
         {{-- Right column: services sticky sidebar --}}
         <div>
-            <div class="reveal rounded-3xl border border-slate-200 bg-white p-7 lg:sticky lg:top-24 dark:border-slate-800 dark:bg-slate-900" style="--reveal-delay: 100ms">
+            <div class="reveal card-lift rounded-3xl border border-slate-200 bg-white p-7 lg:sticky lg:top-24 dark:border-slate-800 dark:bg-slate-900" style="--reveal-delay: 100ms">
                 <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('messages.providers.offered_services') }}</h2>
 
                 <div class="mt-4 space-y-3">
@@ -178,6 +206,20 @@
                     </a>
                 @endguest
             </div>
+        </div>
+    </div>
+
+    {{-- Portfolio lightbox --}}
+    <div x-show="lightboxOpen" x-cloak
+         x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+         @keydown.escape.window="lightboxOpen = false"
+         class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm" @click="lightboxOpen = false">
+        <button type="button" @click="lightboxOpen = false" aria-label="Close" class="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg>
+        </button>
+        <div class="max-h-[85vh] max-w-3xl" @click.stop>
+            <img :src="lightboxSrc" alt="" class="max-h-[85vh] w-auto rounded-xl object-contain shadow-2xl">
+            <p x-show="lightboxCaption" x-text="lightboxCaption" class="mt-3 text-center text-sm text-white/80"></p>
         </div>
     </div>
 </section>
