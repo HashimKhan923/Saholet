@@ -284,6 +284,7 @@ return [
         'create_account' => 'Create account',
         'wrong_role' => 'Only job seeker accounts can apply for roles.',
         'already_applied' => 'You\'ve already applied to this role.',
+        'already_applied_short' => 'Applied',
         'view_my_applications' => 'View my applications',
         'resume_saved_prefix' => 'We\'ll use your saved resume:',
         'resume_saved_suffix' => '. You can also upload a different one below.',

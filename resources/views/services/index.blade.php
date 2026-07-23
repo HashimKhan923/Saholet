@@ -14,14 +14,40 @@
 <section class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8"
     x-data="{
         q: '',
+        open: false,
+        items: @js($searchIndex),
         haystack: @js($categories->flatMap(fn ($c) => $c->services->map(fn ($s) => mb_strtolower($c->name . ' ' . $s->name . ' ' . $s->description)))->values()),
+        get matches() {
+            const term = this.q.trim().toLowerCase();
+            if (term.length < 2) return [];
+            return this.items.filter(i => i.haystack.includes(term)).slice(0, 8);
+        },
         get hasResults() { return this.q === '' || this.haystack.some(s => s.includes(this.q.toLowerCase())); },
     }">
     @if ($categories->isNotEmpty())
-        <div class="relative mb-10 max-w-md">
-            <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/></svg>
-            <input type="search" x-model="q" placeholder="Search services or categories…"
-                class="block w-full rounded-lg border border-slate-300 py-2.5 pl-10 pr-3.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+        <div class="relative mb-10 max-w-lg" @click.outside="open = false">
+            <form action="{{ route('services.index') }}" method="GET">
+                <div class="flex items-center overflow-hidden rounded-xl border-2 border-slate-200 bg-white shadow-sm transition-colors focus-within:border-brand-600 dark:border-slate-700 dark:bg-slate-900">
+                    <svg viewBox="0 0 24 24" class="ms-4 h-4 w-4 flex-shrink-0 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/></svg>
+                    <input type="search" name="q" x-model="q" @focus="open = true" autocomplete="off" placeholder="Search services or categories…"
+                        class="min-w-0 flex-1 bg-transparent px-3 py-3.5 text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:text-white">
+                    <button type="submit" class="flex-shrink-0 bg-brand-600 px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand-700">
+                        {{ __('messages.landing.search_btn') }}
+                    </button>
+                </div>
+            </form>
+
+            {{-- Live suggestions --}}
+            <div x-show="open && matches.length" x-cloak
+                 x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
+                 class="absolute inset-x-0 top-full z-20 mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white py-1.5 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+                <template x-for="item in matches" :key="item.url">
+                    <a :href="item.url" class="flex items-center justify-between gap-3 px-4 py-2.5 text-sm text-slate-700 transition hover:bg-brand-50 dark:text-slate-200 dark:hover:bg-brand-950/40">
+                        <span x-text="item.name"></span>
+                        <span class="shrink-0 text-xs text-slate-400" x-text="item.category"></span>
+                    </a>
+                </template>
+            </div>
         </div>
     @endif
 
@@ -32,56 +58,23 @@
         @endphp
         <div class="mb-14 last:mb-0"
             x-show="q === '' || @js($categorySearch).includes(q.toLowerCase()) || @js($servicesSearch).some(s => s.includes(q.toLowerCase()))">
-            @if ($category->banner_url)
-                <div class="relative overflow-hidden rounded-2xl">
-                    <img src="{{ $category->banner_url }}" alt="" class="h-40 w-full object-cover sm:h-48" loading="lazy">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent"></div>
-                    <div class="absolute inset-x-0 bottom-0 flex items-center gap-3 p-5">
-                        <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur">
-                            <x-service-icon :name="$category->icon" class="h-6 w-6" />
-                        </span>
-                        <div>
-                            <h2 class="font-display text-xl font-extrabold tracking-tight text-white">{{ $category->name }}</h2>
-                            @if ($category->description)
-                                <p class="text-sm text-white/80">{{ $category->description }}</p>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            @else
-                <div class="flex items-center gap-3">
-                    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-950/50 dark:text-brand-400">
-                        <x-service-icon :name="$category->icon" class="h-6 w-6" />
-                    </span>
-                    <div>
-                        <h2 class="font-display text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $category->name }}</h2>
-                        @if ($category->description)
-                            <p class="text-sm text-slate-500 dark:text-slate-400">{{ $category->description }}</p>
-                        @endif
-                    </div>
-                </div>
-            @endif
 
-            <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="flex flex-wrap items-end justify-between gap-4">
+                <div class="flex-1">
+                    <x-category-banner :category="$category" size="sm" />
+                </div>
+                <a href="{{ route('categories.show', $category) }}" class="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-brand-700 hover:text-brand-800 dark:text-brand-400">
+                    View category
+                    <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            </div>
+
+            <div class="mt-6 grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
                 @foreach ($category->services as $service)
                     @php $serviceSearch = mb_strtolower($category->name . ' ' . $service->name . ' ' . $service->description); @endphp
-                    <a href="{{ route('services.show', $service) }}"
-                       x-show="q === '' || @js($serviceSearch).includes(q.toLowerCase())"
-                       class="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
-                        @if ($service->thumbnail_url)
-                            <img src="{{ $service->thumbnail_url }}" alt="" class="h-32 w-full object-cover" loading="lazy">
-                        @endif
-                        <div class="flex flex-1 flex-col p-5">
-                            <h3 class="text-sm font-semibold text-slate-900 group-hover:text-brand-700 dark:text-white">{{ $service->name }}</h3>
-                            @if ($service->description)
-                                <p class="mt-1.5 line-clamp-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">{{ $service->description }}</p>
-                            @endif
-                            <div class="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800">
-                                <span class="text-sm font-semibold text-brand-700 dark:text-brand-400">Rs. {{ number_format($service->base_price, 0) }}</span>
-                                <span class="text-xs text-slate-400">~ {{ $service->duration_minutes }} min</span>
-                            </div>
-                        </div>
-                    </a>
+                    <div x-show="q === '' || @js($serviceSearch).includes(q.toLowerCase())">
+                        <x-service-card :service="$service" />
+                    </div>
                 @endforeach
             </div>
         </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Service;
+use App\Services\CatalogCache;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -12,6 +13,8 @@ use Illuminate\View\View;
 
 class ServiceController extends Controller
 {
+    public function __construct(private CatalogCache $catalog) {}
+
     public function index(Request $request): View
     {
         $q = trim((string) $request->query('q', ''));
@@ -57,6 +60,7 @@ class ServiceController extends Controller
         }
 
         Service::create($data);
+        $this->catalog->flush();
 
         return redirect()
             ->route('admin.services.index')
@@ -93,6 +97,7 @@ class ServiceController extends Controller
         }
 
         $service->update($data);
+        $this->catalog->flush();
 
         return redirect()
             ->route('admin.services.index')
@@ -106,6 +111,7 @@ class ServiceController extends Controller
         }
 
         $service->delete();
+        $this->catalog->flush();
 
         return redirect()
             ->route('admin.services.index')
