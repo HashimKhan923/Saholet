@@ -48,6 +48,18 @@
                 'items' => $pendingWithdrawals, 'empty' => 'No pending withdrawal requests.',
                 'icon' => '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h2M3 10h18" stroke-linecap="round"/><path d="M8 16.5l2-2 2 1.5 2-3" stroke-linecap="round" stroke-linejoin="round"/>',
             ],
+            [
+                'key' => 'subscriptions', 'tone' => 'teal',
+                'title' => 'Subscriptions awaiting a provider',
+                'items' => $pendingSubscriptions, 'empty' => 'No subscriptions awaiting a provider.',
+                'icon' => '<path d="M17 2.1l4 4-4 4M7 21.9l-4-4 4-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 12a8.5 8.5 0 0 1 14.5-6h-4M20.5 12a8.5 8.5 0 0 1-14.5 6h4" stroke-linecap="round" stroke-linejoin="round"/>',
+            ],
+            [
+                'key' => 'emergencies', 'tone' => 'rose',
+                'title' => 'Emergencies awaiting a quote',
+                'items' => $openEmergencies, 'empty' => 'No emergencies awaiting a quote.',
+                'icon' => '<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" stroke-linejoin="round"/>',
+            ],
         ];
 
         $toneClasses = [
@@ -56,6 +68,8 @@
             'amber'  => ['bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400', 'bg-amber-500'],
             'sky'    => ['bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-400', 'bg-sky-500'],
             'brand'  => ['bg-brand-50 text-brand-600 dark:bg-brand-950/40 dark:text-brand-400', 'bg-brand-500'],
+            'teal'   => ['bg-teal-50 text-teal-600 dark:bg-teal-950/40 dark:text-teal-400', 'bg-teal-500'],
+            'rose'   => ['bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400', 'bg-rose-500'],
         ];
 
         $pendingSections = collect($sections)->filter(fn ($s) => $s['items']->count() > 0)->values();
@@ -159,6 +173,32 @@
                                         </div>
                                     </div>
                                     <span class="shrink-0 text-xs text-slate-400">{{ $withdrawal->created_at->diffForHumans() }}</span>
+                                </a>
+                            @endforeach
+                        @elseif ($s['key'] === 'subscriptions')
+                            @foreach ($s['items'] as $subscription)
+                                <a href="{{ route('admin.subscriptions.show', $subscription) }}" class="flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-3.5 text-sm transition last:border-0 hover:bg-slate-50/60 dark:border-slate-800 dark:hover:bg-slate-800/60">
+                                    <div class="flex items-center gap-3">
+                                        <span class="h-1.5 w-1.5 shrink-0 rounded-full {{ $toneClasses[$s['tone']][1] }}"></span>
+                                        <div>
+                                            <p class="font-medium text-slate-900 dark:text-white">{{ $subscription->consumer->name ?? '—' }}</p>
+                                            <p class="text-xs text-slate-500 dark:text-slate-400">{{ $subscription->plan->name ?? '—' }} · {{ $subscription->city ?: '—' }}</p>
+                                        </div>
+                                    </div>
+                                    <span class="shrink-0 text-xs text-slate-400">{{ $subscription->created_at->diffForHumans() }}</span>
+                                </a>
+                            @endforeach
+                        @elseif ($s['key'] === 'emergencies')
+                            @foreach ($s['items'] as $emergency)
+                                <a href="{{ route('admin.emergencies.show', $emergency) }}" class="flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-3.5 text-sm transition last:border-0 hover:bg-slate-50/60 dark:border-slate-800 dark:hover:bg-slate-800/60">
+                                    <div class="flex items-center gap-3">
+                                        <span class="h-1.5 w-1.5 shrink-0 rounded-full {{ $toneClasses[$s['tone']][1] }}"></span>
+                                        <div>
+                                            <p class="font-medium text-slate-900 dark:text-white">{{ $emergency->consumer->name ?? '—' }}</p>
+                                            <p class="text-xs text-slate-500 dark:text-slate-400">{{ $emergency->service->name ?? '—' }} · {{ $emergency->city ?: '—' }}</p>
+                                        </div>
+                                    </div>
+                                    <span class="shrink-0 text-xs text-slate-400">{{ $emergency->created_at->diffForHumans() }}</span>
                                 </a>
                             @endforeach
                         @endif

@@ -25,6 +25,7 @@ class Invoice extends Model
         'bill_to_phone',
         'bill_to_address',
         'total',
+        'discount',
         'notes',
         'created_by',
     ];
@@ -33,6 +34,7 @@ class Invoice extends Model
     {
         return [
             'total' => 'decimal:2',
+            'discount' => 'decimal:2',
         ];
     }
 

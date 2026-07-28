@@ -5,8 +5,11 @@
 @endphp
 
 @if ($isUploadedPath)
+    {{-- Uploaded icons must fill whatever box the caller placed them in — ignore the small
+    h-X w-X size class callers pass for the legacy inline-SVG glyphs below, since merging it
+    here only left the image floating small inside its container instead of filling it. --}}
     <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($name) }}" alt=""
-        {{ $attributes->merge(['class' => 'h-6 w-6 rounded object-contain']) }}>
+        {{ $attributes->except('class') }} class="h-full w-full rounded object-contain">
 @else
     @php
         $icons = config('services_catalog.icons');

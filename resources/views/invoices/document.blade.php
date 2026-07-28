@@ -35,6 +35,7 @@
             'total' => (float) $item->total,
         ])->all(),
         'total' => (float) $invoice->total,
+        'discount' => (float) $invoice->discount,
         'paymentInfo' => null,
         'notes' => $invoice->notes,
     ])

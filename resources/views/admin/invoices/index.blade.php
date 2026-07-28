@@ -30,6 +30,9 @@
                         <th class="px-5 py-3">Type</th>
                         <th class="px-5 py-3">Customer</th>
                         <th class="px-5 py-3">Total</th>
+                        @if (auth()->user()->isAdmin())
+                            <th class="px-5 py-3">Created by</th>
+                        @endif
                         <th class="px-5 py-3">Created</th>
                         <th class="px-5 py-3 text-right">Actions</th>
                     </tr>
@@ -44,6 +47,9 @@
                             <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ ucfirst($invoice->type) }}</td>
                             <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $invoice->bill_to_name }}</td>
                             <td class="px-5 py-3 text-slate-600 dark:text-slate-400">Rs. {{ number_format((float) $invoice->total, 0) }}</td>
+                            @if (auth()->user()->isAdmin())
+                                <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $invoice->createdBy?->name ?? '—' }}</td>
+                            @endif
                             <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $invoice->created_at->format('d M Y') }}</td>
                             <td class="px-5 py-3">
                                 <div class="flex items-center justify-end gap-2">
@@ -57,7 +63,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-5 py-10 text-center text-slate-500 dark:text-slate-400">No documents yet.</td>
+                            <td colspan="{{ auth()->user()->isAdmin() ? 7 : 6 }}" class="px-5 py-10 text-center text-slate-500 dark:text-slate-400">No documents yet.</td>
                         </tr>
                     @endforelse
                 </tbody>

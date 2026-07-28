@@ -9,10 +9,13 @@
       x-data="{
           submitting: false,
           items: @js(old('items', $existingItems)),
+          discount: @js((float) old('discount', $isEdit ? $invoice->discount : 0)),
           addItem() { this.items.push({ description: '', quantity: 1, unit_price: 0 }) },
           removeItem(i) { if (this.items.length > 1) this.items.splice(i, 1) },
           lineTotal(item) { return (parseFloat(item.quantity) || 0) * (parseFloat(item.unit_price) || 0) },
-          get total() { return this.items.reduce((sum, item) => sum + this.lineTotal(item), 0) },
+          get subtotal() { return this.items.reduce((sum, item) => sum + this.lineTotal(item), 0) },
+          get discountAmount() { return Math.min(parseFloat(this.discount) || 0, this.subtotal) },
+          get total() { return this.subtotal - this.discountAmount },
       }"
       @submit="submitting = true">
     @csrf
@@ -103,9 +106,31 @@
             + Add line item
         </button>
 
-        <div class="mt-5 flex items-center justify-end gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
-            <span class="text-sm text-slate-500 dark:text-slate-400">Total</span>
-            <span class="font-display text-xl font-extrabold text-slate-900 dark:text-white">Rs. <span x-text="total.toLocaleString()"></span></span>
+        <div class="mt-5 space-y-3 border-t border-slate-100 pt-4 dark:border-slate-800">
+            <div class="flex items-center justify-end gap-3">
+                <label for="discount" class="text-sm font-medium text-slate-700 dark:text-slate-200">Discount <span class="text-slate-400">(Rs., optional)</span></label>
+                <input id="discount" name="discount" type="number" min="0" step="0.01" x-model="discount"
+                    class="w-36 rounded-lg border border-slate-300 px-3 py-2 text-right text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+            </div>
+            <x-field-error name="discount" />
+
+            <template x-if="discountAmount > 0">
+                <div class="flex items-center justify-end gap-3 text-sm">
+                    <span class="text-slate-500 dark:text-slate-400">Subtotal</span>
+                    <span class="w-28 text-right text-slate-700 dark:text-slate-300">Rs. <span x-text="subtotal.toLocaleString()"></span></span>
+                </div>
+            </template>
+            <template x-if="discountAmount > 0">
+                <div class="flex items-center justify-end gap-3 text-sm">
+                    <span class="text-red-600 dark:text-red-400">Discount</span>
+                    <span class="w-28 text-right text-red-600 dark:text-red-400">&minus; Rs. <span x-text="discountAmount.toLocaleString()"></span></span>
+                </div>
+            </template>
+
+            <div class="flex items-center justify-end gap-3">
+                <span class="text-sm text-slate-500 dark:text-slate-400">Total</span>
+                <span class="font-display text-xl font-extrabold text-slate-900 dark:text-white">Rs. <span x-text="total.toLocaleString()"></span></span>
+            </div>
         </div>
     </div>
 

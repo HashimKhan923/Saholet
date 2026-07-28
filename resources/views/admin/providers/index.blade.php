@@ -10,10 +10,10 @@
     {{-- Filter tabs --}}
     @php
         $tabs = [
+            'all' => 'All',
             'pending' => 'Pending (' . $counts['pending'] . ')',
             'approved' => 'Approved (' . $counts['approved'] . ')',
             'rejected' => 'Rejected (' . $counts['rejected'] . ')',
-            'all' => 'All',
         ];
     @endphp
     <div class="mt-6 flex flex-wrap gap-2">

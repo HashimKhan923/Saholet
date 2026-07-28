@@ -1,4 +1,8 @@
-{{-- Shared invoice/receipt body. Expects: $billTo, $from, $lineItems, $total, $paymentInfo (nullable), $notes (nullable) --}}
+{{-- Shared invoice/receipt body. Expects: $billTo, $from, $lineItems, $total, $paymentInfo (nullable), $notes (nullable), $discount (nullable, default 0) --}}
+@php
+    $discount = (float) ($discount ?? 0);
+    $subtotal = $total + $discount;
+@endphp
 <table style="width: 100%; margin-bottom: 4px;">
     <tr>
         <td width="50%" style="vertical-align: top; padding-right: 10px;">
@@ -48,6 +52,16 @@
 </table>
 
 <table class="totals">
+    @if ($discount > 0)
+        <tr>
+            <td class="label">Subtotal</td>
+            <td class="value">Rs. {{ number_format($subtotal, 0) }}</td>
+        </tr>
+        <tr class="discount-row">
+            <td class="label">Discount</td>
+            <td class="value">-Rs. {{ number_format($discount, 0) }}</td>
+        </tr>
+    @endif
     <tr class="grand">
         <td class="label">Total</td>
         <td class="value">Rs. {{ number_format($total, 0) }}</td>

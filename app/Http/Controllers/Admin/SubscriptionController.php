@@ -15,11 +15,11 @@ class SubscriptionController extends Controller
 {
     public function index(Request $request): View
     {
-        $status = $request->query('status', 'pending_assignment');
+        $status = $request->query('status', 'all');
 
-        $validStatuses = ['pending_assignment', 'active', 'completed', 'cancelled', 'all'];
+        $validStatuses = ['all', 'pending_assignment', 'active', 'completed', 'cancelled'];
         if (! in_array($status, $validStatuses, true)) {
-            $status = 'pending_assignment';
+            $status = 'all';
         }
 
         $query = Subscription::with(['plan.service', 'consumer:id,name'])->latest();

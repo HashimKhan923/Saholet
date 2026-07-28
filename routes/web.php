@@ -335,8 +335,8 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
             Route::get('corporate-accounts/{corporateAccount}', [AdminCorporateAccountController::class, 'show'])->name('corporate-accounts.show');
         });
 
-        // Withdrawals
-        Route::middleware('permission:withdrawals')->group(function () {
+        // Withdrawals — money-related, admin-only, never delegable to staff.
+        Route::middleware('role:admin')->group(function () {
             Route::get('withdrawals', [AdminWithdrawalController::class, 'index'])->name('withdrawals.index');
             Route::get('withdrawals/{withdrawal}', [AdminWithdrawalController::class, 'show'])->name('withdrawals.show');
             Route::post('withdrawals/{withdrawal}/paid', [AdminWithdrawalController::class, 'markPaid'])->name('withdrawals.paid');
@@ -389,7 +389,8 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
             Route::post('disputes/{dispute}/resolve', [AdminDisputeController::class, 'resolve'])->name('disputes.resolve');
         });
 
-        Route::middleware('permission:analytics')->group(function () {
+        // Analytics — money-related, admin-only, never delegable to staff.
+        Route::middleware('role:admin')->group(function () {
             Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
         });
 
@@ -409,7 +410,8 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
             Route::get('fraud', [FraudController::class, 'index'])->name('fraud.index');
         });
 
-        Route::middleware('permission:users')->group(function () {
+        // Users — account-level, admin-only, never delegable to staff.
+        Route::middleware('role:admin')->group(function () {
             Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
             Route::post('users/{user}/suspend', [AdminUserController::class, 'suspend'])->name('users.suspend');
             Route::post('users/{user}/unsuspend', [AdminUserController::class, 'unsuspend'])->name('users.unsuspend');

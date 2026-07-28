@@ -9,10 +9,10 @@
 
     @php
         $tabs = [
+            'all' => 'All',
             'pending' => 'Pending',
             'paid' => 'Paid',
             'rejected' => 'Rejected',
-            'all' => 'All',
         ];
         $statusTones = [
             'pending' => 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400',

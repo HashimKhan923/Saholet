@@ -129,6 +129,7 @@ class ServiceController extends Controller
             'thumbnail' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'remove_thumbnail' => ['nullable', 'boolean'],
             'base_price' => ['required', 'numeric', 'min:0', 'max:9999999'],
+            'visit_charge' => ['nullable', 'numeric', 'min:0', 'max:9999999'],
             'duration_minutes' => ['required', 'integer', 'min:5', 'max:1440'],
             'is_active' => ['nullable', 'boolean'],
             'is_emergency_available' => ['nullable', 'boolean'],

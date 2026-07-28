@@ -6,14 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\CareerApplication;
 use App\Models\Contract;
 use App\Models\Dispute;
+use App\Models\EmergencyRequest;
 use App\Models\ProviderProfile;
+use App\Models\Subscription;
 use App\Models\WithdrawalRequest;
 use Illuminate\View\View;
 
 /**
  * One screen for everything an admin needs to act on today, instead of
- * hunting across four separate sections. Read-only aggregation — every
+ * hunting across separate sections. Read-only aggregation — every
  * action link routes back to the existing dedicated controller/view.
+ *
+ * The set of sections queried here must stay in sync with the sidebar's
+ * "Requests" badge total (computed in AppServiceProvider) — that badge is
+ * the sum of every section below, so adding a source here without also
+ * adding it there (or vice versa) reintroduces a badge/content mismatch.
  */
 class RequestsInboxController extends Controller
 {
@@ -44,11 +51,23 @@ class RequestsInboxController extends Controller
             ->oldest()
             ->get();
 
+        $pendingSubscriptions = Subscription::where('status', Subscription::STATUS_PENDING_ASSIGNMENT)
+            ->with(['consumer:id,name', 'plan:id,name'])
+            ->oldest()
+            ->get();
+
+        $openEmergencies = EmergencyRequest::where('status', EmergencyRequest::STATUS_OPEN)
+            ->with(['consumer:id,name', 'service:id,name'])
+            ->oldest()
+            ->get();
+
         $totalPending = $pendingProviders->count() + $openDisputes->count()
-            + $submittedContracts->count() + $newApplications->count() + $pendingWithdrawals->count();
+            + $submittedContracts->count() + $newApplications->count() + $pendingWithdrawals->count()
+            + $pendingSubscriptions->count() + $openEmergencies->count();
 
         return view('admin.requests.index', compact(
-            'pendingProviders', 'openDisputes', 'submittedContracts', 'newApplications', 'pendingWithdrawals', 'totalPending'
+            'pendingProviders', 'openDisputes', 'submittedContracts', 'newApplications', 'pendingWithdrawals',
+            'pendingSubscriptions', 'openEmergencies', 'totalPending'
         ));
     }
 }
