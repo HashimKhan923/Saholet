@@ -12,10 +12,10 @@ class ProviderController extends Controller
 {
     public function index(Request $request): View
     {
-        $status = $request->query('status', 'pending');
+        $status = $request->query('status', 'all');
 
         if (! in_array($status, ['pending', 'approved', 'rejected', 'all'], true)) {
-            $status = 'pending';
+            $status = 'all';
         }
 
         $query = ProviderProfile::with('user')

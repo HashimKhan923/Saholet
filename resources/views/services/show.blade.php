@@ -63,6 +63,9 @@
                                class="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
                                 <p class="text-sm font-semibold text-slate-900 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-400">{{ $item->name }}</p>
                                 <p class="mt-1 text-sm font-semibold text-brand-700 dark:text-brand-400">Rs. {{ number_format($item->base_price, 0) }}</p>
+                                @if ($item->visit_charge !== null && (float) $item->visit_charge > 0)
+                                    <p class="mt-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">+ Rs. {{ number_format($item->visit_charge, 0) }} visit charges</p>
+                                @endif
                             </a>
                         @endforeach
                     </div>
@@ -76,6 +79,16 @@
                     <span class="text-sm text-slate-500 dark:text-slate-400">Starting from</span>
                     <span class="font-display text-2xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($service->base_price, 0) }}</span>
                 </div>
+                @if ($service->visit_charge !== null && (float) $service->visit_charge > 0)
+                    <div class="mt-4 flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-900 dark:bg-amber-950/30">
+                        <span class="text-sm font-semibold text-amber-800 dark:text-amber-300">Visit charges</span>
+                        <span class="font-display text-xl font-extrabold text-amber-800 dark:text-amber-300">Rs. {{ number_format($service->visit_charge, 0) }}</span>
+                    </div>
+                    <p class="mt-2 flex items-start gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                        <svg viewBox="0 0 24 24" class="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01" stroke-linecap="round"/></svg>
+                        Visit charges are payable regardless of whether you proceed with the service afterwards. This charge is fixed and non-negotiable.
+                    </p>
+                @endif
                 <div class="mt-4 flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5 text-sm dark:bg-slate-800">
                     <span class="text-slate-500 dark:text-slate-400">Est. duration</span>
                     <span class="font-medium text-slate-800 dark:text-slate-200">~ {{ $service->duration_minutes }} min</span>

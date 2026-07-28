@@ -17,6 +17,7 @@ class Service extends Model
         'description',
         'thumbnail',
         'base_price',
+        'visit_charge',
         'duration_minutes',
         'is_active',
         'is_emergency_available',
@@ -32,6 +33,7 @@ class Service extends Model
             'is_active' => 'boolean',
             'is_emergency_available' => 'boolean',
             'base_price' => 'decimal:2',
+            'visit_charge' => 'decimal:2',
         ];
     }
 

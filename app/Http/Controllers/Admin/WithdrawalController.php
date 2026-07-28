@@ -16,11 +16,11 @@ class WithdrawalController extends Controller
 
     public function index(Request $request): View
     {
-        $status = $request->query('status', 'pending');
+        $status = $request->query('status', 'all');
 
-        $validStatuses = ['pending', 'paid', 'rejected', 'all'];
+        $validStatuses = ['all', 'pending', 'paid', 'rejected'];
         if (! in_array($status, $validStatuses, true)) {
-            $status = 'pending';
+            $status = 'all';
         }
 
         $query = WithdrawalRequest::with('providerProfile.user')->latest();

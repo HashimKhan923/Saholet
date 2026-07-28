@@ -20,9 +20,10 @@ return [
     'careers' => ['label' => 'Careers & applications', 'actions' => ['view', 'create', 'edit', 'delete']],
     'talent' => ['label' => 'Talent search', 'actions' => ['view']],
     'disputes' => ['label' => 'Disputes', 'actions' => ['view', 'edit']],
-    'withdrawals' => ['label' => 'Withdrawals', 'actions' => ['view', 'edit']],
     'fraud' => ['label' => 'Fraud signals', 'actions' => ['view']],
-    'users' => ['label' => 'Users', 'actions' => ['view', 'edit']],
-    'analytics' => ['label' => 'Analytics', 'actions' => ['view']],
     'settings' => ['label' => 'Settings', 'actions' => ['edit']],
+
+    // 'withdrawals', 'users', and 'analytics' are deliberately absent — these are
+    // money/account-level pages that stay admin-only, never grantable to staff.
+    // See routes/web.php: they're wrapped in role:admin instead of permission:X.
 ];

@@ -49,7 +49,7 @@ return [
 
     // Auth
     'auth' => [
-        'welcome_back' => 'Welcome back',
+        'welcome_back' => 'Welcome',
         'login_sub' => 'Log in to continue to your dashboard.',
         'email' => 'Email',
         'password' => 'Password',

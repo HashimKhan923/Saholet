@@ -21,6 +21,11 @@ class InvoiceController extends Controller
 
         $query = Invoice::with('createdBy');
 
+        // Staff only ever see documents they personally created — admin sees everything.
+        if (! $request->user()->isAdmin()) {
+            $query->where('created_by', $request->user()->id);
+        }
+
         if ($type !== 'all') {
             $query->where('type', $type);
         }
@@ -38,6 +43,7 @@ class InvoiceController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validateData($request);
+        [$discount, $total] = $this->applyDiscount($data);
 
         $invoice = Invoice::create([
             'type' => $data['type'],
@@ -48,7 +54,8 @@ class InvoiceController extends Controller
             'bill_to_phone' => $data['bill_to_phone'] ?? null,
             'bill_to_address' => $data['bill_to_address'] ?? null,
             'notes' => $data['notes'] ?? null,
-            'total' => $this->itemsTotal($data['items']),
+            'discount' => $discount,
+            'total' => $total,
             'created_by' => $request->user()->id,
         ]);
 
@@ -59,6 +66,7 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice): View
     {
+        $this->ensureVisible($invoice);
         $invoice->load('items');
 
         return view('admin.invoices.show', compact('invoice'));
@@ -66,6 +74,7 @@ class InvoiceController extends Controller
 
     public function edit(Invoice $invoice): View
     {
+        $this->ensureVisible($invoice);
         $invoice->load('items');
 
         return view('admin.invoices.edit', compact('invoice'));
@@ -73,7 +82,9 @@ class InvoiceController extends Controller
 
     public function update(Request $request, Invoice $invoice): RedirectResponse
     {
+        $this->ensureVisible($invoice);
         $data = $this->validateData($request);
+        [$discount, $total] = $this->applyDiscount($data);
 
         $invoice->update([
             'type' => $data['type'],
@@ -83,7 +94,8 @@ class InvoiceController extends Controller
             'bill_to_phone' => $data['bill_to_phone'] ?? null,
             'bill_to_address' => $data['bill_to_address'] ?? null,
             'notes' => $data['notes'] ?? null,
-            'total' => $this->itemsTotal($data['items']),
+            'discount' => $discount,
+            'total' => $total,
         ]);
 
         $invoice->items()->delete();
@@ -94,6 +106,7 @@ class InvoiceController extends Controller
 
     public function destroy(Invoice $invoice): RedirectResponse
     {
+        $this->ensureVisible($invoice);
         $invoice->delete();
 
         return redirect()->route('admin.invoices.index')->with('success', 'Document deleted.');
@@ -101,11 +114,20 @@ class InvoiceController extends Controller
 
     public function download(Invoice $invoice): Response
     {
+        $this->ensureVisible($invoice);
         $invoice->load('items');
 
         $pdf = Pdf::loadView('invoices.document', compact('invoice'));
 
         return $pdf->download("{$invoice->reference}.pdf");
+    }
+
+    /**
+     * Staff can only ever act on documents they personally created — admin can act on any.
+     */
+    private function ensureVisible(Invoice $invoice): void
+    {
+        abort_unless(auth()->user()->isAdmin() || $invoice->created_by === auth()->id(), 403, 'You can only manage documents you created.');
     }
 
     private function validateData(Request $request): array
@@ -118,6 +140,7 @@ class InvoiceController extends Controller
             'bill_to_phone' => ['nullable', 'string', 'max:50'],
             'bill_to_address' => ['nullable', 'string', 'max:500'],
             'notes' => ['nullable', 'string', 'max:1000'],
+            'discount' => ['nullable', 'numeric', 'min:0', 'max:99999999'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.description' => ['required', 'string', 'max:255'],
             'items.*.quantity' => ['required', 'numeric', 'min:0.01', 'max:99999'],
@@ -133,6 +156,17 @@ class InvoiceController extends Controller
         }
 
         return $total;
+    }
+
+    /**
+     * @return array{0: float, 1: float} [discount actually applied, final total after discount]
+     */
+    private function applyDiscount(array $data): array
+    {
+        $itemsTotal = $this->itemsTotal($data['items']);
+        $discount = min((float) ($data['discount'] ?? 0), $itemsTotal);
+
+        return [$discount, $itemsTotal - $discount];
     }
 
     private function syncItems(Invoice $invoice, array $items): void

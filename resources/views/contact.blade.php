@@ -112,7 +112,7 @@
         </aside>
     </div>
 
-    <div class="mt-14 py-10">
+    <div class="mt-14 py-5">
         <x-google-map
             :heading="__('messages.contact.map_heading')"
             :subheading="__('messages.contact.map_subheading')"

@@ -9,10 +9,10 @@
 
     @php
         $tabs = [
+            'all' => 'All',
             'open' => 'Open (' . $counts['open'] . ')',
             'resolved' => 'Resolved (' . $counts['resolved'] . ')',
             'dismissed' => 'Dismissed (' . $counts['dismissed'] . ')',
-            'all' => 'All',
         ];
     @endphp
     <div class="mt-6 flex flex-wrap gap-2">

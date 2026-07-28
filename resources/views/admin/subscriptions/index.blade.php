@@ -14,11 +14,11 @@
 
     @php
         $tabs = [
+            'all' => 'All',
             'pending_assignment' => 'Awaiting provider',
             'active' => 'Active',
             'completed' => 'Completed',
             'cancelled' => 'Cancelled',
-            'all' => 'All',
         ];
     @endphp
     <div class="mt-6 flex flex-wrap gap-2">

@@ -61,7 +61,12 @@
                             </div>
                         </td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $service->category->name }}</td>
-                        <td class="px-5 py-3 text-slate-600 dark:text-slate-400">Rs. {{ number_format($service->base_price, 0) }}</td>
+                        <td class="px-5 py-3 text-slate-600 dark:text-slate-400">
+                            Rs. {{ number_format($service->base_price, 0) }}
+                            @if ($service->visit_charge !== null && (float) $service->visit_charge > 0)
+                                <p class="mt-0.5 text-xs text-amber-600 dark:text-amber-400">+ Rs. {{ number_format($service->visit_charge, 0) }} visit</p>
+                            @endif
+                        </td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $service->duration_minutes }} min</td>
                         <td class="px-5 py-3">
                             @if ($service->is_active)

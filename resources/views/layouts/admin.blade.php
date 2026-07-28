@@ -6,12 +6,13 @@
     $u = auth()->user();
     $showCatalogSection = $u->hasPermission('categories') || $u->hasPermission('services') || $u->hasPermission('service-areas');
     $showContentSection = $u->hasPermission('faqs');
-    $showOperationsSection = $u->hasPermission('bookings') || $u->hasPermission('emergencies') || $u->hasPermission('invoices')
-        || $u->hasPermission('contracts') || $u->hasPermission('subscriptions') || $u->hasPermission('corporate-accounts')
-        || $u->hasPermission('providers') || $u->hasPermission('careers') || $u->hasPermission('talent')
-        || $u->hasPermission('disputes') || $u->hasPermission('withdrawals') || $u->hasPermission('fraud')
-        || $u->hasPermission('users') || $u->isAdmin();
-    $showInsightsSection = $u->hasPermission('analytics') || $u->hasPermission('settings', 'edit');
+    $showBookingsSection = $u->hasPermission('bookings') || $u->hasPermission('emergencies') || $u->hasPermission('contracts')
+        || $u->hasPermission('subscriptions') || $u->hasPermission('corporate-accounts');
+    $showProvidersSection = $u->hasPermission('providers') || $u->hasPermission('careers') || $u->hasPermission('talent');
+    $showFinanceSection = $u->hasPermission('invoices') || $u->isAdmin();
+    $showTrustSection = $u->hasPermission('disputes') || $u->hasPermission('fraud');
+    $showAccountsSection = $u->isAdmin();
+    $showInsightsSection = $u->isAdmin() || $u->hasPermission('settings', 'edit');
 @endphp
 
 @section('nav')
@@ -52,8 +53,8 @@
     </x-portal-nav-link>
     @endif
 
-    @if ($showOperationsSection)
-    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ __('messages.admin_nav.operations_section') }}</p>
+    @if ($showBookingsSection)
+    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ __('messages.admin_nav.bookings_section') }}</p>
     @endif
     @if (auth()->user()->hasPermission('bookings'))
     <x-portal-nav-link :href="route('admin.bookings.index')" :label="__('messages.admin_nav.bookings')" :active="request()->routeIs('admin.bookings.*')">
@@ -61,13 +62,8 @@
     </x-portal-nav-link>
     @endif
     @if (auth()->user()->hasPermission('emergencies'))
-    <x-portal-nav-link :href="route('admin.emergencies.index')" label="Emergencies" :active="request()->routeIs('admin.emergencies.*')" :badge="$sidebarOpenEmergencies ?: null">
+    <x-portal-nav-link :href="route('admin.emergencies.index')" :label="__('messages.admin_nav.emergencies')" :active="request()->routeIs('admin.emergencies.*')" :badge="$sidebarOpenEmergencies ?: null">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" stroke-linejoin="round"/></svg>
-    </x-portal-nav-link>
-    @endif
-    @if (auth()->user()->hasPermission('invoices'))
-    <x-portal-nav-link :href="route('admin.invoices.index')" label="Invoices" :active="request()->routeIs('admin.invoices.*')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 4h6l4 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 12h6M9 16h4" stroke-linecap="round"/></svg>
     </x-portal-nav-link>
     @endif
     @if (auth()->user()->hasPermission('contracts'))
@@ -85,6 +81,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3" width="10" height="18" rx="1"/><path d="M14 8h6v13h-6M7 7h.01M10 7h.01M7 11h.01M10 11h.01M7 15h.01M10 15h.01" stroke-linecap="round"/></svg>
     </x-portal-nav-link>
     @endif
+
+    @if ($showProvidersSection)
+    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ __('messages.admin_nav.providers_section') }}</p>
+    @endif
     @if (auth()->user()->hasPermission('providers'))
     <x-portal-nav-link :href="route('admin.providers.index')" :label="__('messages.admin_nav.providers')" :active="request()->routeIs('admin.providers.*')" :badge="$sidebarPendingProviders ?: null">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke-linecap="round"/></svg>
@@ -100,14 +100,27 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
     </x-portal-nav-link>
     @endif
+
+    @if ($showFinanceSection)
+    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ __('messages.admin_nav.finance_section') }}</p>
+    @endif
+    @if (auth()->user()->hasPermission('invoices'))
+    <x-portal-nav-link :href="route('admin.invoices.index')" :label="__('messages.admin_nav.invoices')" :active="request()->routeIs('admin.invoices.*')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 4h6l4 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 12h6M9 16h4" stroke-linecap="round"/></svg>
+    </x-portal-nav-link>
+    @endif
+    @if (auth()->user()->isAdmin())
+    <x-portal-nav-link :href="route('admin.withdrawals.index')" :label="__('messages.admin_nav.withdrawals')" :active="request()->routeIs('admin.withdrawals.*')" :badge="$sidebarPendingWithdrawals ?: null">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h2M3 10h18" stroke-linecap="round"/><path d="M8 16.5l2-2 2 1.5 2-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </x-portal-nav-link>
+    @endif
+
+    @if ($showTrustSection)
+    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ __('messages.admin_nav.trust_section') }}</p>
+    @endif
     @if (auth()->user()->hasPermission('disputes'))
     <x-portal-nav-link :href="route('admin.disputes.index')" :label="__('messages.admin_nav.disputes')" :active="request()->routeIs('admin.disputes.*')" :badge="$sidebarOpenDisputes ?: null">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4M12 16.5v.5" stroke-linecap="round"/><path d="M10.3 3.3 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0z" stroke-linejoin="round"/></svg>
-    </x-portal-nav-link>
-    @endif
-    @if (auth()->user()->hasPermission('withdrawals'))
-    <x-portal-nav-link :href="route('admin.withdrawals.index')" label="Withdrawals" :active="request()->routeIs('admin.withdrawals.*')" :badge="$sidebarPendingWithdrawals ?: null">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h2M3 10h18" stroke-linecap="round"/><path d="M8 16.5l2-2 2 1.5 2-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </x-portal-nav-link>
     @endif
     @if (auth()->user()->hasPermission('fraud'))
@@ -115,7 +128,11 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 4 6v5c0 4.5 3.2 7.8 8 9 4.8-1.2 8-4.5 8-9V6l-8-3z" stroke-linejoin="round"/><path d="M9.5 12 11 13.5 14.5 10" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </x-portal-nav-link>
     @endif
-    @if (auth()->user()->hasPermission('users'))
+
+    @if ($showAccountsSection)
+    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ __('messages.admin_nav.accounts_section') }}</p>
+    @endif
+    @if (auth()->user()->isAdmin())
     <x-portal-nav-link :href="route('admin.users.index')" :label="__('messages.admin_nav.users')" :active="request()->routeIs('admin.users.*')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 2.7-5 6-5s6 2 6 5M16 11h5M18.5 8.5v5" stroke-linecap="round"/></svg>
     </x-portal-nav-link>
@@ -129,7 +146,7 @@
     @if ($showInsightsSection)
     <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ __('messages.admin_nav.insights_section') }}</p>
     @endif
-    @if (auth()->user()->hasPermission('analytics'))
+    @if (auth()->user()->isAdmin())
     <x-portal-nav-link :href="route('admin.analytics.index')" :label="__('messages.admin_nav.analytics')" :active="request()->routeIs('admin.analytics.*')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </x-portal-nav-link>

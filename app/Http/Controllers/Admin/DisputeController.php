@@ -16,10 +16,10 @@ class DisputeController extends Controller
 
     public function index(Request $request): View
     {
-        $status = $request->query('status', 'open');
+        $status = $request->query('status', 'all');
 
-        if (! in_array($status, ['open', 'resolved', 'dismissed', 'all'], true)) {
-            $status = 'open';
+        if (! in_array($status, ['all', 'open', 'resolved', 'dismissed'], true)) {
+            $status = 'all';
         }
 
         $query = Dispute::with(['booking.service', 'booking.consumer', 'booking.providerProfile.user', 'opener'])

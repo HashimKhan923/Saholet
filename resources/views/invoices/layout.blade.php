@@ -72,6 +72,7 @@
         table.totals .label { text-align: right; color: #64748b; }
         table.totals .value { text-align: right; width: 130px; font-weight: bold; }
         table.totals .grand td { border-top: 2px solid #1a7a35; font-size: 15px; font-weight: bold; color: #1a7a35; padding-top: 8px; }
+        table.totals .discount-row td { color: #c4341f; font-weight: bold; }
 
         .status-box { margin-top: 20px; padding: 10px 16px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 4px; font-size: 11px; color: #166534; }
         .notes-box { margin-top: 16px; font-size: 11px; color: #64748b; }

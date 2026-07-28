@@ -9,6 +9,7 @@
 
     @php
         $tabs = [
+            'all' => 'All',
             'submitted' => 'Awaiting quote',
             'quoted' => 'Quoted',
             'accepted' => 'Accepted',
@@ -16,7 +17,6 @@
             'completed' => 'Completed',
             'rejected' => 'Rejected',
             'cancelled' => 'Cancelled',
-            'all' => 'All',
         ];
     @endphp
     <div class="mt-6 flex flex-wrap gap-2">

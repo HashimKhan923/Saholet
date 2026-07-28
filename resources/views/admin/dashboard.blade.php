@@ -4,7 +4,7 @@
     $u = auth()->user();
     $showOperationsSection = $u->hasPermission('bookings') || $u->hasPermission('categories') || $u->hasPermission('services')
         || $u->hasPermission('providers') || $u->hasPermission('disputes');
-    $showToolsSection = $u->hasPermission('analytics') || $u->hasPermission('users') || $u->hasPermission('service-areas')
+    $showToolsSection = $u->isAdmin() || $u->hasPermission('service-areas')
         || $u->hasPermission('fraud') || $u->hasPermission('settings', 'edit');
 @endphp
 
@@ -87,14 +87,14 @@
     {{-- Tools --}}
     <h2 class="mt-10 font-display text-sm font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('messages.admin_dashboard.tools_section') }}</h2>
     <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        @if ($u->hasPermission('analytics'))
+        @if ($u->isAdmin())
         <a href="{{ route('admin.analytics.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
             <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/50 dark:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             <h3 class="mt-4 font-display text-base font-bold text-slate-900 dark:text-white">{{ __('messages.admin_dashboard.analytics_title') }}</h3>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('messages.admin_dashboard.analytics_desc') }}</p>
         </a>
         @endif
-        @if ($u->hasPermission('users'))
+        @if ($u->isAdmin())
         <a href="{{ route('admin.users.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
             <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/50 dark:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 2.7-5 6-5s6 2 6 5M16 11h5M18.5 8.5v5" stroke-linecap="round"/></svg></span>
             <h3 class="mt-4 font-display text-base font-bold text-slate-900 dark:text-white">{{ __('messages.admin_dashboard.users_title') }}</h3>
