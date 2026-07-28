@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class EmergencyRequest extends Model
 {
     public const STATUS_OPEN = 'open';
+    public const STATUS_QUOTED = 'quoted';
+    public const STATUS_ACCEPTED = 'accepted';
+    public const STATUS_DECLINED = 'declined';
     public const STATUS_MATCHED = 'matched';
     public const STATUS_CANCELLED = 'cancelled';
 
@@ -20,6 +23,12 @@ class EmergencyRequest extends Model
         'city',
         'notes',
         'status',
+        'quoted_price',
+        'quoted_at',
+        'quoted_by',
+        'admin_note',
+        'accepted_at',
+        'declined_at',
         'booking_id',
         'matched_provider_profile_id',
         'matched_at',
@@ -29,6 +38,10 @@ class EmergencyRequest extends Model
     protected function casts(): array
     {
         return [
+            'quoted_price' => 'decimal:2',
+            'quoted_at' => 'datetime',
+            'accepted_at' => 'datetime',
+            'declined_at' => 'datetime',
             'matched_at' => 'datetime',
             'cancelled_at' => 'datetime',
         ];
@@ -54,7 +67,17 @@ class EmergencyRequest extends Model
         return $this->belongsTo(ProviderProfile::class, 'matched_provider_profile_id');
     }
 
+    public function quotedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'quoted_by');
+    }
+
     public function scopeOpen(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_OPEN);
+    }
+
+    public function scopeAwaitingQuote(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_OPEN);
     }
@@ -62,6 +85,21 @@ class EmergencyRequest extends Model
     public function isOpen(): bool
     {
         return $this->status === self::STATUS_OPEN;
+    }
+
+    public function isQuoted(): bool
+    {
+        return $this->status === self::STATUS_QUOTED;
+    }
+
+    public function isAccepted(): bool
+    {
+        return $this->status === self::STATUS_ACCEPTED;
+    }
+
+    public function isDeclined(): bool
+    {
+        return $this->status === self::STATUS_DECLINED;
     }
 
     public function isMatched(): bool

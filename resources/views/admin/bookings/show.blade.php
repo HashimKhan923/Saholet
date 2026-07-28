@@ -87,6 +87,23 @@
                 </ul>
             </div>
 
+            @if ($booking->isCompleted() && ($booking->completion_notes || $booking->completionPhotos->isNotEmpty()))
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Completion proof</p>
+                    @if ($booking->completion_notes)
+                        <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{{ $booking->completion_notes }}</p>
+                    @endif
+                    @if ($booking->beforePhotos->isNotEmpty())
+                        <p class="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Before</p>
+                        <div class="mt-2"><x-photo-grid :photos="$booking->beforePhotos->map(fn ($p) => ['url' => $p->url()])->all()" /></div>
+                    @endif
+                    @if ($booking->afterPhotos->isNotEmpty())
+                        <p class="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-400">After</p>
+                        <div class="mt-2"><x-photo-grid :photos="$booking->afterPhotos->map(fn ($p) => ['url' => $p->url()])->all()" /></div>
+                    @endif
+                </div>
+            @endif
+
             @if ($booking->review)
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
                     <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Review</p>

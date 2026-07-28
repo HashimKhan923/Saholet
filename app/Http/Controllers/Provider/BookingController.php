@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Provider;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Payment;
+use App\Services\InvoiceService;
 use App\Services\WalletService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ use Illuminate\View\View;
 
 class BookingController extends Controller
 {
-    public function __construct(private WalletService $wallets) {}
+    public function __construct(private WalletService $wallets, private InvoiceService $invoices) {}
 
 /** Status tabs the index supports, in display order. */
     private const FILTERS = ['all', 'pending', 'confirmed', 'in_progress', 'completed', 'cancelled'];
@@ -81,7 +82,7 @@ class BookingController extends Controller
     {
         $this->authorize('view', $booking);
 
-        $booking->load(['service.category', 'consumer', 'payments', 'review', 'dispute']);
+        $booking->load(['service.category', 'consumer', 'payments', 'review', 'dispute', 'completionPhotos']);
 
         return view('provider.bookings.show', compact('booking'));
     }
@@ -93,6 +94,11 @@ class BookingController extends Controller
         $data = $request->validate([
             'action' => ['required', Rule::in(['confirm', 'decline', 'start', 'complete', 'cancel'])],
             'cancellation_reason' => ['nullable', 'string', 'max:1000'],
+            'completion_notes' => ['nullable', 'string', 'max:1000'],
+            'before_photos' => ['nullable', 'array', 'max:6'],
+            'before_photos.*' => ['image', 'mimes:jpg,jpeg,png', 'max:5120'],
+            'after_photos' => ['nullable', 'array', 'max:6'],
+            'after_photos.*' => ['image', 'mimes:jpg,jpeg,png', 'max:5120'],
         ]);
 
         $action = $data['action'];
@@ -120,7 +126,14 @@ class BookingController extends Controller
                 break;
 
             case 'complete':
-                $booking->update(['status' => Booking::STATUS_COMPLETED, 'completed_at' => now()]);
+                $booking->update([
+                    'status' => Booking::STATUS_COMPLETED,
+                    'completed_at' => now(),
+                    'completion_notes' => $data['completion_notes'] ?? null,
+                ]);
+                $this->storeCompletionPhotos($booking, $request->file('before_photos', []), 'before');
+                $this->storeCompletionPhotos($booking, $request->file('after_photos', []), 'after');
+                $this->invoices->createForBooking($booking);
                 $message = 'Marked as completed.';
 
                 // Optional auto-release mode.
@@ -157,7 +170,40 @@ class BookingController extends Controller
             route('consumer.bookings.show', $booking)
         );
 
+        if ($action === 'complete') {
+            app(\App\Services\Notifier::class)->notify(
+                $booking->consumer,
+                'booking',
+                'Your invoice is ready',
+                'The invoice for booking ' . $booking->reference . ' is ready to view or download.',
+                route('bookings.receipt', $booking)
+            );
+        }
+
         return back()->with('success', $message);
+    }
+
+    /** @param array<int, \Illuminate\Http\UploadedFile> $photos */
+    private function storeCompletionPhotos(Booking $booking, array $photos, string $type): void
+    {
+        if (empty($photos)) {
+            return;
+        }
+
+        $nextSort = (int) ($booking->completionPhotos()->where('type', $type)->max('sort_order') ?? 0);
+
+        foreach ($photos as $photo) {
+            $path = $photo->store("bookings/{$booking->id}/completion", 'public');
+
+            $booking->completionPhotos()->create([
+                'type' => $type,
+                'path' => $path,
+                'original_name' => $photo->getClientOriginalName(),
+                'mime_type' => $photo->getClientMimeType(),
+                'size' => $photo->getSize(),
+                'sort_order' => ++$nextSort,
+            ]);
+        }
     }
 
     private function refundIfPaid(Booking $booking): void

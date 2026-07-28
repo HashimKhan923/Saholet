@@ -113,7 +113,7 @@ class BookingController extends Controller
     {
         $this->authorize('view', $booking);
 
-        $booking->load(['service.category', 'providerProfile.user', 'payments']);
+        $booking->load(['service.category', 'providerProfile.user', 'payments', 'completionPhotos']);
 
         return view('consumer.bookings.show', compact('booking'));
     }

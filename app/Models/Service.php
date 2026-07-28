@@ -19,6 +19,7 @@ class Service extends Model
         'base_price',
         'duration_minutes',
         'is_active',
+        'is_emergency_available',
     ];
 
     protected $appends = [
@@ -29,6 +30,7 @@ class Service extends Model
     {
         return [
             'is_active' => 'boolean',
+            'is_emergency_available' => 'boolean',
             'base_price' => 'decimal:2',
         ];
     }
@@ -46,6 +48,11 @@ class Service extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
+    }
+
+    public function scopeEmergencyAvailable(Builder $query): Builder
+    {
+        return $query->where('is_emergency_available', true);
     }
 
     public static function generateSlug(string $name, ?int $ignoreId = null): string

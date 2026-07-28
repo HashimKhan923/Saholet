@@ -75,6 +75,24 @@
         @endif
     </div>
 
+    {{-- Completion proof --}}
+    @if ($booking->isCompleted() && ($booking->completion_notes || $booking->completionPhotos->isNotEmpty()))
+        <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Completion proof</h2>
+            @if ($booking->completion_notes)
+                <p class="mt-3 rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-700 dark:bg-slate-800 dark:text-slate-200">{{ $booking->completion_notes }}</p>
+            @endif
+            @if ($booking->beforePhotos->isNotEmpty())
+                <p class="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400">Before</p>
+                <div class="mt-2"><x-photo-grid :photos="$booking->beforePhotos->map(fn ($p) => ['url' => $p->url()])->all()" /></div>
+            @endif
+            @if ($booking->afterPhotos->isNotEmpty())
+                <p class="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400">After</p>
+                <div class="mt-2"><x-photo-grid :photos="$booking->afterPhotos->map(fn ($p) => ['url' => $p->url()])->all()" /></div>
+            @endif
+        </div>
+    @endif
+
     {{-- Review panel --}}
     @if ($booking->isCompleted())
         <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">

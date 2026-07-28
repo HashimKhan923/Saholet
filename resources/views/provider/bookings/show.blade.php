@@ -85,6 +85,31 @@
                 </div>
             </section>
 
+            {{-- Completion proof --}}
+            @if ($booking->isCompleted() && ($booking->completion_notes || $booking->completionPhotos->isNotEmpty()))
+                <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">Completion proof</h2>
+
+                    @if ($booking->completion_notes)
+                        <p class="mt-3 rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-700 dark:bg-slate-800 dark:text-slate-300">{{ $booking->completion_notes }}</p>
+                    @endif
+
+                    @if ($booking->beforePhotos->isNotEmpty())
+                        <p class="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400">Before</p>
+                        <div class="mt-2">
+                            <x-photo-grid :photos="$booking->beforePhotos->map(fn ($p) => ['url' => $p->url()])->all()" />
+                        </div>
+                    @endif
+
+                    @if ($booking->afterPhotos->isNotEmpty())
+                        <p class="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400">After</p>
+                        <div class="mt-2">
+                            <x-photo-grid :photos="$booking->afterPhotos->map(fn ($p) => ['url' => $p->url()])->all()" />
+                        </div>
+                    @endif
+                </section>
+            @endif
+
             {{-- Review --}}
             @if ($booking->isCompleted() && $booking->review)
                 <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -158,10 +183,25 @@
                     </form>
 
                 @elseif ($booking->isInProgress())
-                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Mark complete once the work is finished.</p>
-                    <form method="POST" action="{{ route('provider.bookings.status', $booking) }}" class="mt-4">
+                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Add before/after photos as proof of work, then mark complete.</p>
+                    <form method="POST" action="{{ route('provider.bookings.status', $booking) }}" enctype="multipart/form-data" class="mt-4 space-y-3">
                         @csrf
                         <input type="hidden" name="action" value="complete">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Before photos <span class="normal-case text-slate-400">(optional, up to 6)</span></label>
+                            <input type="file" name="before_photos[]" accept="image/jpeg,image/png" multiple
+                                class="mt-1.5 block w-full text-xs text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-brand-700 hover:file:bg-brand-100 dark:text-slate-300 dark:file:bg-brand-950/50 dark:file:text-brand-400">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wide text-slate-400">After photos <span class="normal-case text-slate-400">(optional, up to 6)</span></label>
+                            <input type="file" name="after_photos[]" accept="image/jpeg,image/png" multiple
+                                class="mt-1.5 block w-full text-xs text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-brand-700 hover:file:bg-brand-100 dark:text-slate-300 dark:file:bg-brand-950/50 dark:file:text-brand-400">
+                        </div>
+                        <div>
+                            <label for="completion_notes" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Completion notes <span class="normal-case text-slate-400">(optional)</span></label>
+                            <textarea id="completion_notes" name="completion_notes" rows="3"
+                                class="mt-1.5 block w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white"></textarea>
+                        </div>
                         <button type="submit" class="btn-shine w-full rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Mark completed</button>
                     </form>
 

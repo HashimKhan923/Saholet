@@ -7,6 +7,12 @@
     <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ __('messages.reset.new_title') }}</h1>
     <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{{ __('messages.reset.new_subtitle') }}</p>
 
+    @if (session('success'))
+        <div class="mt-5 rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm font-medium text-brand-800 dark:border-brand-800 dark:bg-brand-950/40 dark:text-brand-300">
+            {{ session('success') }}
+        </div>
+    @endif
+
     @if ($errors->any())
         <div class="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">
             {{ $errors->first() }}
@@ -15,12 +21,19 @@
 
     <form method="POST" action="{{ route('password.store') }}" class="mt-6 space-y-5">
         @csrf
-        <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
         <div>
             <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('messages.auth.email') }}</label>
-            <input id="email" name="email" type="email" value="{{ old('email', $request->email) }}" required autofocus autocomplete="email"
+            <input id="email" name="email" type="email" value="{{ old('email', $email) }}" required autofocus autocomplete="email"
                 class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+        </div>
+
+        <div>
+            <label for="otp" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('messages.reset.otp_label') }}</label>
+            <input id="otp" name="otp" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" value="{{ old('otp') }}" required autocomplete="one-time-code"
+                class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-center font-mono text-lg tracking-[0.4em] text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                placeholder="000000">
+            <p class="mt-1.5 text-xs text-slate-400">{{ __('messages.reset.otp_hint') }}</p>
         </div>
 
         <div>

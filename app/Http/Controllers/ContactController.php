@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ContactFormReceived;
-use App\Models\ContactMessage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -27,11 +26,8 @@ class ContactController extends Controller
             'message' => ['required', 'string', 'max:5000'],
         ]);
 
-        $contactMessage = ContactMessage::create($data);
-
         try {
-            Mail::to(config('mail.contact_to'))->send(new ContactFormReceived($contactMessage));
-            $contactMessage->update(['mail_sent' => true]);
+            Mail::to(config('mail.contact_to'))->send(new ContactFormReceived($data));
         } catch (\Throwable $e) {
             Log::error('Failed to send contact form email: ' . $e->getMessage());
         }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Consumer;
 
 use App\Http\Controllers\Controller;
 use App\Models\EmergencyRequest;
-use App\Models\ProviderProfile;
 use App\Models\Service;
 use App\Models\ServiceArea;
 use App\Services\GeofenceService;
@@ -13,55 +12,26 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use App\Events\EmergencyRequestCreated;
 
 class EmergencyController extends Controller
 {
     public function __construct(private GeofenceService $geofence) {}
 
-public function index(Request $request): View
+    public function index(Request $request): View
     {
-        $profile = $request->user()->providerProfile;
-
-        if (! $profile || ! $profile->isApproved()) {
-            return view('provider.emergencies.index', [
-                'approved'     => false,
-                'requests'     => collect(),
-                'myServiceIds' => collect(),
-                'myPrices'     => collect(),
-                'myCity'       => '',
-                'profileId'    => null,
-            ]);
-        }
-
-        $offerings = $profile->providerServices()
-            ->where('is_active', true)
-            ->get(['service_id', 'price']);
-
-        $serviceIds = $offerings->pluck('service_id');
-
-        $requests = EmergencyRequest::with(['service.category', 'consumer'])
-            ->where('status', EmergencyRequest::STATUS_OPEN)
-            ->whereIn('service_id', $serviceIds)
-            ->whereRaw('LOWER(city) = ?', [mb_strtolower(trim($profile->city ?? ''))])
+        $requests = EmergencyRequest::with(['service.category'])
+            ->where('consumer_id', $request->user()->id)
             ->latest()
             ->get();
 
-        return view('provider.emergencies.index', [
-            'approved'     => true,
-            'requests'     => $requests,
-            'myServiceIds' => $serviceIds->values(),
-            // service_id => the provider's own price, so a live-inserted card can show a payout.
-            'myPrices'     => $offerings->mapWithKeys(fn ($o) => [$o->service_id => (int) $o->price]),
-            'myCity'       => mb_strtolower(trim($profile->city ?? '')),
-            'profileId'    => $profile->id,
-        ]);
+        return view('consumer.emergencies.index', compact('requests'));
     }
 
     public function create(Request $request): View
     {
         $services = Service::with('category')
             ->where('is_active', true)
+            ->where('is_emergency_available', true)
             ->orderBy('name')
             ->get();
 
@@ -79,7 +49,11 @@ public function index(Request $request): View
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $service = Service::where('id', $data['service_id'])->where('is_active', true)->first();
+        $service = Service::where('id', $data['service_id'])
+            ->where('is_active', true)
+            ->where('is_emergency_available', true)
+            ->first();
+
         if (! $service) {
             return back()->withInput()->with('error', 'That service is currently unavailable.');
         }
@@ -98,11 +72,16 @@ public function index(Request $request): View
             'status' => EmergencyRequest::STATUS_OPEN,
         ]);
 
-        $this->notifyMatchingProviders($emergency, $service);
+        app(Notifier::class)->notifyAdmins(
+            'emergency',
+            'New emergency request',
+            $service->name . ' request (' . $emergency->reference . ') in ' . $emergency->city . '.',
+            route('admin.emergencies.show', $emergency)
+        );
 
         return redirect()
             ->route('consumer.emergencies.show', $emergency)
-            ->with('success', 'Emergency request sent. We’re alerting available providers near you.');
+            ->with('success', 'Emergency request sent. Our team will review it and send you a price shortly.');
     }
 
     public function show(Request $request, EmergencyRequest $emergencyRequest): View
@@ -118,8 +97,8 @@ public function index(Request $request): View
     {
         $this->authorize('cancel', $emergencyRequest);
 
-        if (! $emergencyRequest->isOpen()) {
-            return back()->with('error', 'Only an open request can be cancelled.');
+        if (! in_array($emergencyRequest->status, [EmergencyRequest::STATUS_OPEN, EmergencyRequest::STATUS_QUOTED], true)) {
+            return back()->with('error', 'This request can no longer be cancelled.');
         }
 
         $emergencyRequest->update([
@@ -130,44 +109,50 @@ public function index(Request $request): View
         return back()->with('success', 'Emergency request cancelled.');
     }
 
-    private function notifyMatchingProviders(EmergencyRequest $emergency, Service $service): void
+    public function acceptQuote(Request $request, EmergencyRequest $emergencyRequest): RedirectResponse
     {
-        $cap = (int) config('emergency.max_providers_notified', 15);
+        $this->authorize('respond', $emergencyRequest);
 
-        $profiles = ProviderProfile::query()
-            ->where('status', ProviderProfile::STATUS_APPROVED)
-            ->whereRaw('LOWER(city) = ?', [mb_strtolower(trim($emergency->city))])
-            ->whereHas('providerServices', fn ($q) => $q->where('service_id', $service->id)->where('is_active', true))
-            ->with('user')
-            ->orderByDesc('rating_avg')
-            ->orderByDesc('reviews_count')
-            ->orderByDesc('experience_years')
-            ->limit($cap)
-            ->get();
-
-        if ($profiles->isEmpty()) {
-            return;
+        if (! $emergencyRequest->isQuoted()) {
+            return back()->with('error', 'This request does not have a pending quote.');
         }
 
-        $notifier = app(Notifier::class);
+        $emergencyRequest->update([
+            'status' => EmergencyRequest::STATUS_ACCEPTED,
+            'accepted_at' => now(),
+        ]);
 
-        foreach ($profiles as $profile) {
-            $notifier->notify(
-                $profile->user,
-                'booking',
-                'Emergency request nearby',
-                'An urgent ' . $service->name . ' request (' . $emergency->reference . ') is available in ' . $emergency->city . '.',
-                route('provider.emergencies.index')
-            );
+        app(Notifier::class)->notifyAdmins(
+            'emergency',
+            'Emergency quote accepted',
+            'The customer accepted the Rs. ' . number_format((float) $emergencyRequest->quoted_price, 0) . ' quote for ' . $emergencyRequest->reference . ' — assign a provider.',
+            route('admin.emergencies.show', $emergencyRequest)
+        );
+
+        return back()->with('success', 'Quote accepted. We’ll assign a provider shortly.');
+    }
+
+    public function declineQuote(Request $request, EmergencyRequest $emergencyRequest): RedirectResponse
+    {
+        $this->authorize('respond', $emergencyRequest);
+
+        if (! $emergencyRequest->isQuoted()) {
+            return back()->with('error', 'This request does not have a pending quote.');
         }
 
-        // Push the card onto every matched provider's board instantly.
-        // Best-effort: a broadcast failure must never block the request itself.
-        try {
-            broadcast(new EmergencyRequestCreated($emergency, $profiles->pluck('id')->all()));
-        } catch (\Throwable $e) {
-            report($e);
-        }
+        $emergencyRequest->update([
+            'status' => EmergencyRequest::STATUS_DECLINED,
+            'declined_at' => now(),
+        ]);
+
+        app(Notifier::class)->notifyAdmins(
+            'emergency',
+            'Emergency quote declined',
+            'The customer declined the quote for ' . $emergencyRequest->reference . '.',
+            route('admin.emergencies.show', $emergencyRequest)
+        );
+
+        return back()->with('success', 'Quote declined.');
     }
 
     private function generateReference(): string

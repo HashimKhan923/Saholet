@@ -642,14 +642,14 @@
 
 {{-- ===================================================== Contact form --}}
 <section id="contact" class="border-t border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
-    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="reveal mx-auto max-w-2xl text-center {{ $isUrdu ? 'font-urdu' : '' }}">
             <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.contact.title') }}</h2>
             <p class="mt-3 text-slate-600 dark:text-slate-400 {{ $isUrdu ? 'text-lg' : '' }}">{{ __('messages.contact.subtitle') }}</p>
         </div>
 
-        <div class="reveal mt-10 grid gap-8 lg:grid-cols-3" style="--reveal-delay: 80ms">
-            <div class="lg:col-span-2">
+        <div class="reveal mt-10 grid gap-8 lg:grid-cols-5" style="--reveal-delay: 80ms">
+            <div class="lg:col-span-3">
                 <form method="POST" action="{{ route('contact.store') }}" class="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-slate-900">
                     @csrf
 
@@ -708,7 +708,7 @@
                 </form>
             </div>
 
-            <aside class="lg:col-span-1">
+            <aside class="lg:col-span-2">
                 <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <h3 class="text-sm font-bold text-slate-900 dark:text-white {{ $isUrdu ? 'font-urdu' : '' }}">{{ __('messages.contact.direct_title') }}</h3>
                     <div class="mt-4 space-y-4 text-sm">
@@ -742,6 +742,13 @@
                     </div>
                 </div>
             </aside>
+        </div>
+
+        <div class="mt-14 py-10">
+            <x-google-map
+                :heading="__('messages.contact.map_heading')"
+                :subheading="__('messages.contact.map_subheading')"
+            />
         </div>
     </div>
 </section>

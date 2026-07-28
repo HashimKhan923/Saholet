@@ -1,6 +1,5 @@
 import './bootstrap';
 import './echo';
-import './map';
 import './charts';
 import './geolocation';
 import './file-drop';

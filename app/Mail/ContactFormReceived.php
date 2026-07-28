@@ -2,7 +2,6 @@
 
 namespace App\Mail;
 
-use App\Models\ContactMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -13,15 +12,18 @@ class ContactFormReceived extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public ContactMessage $contactMessage)
+    /**
+     * @param array{name: string, email: string, phone: ?string, subject: ?string, message: string} $data
+     */
+    public function __construct(public array $data)
     {
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New contact form message: ' . ($this->contactMessage->subject ?: $this->contactMessage->name),
-            replyTo: [$this->contactMessage->email],
+            subject: 'New contact form message: ' . ($this->data['subject'] ?: $this->data['name']),
+            replyTo: [$this->data['email']],
         );
     }
 
@@ -29,6 +31,7 @@ class ContactFormReceived extends Mailable
     {
         return new Content(
             view: 'emails.contact-form',
+            with: ['data' => $this->data],
         );
     }
 }

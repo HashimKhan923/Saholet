@@ -127,6 +127,12 @@ All amounts are numbers (PKR), not strings, e.g. `"price": 3000` not `"price": "
 **Body:** `current_password` (required, must match), `password` (required, confirmed, min 8), `password_confirmation`
 **Response:** `{ "message": "Password updated." }`
 
+### `DELETE /api/profile`
+**Auth:** required
+**Body:** `password` (required, must match current password)
+**Response:** `{ "message": "Account deleted." }`
+Anonymizes the user's name/email/phone/avatar, sets a random unusable password, deactivates the account (`suspended_at`), and revokes all Sanctum tokens. Booking/payment history is preserved (no hard delete) to avoid breaking referential integrity.
+
 ---
 
 ## 3. Shared / public browsing

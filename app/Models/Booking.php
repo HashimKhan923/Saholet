@@ -40,8 +40,10 @@ class Booking extends Model
         'longitude',
         'notes',
         'status',
+        'source',
         'cancelled_by',
         'cancellation_reason',
+        'completion_notes',
         'confirmed_at',
         'started_at',
         'completed_at',
@@ -116,6 +118,21 @@ class Booking extends Model
     public function dispute(): HasOne
     {
         return $this->hasOne(Dispute::class);
+    }
+
+    public function completionPhotos(): HasMany
+    {
+        return $this->hasMany(BookingCompletionPhoto::class)->orderBy('sort_order');
+    }
+
+    public function beforePhotos(): HasMany
+    {
+        return $this->hasMany(BookingCompletionPhoto::class)->where('type', 'before')->orderBy('sort_order');
+    }
+
+    public function afterPhotos(): HasMany
+    {
+        return $this->hasMany(BookingCompletionPhoto::class)->where('type', 'after')->orderBy('sort_order');
     }
 
     public function activePayment(): ?Payment

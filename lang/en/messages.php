@@ -197,10 +197,12 @@ return [
     'reset' => [
         'forgot' => 'Forgot password?',
         'title' => 'Reset your password',
-        'subtitle' => 'Enter your email and we’ll send you a reset link.',
-        'send_link' => 'Email reset link',
+        'subtitle' => 'Enter your email and we’ll send you a 6-digit code.',
+        'send_link' => 'Email reset code',
         'new_title' => 'Choose a new password',
-        'new_subtitle' => 'Set a fresh password for your account.',
+        'new_subtitle' => 'Enter the code we emailed you along with your new password.',
+        'otp_label' => 'Verification code',
+        'otp_hint' => 'Check your email for the 6-digit code — it expires in 15 minutes.',
         'reset_btn' => 'Reset password',
         'back_to_login' => 'Back to log in',
     ],
@@ -320,6 +322,7 @@ return [
         'disputes' => 'Disputes',
         'fraud_signals' => 'Fraud signals',
         'users' => 'Users',
+        'staff' => 'Staff',
         'insights_section' => 'Insights',
         'analytics' => 'Analytics',
         'settings' => 'Settings',
@@ -327,6 +330,7 @@ return [
 
     'admin_dashboard' => [
         'badge' => 'Administrator',
+        'badge_staff' => 'Staff member',
         'welcome' => 'Welcome, :name',
         'subtitle' => 'Operate the marketplace and review platform health below.',
         'approved_providers' => 'Approved providers',
@@ -386,5 +390,7 @@ return [
         'direct_email' => 'Email',
         'direct_phone' => 'Phone',
         'direct_address' => 'Address',
+        'map_heading' => 'Find our office',
+        'map_subheading' => 'Office no 502, Plot no 107B, Munawar Tower, Midway B, Bahria Town, Karachi',
     ],
 ];

@@ -64,7 +64,10 @@ Route::middleware(['auth:sanctum', 'api.not.suspended'])->group(function () {
     Route::get('me', [AuthController::class, 'me'])->name('api.me');
 
     Route::put('profile', [ProfileController::class, 'update'])->name('api.profile.update');
+    Route::post('profile/avatar', [ProfileController::class, 'updateAvatar'])->name('api.profile.avatar.update');
+    Route::delete('profile/avatar', [ProfileController::class, 'destroyAvatar'])->name('api.profile.avatar.destroy');
     Route::put('profile/password', [ProfileController::class, 'updatePassword'])->name('api.profile.password');
+    Route::delete('profile', [ProfileController::class, 'destroy'])->name('api.profile.destroy');
 
     Route::get('notifications', [NotificationController::class, 'index'])->name('api.notifications.index');
     Route::post('notifications/read-all', [NotificationController::class, 'readAll'])->name('api.notifications.read-all');

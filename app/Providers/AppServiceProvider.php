@@ -6,7 +6,6 @@ use App\Models\Bid;
 use App\Models\Booking;
 use App\Models\CareerApplication;
 use App\Models\Category;
-use App\Models\ContactMessage;
 use App\Models\Contract;
 use App\Models\Dispute;
 use App\Models\EmergencyRequest;
@@ -81,7 +80,7 @@ class AppServiceProvider extends ServiceProvider
             $newApplications = CareerApplication::where('status', CareerApplication::STATUS_SUBMITTED)->count();
             $pendingSubscriptions = Subscription::where('status', Subscription::STATUS_PENDING_ASSIGNMENT)->count();
             $pendingWithdrawals = WithdrawalRequest::where('status', WithdrawalRequest::STATUS_PENDING)->count();
-            $unreadContactMessages = ContactMessage::whereNull('read_at')->count();
+            $openEmergencies = EmergencyRequest::where('status', EmergencyRequest::STATUS_OPEN)->count();
 
             $view->with('sidebarPendingProviders', $pendingProviders);
             $view->with('sidebarOpenDisputes', $openDisputes);
@@ -89,13 +88,12 @@ class AppServiceProvider extends ServiceProvider
             $view->with('sidebarNewApplications', $newApplications);
             $view->with('sidebarPendingSubscriptions', $pendingSubscriptions);
             $view->with('sidebarPendingWithdrawals', $pendingWithdrawals);
-            $view->with('sidebarUnreadContactMessages', $unreadContactMessages);
-            $view->with('sidebarTotalRequests', $pendingProviders + $openDisputes + $pendingContracts + $newApplications + $pendingSubscriptions + $pendingWithdrawals);
+            $view->with('sidebarOpenEmergencies', $openEmergencies);
+            $view->with('sidebarTotalRequests', $pendingProviders + $openDisputes + $pendingContracts + $newApplications + $pendingSubscriptions + $pendingWithdrawals + $openEmergencies);
         });
 
         View::composer('layouts.provider', function ($view) {
             $pendingBookings = 0;
-            $openEmergencies = 0;
             $availableJobs = 0;
             $myServiceIds = collect();
 
@@ -111,18 +109,11 @@ class AppServiceProvider extends ServiceProvider
                 $availableJobs = JobPost::where('status', JobPost::STATUS_OPEN)
                     ->whereIn('service_id', $myServiceIds)
                     ->count();
-
-                $openEmergencies = EmergencyRequest::where('status', EmergencyRequest::STATUS_OPEN)
-                    ->whereIn('service_id', $myServiceIds)
-                    ->whereRaw('LOWER(city) = ?', [mb_strtolower(trim($profile->city ?? ''))])
-                    ->count();
             }
 
             $view->with('sidebarPendingBookings', $pendingBookings);
-            $view->with('sidebarOpenEmergencies', $openEmergencies);
             $view->with('sidebarAvailableJobs', $availableJobs);
             $view->with('sidebarMyServiceIds', $myServiceIds);
-            $view->with('sidebarProviderProfileId', $profile?->id);
         });
 
         // Saved-address quick-pick, wherever <x-address-input> renders (booking/job/contract/emergency forms).

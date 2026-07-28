@@ -1,5 +1,6 @@
 @php
     $checked = (bool) old('is_active', $service?->is_active ?? true);
+    $emergencyChecked = (bool) old('is_emergency_available', $service?->is_emergency_available ?? false);
 @endphp
 
 @if ($errors->any())
@@ -77,6 +78,12 @@
         <input type="checkbox" name="is_active" value="1" @checked($checked)
             class="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-200 dark:border-slate-600 dark:bg-slate-800">
         Active (visible to consumers)
+    </label>
+
+    <label class="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+        <input type="checkbox" name="is_emergency_available" value="1" @checked($emergencyChecked)
+            class="h-4 w-4 rounded border-slate-300 text-red-600 focus:ring-red-200 dark:border-slate-600 dark:bg-slate-800">
+        Available for emergency requests
     </label>
 
     <div class="flex items-center gap-3 pt-2">
