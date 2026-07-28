@@ -4,9 +4,14 @@
 
 @section('content')
 <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-    <a href="{{ route('admin.dashboard') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Dashboard</a>
-    <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Bookings</h1>
-    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Every direct booking, bid-won job, contract visit, subscription visit, and accepted emergency across the platform.</p>
+    <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+            <a href="{{ route('admin.dashboard') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Dashboard</a>
+            <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Bookings</h1>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Every direct booking, bid-won job, contract visit, subscription visit, and accepted emergency across the platform.</p>
+        </div>
+        <a href="{{ route('admin.bookings.create') }}" class="inline-flex items-center rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">+ New booking</a>
+    </div>
 
     @php
         $tabs = [

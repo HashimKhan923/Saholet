@@ -16,4 +16,9 @@ class EmergencyRequestPolicy
     {
         return $emergencyRequest->consumer_id === $user->id;
     }
+
+    public function respond(User $user, EmergencyRequest $emergencyRequest): bool
+    {
+        return $emergencyRequest->consumer_id === $user->id;
+    }
 }

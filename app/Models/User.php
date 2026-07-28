@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use App\Mail\ResetPasswordMail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
@@ -22,6 +20,7 @@ class User extends Authenticatable
     public const ROLE_PROVIDER = 'provider';
     public const ROLE_ADMIN = 'admin';
     public const ROLE_JOB_SEEKER = 'job_seeker';
+    public const ROLE_STAFF = 'staff';
 
     protected $fillable = [
         'name',
@@ -29,6 +28,7 @@ class User extends Authenticatable
         'phone',
         'avatar',
         'role',
+        'permissions',
         'password',
         'suspended_at',
         'referral_code',
@@ -59,6 +59,7 @@ class User extends Authenticatable
             'suspended_at' => 'datetime',
             'password' => 'hashed',
             'credit_balance' => 'decimal:2',
+            'permissions' => 'array',
         ];
     }
 
@@ -156,6 +157,28 @@ class User extends Authenticatable
         return $this->role === self::ROLE_JOB_SEEKER;
     }
 
+    public function isStaff(): bool
+    {
+        return $this->role === self::ROLE_STAFF;
+    }
+
+    /**
+     * Admins can do everything. Staff can only do what their `permissions`
+     * JSON grants them for the given admin module. Everyone else, nothing.
+     */
+    public function hasPermission(string $module, string $action = 'view'): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        if (! $this->isStaff()) {
+            return false;
+        }
+
+        return in_array($action, $this->permissions[$module] ?? [], true);
+    }
+
     public function isSuspended(): bool
     {
         return $this->suspended_at !== null;
@@ -170,18 +193,11 @@ class User extends Authenticatable
     public function dashboardRoute(): string
     {
         return match ($this->role) {
-            self::ROLE_ADMIN => 'admin.dashboard',
+            self::ROLE_ADMIN, self::ROLE_STAFF => 'admin.dashboard',
             self::ROLE_PROVIDER => 'provider.dashboard',
             self::ROLE_JOB_SEEKER => 'job-seeker.dashboard',
             default => 'consumer.dashboard',
         };
     }
 
-    public function sendPasswordResetNotification($token): void
-    {
-        $url = route('password.reset', ['token' => $token, 'email' => $this->email]);
-        $expireMinutes = (int) config('auth.passwords.users.expire', 60);
-
-        Mail::to($this->email)->send(new ResetPasswordMail($url, $expireMinutes));
-    }
 }

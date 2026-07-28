@@ -25,6 +25,7 @@ class Category extends Model
     protected $appends = [
         'image_url',
         'banner_url',
+        'icon_url',
     ];
 
     protected function casts(): array
@@ -43,6 +44,14 @@ class Category extends Model
     public function getBannerUrlAttribute(): ?string
     {
         return $this->banner ? Storage::disk('public')->url($this->banner) : null;
+    }
+
+    /** Only meaningful when `icon` holds an uploaded file path rather than a legacy config key. */
+    public function getIconUrlAttribute(): ?string
+    {
+        return $this->icon && Str::contains($this->icon, '/')
+            ? Storage::disk('public')->url($this->icon)
+            : null;
     }
 
     public function services(): HasMany

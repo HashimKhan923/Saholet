@@ -8,16 +8,16 @@
 @endphp
 
 <section class="border-b border-slate-100 bg-gradient-to-b from-brand-50 to-slate-50 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950">
-    <div class="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:px-8 {{ $isUrdu ? 'text-right' : '' }}">
-        <img src="{{ asset('images/Contact.jpeg') }}?v={{ filemtime(public_path('images/Contact.jpeg')) }}" alt="Contact Sahoulat" class="mb-8 h-auto w-full rounded-2xl shadow-sm md:h-100 md:object-cover" loading="eager">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 {{ $isUrdu ? 'text-right' : '' }}">
+        <img src="{{ asset('images/Contact.png') }}?v={{ filemtime(public_path('images/Contact.png')) }}" alt="Contact Sahoulat" class="mb-8 h-auto w-full rounded-2xl shadow-sm md:h-100 md:object-cover" loading="eager">
         <h1 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl {{ $isUrdu ? 'font-urdu' : '' }}">{{ __('messages.contact.title') }}</h1>
         <p class="mt-3 max-w-2xl text-slate-600 dark:text-slate-400 {{ $isUrdu ? 'font-urdu text-lg' : '' }}">{{ __('messages.contact.subtitle') }}</p>
     </div>
 </section>
 
-<section class="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:px-8">
-    <div class="grid gap-8 lg:grid-cols-3">
-        <div class="lg:col-span-2">
+<section class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+    <div class="grid gap-8 lg:grid-cols-5">
+        <div class="lg:col-span-3">
             <form method="POST" action="{{ route('contact.store') }}" class="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-slate-900">
                 @csrf
 
@@ -76,7 +76,7 @@
             </form>
         </div>
 
-        <aside class="lg:col-span-1">
+        <aside class="lg:col-span-2">
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <h2 class="text-sm font-bold text-slate-900 dark:text-white {{ $isUrdu ? 'font-urdu' : '' }}">{{ __('messages.contact.direct_title') }}</h2>
                 <div class="mt-4 space-y-4 text-sm">
@@ -110,6 +110,13 @@
                 </div>
             </div>
         </aside>
+    </div>
+
+    <div class="mt-14 py-10">
+        <x-google-map
+            :heading="__('messages.contact.map_heading')"
+            :subheading="__('messages.contact.map_subheading')"
+        />
     </div>
 </section>
 @endsection

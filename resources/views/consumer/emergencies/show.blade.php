@@ -20,11 +20,50 @@
                     <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
                 <div>
-                    <h2 class="font-display text-lg font-bold text-amber-900 dark:text-amber-300">Searching for a provider…</h2>
-                    <p class="mt-1 text-sm text-amber-800 dark:text-amber-400/90">We’ve alerted available providers in {{ $emergencyRequest->city }}. This page updates when someone accepts — refresh to check.</p>
+                    <h2 class="font-display text-lg font-bold text-amber-900 dark:text-amber-300">Reviewing your request…</h2>
+                    <p class="mt-1 text-sm text-amber-800 dark:text-amber-400/90">Our team is reviewing your request and will send you a price shortly. This page updates once a quote is ready — refresh to check.</p>
                 </div>
             </div>
         </div>
+    @elseif ($emergencyRequest->isQuoted())
+        <div class="mt-6 rounded-2xl border border-sky-200 bg-sky-50 p-6 dark:border-sky-900/60 dark:bg-sky-950/30">
+            <div class="flex items-start gap-3">
+                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-600 text-white">
+                    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <div class="flex-1">
+                    <h2 class="font-display text-lg font-bold text-sky-900 dark:text-sky-300">Your quote is ready</h2>
+                    <p class="mt-1 font-display text-2xl font-extrabold text-sky-900 dark:text-sky-300">Rs. {{ number_format((float) $emergencyRequest->quoted_price, 0) }}</p>
+                    @if ($emergencyRequest->admin_note)
+                        <p class="mt-1 text-sm text-sky-800 dark:text-sky-400/90">{{ $emergencyRequest->admin_note }}</p>
+                    @endif
+                    <div class="mt-4 flex gap-3">
+                        <form method="POST" action="{{ route('consumer.emergencies.accept-quote', $emergencyRequest) }}">
+                            @csrf
+                            <button type="submit" class="inline-flex items-center rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Accept quote</button>
+                        </form>
+                        <form method="POST" action="{{ route('consumer.emergencies.decline-quote', $emergencyRequest) }}">
+                            @csrf
+                            <button type="submit" class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">Decline</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @elseif ($emergencyRequest->isAccepted())
+        <div class="mt-6 rounded-2xl border border-violet-200 bg-violet-50 p-6 dark:border-violet-900/60 dark:bg-violet-950/30">
+            <div class="flex items-start gap-3">
+                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-600 text-white">
+                    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <div>
+                    <h2 class="font-display text-lg font-bold text-violet-900 dark:text-violet-300">Finding you a provider…</h2>
+                    <p class="mt-1 text-sm text-violet-800 dark:text-violet-400/90">You accepted the Rs. {{ number_format((float) $emergencyRequest->quoted_price, 0) }} quote. We’re assigning a provider now.</p>
+                </div>
+            </div>
+        </div>
+    @elseif ($emergencyRequest->isDeclined())
+        <div class="mt-6 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-400">You declined this quote.</div>
     @elseif ($emergencyRequest->isMatched())
         <div class="mt-6 rounded-2xl border border-brand-200 bg-brand-50 p-6 dark:border-brand-900/60 dark:bg-brand-950/30">
             <div class="flex items-start gap-3">
@@ -57,7 +96,7 @@
             @endif
         </dl>
 
-        @if ($emergencyRequest->isOpen())
+        @if ($emergencyRequest->isOpen() || $emergencyRequest->isQuoted())
             <div class="mt-6">
                 <x-confirm-form :action="route('consumer.emergencies.cancel', $emergencyRequest)"
                     button-label="Cancel request" button-class="rounded-lg border border-red-300 px-5 py-2.5 text-sm font-semibold text-red-700 transition hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/40"

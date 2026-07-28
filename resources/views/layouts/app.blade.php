@@ -259,7 +259,7 @@
 
     {{-- ========================================================= Footer --}}
     <footer class="border-t border-slate-200 bg-black dark:border-slate-800 dark:bg-slate-900">
-        <div class="mx-auto max-w-7xl px-4 pt-10 pb-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
             <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
 
                 {{-- Brand column --}}

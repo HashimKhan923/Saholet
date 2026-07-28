@@ -7,6 +7,8 @@ use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
@@ -27,6 +29,35 @@ class ProfileController extends Controller
         return response()->json(['user' => new UserResource($user)]);
     }
 
+    public function updateAvatar(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'avatar' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+        ]);
+
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
+        $user->update(['avatar' => $request->file('avatar')->store('avatars', 'public')]);
+
+        return response()->json(['user' => new UserResource($user)]);
+    }
+
+    public function destroyAvatar(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+            $user->update(['avatar' => null]);
+        }
+
+        return response()->json(['user' => new UserResource($user)]);
+    }
+
     public function updatePassword(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -39,5 +70,31 @@ class ProfileController extends Controller
         ]);
 
         return response()->json(['message' => 'Password updated.']);
+    }
+
+    public function destroy(Request $request): JsonResponse
+    {
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
+        $user->update([
+            'name' => 'Deleted User',
+            'email' => 'deleted+' . $user->id . '+' . Str::random(8) . '@sahoulat.local',
+            'phone' => null,
+            'avatar' => null,
+            'password' => Hash::make(Str::random(40)),
+            'suspended_at' => now(),
+        ]);
+
+        $user->tokens()->delete();
+
+        return response()->json(['message' => 'Account deleted.']);
     }
 }

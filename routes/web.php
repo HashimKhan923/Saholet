@@ -12,16 +12,18 @@ use App\Http\Controllers\Admin\SubscriptionController as AdminSubscriptionContro
 use App\Http\Controllers\Admin\SubscriptionPlanController as AdminSubscriptionPlanController;
 use App\Http\Controllers\Admin\TalentSearchController as AdminTalentSearchController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\EmergencyController as AdminEmergencyController;
+use App\Http\Controllers\Admin\InvoiceController as AdminInvoiceController;
 use App\Http\Controllers\Admin\ContractController as AdminContractController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\DisputeController as AdminDisputeController;
-use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\FraudController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\ServiceAreaController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\StaffController as AdminStaffController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
@@ -57,7 +59,6 @@ use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\Provider\BidController as ProviderBidController;
 use App\Http\Controllers\Provider\BookingController as ProviderBookingController;
 use App\Http\Controllers\Provider\DashboardController as ProviderDashboardController;
-use App\Http\Controllers\Provider\EmergencyController as ProviderEmergencyController;
 use App\Http\Controllers\Provider\JobController as ProviderJobController;
 use App\Http\Controllers\Provider\OnboardingController;
 use App\Http\Controllers\Provider\PortfolioController as ProviderPortfolioController;
@@ -120,7 +121,7 @@ Route::middleware('guest')->group(function () {
     // Password reset (Step 6)
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email')->middleware('throttle:password-reset');
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+    Route::get('reset-password', [NewPasswordController::class, 'create'])->name('password.reset');
     Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.store')->middleware('throttle:password-reset');
 });
 
@@ -234,6 +235,8 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
         Route::post('emergencies', [ConsumerEmergencyController::class, 'store'])->name('consumer.emergencies.store');
         Route::get('emergencies/{emergencyRequest}', [ConsumerEmergencyController::class, 'show'])->name('consumer.emergencies.show');
         Route::post('emergencies/{emergencyRequest}/cancel', [ConsumerEmergencyController::class, 'cancel'])->name('consumer.emergencies.cancel');
+        Route::post('emergencies/{emergencyRequest}/accept-quote', [ConsumerEmergencyController::class, 'acceptQuote'])->name('consumer.emergencies.accept-quote');
+        Route::post('emergencies/{emergencyRequest}/decline-quote', [ConsumerEmergencyController::class, 'declineQuote'])->name('consumer.emergencies.decline-quote');
     });
 
     // ─── Provider ────────────────────────────────────────────────
@@ -263,9 +266,6 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
         Route::put('bids/{bid}', [ProviderBidController::class, 'update'])->name('bids.update');
         Route::delete('bids/{bid}', [ProviderBidController::class, 'destroy'])->name('bids.destroy');
 
-        Route::get('emergencies', [ProviderEmergencyController::class, 'index'])->name('emergencies.index');
-        Route::post('emergencies/{emergencyRequest}/accept', [ProviderEmergencyController::class, 'accept'])->name('emergencies.accept');
-
         Route::get('wallet', [ProviderWalletController::class, 'index'])->name('wallet.index');
         Route::post('payout-method', [ProviderPayoutMethodController::class, 'update'])->name('payout-method.update');
         Route::post('withdrawals', [ProviderWithdrawalController::class, 'store'])->name('withdrawals.store');
@@ -292,72 +292,134 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
     });
 
     // ─── Admin ───────────────────────────────────────────────────
-    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('role:admin,staff')->prefix('admin')->name('admin.')->group(function () {
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::get('requests', [AdminRequestsInboxController::class, 'index'])->name('requests.index');
-        Route::resource('categories', CategoryController::class)->except(['show']);
-        Route::resource('services', AdminServiceController::class)->except(['show']);
-        Route::resource('faqs', AdminFaqController::class)->except(['show']);
 
-        Route::get('contact-messages', [AdminContactMessageController::class, 'index'])->name('contact-messages.index');
-        Route::get('contact-messages/{contactMessage}', [AdminContactMessageController::class, 'show'])->name('contact-messages.show');
-        Route::delete('contact-messages/{contactMessage}', [AdminContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
+        Route::middleware('permission:requests')->group(function () {
+            Route::get('requests', [AdminRequestsInboxController::class, 'index'])->name('requests.index');
+        });
 
-        Route::resource('career-categories', AdminCareerCategoryController::class)->except(['show']);
-        Route::resource('careers', AdminCareerListingController::class)->except(['show']);
-        Route::get('careers/{career}/applications', [AdminCareerApplicationController::class, 'index'])->name('careers.applications.index');
-        Route::get('careers/{career}/applications/{application}', [AdminCareerApplicationController::class, 'show'])->name('careers.applications.show');
-        Route::post('careers/{career}/applications/{application}/status', [AdminCareerApplicationController::class, 'updateStatus'])->name('careers.applications.status');
-        Route::get('talent', [AdminTalentSearchController::class, 'index'])->name('talent.index');
+        Route::middleware('permission:categories')->group(function () {
+            Route::resource('categories', CategoryController::class)->except(['show']);
+        });
+        Route::middleware('permission:services')->group(function () {
+            Route::resource('services', AdminServiceController::class)->except(['show']);
+        });
+        Route::middleware('permission:faqs')->group(function () {
+            Route::resource('faqs', AdminFaqController::class)->except(['show']);
+        });
+
+        Route::middleware('permission:careers')->group(function () {
+            Route::resource('career-categories', AdminCareerCategoryController::class)->except(['show']);
+            Route::resource('careers', AdminCareerListingController::class)->except(['show']);
+            Route::get('careers/{career}/applications', [AdminCareerApplicationController::class, 'index'])->name('careers.applications.index');
+            Route::get('careers/{career}/applications/{application}', [AdminCareerApplicationController::class, 'show'])->name('careers.applications.show');
+            Route::post('careers/{career}/applications/{application}/status', [AdminCareerApplicationController::class, 'updateStatus'])->name('careers.applications.status');
+        });
+
+        Route::middleware('permission:talent')->group(function () {
+            Route::get('talent', [AdminTalentSearchController::class, 'index'])->name('talent.index');
+        });
 
         // Subscription / AMC plans
-        Route::resource('subscription-plans', AdminSubscriptionPlanController::class)->except(['show']);
-        Route::get('subscriptions', [AdminSubscriptionController::class, 'index'])->name('subscriptions.index');
-        Route::get('subscriptions/{subscription}', [AdminSubscriptionController::class, 'show'])->name('subscriptions.show');
-        Route::post('subscriptions/{subscription}/assign', [AdminSubscriptionController::class, 'assignProvider'])->name('subscriptions.assign');
+        Route::middleware('permission:subscriptions')->group(function () {
+            Route::resource('subscription-plans', AdminSubscriptionPlanController::class)->except(['show']);
+            Route::get('subscriptions', [AdminSubscriptionController::class, 'index'])->name('subscriptions.index');
+            Route::get('subscriptions/{subscription}', [AdminSubscriptionController::class, 'show'])->name('subscriptions.show');
+            Route::post('subscriptions/{subscription}/assign', [AdminSubscriptionController::class, 'assignProvider'])->name('subscriptions.assign');
+        });
 
         // Corporate / B2B accounts (read-only)
-        Route::get('corporate-accounts', [AdminCorporateAccountController::class, 'index'])->name('corporate-accounts.index');
-        Route::get('corporate-accounts/{corporateAccount}', [AdminCorporateAccountController::class, 'show'])->name('corporate-accounts.show');
+        Route::middleware('permission:corporate-accounts')->group(function () {
+            Route::get('corporate-accounts', [AdminCorporateAccountController::class, 'index'])->name('corporate-accounts.index');
+            Route::get('corporate-accounts/{corporateAccount}', [AdminCorporateAccountController::class, 'show'])->name('corporate-accounts.show');
+        });
 
         // Withdrawals
-        Route::get('withdrawals', [AdminWithdrawalController::class, 'index'])->name('withdrawals.index');
-        Route::get('withdrawals/{withdrawal}', [AdminWithdrawalController::class, 'show'])->name('withdrawals.show');
-        Route::post('withdrawals/{withdrawal}/paid', [AdminWithdrawalController::class, 'markPaid'])->name('withdrawals.paid');
-        Route::post('withdrawals/{withdrawal}/reject', [AdminWithdrawalController::class, 'reject'])->name('withdrawals.reject');
+        Route::middleware('permission:withdrawals')->group(function () {
+            Route::get('withdrawals', [AdminWithdrawalController::class, 'index'])->name('withdrawals.index');
+            Route::get('withdrawals/{withdrawal}', [AdminWithdrawalController::class, 'show'])->name('withdrawals.show');
+            Route::post('withdrawals/{withdrawal}/paid', [AdminWithdrawalController::class, 'markPaid'])->name('withdrawals.paid');
+            Route::post('withdrawals/{withdrawal}/reject', [AdminWithdrawalController::class, 'reject'])->name('withdrawals.reject');
+        });
 
-        Route::get('bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
-        Route::get('bookings/{booking}', [AdminBookingController::class, 'show'])->name('bookings.show');
+        Route::middleware('permission:bookings')->group(function () {
+            Route::get('bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
+            Route::get('bookings/create', [AdminBookingController::class, 'create'])->name('bookings.create');
+            Route::post('bookings', [AdminBookingController::class, 'store'])->name('bookings.store');
+            Route::get('bookings/{booking}', [AdminBookingController::class, 'show'])->name('bookings.show');
+        });
 
-        Route::get('contracts', [AdminContractController::class, 'index'])->name('contracts.index');
-        Route::get('contracts/{contract}', [AdminContractController::class, 'show'])->name('contracts.show');
-        Route::post('contracts/{contract}/quote', [AdminContractController::class, 'quote'])->name('contracts.quote');
-        Route::post('contracts/{contract}/items/{item}/assign', [AdminContractController::class, 'assignProvider'])->name('contracts.items.assign');
-        Route::post('contracts/{contract}/milestones/{milestone}/release', [AdminContractController::class, 'releaseMilestone'])->name('contracts.milestones.release');
+        Route::middleware('permission:emergencies')->group(function () {
+            Route::get('emergencies', [AdminEmergencyController::class, 'index'])->name('emergencies.index');
+            Route::get('emergencies/{emergencyRequest}', [AdminEmergencyController::class, 'show'])->name('emergencies.show');
+            Route::post('emergencies/{emergencyRequest}/quote', [AdminEmergencyController::class, 'quote'])->name('emergencies.quote');
+            Route::post('emergencies/{emergencyRequest}/assign', [AdminEmergencyController::class, 'assign'])->name('emergencies.assign');
+        });
 
-        Route::get('providers', [AdminProviderController::class, 'index'])->name('providers.index');
-        Route::get('providers/{provider}', [AdminProviderController::class, 'show'])->name('providers.show');
-        Route::post('providers/{provider}/approve', [AdminProviderController::class, 'approve'])->name('providers.approve');
-        Route::post('providers/{provider}/reject', [AdminProviderController::class, 'reject'])->name('providers.reject');
+        Route::middleware('permission:invoices')->group(function () {
+            Route::get('invoices', [AdminInvoiceController::class, 'index'])->name('invoices.index');
+            Route::get('invoices/create', [AdminInvoiceController::class, 'create'])->name('invoices.create');
+            Route::post('invoices', [AdminInvoiceController::class, 'store'])->name('invoices.store');
+            Route::get('invoices/{invoice}', [AdminInvoiceController::class, 'show'])->name('invoices.show');
+            Route::get('invoices/{invoice}/edit', [AdminInvoiceController::class, 'edit'])->name('invoices.edit');
+            Route::put('invoices/{invoice}', [AdminInvoiceController::class, 'update'])->name('invoices.update');
+            Route::delete('invoices/{invoice}', [AdminInvoiceController::class, 'destroy'])->name('invoices.destroy');
+            Route::get('invoices/{invoice}/download', [AdminInvoiceController::class, 'download'])->name('invoices.download');
+        });
 
-        Route::get('disputes', [AdminDisputeController::class, 'index'])->name('disputes.index');
-        Route::get('disputes/{dispute}', [AdminDisputeController::class, 'show'])->name('disputes.show');
-        Route::post('disputes/{dispute}/resolve', [AdminDisputeController::class, 'resolve'])->name('disputes.resolve');
+        Route::middleware('permission:contracts')->group(function () {
+            Route::get('contracts', [AdminContractController::class, 'index'])->name('contracts.index');
+            Route::get('contracts/{contract}', [AdminContractController::class, 'show'])->name('contracts.show');
+            Route::post('contracts/{contract}/quote', [AdminContractController::class, 'quote'])->name('contracts.quote');
+            Route::post('contracts/{contract}/items/{item}/assign', [AdminContractController::class, 'assignProvider'])->name('contracts.items.assign');
+            Route::post('contracts/{contract}/milestones/{milestone}/release', [AdminContractController::class, 'releaseMilestone'])->name('contracts.milestones.release');
+        });
 
-        Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+        Route::middleware('permission:providers')->group(function () {
+            Route::get('providers', [AdminProviderController::class, 'index'])->name('providers.index');
+            Route::get('providers/{provider}', [AdminProviderController::class, 'show'])->name('providers.show');
+            Route::post('providers/{provider}/approve', [AdminProviderController::class, 'approve'])->name('providers.approve');
+            Route::post('providers/{provider}/reject', [AdminProviderController::class, 'reject'])->name('providers.reject');
+        });
 
-        Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
-        Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
+        Route::middleware('permission:disputes')->group(function () {
+            Route::get('disputes', [AdminDisputeController::class, 'index'])->name('disputes.index');
+            Route::get('disputes/{dispute}', [AdminDisputeController::class, 'show'])->name('disputes.show');
+            Route::post('disputes/{dispute}/resolve', [AdminDisputeController::class, 'resolve'])->name('disputes.resolve');
+        });
 
-        Route::get('service-areas', [ServiceAreaController::class, 'index'])->name('service-areas.index');
-        Route::post('service-areas', [ServiceAreaController::class, 'store'])->name('service-areas.store');
-        Route::put('service-areas/{serviceArea}', [ServiceAreaController::class, 'update'])->name('service-areas.update');
-        Route::delete('service-areas/{serviceArea}', [ServiceAreaController::class, 'destroy'])->name('service-areas.destroy');
+        Route::middleware('permission:analytics')->group(function () {
+            Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+        });
 
-        Route::get('fraud', [FraudController::class, 'index'])->name('fraud.index');
+        Route::middleware('permission:settings')->group(function () {
+            Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
+            Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
+        });
 
-        Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
-        Route::post('users/{user}/suspend', [AdminUserController::class, 'suspend'])->name('users.suspend');
-        Route::post('users/{user}/unsuspend', [AdminUserController::class, 'unsuspend'])->name('users.unsuspend');
+        Route::middleware('permission:service-areas')->group(function () {
+            Route::get('service-areas', [ServiceAreaController::class, 'index'])->name('service-areas.index');
+            Route::post('service-areas', [ServiceAreaController::class, 'store'])->name('service-areas.store');
+            Route::put('service-areas/{serviceArea}', [ServiceAreaController::class, 'update'])->name('service-areas.update');
+            Route::delete('service-areas/{serviceArea}', [ServiceAreaController::class, 'destroy'])->name('service-areas.destroy');
+        });
+
+        Route::middleware('permission:fraud')->group(function () {
+            Route::get('fraud', [FraudController::class, 'index'])->name('fraud.index');
+        });
+
+        Route::middleware('permission:users')->group(function () {
+            Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
+            Route::post('users/{user}/suspend', [AdminUserController::class, 'suspend'])->name('users.suspend');
+            Route::post('users/{user}/unsuspend', [AdminUserController::class, 'unsuspend'])->name('users.unsuspend');
+        });
+
+        // Staff accounts — admin-only, never delegable to a staff account itself.
+        Route::middleware('role:admin')->group(function () {
+            Route::resource('staff', AdminStaffController::class)->except(['show']);
+            Route::post('staff/{staff}/suspend', [AdminStaffController::class, 'suspend'])->name('staff.suspend');
+            Route::post('staff/{staff}/unsuspend', [AdminStaffController::class, 'unsuspend'])->name('staff.unsuspend');
+        });
     });
 });

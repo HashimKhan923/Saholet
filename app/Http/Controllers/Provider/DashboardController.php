@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Provider;
 use App\Http\Controllers\Controller;
 use App\Models\Bid;
 use App\Models\Booking;
-use App\Models\EmergencyRequest;
 use App\Models\JobPost;
 use App\Models\LedgerEntry;
 use App\Models\ProviderProfile;
@@ -27,7 +26,6 @@ class DashboardController extends Controller
             'profile'          => $profile,
             'pendingBookings'  => 0,
             'availableJobs'    => 0,
-            'openEmergencies'  => 0,
             'walletAvailable'  => 0.0,
             'walletEscrow'     => 0.0,
             'earningsMonth'    => 0.0,
@@ -76,11 +74,6 @@ class DashboardController extends Controller
         /* ── Opportunity counters ─────────────────────────────────────── */
         $data['availableJobs'] = JobPost::where('status', JobPost::STATUS_OPEN)
             ->whereIn('service_id', $serviceIds)
-            ->count();
-
-        $data['openEmergencies'] = EmergencyRequest::where('status', EmergencyRequest::STATUS_OPEN)
-            ->whereIn('service_id', $serviceIds)
-            ->whereRaw('LOWER(city) = ?', [mb_strtolower(trim($profile->city ?? ''))])
             ->count();
 
         /* ── Wallet + earnings (from the append-only ledger) ──────────── */

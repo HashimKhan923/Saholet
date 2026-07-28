@@ -3,7 +3,7 @@
 @section('title', 'Booking room — ' . config('app.name'))
 
 @section('content')
-<section class="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+<section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
     <a href="{{ $backUrl }}" class="text-sm text-slate-500 hover:text-brand-600">&larr; Back to booking</a>
 
     <div
@@ -17,6 +17,12 @@
             trackUrl: '{{ route('bookings.tracking.store', $booking) }}',
             messages: @js($messages),
             tracking: @js($tracking),
+            destination: @js(($booking->latitude !== null && $booking->longitude !== null) ? [
+                'lat' => (float) $booking->latitude,
+                'lng' => (float) $booking->longitude,
+                'address' => $booking->address,
+            ] : null),
+            googleMapsKey: @js(config('services.google_maps.key')),
             status: @js($booking->status),
             statusLabel: @js(match ($booking->status) {
                 'pending' => 'Pending', 'confirmed' => 'Confirmed', 'in_progress' => 'In progress',
@@ -33,37 +39,38 @@
             :class="statusClasses()" x-text="statusLabel"></span>
     </div>
 
-    <div class="mt-8 grid gap-6 lg:grid-cols-3">
-        {{-- Chat --}}
-        <div class="lg:col-span-2">
-            <div class="flex h-[32rem] flex-col rounded-2xl border border-slate-200 bg-slate-50 shadow-sm dark:border-slate-800 dark:bg-slate-800/70">
-                <div class="flex items-center justify-between border-b border-slate-200 bg-white px-5 py-3 dark:border-slate-800 dark:bg-slate-900">
+    {{-- 1 (messages) : 3 (map) --}}
+    <div class="mt-8 grid gap-6 lg:grid-cols-4">
+        {{-- Messages — narrow vertical bar --}}
+        <div class="lg:col-span-1">
+            <div class="flex h-136 flex-col rounded-2xl border border-slate-200 bg-slate-50 shadow-sm dark:border-slate-800 dark:bg-slate-800/70">
+                <div class="border-b border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900">
                     <h2 class="font-display text-sm font-bold text-slate-900 dark:text-white">Messages</h2>
-                    <span class="text-[11px] text-slate-400 dark:text-slate-500">Updates live when the messaging server is on</span>
+                    <span class="text-[11px] text-slate-400 dark:text-slate-500">Live while online</span>
                 </div>
 
-                <div x-ref="thread" class="flex-1 space-y-3 overflow-y-auto px-5 py-4">
+                <div x-ref="thread" class="flex-1 space-y-3 overflow-y-auto px-4 py-4">
                     <template x-for="m in messages" :key="m.id">
                         <div class="flex flex-col" :class="m.sender_id === currentUserId ? 'items-end' : 'items-start'">
                             <div
-                                class="inline-block max-w-[80%] rounded-2xl px-3.5 py-2 text-sm"
+                                class="inline-block max-w-full rounded-2xl px-3 py-2 text-sm wrap-break-word"
                                 :class="m.sender_id === currentUserId ? 'bg-brand-600 text-white' : 'border border-slate-200 bg-white text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'">
                                 <span x-text="m.body"></span>
                             </div>
-                            <span class="mt-1 text-[11px] text-slate-400 dark:text-slate-500" x-text="m.sender_name + ' · ' + m.created_at"></span>
+                            <span class="mt-1 text-[10px] text-slate-400 dark:text-slate-500" x-text="m.sender_name + ' · ' + m.created_at"></span>
                         </div>
                     </template>
                     <template x-if="messages.length === 0">
-                        <p class="py-10 text-center text-sm text-slate-400 dark:text-slate-500">No messages yet. Start the conversation.</p>
+                        <p class="py-10 text-center text-xs text-slate-400 dark:text-slate-500">No messages yet. Start the conversation.</p>
                     </template>
                 </div>
 
-                <div class="border-t border-slate-200 bg-white px-5 py-3 dark:border-slate-800 dark:bg-slate-900">
+                <div class="border-t border-slate-200 bg-white px-3 py-3 dark:border-slate-800 dark:bg-slate-900">
                     <template x-if="canSend">
-                        <form @submit.prevent="send()" class="flex items-center gap-2">
+                        <form @submit.prevent="send()" class="space-y-2">
                             <input x-model="draft" type="text" maxlength="2000" placeholder="Type a message…"
-                                class="flex-1 rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                            <button type="submit" class="rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Send</button>
+                                class="block w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                            <button type="submit" class="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Send</button>
                         </form>
                     </template>
                     <template x-if="! canSend">
@@ -74,55 +81,81 @@
             </div>
         </div>
 
-        {{-- Tracking --}}
-        <aside class="lg:col-span-1">
-            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <h2 class="font-display text-sm font-bold text-slate-900 dark:text-white">Live tracking</h2>
-
-                <div class="mt-4">
-                    <div x-show="tracking" x-cloak x-ref="mapEl" class="h-56 w-full rounded-xl border border-slate-200 dark:border-slate-800"></div>
+        {{-- Live tracking map — the big box --}}
+        <div class="lg:col-span-3">
+            <div class="flex h-136 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex items-center justify-between border-b border-slate-200 px-5 py-3 dark:border-slate-800">
+                    <h2 class="font-display text-sm font-bold text-slate-900 dark:text-white">Live tracking</h2>
                     <template x-if="tracking">
-                        <div class="mt-3 space-y-2 rounded-xl bg-slate-50 p-4 text-sm dark:bg-slate-800/70">
-                            <p x-show="tracking.note" x-cloak class="rounded-lg bg-white px-3 py-2 text-xs text-slate-600 dark:bg-slate-900 dark:text-slate-300" x-text="tracking.note"></p>
-                            <p class="text-xs text-slate-400 dark:text-slate-500">Updated <span x-text="tracking.time"></span></p>
-                            <a :href="mapsLink()" target="_blank" rel="noopener"
-                               class="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-brand-700 hover:text-brand-800 dark:text-brand-400">
-                                Open in Google Maps
-                                <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </a>
-                        </div>
-                    </template>
-                    <template x-if="! tracking">
-                        <p class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-400">No location shared yet.</p>
+                        <span class="text-xs text-slate-400 dark:text-slate-500">Updated <span x-text="tracking.time"></span></span>
                     </template>
                 </div>
 
-                @if ($isProvider)
-                    <template x-if="canShare">
-                        <div class="mt-5 space-y-3">
-                            <input x-model="note" type="text" maxlength="255" placeholder="Status e.g. On the way"
-                                class="block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                            <button @click="shareLocation()" :disabled="sharing"
-                                class="w-full rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50">
-                                <span x-show="! sharing">Share my location</span>
-                                <span x-show="sharing" x-cloak>Sharing…</span>
-                            </button>
-                            <p class="text-[11px] text-slate-400 dark:text-slate-500">Your browser will ask for location permission.</p>
+                <div class="relative flex-1">
+                    <div x-ref="mapEl" class="h-full w-full"></div>
+
+                    <template x-if="! tracking && ! mapError">
+                        <div class="absolute inset-0 flex items-center justify-center bg-slate-50 dark:bg-slate-800/70">
+                            <p class="max-w-xs rounded-xl border border-dashed border-slate-300 bg-white px-5 py-6 text-center text-sm text-slate-500 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
+                                @if($isProvider)
+                                    No location shared yet. Tap "Share my location" below once you're on the way.
+                                @else
+                                    Your provider hasn't shared their location yet. It'll appear here live once they're on the way.
+                                @endif
+                            </p>
                         </div>
                     </template>
-                    <template x-if="! canShare">
-                        <p class="mt-5 text-xs text-slate-400 dark:text-slate-500">Location sharing is available while the booking is active.</p>
+
+                    <template x-if="mapError">
+                        <div class="absolute inset-0 flex items-center justify-center bg-slate-50 dark:bg-slate-800/70">
+                            <p class="max-w-xs rounded-xl border border-dashed border-red-300 bg-white px-5 py-6 text-center text-sm text-red-500 shadow-sm dark:border-red-900 dark:bg-slate-900" x-text="mapError"></p>
+                        </div>
                     </template>
-                @else
-                    <p class="mt-5 text-xs text-slate-400 dark:text-slate-500">Your provider can share their live location here once on the way.</p>
-                @endif
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3 border-t border-slate-200 bg-slate-50 px-5 py-3 dark:border-slate-800 dark:bg-slate-800/60">
+                    <template x-if="tracking && tracking.note">
+                        <span class="rounded-full bg-white px-3 py-1 text-xs text-slate-600 shadow-sm dark:bg-slate-900 dark:text-slate-300" x-text="tracking.note"></span>
+                    </template>
+
+                    <template x-if="tracking">
+                        <a :href="mapsLink()" target="_blank" rel="noopener"
+                           class="inline-flex items-center gap-1 text-xs font-semibold text-brand-700 hover:text-brand-800 dark:text-brand-400">
+                            Open in Google Maps
+                            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </template>
+
+                    @if ($isProvider)
+                        <template x-if="canShare">
+                            <div class="ms-auto flex flex-1 flex-wrap items-center justify-end gap-2 sm:flex-nowrap">
+                                <input x-model="note" type="text" maxlength="255" placeholder="Status e.g. On the way"
+                                    class="w-full min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white sm:max-w-xs">
+                                <button @click="shareLocation()" :disabled="sharing"
+                                    class="shrink-0 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50">
+                                    <span x-show="! sharing">Share my location</span>
+                                    <span x-show="sharing" x-cloak>Sharing…</span>
+                                </button>
+                            </div>
+                        </template>
+                        <template x-if="! canShare">
+                            <p class="ms-auto text-xs text-slate-400 dark:text-slate-500">Location sharing is available while the booking is active.</p>
+                        </template>
+                    @else
+                        <p class="ms-auto text-xs text-slate-400 dark:text-slate-500">Your provider's live location appears here once they're on the way.</p>
+                    @endif
+                </div>
             </div>
-        </aside>
+        </div>
     </div>
     </div>
 </section>
 
 <script>
+window.__initGoogleMaps = function () {
+    document.dispatchEvent(new Event('google-maps-ready'));
+};
+
 document.addEventListener('alpine:init', () => {
     Alpine.data('bookingRoom', (cfg) => ({
         bookingId: cfg.bookingId,
@@ -134,19 +167,20 @@ document.addEventListener('alpine:init', () => {
         trackUrl: cfg.trackUrl,
         messages: cfg.messages || [],
         tracking: cfg.tracking || null,
+        destination: cfg.destination || null,
+        googleMapsKey: cfg.googleMapsKey || '',
         status: cfg.status,
         statusLabel: cfg.statusLabel,
         draft: '',
         note: '',
         sharing: false,
         error: '',
+        mapError: '',
         channel: null,
 
         init() {
             this.$nextTick(() => this.scrollDown());
-            if (this.tracking) {
-                this.$nextTick(() => this.renderMapPosition());
-            }
+            this.loadGoogleMaps();
 
             if (window.Echo) {
                 try {
@@ -161,6 +195,27 @@ document.addEventListener('alpine:init', () => {
                     console.warn('Realtime unavailable for this room.', err);
                 }
             }
+        },
+
+        loadGoogleMaps() {
+            if (!this.googleMapsKey) {
+                this.mapError = 'Google Maps API key is not configured.';
+                return;
+            }
+            if (window.google && window.google.maps) {
+                this.initMap();
+                return;
+            }
+            document.addEventListener('google-maps-ready', () => this.initMap(), { once: true });
+            if (document.getElementById('google-maps-script')) return;
+
+            const script = document.createElement('script');
+            script.id = 'google-maps-script';
+            script.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(this.googleMapsKey) + '&loading=async&callback=__initGoogleMaps';
+            script.async = true;
+            script.defer = true;
+            script.onerror = () => { this.mapError = 'Could not load Google Maps.'; };
+            document.head.appendChild(script);
         },
 
         statusClasses() {
@@ -219,29 +274,74 @@ document.addEventListener('alpine:init', () => {
 
         map: null,
         marker: null,
+        destMarker: null,
+
+        initMap() {
+            if (!this.$refs.mapEl || this.map) return;
+
+            const center = this.tracking
+                ? { lat: parseFloat(this.tracking.latitude), lng: parseFloat(this.tracking.longitude) }
+                : (this.destination ? { lat: this.destination.lat, lng: this.destination.lng } : { lat: 24.8607, lng: 67.0011 });
+
+            this.map = new google.maps.Map(this.$refs.mapEl, {
+                center,
+                zoom: 14,
+                streetViewControl: false,
+                mapTypeControl: false,
+                fullscreenControl: false,
+            });
+
+            if (this.destination) {
+                this.destMarker = new google.maps.Marker({
+                    position: { lat: this.destination.lat, lng: this.destination.lng },
+                    map: this.map,
+                    title: this.destination.address || 'Job location',
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 8,
+                        fillColor: '#c4341f',
+                        fillOpacity: 1,
+                        strokeColor: '#ffffff',
+                        strokeWeight: 2,
+                    },
+                });
+            }
+
+            if (this.tracking) {
+                this.renderMapPosition();
+            }
+        },
 
         applyTracking(t) {
             if (!t) return;
             this.tracking = { latitude: t.latitude, longitude: t.longitude, note: t.note, time: t.time };
             this.$nextTick(() => this.renderMapPosition());
         },
-        renderMapPosition() {
-            if (!window.L || !this.tracking || !this.$refs.mapEl) return;
-            const pos = [parseFloat(this.tracking.latitude), parseFloat(this.tracking.longitude)];
 
-            if (!this.map) {
-                this.map = window.L.map(this.$refs.mapEl).setView(pos, 15);
-                window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap contributors',
-                    maxZoom: 19,
-                }).addTo(this.map);
-                this.marker = window.L.marker(pos).addTo(this.map);
+        renderMapPosition() {
+            if (!window.google || !this.map || !this.tracking) return;
+            const pos = { lat: parseFloat(this.tracking.latitude), lng: parseFloat(this.tracking.longitude) };
+
+            if (!this.marker) {
+                this.marker = new google.maps.Marker({
+                    position: pos,
+                    map: this.map,
+                    title: 'Provider',
+                });
             } else {
-                this.map.invalidateSize();
-                this.marker.setLatLng(pos);
+                this.marker.setPosition(pos);
+            }
+
+            if (this.destMarker) {
+                const bounds = new google.maps.LatLngBounds();
+                bounds.extend(pos);
+                bounds.extend(this.destMarker.getPosition());
+                this.map.fitBounds(bounds, 64);
+            } else {
                 this.map.panTo(pos);
             }
         },
+
         mapsLink() {
             if (!this.tracking) return '#';
             return 'https://www.google.com/maps?q=' + this.tracking.latitude + ',' + this.tracking.longitude;

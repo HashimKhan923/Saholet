@@ -11,32 +11,6 @@
     <x-portal-nav-link :href="route('provider.bookings.index')" label="Bookings" :active="request()->routeIs('provider.bookings.*')" :badge="$sidebarPendingBookings ?: null">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 10h16" stroke-linecap="round"/></svg>
     </x-portal-nav-link>
-    <a href="{{ route('provider.emergencies.index') }}"
-        x-data="{
-            count: {{ (int) $sidebarOpenEmergencies }},
-            profileId: {{ (int) ($sidebarProviderProfileId ?? 0) }},
-            myServiceIds: @js($sidebarMyServiceIds ?? []),
-            init() {
-                if (! window.Echo || ! this.profileId) return;
-                window.Echo.private('provider.' + this.profileId)
-                    .listen('.emergency.created', () => { this.count++; });
-                window.Echo.channel('emergencies')
-                    .listen('.emergency.status.updated', (e) => { if (e.status !== 'open' && this.count > 0) this.count--; });
-            },
-        }"
-        class="group flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition
-            {{ request()->routeIs('provider.emergencies.*')
-                ? 'bg-brand-50 text-brand-700 dark:bg-brand-950/50 dark:text-brand-400'
-                : 'text-slate-600 hover:translate-x-0.5 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white' }}">
-        <span class="flex items-center gap-3">
-            <span class="h-5 w-5 {{ request()->routeIs('provider.emergencies.*') ? 'text-brand-600 dark:text-brand-400' : 'text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300' }}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" stroke-linejoin="round"/></svg>
-            </span>
-            Emergencies
-        </span>
-        <span x-show="count > 0" x-cloak x-text="count"
-              class="inline-flex items-center rounded-full bg-red-500 px-2 py-0.5 text-[11px] font-bold text-white animate-live-pulse"></span>
-    </a>
     <a href="{{ route('provider.jobs.index') }}"
         x-data="{
             count: {{ (int) $sidebarAvailableJobs }},

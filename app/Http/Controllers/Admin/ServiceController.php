@@ -52,6 +52,7 @@ class ServiceController extends Controller
 
         $data['slug'] = Service::generateSlug($data['name']);
         $data['is_active'] = $request->boolean('is_active');
+        $data['is_emergency_available'] = $request->boolean('is_emergency_available');
 
         if ($request->hasFile('thumbnail')) {
             $data['thumbnail'] = $request->file('thumbnail')->store('services', 'public');
@@ -81,6 +82,7 @@ class ServiceController extends Controller
 
         $data['slug'] = Service::generateSlug($data['name'], $service->id);
         $data['is_active'] = $request->boolean('is_active');
+        $data['is_emergency_available'] = $request->boolean('is_emergency_available');
 
         if ($request->hasFile('thumbnail')) {
             if ($service->thumbnail) {
@@ -129,6 +131,7 @@ class ServiceController extends Controller
             'base_price' => ['required', 'numeric', 'min:0', 'max:9999999'],
             'duration_minutes' => ['required', 'integer', 'min:5', 'max:1440'],
             'is_active' => ['nullable', 'boolean'],
+            'is_emergency_available' => ['nullable', 'boolean'],
         ]);
     }
 }

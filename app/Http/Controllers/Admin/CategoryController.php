@@ -8,7 +8,7 @@ use App\Services\CatalogCache;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class CategoryController extends Controller
@@ -47,13 +47,17 @@ class CategoryController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validateData($request);
-        unset($data['remove_image'], $data['remove_banner']);
+        unset($data['remove_image'], $data['remove_banner'], $data['remove_icon']);
 
         $data['slug'] = Category::generateSlug($data['name']);
         $data['is_active'] = $request->boolean('is_active');
 
         $this->applyUpload($request, null, $data, 'image', 'categories');
         $this->applyUpload($request, null, $data, 'banner', 'categories');
+        $this->applyUpload($request, null, $data, 'icon', 'categories');
+        if (array_key_exists('icon', $data) && $data['icon'] === null) {
+            $data['icon'] = 'default';
+        }
 
         Category::create($data);
         $this->catalog->flush();
@@ -71,13 +75,17 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category): RedirectResponse
     {
         $data = $this->validateData($request);
-        unset($data['remove_image'], $data['remove_banner']);
+        unset($data['remove_image'], $data['remove_banner'], $data['remove_icon']);
 
         $data['slug'] = Category::generateSlug($data['name'], $category->id);
         $data['is_active'] = $request->boolean('is_active');
 
         $this->applyUpload($request, $category, $data, 'image', 'categories');
         $this->applyUpload($request, $category, $data, 'banner', 'categories');
+        $this->applyUpload($request, $category, $data, 'icon', 'categories');
+        if (array_key_exists('icon', $data) && $data['icon'] === null) {
+            $data['icon'] = 'default';
+        }
 
         $category->update($data);
         $this->catalog->flush();
@@ -99,6 +107,9 @@ class CategoryController extends Controller
             if ($category->{$field}) {
                 Storage::disk('public')->delete($category->{$field});
             }
+        }
+        if ($category->icon && Str::contains($category->icon, '/')) {
+            Storage::disk('public')->delete($category->icon);
         }
 
         $category->delete();
@@ -131,7 +142,8 @@ class CategoryController extends Controller
         return $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'icon' => ['required', Rule::in(array_keys(config('services_catalog.icons')))],
+            'icon' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'remove_icon' => ['nullable', 'boolean'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'remove_image' => ['nullable', 'boolean'],
             'banner' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],

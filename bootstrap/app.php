@@ -3,6 +3,7 @@
 use App\Http\Middleware\Api\EnsureNotSuspended as ApiEnsureNotSuspended;
 use App\Http\Middleware\Api\EnsureUserHasRole as ApiEnsureUserHasRole;
 use App\Http\Middleware\EnsureNotSuspended;
+use App\Http\Middleware\EnsureStaffPermission;
 use App\Http\Middleware\EnsureUserHasRole;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SecurityHeaders;
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'role' => EnsureUserHasRole::class,
+            'permission' => EnsureStaffPermission::class,
             'guest' => RedirectIfAuthenticated::class,
             'not.suspended' => EnsureNotSuspended::class,
             'api.role' => ApiEnsureUserHasRole::class,
