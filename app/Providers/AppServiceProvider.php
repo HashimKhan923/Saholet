@@ -10,7 +10,9 @@ use App\Models\Contract;
 use App\Models\Dispute;
 use App\Models\EmergencyRequest;
 use App\Models\JobPost;
+use App\Models\Payment;
 use App\Models\ProviderProfile;
+use App\Models\ProviderSettlement;
 use App\Models\Service;
 use App\Models\Subscription;
 use App\Models\WithdrawalRequest;
@@ -81,6 +83,8 @@ class AppServiceProvider extends ServiceProvider
             $pendingSubscriptions = Subscription::where('status', Subscription::STATUS_PENDING_ASSIGNMENT)->count();
             $pendingWithdrawals = WithdrawalRequest::where('status', WithdrawalRequest::STATUS_PENDING)->count();
             $openEmergencies = EmergencyRequest::where('status', EmergencyRequest::STATUS_OPEN)->count();
+            $pendingPayments = Payment::where('gateway', Payment::GATEWAY_BANK_TRANSFER)->where('status', Payment::STATUS_PENDING)->count();
+            $pendingSettlements = ProviderSettlement::where('status', ProviderSettlement::STATUS_PENDING)->count();
 
             $view->with('sidebarPendingProviders', $pendingProviders);
             $view->with('sidebarOpenDisputes', $openDisputes);
@@ -89,6 +93,8 @@ class AppServiceProvider extends ServiceProvider
             $view->with('sidebarPendingSubscriptions', $pendingSubscriptions);
             $view->with('sidebarPendingWithdrawals', $pendingWithdrawals);
             $view->with('sidebarOpenEmergencies', $openEmergencies);
+            $view->with('sidebarPendingPayments', $pendingPayments);
+            $view->with('sidebarPendingSettlements', $pendingSettlements);
             $view->with('sidebarTotalRequests', $pendingProviders + $openDisputes + $pendingContracts + $newApplications + $pendingSubscriptions + $pendingWithdrawals + $openEmergencies);
         });
 

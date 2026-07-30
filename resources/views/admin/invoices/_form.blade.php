@@ -70,6 +70,14 @@
     </div>
 
     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <label for="inspection_notes" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Inspection / review <span class="text-slate-400">(optional)</span></label>
+        <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">What was inspected or found on-site — helps the customer understand what the charges below are for. Printed on the document only if filled in.</p>
+        <textarea id="inspection_notes" name="inspection_notes" rows="4" placeholder="e.g. Inspected the outdoor unit — found the compressor gas level low and a corroded copper pipe joint causing the leak."
+            class="mt-2 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">{{ old('inspection_notes', $isEdit ? $invoice->inspection_notes : '') }}</textarea>
+        <x-field-error name="inspection_notes" />
+    </div>
+
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Line items</h2>
 
         <div class="mt-4 space-y-4">

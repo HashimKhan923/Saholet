@@ -19,6 +19,9 @@
         })();
     </script>
     <meta name="description" content="@yield('meta_description', 'On-demand home services across Pakistan — AC repair, plumbing, electrical, cleaning and more. Verified professionals, instant booking, secure payments.')">
+    @hasSection('robots')
+        <meta name="robots" content="@yield('robots')">
+    @endif
 
     <title>@yield('title', config('app.name'))</title>
 
@@ -126,16 +129,16 @@
 
             {{-- Desktop nav --}}
             <nav class="hidden items-center gap-6 md:flex">
-                <a href="{{ route('services.index') }}" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('services.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.services') }}</a>
-                <a href="{{ route('providers.index') }}" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('providers.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.providers.nav_label') }}</a>
-                <a href="{{ route('careers.index') }}" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('careers.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.careers') }}</a>
-                <a href="{{ route('subscription-plans.index') }}" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('subscription-plans.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.plans') }}</a>
+                <a href="{{ route('services.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('services.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.services') }}</a>
+                <a href="{{ route('providers.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('providers.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.providers.nav_label') }}</a>
+                <a href="{{ route('careers.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('careers.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.careers') }}</a>
+                <a href="{{ route('subscription-plans.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('subscription-plans.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.plans') }}</a>
                 @if (request()->routeIs('home'))
-                    <a href="#how" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.nav.how') }}</a>
-                    <a href="#why-us" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.landing.why_eyebrow') }}</a>
-                    <a href="#faq" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.landing.faq_eyebrow') }}</a>
+                    <a href="#how" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.nav.how') }}</a>
+                    <a href="#why-us" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.landing.why_eyebrow') }}</a>
+                    <a href="#faq" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.landing.faq_eyebrow') }}</a>
                 @endif
-                <a href="{{ route('contact') }}" class="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('contact') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.contact') }}</a>
+                <a href="{{ route('contact') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('contact') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.contact') }}</a>
             </nav>
 
             {{-- Right side --}}

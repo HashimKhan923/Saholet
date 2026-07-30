@@ -50,12 +50,39 @@ class WithdrawalService
         });
     }
 
-    public function markPaid(WithdrawalRequest $request, User $admin): void
+    /** Handed over as physical cash at the office — nothing left to confirm, it's paid the moment it's marked. */
+    public function markPaidCash(WithdrawalRequest $request, User $admin): void
     {
         $request->update([
             'status' => WithdrawalRequest::STATUS_PAID,
+            'fulfillment_method' => WithdrawalRequest::FULFILLMENT_CASH_PICKUP,
             'processed_by' => $admin->id,
             'processed_at' => now(),
+        ]);
+    }
+
+    /**
+     * Admin has sent it via bank/JazzCash/Easypaisa transfer and attaches proof.
+     * Stays "awaiting confirmation" — not fully paid — until the provider
+     * confirms they actually received it (protects both sides: the provider
+     * from a false "sent" claim, the admin from a false "never arrived" one).
+     */
+    public function markPaidBankTransfer(WithdrawalRequest $request, User $admin, string $screenshotPath): void
+    {
+        $request->update([
+            'status' => WithdrawalRequest::STATUS_AWAITING_CONFIRMATION,
+            'fulfillment_method' => WithdrawalRequest::FULFILLMENT_BANK_TRANSFER,
+            'screenshot_path' => $screenshotPath,
+            'processed_by' => $admin->id,
+            'processed_at' => now(),
+        ]);
+    }
+
+    public function confirmReceipt(WithdrawalRequest $request): void
+    {
+        $request->update([
+            'status' => WithdrawalRequest::STATUS_PAID,
+            'provider_confirmed_at' => now(),
         ]);
     }
 

@@ -14,6 +14,16 @@
 @section('content')
 <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
 
+    @if ($profile?->isSuspended())
+        <div class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-red-200 bg-red-50 p-5 dark:border-red-900/60 dark:bg-red-950/30">
+            <div>
+                <p class="text-sm font-bold text-red-900 dark:text-red-300">Your account is paused</p>
+                <p class="mt-1 text-xs text-red-800 dark:text-red-400/90">{{ $profile->suspension_reason }} You can't accept new bookings until this is settled.</p>
+            </div>
+            <a href="{{ route('provider.settlements.index') }}" class="shrink-0 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700">Settle now</a>
+        </div>
+    @endif
+
     {{-- ═══ Hero ═══ --}}
     <section class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-8">
         <div class="pointer-events-none absolute -end-20 -top-20 h-64 w-64 rounded-full bg-brand-500/10 blur-3xl"></div>

@@ -22,12 +22,14 @@ class BookingRoomController extends Controller
 
         $messages = $booking->messages()->with('sender')->orderBy('id')->get();
         $tracking = $booking->trackingUpdates()->latest('id')->first();
+        $trackingHistory = $booking->trackingUpdates()->latest('id')->limit(500)->get()->sortBy('id')->values();
 
         return response()->json([
             'is_communicable' => $booking->isCommunicable(),
             'can_share_location' => $booking->canShareLocation(),
             'messages' => MessageResource::collection($messages),
             'latest_tracking' => $tracking ? new TrackingUpdateResource($tracking) : null,
+            'tracking_history' => TrackingUpdateResource::collection($trackingHistory),
         ]);
     }
 

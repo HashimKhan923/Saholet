@@ -50,7 +50,10 @@
                             @if (auth()->user()->isAdmin())
                                 <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $invoice->createdBy?->name ?? '—' }}</td>
                             @endif
-                            <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $invoice->created_at->format('d M Y') }}</td>
+                            <td class="px-5 py-3 text-slate-600 dark:text-slate-400">
+                                {{ $invoice->created_at->format('d M Y') }}
+                                <span class="block text-xs text-slate-400 dark:text-slate-500">{{ $invoice->created_at->format('h:i A') }}</span>
+                            </td>
                             <td class="px-5 py-3">
                                 <div class="flex items-center justify-end gap-2">
                                     <a href="{{ route('admin.invoices.show', $invoice) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">View</a>

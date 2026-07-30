@@ -36,6 +36,8 @@ class ProviderProfile extends Model
         'submitted_at',
         'reviewed_at',
         'reviewed_by',
+        'suspended_at',
+        'suspension_reason',
     ];
 
     protected function casts(): array
@@ -48,6 +50,7 @@ class ProviderProfile extends Model
             'longitude' => 'decimal:7',
             'submitted_at' => 'datetime',
             'reviewed_at' => 'datetime',
+            'suspended_at' => 'datetime',
         ];
     }
 
@@ -103,14 +106,25 @@ class ProviderProfile extends Model
         return $this->hasMany(WithdrawalRequest::class);
     }
 
+    public function settlements(): HasMany
+    {
+        return $this->hasMany(ProviderSettlement::class);
+    }
+
     public function hasPayoutMethod(): bool
     {
         return filled($this->payout_method) && filled($this->payout_account_number);
     }
 
+    public function isSuspended(): bool
+    {
+        return $this->suspended_at !== null;
+    }
+
+    /** Approved AND not suspended — the set of providers eligible for new work anywhere in the app. */
     public function scopeApproved(Builder $query): Builder
     {
-        return $query->where('status', self::STATUS_APPROVED);
+        return $query->where('status', self::STATUS_APPROVED)->whereNull('suspended_at');
     }
 
     public function isDraft(): bool

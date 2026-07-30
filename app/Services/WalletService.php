@@ -78,6 +78,63 @@ class WalletService
         });
     }
 
+    /**
+     * Customer paid the provider in cash directly — Sahoulat never held this
+     * money, so there's nothing to "release." Instead the commission becomes
+     * a debt: a negative entry straight in the AVAILABLE bucket, tagged so
+     * the auto-suspend job can find how long it's gone unpaid.
+     */
+    public function chargeCashCommission(Payment $payment, User $providerUser): void
+    {
+        $payment->loadMissing('booking');
+
+        $rate = $this->commission->rateFor($payment->booking);
+        $split = $this->commission->compute((float) $payment->amount, $rate);
+
+        DB::transaction(function () use ($payment, $providerUser, $split) {
+            $wallet = $this->walletFor($providerUser);
+
+            LedgerEntry::create([
+                'wallet_id' => $wallet->id,
+                'payment_id' => $payment->id,
+                'bucket' => LedgerEntry::BUCKET_AVAILABLE,
+                'type' => 'cash_commission_due',
+                'amount' => -1 * $split['commission'],
+                'description' => 'Commission owed for cash booking ' . $payment->booking->reference,
+            ]);
+
+            $this->recompute($wallet);
+
+            $payment->update([
+                'status' => Payment::STATUS_RELEASED,
+                'released_at' => now(),
+                'commission_rate' => $split['rate'],
+                'commission_amount' => $split['commission'],
+                'provider_amount' => $split['provider'],
+            ]);
+        });
+    }
+
+    /**
+     * Admin has confirmed the customer's bank-transfer-to-Sahoulat screenshot
+     * against the real account statement. The job is already complete by
+     * this point (payment only happens post-completion), so there's no real
+     * holding period — hold and release happen back-to-back in one request,
+     * reusing the exact same escrow/commission logic as a card payment so
+     * the ledger trail stays consistent across payment methods.
+     */
+    public function verifyAndReleaseBankTransfer(Payment $payment, User $providerUser, User $admin): void
+    {
+        $payment->update([
+            'status' => Payment::STATUS_ESCROW,
+            'verified_at' => now(),
+            'verified_by' => $admin->id,
+        ]);
+
+        $this->holdInEscrow($payment, $providerUser);
+        $this->release($payment, $providerUser);
+    }
+
     /** Booking cancelled/refunded after payment → remove escrow hold (full refund). */
     public function refund(Payment $payment, User $providerUser): void
     {

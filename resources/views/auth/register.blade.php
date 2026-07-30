@@ -71,15 +71,21 @@
 
         <div>
             <label for="password" class="block text-sm font-medium text-slate-700">{{ __('messages.auth.password') }}</label>
-            <input id="password" name="password" type="password" required autocomplete="new-password"
-                class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200">
+            <div class="relative" x-data="{ show: false }">
+                <input id="password" name="password" :type="show ? 'text' : 'password'" required autocomplete="new-password"
+                    class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 pr-10 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200">
+                <x-password-toggle-button />
+            </div>
             <p class="mt-1 text-xs text-slate-400">{{ __('messages.auth.min_chars') }}</p>
         </div>
 
         <div>
             <label for="password_confirmation" class="block text-sm font-medium text-slate-700">{{ __('messages.auth.confirm_password') }}</label>
-            <input id="password_confirmation" name="password_confirmation" type="password" required autocomplete="new-password"
-                class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200">
+            <div class="relative" x-data="{ show: false }">
+                <input id="password_confirmation" name="password_confirmation" :type="show ? 'text' : 'password'" required autocomplete="new-password"
+                    class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 pr-10 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200">
+                <x-password-toggle-button />
+            </div>
         </div>
 
         <button type="submit" class="w-full rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">

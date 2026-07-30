@@ -87,21 +87,30 @@
 
             <div>
                 <label for="current_password" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('messages.profile.current_password') }}</label>
-                <input id="current_password" name="current_password" type="password" required autocomplete="current-password"
-                    class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                <div class="relative" x-data="{ show: false }">
+                    <input id="current_password" name="current_password" :type="show ? 'text' : 'password'" required autocomplete="current-password"
+                        class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 pr-10 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                    <x-password-toggle-button />
+                </div>
             </div>
 
             <div class="grid gap-5 sm:grid-cols-2">
                 <div>
                     <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('messages.profile.new_password') }}</label>
-                    <input id="password" name="password" type="password" required autocomplete="new-password"
-                        class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                    <div class="relative" x-data="{ show: false }">
+                        <input id="password" name="password" :type="show ? 'text' : 'password'" required autocomplete="new-password"
+                            class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 pr-10 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                        <x-password-toggle-button />
+                    </div>
                     <p class="mt-1.5 text-xs text-slate-400">{{ __('messages.auth.min_chars') }}</p>
                 </div>
                 <div>
                     <label for="password_confirmation" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('messages.profile.confirm_password') }}</label>
-                    <input id="password_confirmation" name="password_confirmation" type="password" required autocomplete="new-password"
-                        class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                    <div class="relative" x-data="{ show: false }">
+                        <input id="password_confirmation" name="password_confirmation" :type="show ? 'text' : 'password'" required autocomplete="new-password"
+                            class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 pr-10 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                        <x-password-toggle-button />
+                    </div>
                 </div>
             </div>
 

@@ -114,6 +114,10 @@ class BookingController extends Controller
             return back()->with('error', 'That action is not allowed for this booking right now.');
         }
 
+        if ($action === 'confirm' && $booking->providerProfile->isSuspended()) {
+            return back()->with('error', 'Your account is paused for an unpaid commission balance — settle it before accepting new bookings.');
+        }
+
         switch ($action) {
             case 'confirm':
                 $booking->update(['status' => Booking::STATUS_CONFIRMED, 'confirmed_at' => now()]);

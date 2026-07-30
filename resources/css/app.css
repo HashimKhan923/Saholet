@@ -186,6 +186,27 @@
         0 4px 10px -4px rgba(46, 120, 61, 0.12);
 }
 
+/* Header nav links: a half-width green underline that grows in on hover
+   and retracts the same way on hover-out (scaleX is naturally reversible). */
+.nav-underline {
+    position: relative;
+}
+.nav-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 2px;
+    width: 100%;
+    background-color: var(--color-brand-600);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+}
+.nav-underline:hover::after {
+    transform: scaleX(1);
+}
+
 /* Primary button with a light-sweep on hover */
 .btn-shine {
     position: relative;

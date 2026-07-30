@@ -17,6 +17,7 @@
             trackUrl: '{{ route('bookings.tracking.store', $booking) }}',
             messages: @js($messages),
             tracking: @js($tracking),
+            trackingHistory: @js($trackingHistory),
             destination: @js(($booking->latitude !== null && $booking->longitude !== null) ? [
                 'lat' => (float) $booking->latitude,
                 'lng' => (float) $booking->longitude,
@@ -129,12 +130,24 @@
                     @if ($isProvider)
                         <template x-if="canShare">
                             <div class="ms-auto flex flex-1 flex-wrap items-center justify-end gap-2 sm:flex-nowrap">
-                                <input x-model="note" type="text" maxlength="255" placeholder="Status e.g. On the way"
-                                    class="w-full min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white sm:max-w-xs">
-                                <button @click="shareLocation()" :disabled="sharing"
+                                <template x-if="! liveTracking">
+                                    <input x-model="note" type="text" maxlength="255" placeholder="Status e.g. On the way"
+                                        class="w-full min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white sm:max-w-xs">
+                                </template>
+                                <template x-if="liveTracking">
+                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1.5 text-xs font-semibold text-brand-700 dark:bg-brand-950/40 dark:text-brand-400">
+                                        <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-600"></span>
+                                        Live — updating automatically
+                                    </span>
+                                </template>
+                                <button x-show="! liveTracking" @click="startLiveTracking()" :disabled="sharing"
                                     class="shrink-0 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50">
-                                    <span x-show="! sharing">Share my location</span>
-                                    <span x-show="sharing" x-cloak>Sharing…</span>
+                                    <span x-show="! sharing">Start live tracking</span>
+                                    <span x-show="sharing" x-cloak>Starting…</span>
+                                </button>
+                                <button x-show="liveTracking" x-cloak @click="stopLiveTracking()"
+                                    class="shrink-0 rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
+                                    Stop
                                 </button>
                             </div>
                         </template>
@@ -142,7 +155,7 @@
                             <p class="ms-auto text-xs text-slate-400 dark:text-slate-500">Location sharing is available while the booking is active.</p>
                         </template>
                     @else
-                        <p class="ms-auto text-xs text-slate-400 dark:text-slate-500">Your provider's live location appears here once they're on the way.</p>
+                        <p class="ms-auto text-xs text-slate-400 dark:text-slate-500">Your provider's live location appears here once they're on the way — no need to refresh.</p>
                     @endif
                 </div>
             </div>
@@ -167,6 +180,7 @@ document.addEventListener('alpine:init', () => {
         trackUrl: cfg.trackUrl,
         messages: cfg.messages || [],
         tracking: cfg.tracking || null,
+        trackingHistory: cfg.trackingHistory || [],
         destination: cfg.destination || null,
         googleMapsKey: cfg.googleMapsKey || '',
         status: cfg.status,
@@ -174,6 +188,10 @@ document.addEventListener('alpine:init', () => {
         draft: '',
         note: '',
         sharing: false,
+        liveTracking: false,
+        watchId: null,
+        pushIntervalId: null,
+        lastKnownPos: null,
         error: '',
         mapError: '',
         channel: null,
@@ -190,6 +208,9 @@ document.addEventListener('alpine:init', () => {
                     this.channel.listen('.status.updated', (e) => {
                         this.status = e.status;
                         this.statusLabel = e.status_label;
+                        if ((e.status === 'completed' || e.status === 'cancelled') && this.liveTracking) {
+                            this.stopLiveTracking();
+                        }
                     });
                 } catch (err) {
                     console.warn('Realtime unavailable for this room.', err);
@@ -275,6 +296,8 @@ document.addEventListener('alpine:init', () => {
         map: null,
         marker: null,
         destMarker: null,
+        trail: null,
+        pathCoords: [],
 
         initMap() {
             if (!this.$refs.mapEl || this.map) return;
@@ -307,6 +330,16 @@ document.addEventListener('alpine:init', () => {
                 });
             }
 
+            // Breadcrumb trail — every point recorded for this job, oldest first.
+            this.pathCoords = (this.trackingHistory || []).map((p) => ({ lat: p.lat, lng: p.lng }));
+            this.trail = new google.maps.Polyline({
+                path: this.pathCoords,
+                map: this.map,
+                strokeColor: '#1a7a35',
+                strokeOpacity: 0.85,
+                strokeWeight: 4,
+            });
+
             if (this.tracking) {
                 this.renderMapPosition();
             }
@@ -332,6 +365,14 @@ document.addEventListener('alpine:init', () => {
                 this.marker.setPosition(pos);
             }
 
+            if (this.trail) {
+                const last = this.pathCoords[this.pathCoords.length - 1];
+                if (!last || last.lat !== pos.lat || last.lng !== pos.lng) {
+                    this.pathCoords.push(pos);
+                    this.trail.setPath(this.pathCoords);
+                }
+            }
+
             if (this.destMarker) {
                 const bounds = new google.maps.LatLngBounds();
                 bounds.extend(pos);
@@ -347,7 +388,13 @@ document.addEventListener('alpine:init', () => {
             return 'https://www.google.com/maps?q=' + this.tracking.latitude + ',' + this.tracking.longitude;
         },
 
-        shareLocation() {
+        /**
+         * Foodpanda/Bykea-style: one tap starts it, then it keeps pushing the
+         * provider's position on its own — watchPosition() keeps the freshest
+         * fix in memory, a fixed interval actually posts it to the server, so
+         * a flood of GPS events doesn't turn into a flood of network requests.
+         */
+        startLiveTracking() {
             this.error = '';
             if (!navigator.geolocation) {
                 this.error = 'Geolocation is not supported by your browser.';
@@ -355,28 +402,18 @@ document.addEventListener('alpine:init', () => {
             }
             this.sharing = true;
             navigator.geolocation.getCurrentPosition(
-                async (pos) => {
-                    try {
-                        const res = await fetch(this.trackUrl, {
-                            method: 'POST',
-                            headers: this.reqHeaders(),
-                            body: JSON.stringify({
-                                latitude: pos.coords.latitude,
-                                longitude: pos.coords.longitude,
-                                note: this.note,
-                            }),
-                        });
-                        if (res.ok) {
-                            this.applyTracking(await res.json());
-                        } else {
-                            const e = await res.json().catch(() => ({}));
-                            this.error = e.message || 'Could not share location.';
-                        }
-                    } catch (err) {
-                        this.error = 'Network error while sharing location.';
-                    } finally {
-                        this.sharing = false;
-                    }
+                (pos) => {
+                    this.lastKnownPos = pos;
+                    this.sharing = false;
+                    this.liveTracking = true;
+                    this.pushPosition();
+
+                    this.watchId = navigator.geolocation.watchPosition(
+                        (p) => { this.lastKnownPos = p; },
+                        (err) => { this.error = err.message || 'Lost access to your location.'; },
+                        { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+                    );
+                    this.pushIntervalId = setInterval(() => this.pushPosition(), 8000);
                 },
                 (err) => {
                     this.error = err.message || 'Could not get your location.';
@@ -384,6 +421,41 @@ document.addEventListener('alpine:init', () => {
                 },
                 { enableHighAccuracy: true, timeout: 10000 }
             );
+        },
+
+        stopLiveTracking() {
+            if (this.watchId !== null) {
+                navigator.geolocation.clearWatch(this.watchId);
+                this.watchId = null;
+            }
+            if (this.pushIntervalId !== null) {
+                clearInterval(this.pushIntervalId);
+                this.pushIntervalId = null;
+            }
+            this.liveTracking = false;
+        },
+
+        async pushPosition() {
+            if (!this.lastKnownPos) return;
+            try {
+                const res = await fetch(this.trackUrl, {
+                    method: 'POST',
+                    headers: this.reqHeaders(),
+                    body: JSON.stringify({
+                        latitude: this.lastKnownPos.coords.latitude,
+                        longitude: this.lastKnownPos.coords.longitude,
+                        note: this.note,
+                    }),
+                });
+                if (res.ok) {
+                    this.applyTracking(await res.json());
+                } else if (res.status === 422) {
+                    // Booking is no longer active — stop trying.
+                    this.stopLiveTracking();
+                }
+            } catch (err) {
+                // Transient network hiccup — the next interval tick will retry, tracking stays on.
+            }
         },
     }));
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Provider;
 
 use App\Http\Controllers\Controller;
+use App\Models\WithdrawalRequest;
 use App\Services\Notifier;
 use App\Services\WalletService;
 use App\Services\WithdrawalService;
@@ -42,5 +43,26 @@ class WithdrawalController extends Controller
         );
 
         return back()->with('success', 'Withdrawal requested. We\'ll process it and mark it paid once the transfer is sent.');
+    }
+
+    public function confirmReceipt(Request $request, WithdrawalRequest $withdrawal): RedirectResponse
+    {
+        $profile = $request->user()->providerProfile;
+        abort_unless($profile && $withdrawal->provider_profile_id === $profile->id, 403);
+
+        if (! $withdrawal->isAwaitingConfirmation()) {
+            return back()->with('error', 'There\'s nothing to confirm for this withdrawal.');
+        }
+
+        $this->withdrawals->confirmReceipt($withdrawal);
+
+        app(Notifier::class)->notifyAdmins(
+            'withdrawal',
+            'Withdrawal receipt confirmed',
+            $profile->business_name . ' confirmed receiving Rs. ' . number_format($withdrawal->amount, 0) . ' (' . $withdrawal->reference . ').',
+            route('admin.withdrawals.show', $withdrawal)
+        );
+
+        return back()->with('success', 'Thanks for confirming!');
     }
 }

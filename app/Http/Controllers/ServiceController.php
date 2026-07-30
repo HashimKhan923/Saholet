@@ -40,7 +40,7 @@ class ServiceController extends Controller
         $providers = ProviderService::with('providerProfile.user')
             ->where('service_id', $service->id)
             ->where('is_active', true)
-            ->whereHas('providerProfile', fn ($q) => $q->where('status', 'approved'))
+            ->whereHas('providerProfile', fn ($q) => $q->approved())
             ->orderBy('price')
             ->paginate(15);
 

@@ -42,7 +42,15 @@
             </div>
         </div>
 
-        @if ($payment && $payment->isReleased())
+        @if ($payment && $payment->isCash())
+            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Paid in cash to the provider. Thank you!</p>
+        @elseif ($payment && $payment->isBankTransfer() && $payment->isPending())
+            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">
+                <span class="font-semibold">Rs. {{ number_format($payment->amount, 0) }}</span> bank transfer submitted — we're confirming it against our account statement.
+            </p>
+        @elseif ($payment && $payment->isBankTransfer() && $payment->isReleased())
+            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Your bank transfer of <span class="font-semibold">Rs. {{ number_format($payment->amount, 0) }}</span> was verified and paid to the provider. Thank you!</p>
+        @elseif ($payment && $payment->isReleased())
             <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">You released <span class="font-semibold">Rs. {{ number_format($payment->amount, 0) }}</span> to the provider. Thank you!</p>
         @elseif ($payment && $payment->isRefunded())
             <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Your escrow payment of Rs. {{ number_format($payment->amount, 0) }} was refunded.</p>
@@ -68,8 +76,11 @@
                 @endif
             @endif
         @elseif ($booking->isPayable())
-            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Pay now to hold the amount in escrow until the job is complete. Or pay the provider directly (cash) — your choice.</p>
+            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Pay now to hold the amount in escrow until the job is complete. Or wait and pay cash / bank transfer once the job is done.</p>
             <a href="{{ route('consumer.payments.create', $booking) }}" class="mt-4 inline-flex items-center rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Pay Rs. {{ number_format($booking->price, 0) }}</a>
+        @elseif ($booking->needsCompletionPayment())
+            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">The job is done — choose how you'd like to pay.</p>
+            <a href="{{ route('consumer.payments.complete.create', $booking) }}" class="mt-4 inline-flex items-center rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Pay Rs. {{ number_format($booking->price, 0) }}</a>
         @else
             <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">No online payment on this booking.</p>
         @endif
