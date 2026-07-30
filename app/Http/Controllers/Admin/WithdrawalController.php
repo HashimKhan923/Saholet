@@ -18,7 +18,7 @@ class WithdrawalController extends Controller
     {
         $status = $request->query('status', 'all');
 
-        $validStatuses = ['all', 'pending', 'paid', 'rejected'];
+        $validStatuses = ['all', 'pending', 'awaiting_confirmation', 'paid', 'rejected'];
         if (! in_array($status, $validStatuses, true)) {
             $status = 'all';
         }
@@ -41,23 +41,48 @@ class WithdrawalController extends Controller
         return view('admin.withdrawals.show', compact('withdrawal'));
     }
 
-    public function markPaid(Request $request, WithdrawalRequest $withdrawal): RedirectResponse
+    public function markPaidCash(Request $request, WithdrawalRequest $withdrawal): RedirectResponse
     {
         if (! $withdrawal->isPending()) {
             return back()->with('error', 'This request has already been processed.');
         }
 
-        $this->withdrawals->markPaid($withdrawal, $request->user());
+        $this->withdrawals->markPaidCash($withdrawal, $request->user());
 
         app(Notifier::class)->notify(
             $withdrawal->providerProfile->user,
             'withdrawal',
             'Withdrawal paid',
-            'Your withdrawal of Rs. ' . number_format($withdrawal->amount, 0) . ' (' . $withdrawal->reference . ') has been sent.',
+            'Your withdrawal of Rs. ' . number_format($withdrawal->amount, 0) . ' (' . $withdrawal->reference . ') was handed to you in cash.',
             route('provider.wallet.index')
         );
 
         return back()->with('success', 'Marked as paid.');
+    }
+
+    public function markPaidBankTransfer(Request $request, WithdrawalRequest $withdrawal): RedirectResponse
+    {
+        if (! $withdrawal->isPending()) {
+            return back()->with('error', 'This request has already been processed.');
+        }
+
+        $data = $request->validate([
+            'screenshot' => ['required', 'image', 'mimes:jpg,jpeg,png,webp,heic,heif', 'max:8192'],
+        ]);
+
+        $path = $request->file('screenshot')->store('withdrawal-screenshots', 'public');
+
+        $this->withdrawals->markPaidBankTransfer($withdrawal, $request->user(), $path);
+
+        app(Notifier::class)->notify(
+            $withdrawal->providerProfile->user,
+            'withdrawal',
+            'Withdrawal sent — please confirm',
+            'Rs. ' . number_format($withdrawal->amount, 0) . ' (' . $withdrawal->reference . ') was sent via bank transfer. Please confirm you received it.',
+            route('provider.wallet.index')
+        );
+
+        return back()->with('success', 'Marked as sent. Waiting on the provider to confirm receipt.');
     }
 
     public function reject(Request $request, WithdrawalRequest $withdrawal): RedirectResponse

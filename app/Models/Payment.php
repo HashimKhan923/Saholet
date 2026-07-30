@@ -13,6 +13,9 @@ class Payment extends Model
     public const STATUS_REFUNDED = 'refunded';
     public const STATUS_FAILED = 'failed';
 
+    public const GATEWAY_CASH = 'cash';
+    public const GATEWAY_BANK_TRANSFER = 'bank_transfer';
+
     protected $fillable = [
         'reference',
         'booking_id',
@@ -26,8 +29,12 @@ class Payment extends Model
         'provider_amount',
         'status',
         'gateway_reference',
+        'screenshot_path',
+        'notes',
         'paid_at',
         'released_at',
+        'verified_at',
+        'verified_by',
         'refunded_at',
     ];
 
@@ -41,6 +48,7 @@ class Payment extends Model
             'provider_amount' => 'decimal:2',
             'paid_at' => 'datetime',
             'released_at' => 'datetime',
+            'verified_at' => 'datetime',
             'refunded_at' => 'datetime',
         ];
     }
@@ -58,6 +66,21 @@ class Payment extends Model
     public function consumer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'consumer_id');
+    }
+
+    public function verifier(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'verified_by');
+    }
+
+    public function isCash(): bool
+    {
+        return $this->gateway === self::GATEWAY_CASH;
+    }
+
+    public function isBankTransfer(): bool
+    {
+        return $this->gateway === self::GATEWAY_BANK_TRANSFER;
     }
 
     /** What actually needs to go through a payment gateway, after referral credit. */

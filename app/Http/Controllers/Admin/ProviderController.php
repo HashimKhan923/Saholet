@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
+use App\Models\LedgerEntry;
 use App\Models\ProviderProfile;
+use App\Models\WithdrawalRequest;
+use App\Services\WalletService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -38,11 +42,55 @@ class ProviderController extends Controller
         return view('admin.providers.index', compact('profiles', 'status', 'counts'));
     }
 
-    public function show(ProviderProfile $provider): View
+    public function show(ProviderProfile $provider, WalletService $wallets): View
     {
-        $provider->load(['user', 'documents', 'reviewer']);
+        $provider->load([
+            'user',
+            'documents',
+            'reviewer',
+            'providerServices.service.category',
+            'portfolioPhotos',
+            'reviews' => fn ($q) => $q->latest()->limit(5)->with('consumer:id,name'),
+            'withdrawalRequests' => fn ($q) => $q->latest()->limit(10),
+        ]);
 
-        return view('admin.providers.show', compact('provider'));
+        $bookings = $provider->bookings()
+            ->with(['service:id,name', 'consumer:id,name'])
+            ->latest('scheduled_date')
+            ->limit(10)
+            ->get();
+
+        $bookingCounts = [
+            'total' => $provider->bookings()->count(),
+            'completed' => $provider->bookings()->where('status', Booking::STATUS_COMPLETED)->count(),
+            'active' => $provider->bookings()->whereIn('status', Booking::ACTIVE_STATUSES)->count(),
+            'cancelled' => $provider->bookings()->where('status', Booking::STATUS_CANCELLED)->count(),
+        ];
+
+        $completedValue = (float) $provider->bookings()
+            ->where('status', Booking::STATUS_COMPLETED)
+            ->sum('price');
+
+        $wallet = $wallets->walletFor($provider->user);
+
+        $lifetimeEarned = (float) $wallet->entries()
+            ->where('bucket', LedgerEntry::BUCKET_AVAILABLE)
+            ->where('amount', '>', 0)
+            ->sum('amount');
+
+        $totalWithdrawn = (float) $provider->withdrawalRequests()
+            ->where('status', WithdrawalRequest::STATUS_PAID)
+            ->sum('amount');
+
+        $earnings = [
+            'lifetime_earned' => $lifetimeEarned,
+            'available_balance' => (float) $wallet->available_balance,
+            'escrow_balance' => (float) $wallet->escrow_balance,
+            'total_withdrawn' => $totalWithdrawn,
+            'completed_value' => $completedValue,
+        ];
+
+        return view('admin.providers.show', compact('provider', 'bookings', 'bookingCounts', 'earnings'));
     }
 
     public function approve(ProviderProfile $provider): RedirectResponse

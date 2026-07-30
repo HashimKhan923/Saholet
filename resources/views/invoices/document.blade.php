@@ -38,5 +38,6 @@
         'discount' => (float) $invoice->discount,
         'paymentInfo' => null,
         'notes' => $invoice->notes,
+        'inspectionNotes' => $invoice->inspection_notes,
     ])
 @endsection

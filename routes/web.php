@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\CareerApplicationController as AdminCareerApplica
 use App\Http\Controllers\Admin\CareerCategoryController as AdminCareerCategoryController;
 use App\Http\Controllers\Admin\CareerListingController as AdminCareerListingController;
 use App\Http\Controllers\Admin\CorporateAccountController as AdminCorporateAccountController;
+use App\Http\Controllers\Admin\PaymentVerificationController as AdminPaymentVerificationController;
+use App\Http\Controllers\Admin\ProviderSettlementController as AdminProviderSettlementController;
 use App\Http\Controllers\Admin\RequestsInboxController as AdminRequestsInboxController;
 use App\Http\Controllers\Admin\WithdrawalController as AdminWithdrawalController;
 use App\Http\Controllers\Admin\SubscriptionController as AdminSubscriptionController;
@@ -42,6 +44,7 @@ use App\Http\Controllers\Consumer\ReferralController as ConsumerReferralControll
 use App\Http\Controllers\Consumer\DashboardController as ConsumerDashboardController;
 use App\Http\Controllers\Consumer\EmergencyController as ConsumerEmergencyController;
 use App\Http\Controllers\Consumer\JobController as ConsumerJobController;
+use App\Http\Controllers\Consumer\CompletionPaymentController as ConsumerCompletionPaymentController;
 use App\Http\Controllers\Consumer\PaymentController as ConsumerPaymentController;
 use App\Http\Controllers\Consumer\ReviewController as ConsumerReviewController;
 use App\Http\Controllers\Consumer\SubscriptionController as ConsumerSubscriptionController;
@@ -65,6 +68,7 @@ use App\Http\Controllers\Provider\PortfolioController as ProviderPortfolioContro
 use App\Http\Controllers\Provider\ProviderServiceController;
 use App\Http\Controllers\Provider\PayoutMethodController as ProviderPayoutMethodController;
 use App\Http\Controllers\Provider\WalletController as ProviderWalletController;
+use App\Http\Controllers\Provider\SettlementController as ProviderSettlementController;
 use App\Http\Controllers\Provider\WithdrawalController as ProviderWithdrawalController;
 use App\Http\Controllers\ProviderDirectoryController;
 use App\Http\Controllers\ProviderDocumentController;
@@ -76,6 +80,8 @@ use Illuminate\Support\Facades\Route;
 
 // ─── Public ──────────────────────────────────────────────────────────
 Route::get('/', [HomeController::class, 'index'])->name('home');
+// Sandbox homepage — edit resources/views/landing-dev.blade.php freely without touching the live "/".
+Route::get('/dev', [HomeController::class, 'devIndex'])->name('dev.home');
 
 Route::get('locale/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
 Route::get('manifest.webmanifest', [PwaController::class, 'manifest'])->name('pwa.manifest');
@@ -206,6 +212,10 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
         Route::post('bookings/{booking}/pay', [ConsumerPaymentController::class, 'store'])->name('consumer.payments.store');
         Route::post('bookings/{booking}/release', [ConsumerPaymentController::class, 'release'])->name('consumer.payments.release');
 
+        // Cash / bank-transfer settlement, shown only once the job is complete.
+        Route::get('bookings/{booking}/pay-complete', [ConsumerCompletionPaymentController::class, 'create'])->name('consumer.payments.complete.create');
+        Route::post('bookings/{booking}/pay-complete', [ConsumerCompletionPaymentController::class, 'store'])->name('consumer.payments.complete.store');
+
         // Consumer reviews
         Route::get('bookings/{booking}/review', [ConsumerReviewController::class, 'create'])->name('consumer.reviews.create');
         Route::post('bookings/{booking}/review', [ConsumerReviewController::class, 'store'])->name('consumer.reviews.store');
@@ -269,6 +279,10 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
         Route::get('wallet', [ProviderWalletController::class, 'index'])->name('wallet.index');
         Route::post('payout-method', [ProviderPayoutMethodController::class, 'update'])->name('payout-method.update');
         Route::post('withdrawals', [ProviderWithdrawalController::class, 'store'])->name('withdrawals.store');
+        Route::post('withdrawals/{withdrawal}/confirm-receipt', [ProviderWithdrawalController::class, 'confirmReceipt'])->name('withdrawals.confirm-receipt');
+
+        Route::get('settlements', [ProviderSettlementController::class, 'index'])->name('settlements.index');
+        Route::post('settlements', [ProviderSettlementController::class, 'store'])->name('settlements.store');
 
         Route::get('portfolio', [ProviderPortfolioController::class, 'index'])->name('portfolio.index');
         Route::post('portfolio', [ProviderPortfolioController::class, 'store'])->name('portfolio.store');
@@ -339,8 +353,19 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
         Route::middleware('role:admin')->group(function () {
             Route::get('withdrawals', [AdminWithdrawalController::class, 'index'])->name('withdrawals.index');
             Route::get('withdrawals/{withdrawal}', [AdminWithdrawalController::class, 'show'])->name('withdrawals.show');
-            Route::post('withdrawals/{withdrawal}/paid', [AdminWithdrawalController::class, 'markPaid'])->name('withdrawals.paid');
+            Route::post('withdrawals/{withdrawal}/paid-cash', [AdminWithdrawalController::class, 'markPaidCash'])->name('withdrawals.paid-cash');
+            Route::post('withdrawals/{withdrawal}/paid-bank-transfer', [AdminWithdrawalController::class, 'markPaidBankTransfer'])->name('withdrawals.paid-bank-transfer');
             Route::post('withdrawals/{withdrawal}/reject', [AdminWithdrawalController::class, 'reject'])->name('withdrawals.reject');
+
+            Route::get('payments', [AdminPaymentVerificationController::class, 'index'])->name('payments.index');
+            Route::get('payments/{payment}', [AdminPaymentVerificationController::class, 'show'])->name('payments.show');
+            Route::post('payments/{payment}/verify', [AdminPaymentVerificationController::class, 'verify'])->name('payments.verify');
+            Route::post('payments/{payment}/reject', [AdminPaymentVerificationController::class, 'reject'])->name('payments.reject');
+
+            Route::get('settlements', [AdminProviderSettlementController::class, 'index'])->name('settlements.index');
+            Route::get('settlements/{settlement}', [AdminProviderSettlementController::class, 'show'])->name('settlements.show');
+            Route::post('settlements/{settlement}/confirm', [AdminProviderSettlementController::class, 'confirm'])->name('settlements.confirm');
+            Route::post('settlements/{settlement}/reject', [AdminProviderSettlementController::class, 'reject'])->name('settlements.reject');
         });
 
         Route::middleware('permission:bookings')->group(function () {

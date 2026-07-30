@@ -11,13 +11,21 @@
         $tabs = [
             'all' => 'All',
             'pending' => 'Pending',
+            'awaiting_confirmation' => 'Awaiting confirmation',
             'paid' => 'Paid',
             'rejected' => 'Rejected',
         ];
         $statusTones = [
             'pending' => 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400',
+            'awaiting_confirmation' => 'bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-400',
             'paid' => 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-400',
             'rejected' => 'bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400',
+        ];
+        $statusLabels = [
+            'pending' => 'Pending',
+            'awaiting_confirmation' => 'Awaiting confirmation',
+            'paid' => 'Paid',
+            'rejected' => 'Rejected',
         ];
     @endphp
     <div class="mt-6 flex flex-wrap gap-2">
@@ -51,7 +59,7 @@
                         <td class="px-5 py-3 font-semibold text-slate-900 dark:text-white">Rs. {{ number_format($wd->amount, 0) }}</td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $wd->methodLabel() }}</td>
                         <td class="px-5 py-3">
-                            <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusTones[$wd->status] ?? '' }}">{{ ucfirst($wd->status) }}</span>
+                            <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusTones[$wd->status] ?? '' }}">{{ $statusLabels[$wd->status] ?? ucfirst($wd->status) }}</span>
                         </td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $wd->created_at->format('d M Y') }}</td>
                         <td class="px-5 py-3 text-right">

@@ -43,6 +43,16 @@ class BookingRoomController extends Controller
             'time' => $latest->created_at->format('d M, g:i A'),
         ] : null;
 
+        // Breadcrumb trail for this job only — capped so a very long job doesn't
+        // ship thousands of points to the browser on page load.
+        $trackingHistory = $booking->trackingUpdates()
+            ->latest('id')
+            ->limit(500)
+            ->get()
+            ->sortBy('id')
+            ->values()
+            ->map(fn ($t) => ['lat' => (float) $t->latitude, 'lng' => (float) $t->longitude]);
+
         $otherParty = $isProvider
             ? $booking->consumer->name
             : ($booking->providerProfile->business_name ?: $booking->providerProfile->user->name);
@@ -52,7 +62,7 @@ class BookingRoomController extends Controller
             : route('consumer.bookings.show', $booking);
 
         return view('booking.room', compact(
-            'booking', 'isProvider', 'messages', 'tracking', 'otherParty', 'backUrl'
+            'booking', 'isProvider', 'messages', 'tracking', 'trackingHistory', 'otherParty', 'backUrl'
         ));
     }
 

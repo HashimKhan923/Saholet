@@ -19,6 +19,21 @@ class HomeController extends Controller
 
     public function index(): View
     {
+        return view('landing', $this->landingData());
+    }
+
+    /**
+     * A sandbox copy of the homepage at /dev — same live data, separate view
+     * file (landing-dev.blade.php) so it can be edited freely without ever
+     * touching the real homepage until changes are ready to promote.
+     */
+    public function devIndex(): View
+    {
+        return view('landing-dev', $this->landingData());
+    }
+
+    private function landingData(): array
+    {
         $allCategories = $this->catalog->categories();
         $categories = $allCategories->take(8);
 
@@ -61,13 +76,13 @@ class HomeController extends Controller
 
         $faqs = Cache::remember('landing.faqs', 600, fn () => Faq::active()->ordered()->get());
 
-        return view('landing', [
+        return [
             'categories' => $categories,
             'cheapestService' => $cheapestService,
             'stats' => $stats,
             'testimonials' => $testimonials,
             'faqs' => $faqs,
             'serviceSearchIndex' => $serviceSearchIndex,
-        ]);
+        ];
     }
 }

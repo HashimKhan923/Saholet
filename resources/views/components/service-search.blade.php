@@ -1,11 +1,11 @@
-@props(['index' => [], 'action' => null, 'placeholder' => null])
+@props(['index' => [], 'action' => null, 'placeholder' => null, 'wrapperClass' => 'max-w-lg'])
 
 @php
     $isUrdu = app()->getLocale() === 'ur';
     $placeholder = $placeholder ?? __('messages.landing.search_placeholder');
 @endphp
 
-<div class="relative max-w-lg"
+<div class="relative {{ $wrapperClass }}"
      x-data="{
         q: '',
         open: false,

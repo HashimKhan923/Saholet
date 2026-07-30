@@ -1,4 +1,4 @@
-{{-- Shared invoice/receipt body. Expects: $billTo, $from, $lineItems, $total, $paymentInfo (nullable), $notes (nullable), $discount (nullable, default 0) --}}
+{{-- Shared invoice/receipt body. Expects: $billTo, $from, $lineItems, $total, $paymentInfo (nullable), $notes (nullable), $inspectionNotes (nullable), $discount (nullable, default 0) --}}
 @php
     $discount = (float) ($discount ?? 0);
     $subtotal = $total + $discount;
@@ -29,6 +29,11 @@
         </td>
     </tr>
 </table>
+
+@if (!empty($inspectionNotes))
+    <div class="section-heading">Inspection / Review</div>
+    <div class="section-text">{{ $inspectionNotes }}</div>
+@endif
 
 <table class="items">
     <thead>

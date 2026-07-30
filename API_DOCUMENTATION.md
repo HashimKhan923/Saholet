@@ -162,7 +162,7 @@ Active categories with their active services (the "browse services" catalog, cac
 All active services (flat list, e.g. for search/typeahead). Response: `{ "services": [ {...ServiceResource...} ] }`
 
 ### `GET /api/services/{slug}`
-Service detail + approved providers offering it (cheapest first, paginated) + 3 related services.
+Service detail + approved providers offering it (cheapest first, paginated) + 3 related services. "Approved" here excludes providers currently suspended for unpaid cash-commission debt — they're temporarily not eligible for new bookings until they settle up.
 **Response:**
 ```json
 {
@@ -176,7 +176,7 @@ Service detail + approved providers offering it (cheapest first, paginated) + 3 
 ```
 
 ### `GET /api/providers`
-Public provider directory. **Query:** `q` (search name/bio/city/service), `city` (exact match). Both optional.
+Public provider directory — approved and not currently suspended for unpaid cash-commission debt. **Query:** `q` (search name/bio/city/service), `city` (exact match). Both optional.
 **Response:**
 ```json
 {
@@ -231,14 +231,15 @@ Marks one notification read. Response: `{ "notification": {...} }`
 Response: `{ "message": "All notifications marked as read." }`
 
 ### `GET /api/bookings/{id}/room`
-Chat history + latest tracking pin for a booking (both consumer and provider on the booking can call this).
+Chat history + tracking pin(s) for a booking (both consumer and provider on the booking can call this).
 **Response:**
 ```json
 {
   "is_communicable": true,
   "can_share_location": true,
   "messages": [ { "id":1, "sender_id":22, "sender_name":"Test Consumer", "body":"...", "created_at":"..." } ],
-  "latest_tracking": { "id":1, "latitude":24.86, "longitude":67.01, "note":null, "created_at":"..." }
+  "latest_tracking": { "id":1, "latitude":24.86, "longitude":67.01, "note":null, "created_at":"..." },
+  "tracking_history": [ { "id":1, "latitude":24.86, "longitude":67.01, "note":null, "created_at":"..." }, "...up to the most recent 500 points, oldest first — draw as a breadcrumb trail" ]
 }
 ```
 

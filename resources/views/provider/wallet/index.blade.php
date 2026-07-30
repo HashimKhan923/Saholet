@@ -20,6 +20,8 @@
         'refund_out'          => 'Escrow refunded',
         'withdrawal_hold'     => 'Withdrawal requested',
         'withdrawal_reversed' => 'Withdrawal reversed',
+        'cash_commission_due' => 'Commission owed (cash job)',
+        'commission_settled'  => 'Commission settlement',
     ];
 
     $canWithdraw = $profile && $profile->hasPayoutMethod() && (float) $wallet->available_balance >= $minWithdrawal;
@@ -139,6 +141,16 @@
         </div>
     </div>
 
+    @if ((float) $wallet->available_balance < 0)
+        <div class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-red-200 bg-red-50 p-5 dark:border-red-900/60 dark:bg-red-950/30">
+            <div>
+                <p class="text-sm font-bold text-red-900 dark:text-red-300">Rs. {{ number_format(abs((float) $wallet->available_balance), 0) }} owed to Sahoulat</p>
+                <p class="mt-1 text-xs text-red-800 dark:text-red-400/90">Commission from cash bookings. Settle within {{ config('payments.settlement_grace_days') }} days to avoid your account being paused.</p>
+            </div>
+            <a href="{{ route('provider.settlements.index') }}" class="shrink-0 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700">Settle now</a>
+        </div>
+    @endif
+
     {{-- ═══ Payout method ═══ --}}
     <section id="payout-method" class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900" x-data="{ editing: {{ $profile && $profile->hasPayoutMethod() ? 'false' : 'true' }} }">
         <div class="flex items-center justify-between">
@@ -218,8 +230,15 @@
         @php
             $wdStatusTones = [
                 'pending' => 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400',
+                'awaiting_confirmation' => 'bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-400',
                 'paid' => 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-400',
                 'rejected' => 'bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400',
+            ];
+            $wdStatusLabels = [
+                'pending' => 'pending',
+                'awaiting_confirmation' => 'awaiting your confirmation',
+                'paid' => 'paid',
+                'rejected' => 'rejected',
             ];
         @endphp
         <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -228,18 +247,30 @@
             </div>
             <ul class="divide-y divide-slate-100 dark:divide-slate-800">
                 @foreach ($withdrawalRequests as $wd)
-                    <li class="flex items-center justify-between gap-4 px-6 py-3.5">
-                        <div class="min-w-0">
-                            <div class="flex items-center gap-2">
-                                <p class="text-sm font-semibold text-slate-900 dark:text-white">Rs. {{ number_format($wd->amount, 0) }}</p>
-                                <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $wdStatusTones[$wd->status] ?? '' }}">{{ $wd->status }}</span>
+                    <li class="gap-4 px-6 py-3.5">
+                        <div class="flex items-center justify-between gap-4">
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <p class="text-sm font-semibold text-slate-900 dark:text-white">Rs. {{ number_format($wd->amount, 0) }}</p>
+                                    <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $wdStatusTones[$wd->status] ?? '' }}">{{ $wdStatusLabels[$wd->status] ?? $wd->status }}</span>
+                                </div>
+                                <p class="mt-0.5 text-xs text-slate-400">{{ $wd->reference }} · {{ $wd->methodLabel() }}</p>
+                                @if ($wd->status === 'rejected' && $wd->admin_notes)
+                                    <p class="mt-0.5 text-xs text-red-500">{{ $wd->admin_notes }}</p>
+                                @endif
                             </div>
-                            <p class="mt-0.5 text-xs text-slate-400">{{ $wd->reference }} · {{ $wd->methodLabel() }}</p>
-                            @if ($wd->status === 'rejected' && $wd->admin_notes)
-                                <p class="mt-0.5 text-xs text-red-500">{{ $wd->admin_notes }}</p>
-                            @endif
+                            <time class="shrink-0 text-[11px] text-slate-400">{{ $wd->created_at->format('d M, g:i A') }}</time>
                         </div>
-                        <time class="shrink-0 text-[11px] text-slate-400">{{ $wd->created_at->format('d M, g:i A') }}</time>
+                        @if ($wd->status === 'awaiting_confirmation')
+                            <div class="mt-2 flex items-center gap-3">
+                                @if ($wd->screenshot_path)
+                                    <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($wd->screenshot_path) }}" target="_blank" rel="noopener" class="text-xs font-semibold text-brand-700 hover:text-brand-800 dark:text-brand-400">View transfer proof</a>
+                                @endif
+                                <x-confirm-form :action="route('provider.withdrawals.confirm-receipt', $wd)" method="POST"
+                                    button-label="I received this" button-class="rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-700"
+                                    title="Confirm you received this transfer?" message="Only confirm once the money has actually arrived in your account." confirm-label="Confirm" confirm-class="bg-brand-600 hover:bg-brand-700" />
+                            </div>
+                        @endif
                     </li>
                 @endforeach
             </ul>

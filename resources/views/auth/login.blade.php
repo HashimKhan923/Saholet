@@ -24,8 +24,11 @@
 
         <div>
             <label for="password" class="block text-sm font-medium text-slate-700">{{ __('messages.auth.password') }}</label>
-            <input id="password" name="password" type="password" required autocomplete="current-password"
-                class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200">
+            <div class="relative" x-data="{ show: false }">
+                <input id="password" name="password" :type="show ? 'text' : 'password'" required autocomplete="current-password"
+                    class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 pr-10 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200">
+                <x-password-toggle-button />
+            </div>
         </div>
 
         <div class="flex items-center justify-between">

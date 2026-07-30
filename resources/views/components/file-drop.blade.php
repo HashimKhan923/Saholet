@@ -1,6 +1,19 @@
-@props(['name' => 'file', 'accept' => '.jpg,.jpeg,.png,.pdf', 'required' => true])
+{{--
+    `required` is deliberately never rendered on the underlying <input type="file"> below.
+    The input is display:none (we render a custom styled drop-zone instead), and Chrome
+    silently blocks form submission — no tooltip, no error, nothing — when a `required`
+    field can't be focused because it isn't visible. The server already validates `file`
+    as required and the caller renders that error inline, so native HTML5 validation here
+    would only break submission with zero user feedback for no benefit.
+--}}
+{{--
+    No x-data here on purpose — this renders into the enclosing form's Alpine scope
+    (the form declares `x-data="{...fileDrop(), submitting: false}"`) so the submit
+    button can read `fileName` directly and disable itself until a file is chosen.
+--}}
+@props(['name' => 'file', 'accept' => '.jpg,.jpeg,.png,.webp,.heic,.heif,.pdf'])
 
-<div x-data="fileDrop()" class="flex-1">
+<div class="flex-1">
     <div @dragover.prevent="dragging = true" @dragleave.prevent="dragging = false" @drop.prevent="handleDrop($event)"
         @click="$refs.input.click()"
         :class="dragging ? 'border-brand-400 bg-brand-50 dark:bg-brand-950/30' : 'border-slate-200 dark:border-slate-700'"
@@ -24,7 +37,7 @@
             <p class="text-[11px] text-slate-400">JPG, PNG or PDF — clear photo, at least 1000×700px</p>
         </div>
 
-        <input type="file" x-ref="input" name="{{ $name }}" accept="{{ $accept }}" @if ($required) required @endif
+        <input type="file" x-ref="input" name="{{ $name }}" accept="{{ $accept }}"
             @change="handleChange($event)" @click.stop class="hidden">
     </div>
 </div>

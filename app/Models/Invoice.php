@@ -24,6 +24,7 @@ class Invoice extends Model
         'bill_to_email',
         'bill_to_phone',
         'bill_to_address',
+        'inspection_notes',
         'total',
         'discount',
         'notes',

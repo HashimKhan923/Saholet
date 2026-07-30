@@ -153,7 +153,7 @@
                 </span>
             </div>
 
-            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">JPG, PNG or PDF — up to {{ $maxMb }} MB each. Documents are stored privately and only seen by our review team.</p>
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">JPG, PNG, WebP, HEIC (iPhone photos) or PDF — up to {{ $maxMb }} MB each. Documents are stored privately and only seen by our review team.</p>
 
             <div class="mt-6 space-y-3">
                 @foreach ($documentTypes as $key => $meta)
@@ -209,16 +209,22 @@
                         </div>
 
                         <form method="POST" action="{{ route('provider.onboarding.documents.store') }}" enctype="multipart/form-data"
-                            class="mt-3 flex items-center gap-2" x-data="{ submitting: false }" @submit="submitting = true">
+                            class="mt-3 flex items-center gap-2" x-data="{...fileDrop(), submitting: false}" @submit="submitting = true">
                             @csrf
                             <input type="hidden" name="type" value="{{ $key }}">
                             <x-file-drop name="file" />
-                            <button type="submit" :disabled="submitting"
-                                class="shrink-0 rounded-lg bg-brand-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50">
+                            <button type="submit" :disabled="submitting || !fileName"
+                                :class="(submitting || !fileName)
+                                    ? 'cursor-not-allowed bg-brand-100 text-brand-600 dark:bg-brand-950/50 dark:text-brand-500'
+                                    : 'bg-brand-600 text-white hover:bg-brand-700'"
+                                class="shrink-0 rounded-lg px-4 py-2 text-xs font-semibold transition">
                                 <span x-show="! submitting">{{ $doc ? 'Replace' : 'Upload' }}</span>
                                 <span x-show="submitting" x-cloak>Uploading…</span>
                             </button>
                         </form>
+                        @if ($errors->has('file') && old('type') === $key)
+                            <p class="mt-2 text-xs font-semibold text-red-600 dark:text-red-400">{{ $errors->first('file') }}</p>
+                        @endif
                     </div>
                 @endforeach
             </div>

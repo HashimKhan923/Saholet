@@ -55,8 +55,10 @@
 
         .doc-custom-title { font-size: 13px; font-weight: bold; text-align: right; color: #334155; margin-top: 2px; }
 
-        .box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; }
+        .box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; white-space: pre-line; }
         .box-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; margin-bottom: 4px; }
+        .section-heading { font-size: 13px; font-weight: bold; color: #1a7a35; text-transform: uppercase; letter-spacing: 0.03em; padding-bottom: 4px; border-bottom: 2px solid #1a7a35; margin-bottom: 8px; }
+        .section-text { font-size: 11px; color: #334155; white-space: pre-line; margin-bottom: 14px; }
         .provided-tagline { display: inline-block; margin-top: 3px; font-size: 9px; font-weight: bold; letter-spacing: 0.08em; text-transform: uppercase; color: #1a7a35; }
 
         .doc-title { font-size: 17px; font-weight: bold; text-align: right; color: #1a7a35; }
@@ -75,7 +77,7 @@
         table.totals .discount-row td { color: #c4341f; font-weight: bold; }
 
         .status-box { margin-top: 20px; padding: 10px 16px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 4px; font-size: 11px; color: #166534; }
-        .notes-box { margin-top: 16px; font-size: 11px; color: #64748b; }
+        .notes-box { margin-top: 16px; font-size: 11px; color: #64748b; white-space: pre-line; }
     </style>
 </head>
 <body>

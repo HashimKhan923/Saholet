@@ -215,6 +215,12 @@ class Booking extends Model
         return $this->activePayment() === null;
     }
 
+    /** Cash / bank-transfer settlement only ever happens after the job is done. */
+    public function needsCompletionPayment(): bool
+    {
+        return $this->isCompleted() && $this->activePayment() === null;
+    }
+
     /** Consumer may review a completed booking once. */
     public function isReviewable(): bool
     {

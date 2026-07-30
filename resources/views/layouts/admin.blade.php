@@ -110,6 +110,12 @@
     </x-portal-nav-link>
     @endif
     @if (auth()->user()->isAdmin())
+    <x-portal-nav-link :href="route('admin.payments.index')" label="Payments" :active="request()->routeIs('admin.payments.*')" :badge="$sidebarPendingPayments ?: null">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20" stroke-linecap="round"/></svg>
+    </x-portal-nav-link>
+    <x-portal-nav-link :href="route('admin.settlements.index')" label="Settlements" :active="request()->routeIs('admin.settlements.*')" :badge="$sidebarPendingSettlements ?: null">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 10a5 5 0 0 1 10 0v1a5 5 0 0 1-10 0v-1Z" stroke-linejoin="round"/><path d="M12 15v4M9 21h6" stroke-linecap="round"/></svg>
+    </x-portal-nav-link>
     <x-portal-nav-link :href="route('admin.withdrawals.index')" :label="__('messages.admin_nav.withdrawals')" :active="request()->routeIs('admin.withdrawals.*')" :badge="$sidebarPendingWithdrawals ?: null">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h2M3 10h18" stroke-linecap="round"/><path d="M8 16.5l2-2 2 1.5 2-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </x-portal-nav-link>
