@@ -105,6 +105,20 @@ All amounts are numbers (PKR), not strings, e.g. `"price": 3000` not `"price": "
 **Response `200`:** same shape as register.
 **Errors:** `422` if credentials don't match, or if the account is suspended.
 
+### `POST /api/forgot-password`
+**Auth:** none. Rate limited (5/min per email+IP).
+**Body:** `email` (required)
+**Response:** `{ "message": "We sent a 6-digit code to your email." }`
+Emails a 6-digit OTP (15-minute expiry) via the same `password_reset_tokens` table and mailable the web app's forgot-password page uses.
+**Errors:** `422` if no user has that email.
+
+### `POST /api/reset-password`
+**Auth:** none. Rate limited (5/min per email+IP on the route, plus 5 wrong-OTP attempts per email+IP before a 5-minute lockout).
+**Body:** `email`, `otp` (6 digits, from the emailed code), `password` (required, confirmed, min 8)
+**Response:** `{ "message": "Your password has been reset — please log in." }`
+Verifies the OTP, sets the new password, and revokes the reset token (not the user's Sanctum tokens — existing logged-in devices stay logged in).
+**Errors:** `422` if the OTP is invalid/expired/rate-limited, or the email doesn't match a user.
+
 ### `POST /api/logout`
 **Auth:** required — revokes only the token used for this request (this device).
 **Response:** `{ "message": "Logged out." }`
