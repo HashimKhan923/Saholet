@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CorporateAccount;
 use App\Models\User;
 use App\Services\Notifier;
+use App\Support\PakFormat;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -30,6 +31,10 @@ class CorporateAccountController extends Controller
             'address' => ['nullable', 'string', 'max:500'],
             'city' => ['nullable', 'string', 'max:120'],
         ]);
+
+        if (! empty($data['billing_phone'])) {
+            $data['billing_phone'] = PakFormat::phone($data['billing_phone']);
+        }
 
         $account = CorporateAccount::create($data + ['owner_id' => $request->user()->id]);
 

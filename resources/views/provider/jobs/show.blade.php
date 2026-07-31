@@ -25,13 +25,13 @@
         },
     }">
 
+    <div class="mb-4 flex justify-end">
+        <x-close-button href="{{ route('provider.jobs.index') }}" />
+    </div>
+
     {{-- ═══ Header ═══ --}}
     <div>
-        <a href="{{ route('provider.jobs.index') }}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 transition hover:text-brand-600 dark:text-slate-400">
-            <svg viewBox="0 0 24 24" class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Available jobs
-        </a>
-        <div class="mt-1 flex flex-wrap items-center gap-3">
+        <div class="flex flex-wrap items-center gap-3">
             <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $jobPost->service->name }}</h1>
             <x-job-status :status="$jobPost->status" />
         </div>

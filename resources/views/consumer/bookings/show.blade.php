@@ -5,7 +5,9 @@
 @section('content')
 @php $payment = $booking->activePayment(); @endphp
 <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-    <a href="{{ route('consumer.bookings.index') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; My bookings</a>
+    <div class="mb-4 flex justify-end">
+        <x-close-button href="{{ route('consumer.bookings.index') }}" />
+    </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
         <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $booking->service->name }}</h1>
@@ -21,9 +23,16 @@
         </a>
     @endif
 
-    @if ($booking->isCancelled() && $booking->cancellation_reason)
+    @if ($booking->isCancelled() && ($booking->cancellation_reason || $booking->hasVisitChargeCollected()))
         <div class="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">
-            <span class="font-semibold">Cancelled:</span> {{ $booking->cancellation_reason }}
+            @if ($booking->cancellation_reason)
+                <p><span class="font-semibold">Cancelled:</span> {{ $booking->cancellation_reason }}</p>
+            @endif
+            @if ($booking->hasVisitChargeCollected())
+                <p class="{{ $booking->cancellation_reason ? 'mt-1.5' : '' }} font-semibold">
+                    Visit charge paid: Rs. {{ number_format((float) $booking->visit_charge_amount, 0) }} via {{ $booking->visit_charge_method === 'cash' ? 'cash' : 'bank transfer' }}.
+                </p>
+            @endif
         </div>
     @endif
 
@@ -53,10 +62,10 @@
         @elseif ($payment && $payment->isReleased())
             <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">You released <span class="font-semibold">Rs. {{ number_format($payment->amount, 0) }}</span> to the provider. Thank you!</p>
         @elseif ($payment && $payment->isRefunded())
-            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Your escrow payment of Rs. {{ number_format($payment->amount, 0) }} was refunded.</p>
+            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Your pending payment of Rs. {{ number_format($payment->amount, 0) }} was refunded.</p>
         @elseif ($payment && $payment->isEscrow())
             <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">
-                <span class="font-semibold">Rs. {{ number_format($payment->amount, 0) }}</span> is held safely in escrow.
+                <span class="font-semibold">Rs. {{ number_format($payment->amount, 0) }}</span> is held safely, pending release.
                 @if ($booking->isCompleted())
                     The provider has marked the job complete — please confirm to release payment.
                 @else
@@ -76,7 +85,7 @@
                 @endif
             @endif
         @elseif ($booking->isPayable())
-            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Pay now to hold the amount in escrow until the job is complete. Or wait and pay cash / bank transfer once the job is done.</p>
+            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Pay now to hold the amount pending until the job is complete. Or wait and pay cash / bank transfer once the job is done.</p>
             <a href="{{ route('consumer.payments.create', $booking) }}" class="mt-4 inline-flex items-center rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Pay Rs. {{ number_format($booking->price, 0) }}</a>
         @elseif ($booking->needsCompletionPayment())
             <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">The job is done — choose how you'd like to pay.</p>

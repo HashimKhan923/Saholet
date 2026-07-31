@@ -66,7 +66,8 @@
                 </div>
                 <div>
                     <label for="phone" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('messages.auth.phone') }}</label>
-                    <input id="phone" name="phone" type="tel" value="{{ old('phone', $user->phone) }}" placeholder="03XX XXXXXXX"
+                    <input id="phone" name="phone" type="tel" inputmode="numeric" value="{{ old('phone', $user->phone) }}" placeholder="0300-1234567"
+                        data-mask="phone-pk" maxlength="12"
                         class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                 </div>
             </div>
@@ -105,7 +106,7 @@
                     <p class="mt-1.5 text-xs text-slate-400">{{ __('messages.auth.min_chars') }}</p>
                 </div>
                 <div>
-                    <label for="password_confirmation" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('messages.profile.confirm_password') }}</label>
+                    <label for="password_confirmation" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('messages.auth.confirm_password') }}</label>
                     <div class="relative" x-data="{ show: false }">
                         <input id="password_confirmation" name="password_confirmation" :type="show ? 'text' : 'password'" required autocomplete="new-password"
                             class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 pr-10 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white">

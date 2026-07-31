@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\PakFormat;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -143,7 +144,7 @@ class StaffController extends Controller
     private function validateData(Request $request, ?User $staff = null): array
     {
         // password is hashed automatically via User's 'hashed' cast on save.
-        return $request->validate([
+        $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($staff?->id)],
             'phone' => ['nullable', 'string', 'max:30'],
@@ -151,6 +152,12 @@ class StaffController extends Controller
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'remove_avatar' => ['nullable', 'boolean'],
         ]);
+
+        if (! empty($data['phone'])) {
+            $data['phone'] = PakFormat::phone($data['phone']);
+        }
+
+        return $data;
     }
 
     /**

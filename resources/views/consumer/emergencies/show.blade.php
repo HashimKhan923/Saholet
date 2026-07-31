@@ -4,7 +4,9 @@
 
 @section('content')
 <section class="mx-auto max-w-2xl px-4 py-12 sm:px-6 lg:px-8">
-    <a href="{{ route('consumer.emergencies.index') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Emergency requests</a>
+    <div class="mb-4 flex justify-end">
+        <x-close-button href="{{ route('consumer.emergencies.index') }}" />
+    </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
         <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $emergencyRequest->service->name }}</h1>

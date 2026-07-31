@@ -21,6 +21,9 @@
                         <div class="flex items-center gap-2">
                             <span class="text-sm font-semibold text-slate-900 dark:text-white">{{ $booking->service->name }}</span>
                             <x-booking-status :status="$booking->status" />
+                            @if ($booking->review)
+                                <x-rating-stars :rating="$booking->review->rating" />
+                            @endif
                         </div>
                         <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
                             {{ $booking->providerProfile->business_name ?: $booking->providerProfile->user->name }}

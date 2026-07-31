@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\PakFormat;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -30,6 +31,10 @@ class ProfileController extends Controller
         ]);
 
         unset($validated['avatar'], $validated['remove_avatar']);
+
+        if (! empty($validated['phone'])) {
+            $validated['phone'] = PakFormat::phone($validated['phone']);
+        }
 
         if ($request->hasFile('avatar')) {
             if ($user->avatar) {

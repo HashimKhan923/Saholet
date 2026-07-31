@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class Booking extends Model
 {
@@ -48,6 +49,10 @@ class Booking extends Model
         'started_at',
         'completed_at',
         'cancelled_at',
+        'visit_charge_amount',
+        'visit_charge_method',
+        'visit_charge_screenshot_path',
+        'visit_charge_collected_at',
     ];
 
     protected function casts(): array
@@ -62,7 +67,22 @@ class Booking extends Model
             'started_at' => 'datetime',
             'completed_at' => 'datetime',
             'cancelled_at' => 'datetime',
+            'visit_charge_amount' => 'decimal:2',
+            'visit_charge_collected_at' => 'datetime',
         ];
+    }
+
+    /** Provider kept the whole thing — never touches commission or the platform wallet. */
+    public function hasVisitChargeCollected(): bool
+    {
+        return $this->visit_charge_collected_at !== null;
+    }
+
+    public function visitChargeScreenshotUrl(): ?string
+    {
+        return $this->visit_charge_screenshot_path
+            ? Storage::disk('public')->url($this->visit_charge_screenshot_path)
+            : null;
     }
 
     public function consumer(): BelongsTo

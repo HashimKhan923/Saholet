@@ -10,6 +10,7 @@ use App\Models\Contract;
 use App\Models\Dispute;
 use App\Models\EmergencyRequest;
 use App\Models\JobPost;
+use App\Models\Notification;
 use App\Models\Payment;
 use App\Models\ProviderProfile;
 use App\Models\ProviderSettlement;
@@ -120,6 +121,9 @@ class AppServiceProvider extends ServiceProvider
             $view->with('sidebarPendingBookings', $pendingBookings);
             $view->with('sidebarAvailableJobs', $availableJobs);
             $view->with('sidebarMyServiceIds', $myServiceIds);
+            $view->with('sidebarUnreadNotifications', Auth::check()
+                ? Notification::where('user_id', Auth::id())->whereNull('read_at')->count()
+                : 0);
         });
 
         // Saved-address quick-pick, wherever <x-address-input> renders (booking/job/contract/emergency forms).

@@ -6,8 +6,11 @@
     <x-portal-nav-link :href="route('provider.dashboard')" label="Dashboard" :active="request()->routeIs('provider.dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="12" width="8" height="9" rx="1.5"/><rect x="3" y="14" width="8" height="7" rx="1.5"/></svg>
     </x-portal-nav-link>
+    <x-portal-nav-link :href="route('notifications.index')" label="Notifications" :active="request()->routeIs('notifications.*')" :badge="$sidebarUnreadNotifications ?: null">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6z" stroke-linejoin="round"/><path d="M10 20a2 2 0 0 0 4 0" stroke-linecap="round"/></svg>
+    </x-portal-nav-link>
 
-    <p class="mt-5 px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500">Work</p>
+    <p class="mt-5 px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-900 dark:text-slate-100">Work</p>
     <x-portal-nav-link :href="route('provider.bookings.index')" label="Bookings" :active="request()->routeIs('provider.bookings.*')" :badge="$sidebarPendingBookings ?: null">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 10h16" stroke-linecap="round"/></svg>
     </x-portal-nav-link>
@@ -38,7 +41,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M7 8l5-5 5 5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </x-portal-nav-link>
 
-    <p class="mt-5 px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500">Business</p>
+    <p class="mt-5 px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-900 dark:text-slate-100">Business</p>
     <x-portal-nav-link :href="route('provider.services.index')" label="My services" :active="request()->routeIs('provider.services.*')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="4" y1="9" x2="20" y2="9" stroke-linecap="round"/><circle cx="8" cy="6" r="0.6" fill="currentColor"/></svg>
     </x-portal-nav-link>

@@ -47,13 +47,12 @@ class CategoryController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validateData($request);
-        unset($data['remove_image'], $data['remove_banner'], $data['remove_icon']);
+        unset($data['remove_image'], $data['remove_icon']);
 
         $data['slug'] = Category::generateSlug($data['name']);
         $data['is_active'] = $request->boolean('is_active');
 
         $this->applyUpload($request, null, $data, 'image', 'categories');
-        $this->applyUpload($request, null, $data, 'banner', 'categories');
         $this->applyUpload($request, null, $data, 'icon', 'categories');
         if (array_key_exists('icon', $data) && $data['icon'] === null) {
             $data['icon'] = 'default';
@@ -75,13 +74,12 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category): RedirectResponse
     {
         $data = $this->validateData($request);
-        unset($data['remove_image'], $data['remove_banner'], $data['remove_icon']);
+        unset($data['remove_image'], $data['remove_icon']);
 
         $data['slug'] = Category::generateSlug($data['name'], $category->id);
         $data['is_active'] = $request->boolean('is_active');
 
         $this->applyUpload($request, $category, $data, 'image', 'categories');
-        $this->applyUpload($request, $category, $data, 'banner', 'categories');
         $this->applyUpload($request, $category, $data, 'icon', 'categories');
         if (array_key_exists('icon', $data) && $data['icon'] === null) {
             $data['icon'] = 'default';
@@ -103,7 +101,7 @@ class CategoryController extends Controller
                 ->with('error', 'Cannot delete a category that still has services. Remove or reassign its services first.');
         }
 
-        foreach (['image', 'banner'] as $field) {
+        foreach (['image'] as $field) {
             if ($category->{$field}) {
                 Storage::disk('public')->delete($category->{$field});
             }
@@ -146,8 +144,6 @@ class CategoryController extends Controller
             'remove_icon' => ['nullable', 'boolean'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'remove_image' => ['nullable', 'boolean'],
-            'banner' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
-            'remove_banner' => ['nullable', 'boolean'],
             'commission_rate' => ['nullable', 'numeric', 'min:0', 'max:50'],
             'sort_order' => ['required', 'integer', 'min:0', 'max:9999'],
             'is_active' => ['nullable', 'boolean'],

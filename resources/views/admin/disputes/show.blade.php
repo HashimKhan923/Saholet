@@ -5,7 +5,9 @@
 @section('content')
 @php $payment = $dispute->booking->activePayment(); @endphp
 <section class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-    <a href="{{ route('admin.disputes.index') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Disputes</a>
+    <div class="mb-4 flex justify-end">
+        <x-close-button href="{{ route('admin.disputes.index') }}" />
+    </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
         <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Dispute {{ $dispute->reference }}</h1>
@@ -30,16 +32,29 @@
                 <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Complaint</h2>
                 <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">Opened by {{ $dispute->opener->name }} ({{ $dispute->opened_by_role }}) on {{ $dispute->created_at->format('d M Y, g:i A') }}</p>
                 <p class="mt-3 rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-700 dark:bg-slate-800 dark:text-slate-300">{{ $dispute->reason }}</p>
+
+                @if ($dispute->photos->isNotEmpty())
+                    <div class="mt-4">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Photo evidence</p>
+                        <div class="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
+                            @foreach ($dispute->photos as $photo)
+                                <a href="{{ $photo->url() }}" target="_blank" rel="noopener" class="group relative aspect-square overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
+                                    <img src="{{ $photo->url() }}" alt="" class="h-full w-full object-cover transition group-hover:scale-105">
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
 
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Payment</h2>
                 @if ($payment && $payment->isEscrow())
-                    <p class="mt-3 text-sm text-slate-600 dark:text-slate-400"><x-payment-status status="escrow" /> &nbsp; Rs. {{ number_format($payment->amount, 0) }} is held in escrow. Resolving will release or refund it.</p>
+                    <p class="mt-3 text-sm text-slate-600 dark:text-slate-400"><x-payment-status status="escrow" /> &nbsp; Rs. {{ number_format($payment->amount, 0) }} is pending. Resolving will release or refund it.</p>
                 @elseif ($payment && $payment->isReleased())
                     <p class="mt-3 text-sm text-slate-600 dark:text-slate-400"><x-payment-status status="released" /> &nbsp; Already released — resolving will not move money.</p>
                 @else
-                    <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">No escrow payment (cash/COD). Resolving records a decision without moving money.</p>
+                    <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">No pending payment (cash/COD). Resolving records a decision without moving money.</p>
                 @endif
             </div>
         </div>
@@ -58,7 +73,7 @@
                             </label>
                             <label class="flex cursor-pointer items-start gap-2 rounded-lg border p-3 transition" :class="resolution === 'refund' ? 'border-brand-500 bg-brand-50 dark:bg-brand-950/40' : 'border-slate-200 dark:border-slate-700'">
                                 <input type="radio" name="resolution" value="refund" x-model="resolution" class="mt-0.5 h-4 w-4 text-brand-600 focus:ring-brand-200">
-                                <span><span class="block text-sm font-semibold text-slate-900 dark:text-white">Refund customer</span><span class="block text-xs text-slate-500 dark:text-slate-400">Escrow returns to the customer.</span></span>
+                                <span><span class="block text-sm font-semibold text-slate-900 dark:text-white">Refund customer</span><span class="block text-xs text-slate-500 dark:text-slate-400">The pending amount returns to the customer.</span></span>
                             </label>
                             <label class="flex cursor-pointer items-start gap-2 rounded-lg border p-3 transition" :class="resolution === 'dismiss' ? 'border-brand-500 bg-brand-50 dark:bg-brand-950/40' : 'border-slate-200 dark:border-slate-700'">
                                 <input type="radio" name="resolution" value="dismiss" x-model="resolution" class="mt-0.5 h-4 w-4 text-brand-600 focus:ring-brand-200">

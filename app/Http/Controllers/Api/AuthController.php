@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\ReferralService;
+use App\Support\PakFormat;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -36,7 +37,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'phone' => $validated['phone'],
+            'phone' => PakFormat::phone($validated['phone']),
             'role' => $validated['role'],
             'password' => $validated['password'],
             'referral_code' => User::generateUniqueReferralCode(),

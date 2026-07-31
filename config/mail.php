@@ -124,4 +124,16 @@ return [
 
     'contact_to' => env('MAIL_CONTACT_TO', 'info@sahoulat.com'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Invoice Sender
+    |--------------------------------------------------------------------------
+    |
+    | Payment-confirmation invoice emails are sent from this address instead
+    | of the global "from" address above.
+    |
+    */
+
+    'invoices_from' => env('MAIL_INVOICES_FROM', 'info@sahoulat.com'),
+
 ];

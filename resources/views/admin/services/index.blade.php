@@ -35,7 +35,7 @@
 
     <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
-            <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+            <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:bg-slate-800 dark:text-slate-100">
                 <tr>
                     <th class="px-5 py-3">Service</th>
                     <th class="px-5 py-3">Category</th>
@@ -50,13 +50,9 @@
                     <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/60">
                         <td class="px-5 py-3 font-medium text-slate-900 dark:text-white">
                             <div class="flex items-center gap-3">
-                                @if ($service->thumbnail_url)
-                                    <img src="{{ $service->thumbnail_url }}" alt="" class="h-9 w-9 rounded-lg object-cover">
-                                @else
-                                    <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-300 dark:bg-slate-800 dark:text-slate-600">
-                                        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="9" r="1.5"/></svg>
-                                    </span>
-                                @endif
+                                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-950/50 dark:text-brand-400">
+                                    <x-service-icon :name="$service->category->icon ?? 'default'" class="h-4.5 w-4.5" />
+                                </span>
                                 <span>{{ $service->name }}</span>
                             </div>
                         </td>

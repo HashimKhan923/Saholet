@@ -18,7 +18,7 @@
             <p class="mt-2 font-display text-2xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($money['gmv_completed'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-sky-200 bg-sky-50 p-5 dark:border-sky-800 dark:bg-sky-950/40">
-            <p class="text-xs font-semibold uppercase tracking-wide text-sky-700 dark:text-sky-400">Escrow held</p>
+            <p class="text-xs font-semibold uppercase tracking-wide text-sky-700 dark:text-sky-400">Pending held</p>
             <p class="mt-2 font-display text-2xl font-extrabold text-sky-900 dark:text-sky-300">Rs. {{ number_format($money['escrow_held'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         new Chart(moneyEl, {
             type: 'bar',
             data: {
-                labels: ['GMV', 'Escrow held', 'Released', 'Refunded', 'Commission'],
+                labels: ['GMV', 'Pending held', 'Released', 'Refunded', 'Commission'],
                 datasets: [{
                     data: JSON.parse(moneyEl.dataset.values),
                     backgroundColor: ['#64748b', '#0ea5e9', brand[600], '#ef4444', brand[500]],

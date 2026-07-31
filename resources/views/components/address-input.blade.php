@@ -13,21 +13,31 @@
     </div>
 
     @if (isset($savedAddresses) && $savedAddresses->isNotEmpty())
-        <select
-            @change="
-                const opt = $event.target.selectedOptions[0];
-                if (! opt.value) return;
-                $refs.address.value = opt.dataset.address;
-                $refs.lat.value = opt.dataset.lat || '';
-                $refs.lng.value = opt.dataset.lng || '';
-                $event.target.selectedIndex = 0;
-            "
-            class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-slate-50 px-3.5 py-2 text-xs text-slate-600 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-            <option value="">Use a saved address…</option>
+        <div class="mt-1.5 flex flex-wrap gap-2" x-data="{ selected: null }">
             @foreach ($savedAddresses as $saved)
-                <option value="{{ $saved->id }}" data-address="{{ $saved->address }}" data-lat="{{ $saved->latitude }}" data-lng="{{ $saved->longitude }}">{{ $saved->label }} — {{ \Illuminate\Support\Str::limit($saved->address, 40) }}</option>
+                <button type="button"
+                    data-address="{{ $saved->address }}"
+                    data-lat="{{ $saved->latitude }}"
+                    data-lng="{{ $saved->longitude }}"
+                    @click="
+                        selected = {{ $saved->id }};
+                        $refs.address.value = $event.currentTarget.dataset.address;
+                        $refs.lat.value = $event.currentTarget.dataset.lat || '';
+                        $refs.lng.value = $event.currentTarget.dataset.lng || '';
+                    "
+                    :class="selected === {{ $saved->id }}
+                        ? 'border-brand-600 bg-brand-600 text-white'
+                        : 'border-slate-300 bg-white text-slate-700 hover:border-brand-300 hover:bg-brand-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-brand-700 dark:hover:bg-brand-950/30'"
+                    class="inline-flex max-w-full items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition">
+                    <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21c-4-4-7-7.5-7-11a7 7 0 0 1 14 0c0 3.5-3 7-7 11z" stroke-linejoin="round"/></svg>
+                    <span class="truncate">{{ $saved->label }}</span>
+                    @if ($saved->is_default)
+                        <span class="shrink-0 text-[10px] font-bold opacity-80">· Default</span>
+                    @endif
+                </button>
             @endforeach
-        </select>
+        </div>
+        <p class="mt-1.5 text-[11px] text-slate-400 dark:text-slate-500">Tap a saved address to fill the fields below, or type a new one.</p>
     @endif
 
     <input id="{{ $name }}" x-ref="address" name="{{ $name }}" type="text" value="{{ $value }}" @if ($required) required @endif

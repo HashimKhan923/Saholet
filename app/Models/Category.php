@@ -16,7 +16,6 @@ class Category extends Model
         'description',
         'icon',
         'image',
-        'banner',
         'commission_rate',
         'is_active',
         'sort_order',
@@ -24,7 +23,6 @@ class Category extends Model
 
     protected $appends = [
         'image_url',
-        'banner_url',
         'icon_url',
     ];
 
@@ -39,11 +37,6 @@ class Category extends Model
     public function getImageUrlAttribute(): ?string
     {
         return $this->image ? Storage::disk('public')->url($this->image) : null;
-    }
-
-    public function getBannerUrlAttribute(): ?string
-    {
-        return $this->banner ? Storage::disk('public')->url($this->banner) : null;
     }
 
     /** Only meaningful when `icon` holds an uploaded file path rather than a legacy config key. */

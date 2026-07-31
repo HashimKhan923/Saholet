@@ -47,13 +47,6 @@
         <x-field-error name="description" />
     </div>
 
-    <x-admin.image-upload-field
-        name="thumbnail"
-        label="Thumbnail"
-        help="Shown next to this service in listings and on its detail page. Recommended at least 1200×675px, landscape (JPG, PNG or WebP, up to 4 MB)."
-        :current-url="$service?->thumbnail_url"
-        :has-current="(bool) $service?->thumbnail" />
-
     <div class="grid gap-5 sm:grid-cols-3">
         <div>
             <label for="base_price" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Base price (Rs.)</label>

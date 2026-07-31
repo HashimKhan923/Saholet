@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Support\PakFormat;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +24,10 @@ class ProfileController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'phone' => ['nullable', 'string', 'max:20'],
         ]);
+
+        if (! empty($validated['phone'])) {
+            $validated['phone'] = PakFormat::phone($validated['phone']);
+        }
 
         $user->update($validated);
 

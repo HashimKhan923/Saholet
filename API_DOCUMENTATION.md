@@ -77,19 +77,21 @@ All amounts are numbers (PKR), not strings, e.g. `"price": 3000` not `"price": "
 |---|---|---|
 | `name` | string | required |
 | `email` | string | required, unique |
-| `phone` | string | required |
+| `phone` | string | required — any format accepted; normalized server-side to `03XX-XXXXXXX` (see note below) |
 | `role` | string | required — `consumer`, `provider`, or `job_seeker` |
 | `password` | string | required, min 8 |
 | `password_confirmation` | string | required, must match `password` |
 | `referral_code` | string | optional |
 | `device_name` | string | required — label for this token, e.g. `"iPhone 15"` |
 
+Pakistani phone numbers are reformatted to `03XX-XXXXXXX` on save (a leading `+92`/`92` country code is stripped and replaced with a trunk `0` first). The stored/returned value may therefore differ from what was submitted — e.g. `+923001234567` or `03001234567` both come back as `0300-1234567`. Numbers that aren't 11 digits after stripping non-digits are left as-is.
+
 **Response `201`:**
 ```json
 {
   "user": {
     "id": 22, "name": "Test Consumer", "email": "test@example.com",
-    "phone": "03001234567", "role": "consumer", "referral_code": "OG1EGG",
+    "phone": "0300-1234567", "role": "consumer", "referral_code": "OG1EGG",
     "credit_balance": 0, "is_suspended": false,
     "provider_status": null,
     "created_at": "2026-07-21T12:12:07+00:00"
@@ -133,7 +135,7 @@ Verifies the OTP, sets the new password, and revokes the reset token (not the us
 
 ### `PUT /api/profile`
 **Auth:** required
-**Body:** `name` (required), `email` (required, unique except self), `phone` (optional)
+**Body:** `name` (required), `email` (required, unique except self), `phone` (optional — normalized to `03XX-XXXXXXX` the same way as registration)
 **Response:** `{ "user": {...} }`
 
 ### `PUT /api/profile/password`
@@ -161,10 +163,10 @@ Active categories with their active services (the "browse services" catalog, cac
   "categories": [
     {
       "id": 1, "name": "AC Repair & Service", "slug": "ac-repair-service",
-      "description": "...", "icon": "ac", "image_url": null, "banner_url": null,
+      "description": "...", "icon": "ac", "image_url": null,
       "services": [
         { "id": 2, "category_id": 1, "name": "AC Gas Refill", "slug": "ac-gas-refill",
-          "description": "...", "thumbnail_url": null, "base_price": 3500,
+          "description": "...", "base_price": 3500,
           "duration_minutes": 90, "is_active": true }
       ]
     }
@@ -324,7 +326,7 @@ Response `201`: `{ "booking": {...BookingResource...} }`. `422` if the provider 
   "id": 1, "reference": "BK-Z6POMA", "status": "confirmed",
   "service": { "...ServiceResource..." },
   "provider": { "...ProviderProfileResource..." },
-  "consumer": { "id": 22, "name": "Test Consumer", "phone": "03001234567" },
+  "consumer": { "id": 22, "name": "Test Consumer", "phone": "0300-1234567" },
   "scheduled_date": "2026-07-22", "scheduled_time": "10:00",
   "price": 3000, "duration_minutes": 90, "address": "House 1, Karachi",
   "latitude": null, "longitude": null, "notes": null,
@@ -569,7 +571,7 @@ Quick field reference for nested objects that recur throughout the API.
 ```
 `status` ∈ `draft` \| `pending` \| `approved` \| `rejected`.
 
-**ServiceResource** — `{ "id","category_id","category":{...or omitted},"name","slug","description","thumbnail_url","base_price","duration_minutes","is_active" }`
+**ServiceResource** — `{ "id","category_id","category":{...or omitted},"name","slug","description","base_price","duration_minutes","is_active" }`
 
 **BidResource** — `{ "id","job_post_id","job_post":{...summary...},"provider":{...ProviderProfileResource...},"amount","proposed_date","proposed_time","message","status","booking_id","created_at" }`. `status` ∈ `pending` \| `accepted` \| `rejected` \| `withdrawn`.
 

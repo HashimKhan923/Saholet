@@ -49,6 +49,7 @@ class DisputeController extends Controller
             'booking.payments',
             'opener',
             'resolver',
+            'photos',
         ]);
 
         return view('admin.disputes.show', compact('dispute'));

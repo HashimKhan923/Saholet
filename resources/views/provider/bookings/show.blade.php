@@ -8,14 +8,14 @@
 @section('content')
 <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8" x-data="{ declining: false, cancelling: false }">
 
+    <div class="mb-4 flex justify-end">
+        <x-close-button href="{{ route('provider.bookings.index') }}" />
+    </div>
+
     {{-- ═══ Header ═══ --}}
     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-            <a href="{{ route('provider.bookings.index') }}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 transition hover:text-brand-600 dark:text-slate-400">
-                <svg viewBox="0 0 24 24" class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Bookings
-            </a>
-            <div class="mt-1 flex flex-wrap items-center gap-3">
+            <div class="flex flex-wrap items-center gap-3">
                 <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $booking->service->name }}</h1>
                 <x-booking-status :status="$booking->status" />
             </div>
@@ -184,26 +184,89 @@
 
                 @elseif ($booking->isInProgress())
                     <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Add before/after photos as proof of work, then mark complete.</p>
-                    <form method="POST" action="{{ route('provider.bookings.status', $booking) }}" enctype="multipart/form-data" class="mt-4 space-y-3">
+                    <form method="POST" action="{{ route('provider.bookings.status', $booking) }}" enctype="multipart/form-data" class="mt-4 space-y-4"
+                          x-data="{ submitting: false }" @submit="submitting = true">
                         @csrf
                         <input type="hidden" name="action" value="complete">
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Before photos <span class="normal-case text-slate-400">(optional, up to 6)</span></label>
-                            <input type="file" name="before_photos[]" accept="image/jpeg,image/png" multiple
-                                class="mt-1.5 block w-full text-xs text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-brand-700 hover:file:bg-brand-100 dark:text-slate-300 dark:file:bg-brand-950/50 dark:file:text-brand-400">
+
+                        {{-- Bold, hard-to-miss proof-of-work box — required to mark this booking complete --}}
+                        <div class="rounded-2xl border-2 border-amber-300 bg-amber-50 p-4 shadow-sm dark:border-amber-800 dark:bg-amber-950/30">
+                            <div class="flex items-center gap-2">
+                                <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 16.5v.5" stroke-linecap="round"/><path d="M10.3 3.3 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0z" stroke-linejoin="round"/></svg>
+                                <h3 class="font-display text-sm font-extrabold uppercase tracking-wide text-amber-900 dark:text-amber-300">Proof of work required</h3>
+                            </div>
+                            <p class="mt-1 text-xs text-amber-800 dark:text-amber-400">At least one before photo and one after photo are required to mark this job complete.</p>
+
+                            <div class="mt-4">
+                                <label class="block text-xs font-bold uppercase tracking-wide text-amber-900 dark:text-amber-300">Before photos <span class="font-semibold normal-case text-amber-700 dark:text-amber-500">(required, up to 6)</span></label>
+                                <div class="mt-1.5"><x-photo-picker name="before_photos" :max="6" /></div>
+                                <x-field-error name="before_photos" />
+                            </div>
+                            <div class="mt-4">
+                                <label class="block text-xs font-bold uppercase tracking-wide text-amber-900 dark:text-amber-300">After photos <span class="font-semibold normal-case text-amber-700 dark:text-amber-500">(required, up to 6)</span></label>
+                                <div class="mt-1.5"><x-photo-picker name="after_photos" :max="6" /></div>
+                                <x-field-error name="after_photos" />
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wide text-slate-400">After photos <span class="normal-case text-slate-400">(optional, up to 6)</span></label>
-                            <input type="file" name="after_photos[]" accept="image/jpeg,image/png" multiple
-                                class="mt-1.5 block w-full text-xs text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-brand-700 hover:file:bg-brand-100 dark:text-slate-300 dark:file:bg-brand-950/50 dark:file:text-brand-400">
-                        </div>
+
                         <div>
                             <label for="completion_notes" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Completion notes <span class="normal-case text-slate-400">(optional)</span></label>
                             <textarea id="completion_notes" name="completion_notes" rows="3"
                                 class="mt-1.5 block w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white"></textarea>
                         </div>
-                        <button type="submit" class="btn-shine w-full rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Mark completed</button>
+                        <button type="submit" :disabled="submitting" class="btn-shine w-full rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50">
+                            <span x-show="!submitting">Mark completed</span>
+                            <span x-show="submitting" x-cloak>Submitting…</span>
+                        </button>
                     </form>
+
+                    <div class="mt-4 border-t border-slate-100 pt-4 dark:border-slate-800" x-data="{ decliningAfterInspection: false }">
+                        <button type="button" @click="decliningAfterInspection = ! decliningAfterInspection"
+                            class="w-full rounded-xl border border-red-200 px-5 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950/30">
+                            Customer declined after inspection
+                        </button>
+
+                        <form x-show="decliningAfterInspection" x-cloak x-collapse method="POST" action="{{ route('provider.bookings.status', $booking) }}"
+                              enctype="multipart/form-data" class="mt-4 space-y-3" x-data="{ visitMethod: 'cash', submitting: false }" @submit="submitting = true">
+                            @csrf
+                            <input type="hidden" name="action" value="cancel">
+
+                            <div class="rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/30">
+                                <p class="text-xs font-semibold text-red-800 dark:text-red-400">
+                                    The visit charge (Rs. {{ number_format((float) ($booking->service->visit_charge ?? 0), 0) }}) is yours to keep — it's not part of your platform commission.
+                                </p>
+
+                                <label class="mt-3 block text-xs font-semibold uppercase tracking-wide text-red-800 dark:text-red-400">How was the visit charge paid?</label>
+                                <div class="mt-1.5 flex gap-2">
+                                    <label class="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border p-2.5 text-sm font-semibold transition" :class="visitMethod === 'cash' ? 'border-red-500 bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300'">
+                                        <input type="radio" name="visit_charge_method" value="cash" x-model="visitMethod" class="sr-only">
+                                        Cash
+                                    </label>
+                                    <label class="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border p-2.5 text-sm font-semibold transition" :class="visitMethod === 'bank_transfer' ? 'border-red-500 bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300'">
+                                        <input type="radio" name="visit_charge_method" value="bank_transfer" x-model="visitMethod" class="sr-only">
+                                        Bank transfer
+                                    </label>
+                                </div>
+
+                                <div x-show="visitMethod === 'bank_transfer'" x-cloak class="mt-3">
+                                    <label class="block text-xs font-semibold uppercase tracking-wide text-red-800 dark:text-red-400">Screenshot of the transfer</label>
+                                    <input type="file" name="visit_charge_screenshot" accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+                                        class="mt-1.5 block w-full text-xs text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-red-100 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-red-700 hover:file:bg-red-200 dark:text-slate-300 dark:file:bg-red-950/50 dark:file:text-red-400">
+                                    <x-field-error name="visit_charge_screenshot" />
+                                </div>
+                                <x-field-error name="visit_charge_method" />
+                            </div>
+
+                            <label for="decline_after_inspection_reason" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Notes <span class="normal-case text-slate-400">(optional)</span></label>
+                            <textarea id="decline_after_inspection_reason" name="cancellation_reason" rows="2"
+                                class="block w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-red-400 focus:ring-2 focus:ring-red-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white"></textarea>
+
+                            <button type="submit" :disabled="submitting" class="w-full rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50">
+                                <span x-show="!submitting">Cancel booking — visit charge collected</span>
+                                <span x-show="submitting" x-cloak>Submitting…</span>
+                            </button>
+                        </form>
+                    </div>
 
                 @else
                     <div class="mt-4 rounded-xl bg-slate-50 px-4 py-3.5 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300">
@@ -211,6 +274,14 @@
                             This job is completed. No further action needed.
                         @elseif ($booking->isCancelled())
                             This booking was cancelled @if ($booking->cancellation_reason) — {{ $booking->cancellation_reason }}@endif.
+                            @if ($booking->hasVisitChargeCollected())
+                                <p class="mt-2 font-semibold text-brand-700 dark:text-brand-400">
+                                    Visit charge collected: Rs. {{ number_format((float) $booking->visit_charge_amount, 0) }} via {{ $booking->visit_charge_method === 'cash' ? 'cash' : 'bank transfer' }}.
+                                </p>
+                                @if ($booking->visitChargeScreenshotUrl())
+                                    <a href="{{ $booking->visitChargeScreenshotUrl() }}" target="_blank" rel="noopener" class="mt-1 inline-block text-xs font-semibold text-brand-700 hover:text-brand-800 dark:text-brand-400">View transfer screenshot &rarr;</a>
+                                @endif
+                            @endif
                         @endif
                     </div>
                 @endif
@@ -226,7 +297,7 @@
                 @if ($payment && $payment->isEscrow())
                     <p class="mt-3 font-display text-xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format((float) $payment->amount, 0) }}</p>
                     <p class="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-                        Held in escrow. It releases to your wallet once the customer confirms completion @if ($booking->hasOpenDispute()) <span class="font-semibold text-amber-600 dark:text-amber-400">(on hold — open dispute)</span>@endif.
+                        Pending. It releases to your wallet once the customer confirms completion @if ($booking->hasOpenDispute()) <span class="font-semibold text-amber-600 dark:text-amber-400">(on hold — open dispute)</span>@endif.
                     </p>
                 @elseif ($payment && $payment->isReleased())
                     <p class="mt-3 font-display text-xl font-extrabold text-brand-700 dark:text-brand-400">Rs. {{ number_format((float) $payment->amount, 0) }}</p>
@@ -234,7 +305,7 @@
                         Released to your <a href="{{ route('provider.wallet.index') }}" class="font-semibold text-brand-700 underline underline-offset-2 hover:text-brand-800 dark:text-brand-400">wallet</a>.
                     </p>
                 @elseif ($payment && $payment->isRefunded())
-                    <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">The escrow payment was refunded to the customer.</p>
+                    <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">The pending payment was refunded to the customer.</p>
                 @else
                     <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">No online payment yet — this may be settled in cash.</p>
                 @endif

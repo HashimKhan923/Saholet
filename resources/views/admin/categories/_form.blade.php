@@ -41,14 +41,6 @@
         :has-current="(bool) $category?->image" />
 
     <x-admin.image-upload-field
-        name="banner"
-        label="Banner"
-        help="Wide header image shown on the category/services page. Recommended at least 1600×480px, landscape (JPG, PNG or WebP, up to 4 MB)."
-        :current-url="$category?->banner_url"
-        :has-current="(bool) $category?->banner"
-        box="h-16 w-40" />
-
-    <x-admin.image-upload-field
         name="icon"
         label="Icon"
         help="Small square icon shown on category cards. Recommended at least 36×36px, square (PNG, JPG or WebP, up to 2 MB). Leave blank to use the default icon."

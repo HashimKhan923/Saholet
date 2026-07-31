@@ -27,12 +27,13 @@
 
     <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
-            <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+            <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:bg-slate-800 dark:text-slate-100">
                 <tr>
                     <th class="px-5 py-3">Provider</th>
                     <th class="px-5 py-3">Business</th>
                     <th class="px-5 py-3">City</th>
                     <th class="px-5 py-3">Submitted</th>
+                    <th class="px-5 py-3">Rating</th>
                     <th class="px-5 py-3">Status</th>
                     <th class="px-5 py-3 text-right">Action</th>
                 </tr>
@@ -47,6 +48,13 @@
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $profile->business_name ?: '—' }}</td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $profile->city ?: '—' }}</td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $profile->submitted_at?->format('d M Y') ?? '—' }}</td>
+                        <td class="px-5 py-3">
+                            @if ($profile->reviews_count > 0)
+                                <x-rating-stars :rating="$profile->rating_avg" :count="$profile->reviews_count" />
+                            @else
+                                <span class="text-xs text-slate-300 dark:text-slate-600">—</span>
+                            @endif
+                        </td>
                         <td class="px-5 py-3">
                             @switch($profile->status)
                                 @case('approved')
@@ -68,7 +76,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-5 py-10 text-center text-slate-500 dark:text-slate-400">No applications in this view.</td>
+                        <td colspan="7" class="px-5 py-10 text-center text-slate-500 dark:text-slate-400">No applications in this view.</td>
                     </tr>
                 @endforelse
             </tbody>

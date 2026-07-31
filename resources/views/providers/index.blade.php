@@ -52,9 +52,13 @@
                     {{-- Top row: avatar + name + badge --}}
                     <div class="flex items-start justify-between gap-3">
                         <div class="flex items-center gap-3.5">
-                            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 font-display text-base font-extrabold text-brand-700 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-900 dark:text-brand-300">
-                                {{ mb_substr($provider->business_name ?: ($provider->user?->name ?? 'S'), 0, 1) }}
-                            </span>
+                            @if ($provider->user?->avatar_url)
+                                <img src="{{ $provider->user->avatar_url }}" alt="" class="h-12 w-12 shrink-0 rounded-2xl object-cover">
+                            @else
+                                <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 font-display text-base font-extrabold text-brand-700 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-900 dark:text-brand-300">
+                                    {{ mb_substr($provider->business_name ?: ($provider->user?->name ?? 'S'), 0, 1) }}
+                                </span>
+                            @endif
                             <div>
                                 <h2 class="text-sm font-bold text-slate-900 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-400">
                                     {{ $provider->business_name ?: $provider->user?->name }}

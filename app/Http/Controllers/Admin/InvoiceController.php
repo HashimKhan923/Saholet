@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
+use App\Support\PakFormat;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -134,7 +135,7 @@ class InvoiceController extends Controller
 
     private function validateData(Request $request): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'type' => ['required', 'in:invoice,quotation'],
             'title' => ['required', 'string', 'max:255'],
             'bill_to_name' => ['required', 'string', 'max:255'],
@@ -149,6 +150,12 @@ class InvoiceController extends Controller
             'items.*.quantity' => ['required', 'numeric', 'min:0.01', 'max:99999'],
             'items.*.unit_price' => ['required', 'numeric', 'min:0', 'max:9999999'],
         ]);
+
+        if (! empty($data['bill_to_phone'])) {
+            $data['bill_to_phone'] = PakFormat::phone($data['bill_to_phone']);
+        }
+
+        return $data;
     }
 
     private function itemsTotal(array $items): float

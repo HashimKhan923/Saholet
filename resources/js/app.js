@@ -2,6 +2,8 @@ import './bootstrap';
 import './echo';
 import './charts';
 import './geolocation';
+import './address-map';
+import './pk-format';
 import './file-drop';
 import './ui';
 import './push';

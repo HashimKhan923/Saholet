@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ProviderDocument;
 use App\Models\ProviderProfile;
 use App\Models\ServiceArea;
+use App\Support\PakFormat;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -99,6 +100,8 @@ class OnboardingController extends Controller
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'cnic_number' => ['required', 'string', 'max:20'],
         ]);
+
+        $data['cnic_number'] = PakFormat::cnic($data['cnic_number']);
 
         $profile->fill($data)->save();
 

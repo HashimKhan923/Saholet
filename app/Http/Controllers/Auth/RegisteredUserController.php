@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\ReferralService;
+use App\Support\PakFormat;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,7 +33,7 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'phone' => $validated['phone'],
+            'phone' => PakFormat::phone($validated['phone']),
             'role' => $validated['role'],
             'password' => $validated['password'], // hashed via model cast
             'referral_code' => User::generateUniqueReferralCode(),

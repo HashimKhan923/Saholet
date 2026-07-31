@@ -40,11 +40,11 @@ class SecurityHeaders
 
             $csp = implode('; ', [
                 "default-src 'self'",
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval'{$viteDevOrigins}",
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://maps.gstatic.com{$viteDevOrigins}",
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com{$viteDevOrigins}",
                 "font-src 'self' https://fonts.gstatic.com",
                 "img-src 'self' data: blob: https:",
-                "connect-src 'self' {$ws} https://nominatim.openstreetmap.org{$viteDevOrigins}",
+                "connect-src 'self' {$ws} https://nominatim.openstreetmap.org https://maps.googleapis.com https://maps.gstatic.com{$viteDevOrigins}",
                 "frame-src 'self' https://www.google.com https://maps.google.com",
                 "frame-ancestors 'self'",
                 "base-uri 'self'",

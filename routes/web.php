@@ -406,6 +406,8 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
             Route::get('providers/{provider}', [AdminProviderController::class, 'show'])->name('providers.show');
             Route::post('providers/{provider}/approve', [AdminProviderController::class, 'approve'])->name('providers.approve');
             Route::post('providers/{provider}/reject', [AdminProviderController::class, 'reject'])->name('providers.reject');
+            Route::post('providers/{provider}/suspend', [AdminProviderController::class, 'suspend'])->name('providers.suspend');
+            Route::post('providers/{provider}/resume', [AdminProviderController::class, 'resume'])->name('providers.resume');
         });
 
         Route::middleware('permission:disputes')->group(function () {
