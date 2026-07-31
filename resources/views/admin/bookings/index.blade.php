@@ -48,7 +48,7 @@
     <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
-                <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:bg-slate-800 dark:text-slate-100">
                     <tr>
                         <th class="px-5 py-3">Booking</th>
                         <th class="px-5 py-3">Consumer</th>
@@ -56,6 +56,7 @@
                         <th class="px-5 py-3">Price</th>
                         <th class="px-5 py-3">Scheduled</th>
                         <th class="px-5 py-3">Status</th>
+                        <th class="px-5 py-3">Rating</th>
                         <th class="px-5 py-3 text-right">Action</th>
                     </tr>
                 </thead>
@@ -74,13 +75,20 @@
                                 <span class="text-xs text-slate-400">{{ substr($booking->scheduled_time, 0, 5) }}</span>
                             </td>
                             <td class="px-5 py-3"><x-booking-status :status="$booking->status" /></td>
+                            <td class="px-5 py-3">
+                                @if ($booking->review)
+                                    <x-rating-stars :rating="$booking->review->rating" />
+                                @else
+                                    <span class="text-xs text-slate-300 dark:text-slate-600">—</span>
+                                @endif
+                            </td>
                             <td class="px-5 py-3 text-right">
                                 <a href="{{ route('admin.bookings.show', $booking) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">View</a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-5 py-10 text-center text-slate-500 dark:text-slate-400">No bookings in this view.</td>
+                            <td colspan="8" class="px-5 py-10 text-center text-slate-500 dark:text-slate-400">No bookings in this view.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -19,7 +19,7 @@
 
         <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Commission</h2>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">The platform’s cut, taken from escrow when a payment is released. Per-category overrides can be set in each category.</p>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">The platform’s cut, taken from the pending balance when a payment is released. Per-category overrides can be set in each category.</p>
             <div class="mt-4 max-w-xs">
                 <label for="commission_rate" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Global commission (%)</label>
                 <input id="commission_rate" name="commission_rate" type="number" step="0.5" min="0" max="50"

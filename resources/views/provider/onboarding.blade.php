@@ -20,7 +20,7 @@
             Dashboard
         </a>
         <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Provider verification</h1>
-        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Verified providers get listed in search, matched to jobs, and paid through escrow.</p>
+        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Verified providers get listed in search, matched to jobs, and paid safely once each job is confirmed.</p>
     </div>
 
     {{-- ═══ Stepper ═══ --}}
@@ -122,7 +122,8 @@
 
                 <div>
                     <label for="cnic_number" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">CNIC number</label>
-                    <input id="cnic_number" name="cnic_number" type="text" required placeholder="42101-1234567-8"
+                    <input id="cnic_number" name="cnic_number" type="text" inputmode="numeric" required placeholder="42101-1234567-8"
+                        data-mask="cnic-pk" maxlength="15"
                         value="{{ old('cnic_number', $profile->cnic_number) }}"
                         @error('cnic_number') aria-invalid="true" @enderror
                         class="{{ $inputBase }} font-mono placeholder:font-sans placeholder:text-slate-400 @error('cnic_number') {{ $inputBad }} @else {{ $inputOk }} @enderror">

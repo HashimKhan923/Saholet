@@ -6,7 +6,7 @@
 <section class="mx-auto max-w-xl px-4 py-12 sm:px-6 lg:px-8">
     <a href="{{ route('consumer.bookings.show', $booking) }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Back to booking</a>
     <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Pay securely</h1>
-    <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Your payment is held in escrow and only released to the provider after the job is completed and you confirm.</p>
+    <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Your payment is held pending and only released to the provider after the job is completed and you confirm.</p>
 
     <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div class="flex items-center justify-between">
@@ -76,7 +76,7 @@
             <span x-show="remaining > 0" x-text="'Pay Rs. ' + remaining.toLocaleString()"></span>
             <span x-show="remaining <= 0" x-cloak>Pay with referral credit</span>
         </button>
-        <p class="text-center text-xs text-slate-400 dark:text-slate-500">By paying you agree funds are held in escrow until you confirm completion.</p>
+        <p class="text-center text-xs text-slate-400 dark:text-slate-500">By paying you agree funds are held pending until you confirm completion.</p>
     </form>
 </section>
 @endsection

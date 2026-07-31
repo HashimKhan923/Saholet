@@ -16,7 +16,6 @@ class CategoryResource extends JsonResource
             'description' => $this->description,
             'icon' => $this->icon,
             'image_url' => $this->image_url,
-            'banner_url' => $this->banner_url,
             'services_count' => $this->whenCounted('services'),
             'services' => ServiceResource::collection($this->whenLoaded('services')),
         ];

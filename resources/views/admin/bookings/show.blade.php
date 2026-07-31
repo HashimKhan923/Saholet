@@ -4,7 +4,9 @@
 
 @section('content')
 <section class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-    <a href="{{ route('admin.bookings.index') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Bookings</a>
+    <div class="mb-4 flex justify-end">
+        <x-close-button href="{{ route('admin.bookings.index') }}" />
+    </div>
 
     <div class="mt-1 flex flex-wrap items-center justify-between gap-3">
         <div>
@@ -19,13 +21,13 @@
             {{-- Parties --}}
             <div class="grid gap-4 sm:grid-cols-2">
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Consumer</p>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">Consumer</p>
                     <p class="mt-1.5 font-medium text-slate-900 dark:text-white">{{ $booking->consumer->name ?? '—' }}</p>
                     <p class="text-sm text-slate-500 dark:text-slate-400">{{ $booking->consumer->email ?? '' }}</p>
                     <p class="text-sm text-slate-500 dark:text-slate-400">{{ $booking->consumer->phone ?? '' }}</p>
                 </div>
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Provider</p>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">Provider</p>
                     @if ($booking->providerProfile)
                         <p class="mt-1.5 font-medium text-slate-900 dark:text-white">{{ $booking->providerProfile->business_name ?: $booking->providerProfile->user->name }}</p>
                         <p class="text-sm text-slate-500 dark:text-slate-400">{{ $booking->providerProfile->user->email ?? '' }}</p>
@@ -38,7 +40,7 @@
 
             {{-- Job details --}}
             <div class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Details</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">Details</p>
                 <dl class="mt-3 grid gap-3 sm:grid-cols-2">
                     <div>
                         <dt class="text-xs text-slate-400">Category</dt>
@@ -71,13 +73,24 @@
                             <dt class="text-xs text-slate-400">Cancelled by {{ $booking->cancelled_by }}</dt>
                             <dd class="text-sm text-slate-700 dark:text-slate-300">{{ $booking->cancellation_reason ?: '—' }}</dd>
                         </div>
+                        @if ($booking->hasVisitChargeCollected())
+                            <div class="sm:col-span-2">
+                                <dt class="text-xs text-slate-400">Visit charge (kept by provider, no commission)</dt>
+                                <dd class="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                    Rs. {{ number_format((float) $booking->visit_charge_amount, 0) }} via {{ $booking->visit_charge_method === 'cash' ? 'cash' : 'bank transfer' }}
+                                    @if ($booking->visitChargeScreenshotUrl())
+                                        &nbsp;·&nbsp;<a href="{{ $booking->visitChargeScreenshotUrl() }}" target="_blank" rel="noopener" class="font-semibold text-brand-700 hover:text-brand-800 dark:text-brand-400">View screenshot</a>
+                                    @endif
+                                </dd>
+                            </div>
+                        @endif
                     @endif
                 </dl>
             </div>
 
             {{-- Timeline --}}
             <div class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Timeline</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">Timeline</p>
                 <ul class="mt-3 space-y-2 text-sm text-slate-600 dark:text-slate-400">
                     <li>Booked — {{ $booking->created_at->format('d M Y, g:i A') }}</li>
                     @if ($booking->confirmed_at)<li>Confirmed — {{ $booking->confirmed_at->format('d M Y, g:i A') }}</li>@endif
@@ -89,16 +102,16 @@
 
             @if ($booking->isCompleted() && ($booking->completion_notes || $booking->completionPhotos->isNotEmpty()))
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Completion proof</p>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">Completion proof</p>
                     @if ($booking->completion_notes)
                         <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{{ $booking->completion_notes }}</p>
                     @endif
                     @if ($booking->beforePhotos->isNotEmpty())
-                        <p class="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Before</p>
+                        <p class="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">Before</p>
                         <div class="mt-2"><x-photo-grid :photos="$booking->beforePhotos->map(fn ($p) => ['url' => $p->url()])->all()" /></div>
                     @endif
                     @if ($booking->afterPhotos->isNotEmpty())
-                        <p class="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-400">After</p>
+                        <p class="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">After</p>
                         <div class="mt-2"><x-photo-grid :photos="$booking->afterPhotos->map(fn ($p) => ['url' => $p->url()])->all()" /></div>
                     @endif
                 </div>
@@ -106,7 +119,7 @@
 
             @if ($booking->review)
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Review</p>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">Review</p>
                     <div class="mt-2 flex items-center gap-1 text-amber-400">
                         @for ($s = 0; $s < 5; $s++)
                             <svg viewBox="0 0 24 24" class="h-4 w-4 {{ $s < $booking->review->rating ? '' : 'text-slate-200 dark:text-slate-700' }}" fill="currentColor"><path d="m12 2 2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 16.9 5.9 20.4l1.5-6.8L2.2 9l6.9-.7L12 2z"/></svg>
@@ -122,7 +135,7 @@
         <div class="space-y-6">
             {{-- Payments --}}
             <div class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Payments</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">Payments</p>
                 <div class="mt-3 space-y-3">
                     @forelse ($booking->payments as $payment)
                         <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3 text-sm last:border-0 last:pb-0 dark:border-slate-800">

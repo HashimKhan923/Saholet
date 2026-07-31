@@ -4,7 +4,9 @@
 
 @section('content')
 <section class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-    <a href="{{ route('admin.careers.applications.index', $listing) }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Applications</a>
+    <div class="mb-4 flex justify-end">
+        <x-close-button href="{{ route('admin.careers.applications.index', $listing) }}" />
+    </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
         <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $application->jobSeeker->name }}</h1>

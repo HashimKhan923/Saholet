@@ -21,7 +21,7 @@
         ],
         [
             'label' => 'Completed',
-            'hint'  => 'Job finished — escrow can release',
+            'hint'  => 'Job finished — pending payment can release',
             'at'    => $booking->completed_at,
         ],
     ];

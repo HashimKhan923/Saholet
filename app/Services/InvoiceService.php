@@ -2,12 +2,36 @@
 
 namespace App\Services;
 
+use App\Mail\InvoicePaidMail;
 use App\Models\Booking;
 use App\Models\Invoice;
+use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class InvoiceService
 {
+    /** The invoice tied to a booking, if one already exists (created on completion). */
+    public function findForBooking(Booking $booking): ?Invoice
+    {
+        return Invoice::where('invoiceable_type', Booking::class)
+            ->where('invoiceable_id', $booking->id)
+            ->latest()
+            ->first();
+    }
+
+    /** Email the booking's invoice to the customer once a payment is confirmed. */
+    public function emailPaymentConfirmation(Booking $booking, Payment $payment): void
+    {
+        $invoice = $this->findForBooking($booking) ?? $this->createForBooking($booking);
+
+        if (! $booking->consumer?->email) {
+            return;
+        }
+
+        Mail::to($booking->consumer->email)->send(new InvoicePaidMail($invoice, $booking, $payment));
+    }
+
     public function createForBooking(Booking $booking): Invoice
     {
         $booking->loadMissing(['service', 'consumer']);

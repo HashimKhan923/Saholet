@@ -37,7 +37,7 @@
 
     @if ($showOperationsSection)
     {{-- Operations --}}
-    <h2 class="mt-10 font-display text-sm font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('messages.admin_dashboard.operations_section') }}</h2>
+    <h2 class="mt-10 font-display text-sm font-bold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('messages.admin_dashboard.operations_section') }}</h2>
     <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         @if ($u->hasPermission('bookings'))
         <a href="{{ route('admin.bookings.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
@@ -85,7 +85,7 @@
 
     @if ($showToolsSection)
     {{-- Tools --}}
-    <h2 class="mt-10 font-display text-sm font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('messages.admin_dashboard.tools_section') }}</h2>
+    <h2 class="mt-10 font-display text-sm font-bold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('messages.admin_dashboard.tools_section') }}</h2>
     <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         @if ($u->isAdmin())
         <a href="{{ route('admin.analytics.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">

@@ -4,7 +4,9 @@
 
 @section('content')
 <section class="mx-auto max-w-2xl px-4 py-12 sm:px-6 lg:px-8">
-    <a href="{{ route('admin.withdrawals.index') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Withdrawals</a>
+    <div class="mb-4 flex justify-end">
+        <x-close-button href="{{ route('admin.withdrawals.index') }}" />
+    </div>
 
     @php
         $statusTones = [

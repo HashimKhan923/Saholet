@@ -144,4 +144,52 @@ class ProviderController extends Controller
 
         return back()->with('success', 'Provider application rejected.');
     }
+
+    public function suspend(Request $request, ProviderProfile $provider): RedirectResponse
+    {
+        if ($provider->isSuspended()) {
+            return back()->with('error', 'This provider is already suspended.');
+        }
+
+        $data = $request->validate([
+            'suspension_reason' => ['required', 'string', 'max:1000'],
+        ]);
+
+        $provider->update([
+            'suspended_at' => now(),
+            'suspension_reason' => $data['suspension_reason'],
+        ]);
+
+        app(\App\Services\Notifier::class)->notify(
+            $provider->user,
+            'account',
+            'Account paused',
+            'Your account has been paused by our team: ' . $data['suspension_reason'],
+            route('provider.dashboard')
+        );
+
+        return back()->with('success', 'Provider suspended.');
+    }
+
+    public function resume(ProviderProfile $provider): RedirectResponse
+    {
+        if (! $provider->isSuspended()) {
+            return back()->with('error', 'This provider is not currently suspended.');
+        }
+
+        $provider->update([
+            'suspended_at' => null,
+            'suspension_reason' => null,
+        ]);
+
+        app(\App\Services\Notifier::class)->notify(
+            $provider->user,
+            'account',
+            'Account reactivated',
+            'Your account has been reactivated. You can accept new jobs again.',
+            route('provider.dashboard')
+        );
+
+        return back()->with('success', 'Provider reactivated.');
+    }
 }

@@ -4,7 +4,9 @@
 
 @section('content')
 <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-    <a href="{{ route('consumer.jobs.index') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; My jobs</a>
+    <div class="mb-4 flex justify-end">
+        <x-close-button href="{{ route('consumer.jobs.index') }}" />
+    </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
         <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $jobPost->service->name }}</h1>
@@ -132,7 +134,7 @@
                                 <h3 class="font-display text-base font-bold text-slate-900 dark:text-white">Accept this bid?</h3>
                                 <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">This creates a confirmed booking and rejects other bids.</p>
                                 <div class="mt-6 flex justify-end gap-2">
-                                    <button type="button" @click="open = false" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">Never mind</button>
+                                    <button type="button" @click="open = false" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">Cancel</button>
                                     <button type="button" :disabled="submitting" @click="submitting = true; $refs.acceptForm.submit()"
                                         class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50">
                                         <span x-show="!submitting">Accept bid</span>

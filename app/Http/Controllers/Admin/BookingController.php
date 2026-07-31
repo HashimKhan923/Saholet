@@ -37,7 +37,7 @@ class BookingController extends Controller
             }
         }
 
-        $query = Booking::with(['service', 'consumer', 'providerProfile.user']);
+        $query = Booking::with(['service', 'consumer', 'providerProfile.user', 'review']);
 
         if ($filter !== 'all') {
             $query->where('status', $filter);

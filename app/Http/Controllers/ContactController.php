@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ContactFormReceived;
+use App\Support\PakFormat;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -25,6 +26,10 @@ class ContactController extends Controller
             'subject' => ['nullable', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:5000'],
         ]);
+
+        if (! empty($data['phone'])) {
+            $data['phone'] = PakFormat::phone($data['phone']);
+        }
 
         try {
             Mail::to(config('mail.contact_to'))->send(new ContactFormReceived($data));

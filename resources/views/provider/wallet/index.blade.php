@@ -9,15 +9,15 @@
     $tabs = [
         'all'       => 'All activity',
         'available' => 'Earnings',
-        'escrow'    => 'Escrow',
+        'escrow'    => 'Pending',
     ];
 
     // Ledger entry types → human labels.
     $typeLabels = [
-        'hold'                => 'Escrow hold',
-        'release_out'         => 'Escrow released',
+        'hold'                => 'Pending hold',
+        'release_out'         => 'Pending cleared',
         'release_in'          => 'Earnings credited',
-        'refund_out'          => 'Escrow refunded',
+        'refund_out'          => 'Pending refunded',
         'withdrawal_hold'     => 'Withdrawal requested',
         'withdrawal_reversed' => 'Withdrawal reversed',
         'cash_commission_due' => 'Commission owed (cash job)',
@@ -131,7 +131,7 @@
                 <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/15 text-sky-600 dark:text-sky-400">
                     <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 118 0v3" stroke-linecap="round"/></svg>
                 </span>
-                <p class="text-sm font-semibold text-sky-800 dark:text-sky-300">Held in escrow</p>
+                <p class="text-sm font-semibold text-sky-800 dark:text-sky-300">Pending balance</p>
             </div>
 
             <p class="mt-4 font-display text-3xl font-extrabold text-sky-900 dark:text-sky-200">Rs. {{ number_format((float) $wallet->escrow_balance, 0) }}</p>
@@ -366,7 +366,7 @@
                                     {{ $isEscrow
                                         ? 'bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-400'
                                         : 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-400' }}">
-                                    {{ $isEscrow ? 'Escrow' : 'Available' }}
+                                    {{ $isEscrow ? 'Pending' : 'Available' }}
                                 </span>
                             </div>
                             <p class="mt-0.5 truncate text-xs text-slate-400">{{ $entry->description }}</p>

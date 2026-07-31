@@ -4,13 +4,18 @@
 
 @section('content')
 <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-    <a href="{{ route('admin.providers.index') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Provider approvals</a>
+    <div class="mb-4 flex justify-end">
+        <x-close-button href="{{ route('admin.providers.index') }}" />
+    </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
         <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $provider->user->name }}</h1>
         @switch($provider->status)
             @case('approved')
                 <span class="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-950/40 dark:text-brand-400">Approved</span>
+                @if ($provider->isSuspended())
+                    <span class="inline-flex rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-700 dark:bg-red-950/40 dark:text-red-400">Suspended</span>
+                @endif
                 @break
             @case('pending')
                 <span class="inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-950/40 dark:text-amber-400">Pending review</span>
@@ -34,7 +39,7 @@
             <p class="mt-1.5 font-display text-lg font-extrabold text-brand-700 dark:text-brand-400">Rs. {{ number_format($earnings['available_balance'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">In escrow</p>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Pending</p>
             <p class="mt-1.5 font-display text-lg font-extrabold text-amber-600 dark:text-amber-400">Rs. {{ number_format($earnings['escrow_balance'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -145,7 +150,7 @@
                 @else
                     <div class="mt-4 overflow-x-auto">
                         <table class="min-w-full divide-y divide-slate-100 text-sm dark:divide-slate-800">
-                            <thead class="text-left text-xs font-semibold uppercase tracking-wide text-slate-400">
+                            <thead class="text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">
                                 <tr>
                                     <th class="py-2 pr-3">Service</th>
                                     <th class="py-2 pr-3">Customer</th>
@@ -272,6 +277,36 @@
                     </p>
                 @endif
             </div>
+
+            {{-- Account status (suspend / reactivate) --}}
+            @if ($provider->isApproved())
+                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Account status</h2>
+
+                    @if ($provider->isSuspended())
+                        <div class="mt-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 dark:border-red-900 dark:bg-red-950/40">
+                            <p class="text-sm font-semibold text-red-800 dark:text-red-300">Suspended{{ $provider->suspended_at ? ' since ' . $provider->suspended_at->format('d M Y') : '' }}</p>
+                            @if ($provider->suspension_reason)
+                                <p class="mt-1 text-sm text-red-700 dark:text-red-400">{{ $provider->suspension_reason }}</p>
+                            @endif
+                        </div>
+                        <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">While suspended, this provider cannot accept new bookings or emergencies.</p>
+                        <form method="POST" action="{{ route('admin.providers.resume', $provider) }}" class="mt-4">
+                            @csrf
+                            <button type="submit" class="w-full rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Reactivate provider</button>
+                        </form>
+                    @else
+                        <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">This provider is active and can accept bookings. Suspending pauses their account without deleting anything.</p>
+                        <form method="POST" action="{{ route('admin.providers.suspend', $provider) }}" class="mt-4 space-y-3">
+                            @csrf
+                            <label for="suspension_reason" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Reason for suspension</label>
+                            <textarea id="suspension_reason" name="suspension_reason" rows="3" required
+                                class="block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-red-400 focus:ring-2 focus:ring-red-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white"></textarea>
+                            <button type="submit" class="w-full rounded-lg border border-red-300 px-4 py-2.5 text-sm font-semibold text-red-700 transition hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/40">Suspend provider</button>
+                        </form>
+                    @endif
+                </div>
+            @endif
 
             {{-- Withdrawal history --}}
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">

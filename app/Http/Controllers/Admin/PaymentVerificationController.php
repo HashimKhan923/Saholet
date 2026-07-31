@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
+use App\Services\InvoiceService;
 use App\Services\Notifier;
 use App\Services\WalletService;
 use Illuminate\Http\RedirectResponse;
@@ -17,7 +18,7 @@ use Illuminate\View\View;
  */
 class PaymentVerificationController extends Controller
 {
-    public function __construct(private WalletService $wallets) {}
+    public function __construct(private WalletService $wallets, private InvoiceService $invoices) {}
 
     public function index(Request $request): View
     {
@@ -68,6 +69,7 @@ class PaymentVerificationController extends Controller
         $payment->load('booking.providerProfile.user');
 
         $this->wallets->verifyAndReleaseBankTransfer($payment, $payment->booking->providerProfile->user, $request->user());
+        $this->invoices->emailPaymentConfirmation($payment->booking, $payment);
 
         app(Notifier::class)->notify(
             $payment->booking->providerProfile->user,

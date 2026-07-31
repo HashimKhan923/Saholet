@@ -109,6 +109,9 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <span class="truncate text-sm font-bold text-slate-900 dark:text-white">{{ $booking->service?->name ?? 'Service' }}</span>
                                 <x-booking-status :status="$booking->status" />
+                                @if ($booking->review)
+                                    <x-rating-stars :rating="$booking->review->rating" />
+                                @endif
                             </div>
                             <p class="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">
                                 {{ $booking->consumer?->name }} · {{ $booking->timeLabel() }} · ~{{ $booking->duration_minutes }} min

@@ -29,7 +29,7 @@ class WalletService
                 'bucket' => LedgerEntry::BUCKET_ESCROW,
                 'type' => 'hold',
                 'amount' => $payment->amount,
-                'description' => 'Escrow hold for booking ' . $payment->booking->reference,
+                'description' => 'Payment pending for booking ' . $payment->booking->reference,
             ]);
 
             $this->recompute($wallet);
@@ -53,7 +53,7 @@ class WalletService
                 'bucket' => LedgerEntry::BUCKET_ESCROW,
                 'type' => 'release_out',
                 'amount' => -1 * $payment->amount,
-                'description' => 'Escrow released for booking ' . $payment->booking->reference,
+                'description' => 'Pending cleared for booking ' . $payment->booking->reference,
             ]);
 
             LedgerEntry::create([
@@ -147,7 +147,7 @@ class WalletService
                 'bucket' => LedgerEntry::BUCKET_ESCROW,
                 'type' => 'refund_out',
                 'amount' => -1 * $payment->amount,
-                'description' => 'Escrow refunded for booking ' . $payment->booking->reference,
+                'description' => 'Pending payment refunded for booking ' . $payment->booking->reference,
             ]);
 
             $this->recompute($wallet);

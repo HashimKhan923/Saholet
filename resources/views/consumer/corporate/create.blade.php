@@ -34,7 +34,8 @@
         <div class="grid gap-5 sm:grid-cols-2">
             <div>
                 <label for="billing_phone" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Billing phone <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
-                <input id="billing_phone" name="billing_phone" type="text" value="{{ old('billing_phone') }}"
+                <input id="billing_phone" name="billing_phone" type="text" inputmode="numeric" value="{{ old('billing_phone') }}"
+                    data-mask="phone-pk" maxlength="12" placeholder="0300-1234567"
                     class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
             </div>
             <div>

@@ -4,7 +4,9 @@
 
 @section('content')
 <section class="mx-auto max-w-2xl px-4 py-12 sm:px-6 lg:px-8">
-    <a href="{{ $backUrl }}" class="text-sm text-slate-500 hover:text-brand-600">&larr; Back to booking</a>
+    <div class="mb-4 flex justify-end">
+        <x-close-button href="{{ $backUrl }}" />
+    </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
         <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Dispute {{ $dispute->reference }}</h1>
@@ -18,6 +20,19 @@
             <div><dt class="text-slate-500">Submitted</dt><dd class="font-medium text-slate-800">{{ $dispute->created_at->format('d M Y, g:i A') }}</dd></div>
             <div class="sm:col-span-2"><dt class="text-slate-500">Reason</dt><dd class="font-medium text-slate-800">{{ $dispute->reason }}</dd></div>
         </dl>
+
+        @if ($dispute->photos->isNotEmpty())
+            <div class="mt-6">
+                <dt class="text-sm text-slate-500">Photo evidence</dt>
+                <div class="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
+                    @foreach ($dispute->photos as $photo)
+                        <a href="{{ $photo->url() }}" target="_blank" rel="noopener" class="group relative aspect-square overflow-hidden rounded-lg border border-slate-200">
+                            <img src="{{ $photo->url() }}" alt="" class="h-full w-full object-cover transition group-hover:scale-105">
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        @endif
 
         @if (! $dispute->isOpen())
             <div class="mt-6 rounded-xl bg-slate-50 p-4">

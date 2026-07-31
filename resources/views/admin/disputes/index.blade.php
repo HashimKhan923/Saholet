@@ -26,7 +26,7 @@
 
     <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
-            <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+            <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:bg-slate-800 dark:text-slate-100">
                 <tr>
                     <th class="px-5 py-3">Reference</th>
                     <th class="px-5 py-3">Booking</th>

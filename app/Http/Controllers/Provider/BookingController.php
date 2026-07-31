@@ -52,7 +52,7 @@ class BookingController extends Controller
             }
         }
 
-        $query = Booking::with(['service', 'consumer'])
+        $query = Booking::with(['service', 'consumer', 'review'])
             ->where('provider_profile_id', $profile->id);
 
         if ($filter !== 'all') {
@@ -91,21 +91,34 @@ class BookingController extends Controller
     {
         $this->authorize('updateStatus', $booking);
 
+        $isPostInspectionCancel = $request->input('action') === 'cancel' && $booking->isInProgress();
+
         $data = $request->validate([
             'action' => ['required', Rule::in(['confirm', 'decline', 'start', 'complete', 'cancel'])],
             'cancellation_reason' => ['nullable', 'string', 'max:1000'],
             'completion_notes' => ['nullable', 'string', 'max:1000'],
-            'before_photos' => ['nullable', 'array', 'max:6'],
+            'before_photos' => [Rule::requiredIf($request->input('action') === 'complete'), 'array', 'min:1', 'max:6'],
             'before_photos.*' => ['image', 'mimes:jpg,jpeg,png', 'max:5120'],
-            'after_photos' => ['nullable', 'array', 'max:6'],
+            'after_photos' => [Rule::requiredIf($request->input('action') === 'complete'), 'array', 'min:1', 'max:6'],
             'after_photos.*' => ['image', 'mimes:jpg,jpeg,png', 'max:5120'],
+            'visit_charge_method' => [Rule::requiredIf($isPostInspectionCancel), 'nullable', Rule::in(['cash', 'bank_transfer'])],
+            'visit_charge_screenshot' => [
+                Rule::requiredIf($isPostInspectionCancel && $request->input('visit_charge_method') === 'bank_transfer'),
+                'nullable', 'image', 'mimes:jpg,jpeg,png,webp,heic,heif', 'max:8192',
+            ],
+        ], [
+            'before_photos.required' => 'Add at least one "before" photo to mark this booking complete.',
+            'after_photos.required' => 'Add at least one "after" photo to mark this booking complete.',
+            'visit_charge_method.required' => 'Let us know how the visit charge was paid.',
+            'visit_charge_screenshot.required' => 'Add a screenshot of the bank transfer as proof.',
         ]);
 
         $action = $data['action'];
 
         $allowed = match ($action) {
             'confirm', 'decline' => $booking->isPending(),
-            'start', 'cancel' => $booking->isConfirmed(),
+            'start' => $booking->isConfirmed(),
+            'cancel' => $booking->isConfirmed() || $booking->isInProgress(),
             'complete' => $booking->isInProgress(),
             default => false,
         };
@@ -155,14 +168,27 @@ class BookingController extends Controller
             case 'cancel':
                 $this->refundIfPaid($booking);
 
-                $booking->update([
+                $update = [
                     'status' => Booking::STATUS_CANCELLED,
                     'cancelled_by' => 'provider',
                     'cancelled_at' => now(),
-                    'cancellation_reason' => $data['cancellation_reason']
+                    'cancellation_reason' => ($data['cancellation_reason'] ?? null)
                         ?: ($action === 'decline' ? 'Declined by provider' : 'Cancelled by provider'),
-                ]);
-                $message = $action === 'decline' ? 'Booking declined.' : 'Booking cancelled.';
+                ];
+
+                if ($isPostInspectionCancel) {
+                    $update['visit_charge_amount'] = $booking->service->visit_charge;
+                    $update['visit_charge_method'] = $data['visit_charge_method'];
+                    $update['visit_charge_collected_at'] = now();
+                    if ($request->hasFile('visit_charge_screenshot')) {
+                        $update['visit_charge_screenshot_path'] = $request->file('visit_charge_screenshot')->store('visit-charge-screenshots', 'public');
+                    }
+                }
+
+                $booking->update($update);
+                $message = $action === 'decline'
+                    ? 'Booking declined.'
+                    : ($isPostInspectionCancel ? 'Booking cancelled — visit charge recorded.' : 'Booking cancelled.');
                 break;
         }
 

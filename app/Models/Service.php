@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Service extends Model
@@ -15,16 +14,11 @@ class Service extends Model
         'name',
         'slug',
         'description',
-        'thumbnail',
         'base_price',
         'visit_charge',
         'duration_minutes',
         'is_active',
         'is_emergency_available',
-    ];
-
-    protected $appends = [
-        'thumbnail_url',
     ];
 
     protected function casts(): array
@@ -35,11 +29,6 @@ class Service extends Model
             'base_price' => 'decimal:2',
             'visit_charge' => 'decimal:2',
         ];
-    }
-
-    public function getThumbnailUrlAttribute(): ?string
-    {
-        return $this->thumbnail ? Storage::disk('public')->url($this->thumbnail) : null;
     }
 
     public function category(): BelongsTo

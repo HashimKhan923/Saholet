@@ -52,6 +52,11 @@
                             class="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
                     </div>
                     <textarea name="address" rows="2" required placeholder="Full address" class="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">{{ $address->address }}</textarea>
+                    <input type="hidden" name="latitude" value="{{ $address->latitude }}">
+                    <input type="hidden" name="longitude" value="{{ $address->longitude }}">
+                    <template x-if="editing">
+                        <x-address-map-picker :lat="$address->latitude" :lng="$address->longitude" />
+                    </template>
                     <label class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
                         <input type="checkbox" name="is_default" value="1" @checked($address->is_default) class="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-200">
                         Make default
@@ -91,6 +96,9 @@
                 <label class="block text-xs font-medium text-slate-700 dark:text-slate-300">Full address</label>
                 <textarea name="address" rows="2" required placeholder="House, street, area" class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">{{ old('address') }}</textarea>
             </div>
+            <input type="hidden" name="latitude" value="{{ old('latitude') }}">
+            <input type="hidden" name="longitude" value="{{ old('longitude') }}">
+            <x-address-map-picker :lat="old('latitude')" :lng="old('longitude')" />
             <label class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
                 <input type="checkbox" name="is_default" value="1" @checked(old('is_default')) class="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-200">
                 Make default

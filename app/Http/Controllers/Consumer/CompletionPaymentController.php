@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Consumer;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Payment;
+use App\Services\InvoiceService;
 use App\Services\WalletService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ use Illuminate\View\View;
  */
 class CompletionPaymentController extends Controller
 {
-    public function __construct(private WalletService $wallets) {}
+    public function __construct(private WalletService $wallets, private InvoiceService $invoices) {}
 
     public function create(Booking $booking): View
     {
@@ -67,6 +68,7 @@ class CompletionPaymentController extends Controller
 
         if ($data['method'] === Payment::GATEWAY_CASH) {
             $this->wallets->chargeCashCommission($payment, $booking->providerProfile->user);
+            $this->invoices->emailPaymentConfirmation($booking, $payment);
 
             app(\App\Services\Notifier::class)->notify(
                 $booking->providerProfile->user,

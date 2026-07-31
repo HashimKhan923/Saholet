@@ -28,7 +28,7 @@
             <div class="mt-6 flex justify-end gap-2">
                 <button type="button" @click="open = false"
                     class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
-                    Never mind
+                    Cancel
                 </button>
                 <button type="button" :disabled="submitting" @click="submitting = true; $refs.form.submit()"
                     class="rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition disabled:cursor-not-allowed disabled:opacity-50 {{ $confirmClass }}">
