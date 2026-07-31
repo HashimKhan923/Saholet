@@ -34,11 +34,11 @@
     $isUrdu = app()->getLocale() === 'ur';
 @endphp
 <section class="relative isolate flex min-h-screen items-center overflow-hidden bg-brand-900">
-    {{-- Background photo — sized for a 1920×700 banner; object-cover fills any container regardless of source ratio. --}}
-    <img src="/images/Hero.png?v={{ filemtime(public_path('images/Hero.png')) }}" alt=""
-         class="absolute inset-0 -z-10 h-full w-full object-cover object-center" loading="eager">
-    {{-- Scrim so centered white text stays legible over the photo --}}
-    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-950/90 via-brand-900/75 to-brand-950/95"></div>
+    {{-- Background image --}}
+    <img class="absolute inset-0 -z-10 h-full w-full object-cover object-center"
+         src="/images/Hero.jpeg?v={{ filemtime(public_path('images/Hero.jpeg')) }}" alt="">
+    {{-- Scrim so centered white text stays legible over the image — brand-green wash at ~70% opacity --}}
+    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-950/70 via-brand-900/60 to-brand-950/75"></div>
     <div class="pointer-events-none absolute -end-24 -top-24 -z-10 h-80 w-80 rounded-full bg-brand-400/20 blur-3xl"></div>
 
     <div class="mx-auto w-full max-w-4xl px-4 py-24 text-center sm:px-6 lg:px-8">
@@ -47,8 +47,8 @@
              class="animate-fade-up mx-auto h-16 w-auto sm:h-20"> -->
 
         {{-- 2. Title --}}
-        <h1 class="animate-fade-up mt-7 font-display text-4xl font-extrabold leading-tight text-white sm:text-5xl lg:text-6xl" style="--reveal-delay: 80ms">
-            Home &amp; Facility<br class="hidden sm:block"> Maintenance Services
+        <h1 class="animate-fade-up font-display text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl" style="--reveal-delay: 80ms">
+            <span class="text-white">Home &amp; Facility</span><br class="hidden sm:block"> <span class="text-white">Maintenance Services</span>
         </h1>
 
         {{-- 3. Search bar — wider, centered --}}
@@ -141,7 +141,7 @@
                 </span>
                 <h3 class="mt-5 font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('messages.landing.flow_bid_title') }}</h3>
                 <p class="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_bid_desc') }}</p>
-                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.jobs.create') : route('register') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg border-2 border-slate-800 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-800 hover:text-white dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
+                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.jobs.create') : route('login') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg border-2 border-slate-800 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-800 hover:text-white dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
                     {{ __('messages.landing.flow_bid_cta') }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
                 </a>
             </div>
@@ -165,7 +165,7 @@
                 </span>
                 <h3 class="mt-5 font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('messages.landing.flow_contract_title') }}</h3>
                 <p class="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_contract_desc') }}</p>
-                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.contracts.create') : route('register') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700">
+                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.contracts.create') : route('login') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700">
                     {{ __('messages.landing.flow_contract_cta') }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
                 </a>
             </div>
@@ -178,7 +178,7 @@
                 </span>
                 <h3 class="mt-5 font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('messages.landing.flow_sos_title') }}</h3>
                 <p class="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_sos_desc') }}</p>
-                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.emergencies.create') : route('register') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-accent-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-700">
+                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.emergencies.create') : route('login') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-accent-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-700">
                     {{ __('messages.landing.flow_sos_cta') }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
                 </a>
             </div>
@@ -187,46 +187,39 @@
 </section>
 
 {{-- ================================================ Four milestones detail --}}
-{{-- Image side placeholders use the icon+gradient treatment (like a category
-     card) until real 960×700 photography is dropped in — swap the inner
-     <span> icon block for an <img> of that size and it slots in as-is. --}}
 @php
     $milestones = [
         [
-            'tone' => 'from-slate-800 to-slate-950', 'iconBg' => 'bg-slate-700',
             'eyebrow' => __('messages.landing.flow_bid_title'),
             'title' => 'Post a job, let providers come to you',
             'desc' => "Describe what you need, set a budget, and verified providers bid for the work. Compare their profiles, ratings and quotes, then pick who you trust — no cold-calling around for quotes.",
             'cta_label' => __('messages.landing.flow_bid_cta'),
-            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.jobs.create') : route('register'),
-            'icon' => '<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke-linecap="round" stroke-linejoin="round"/>',
+            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.jobs.create') : route('login'),
+            'image' => 'Job.jpeg', 'ratio' => '1127/1396',
         ],
         [
-            'tone' => 'from-brand-600 to-brand-800', 'iconBg' => 'bg-brand-500',
             'eyebrow' => __('messages.landing.flow_direct_title'),
             'title' => 'Book a verified pro in minutes',
             'desc' => 'Already know what you need? Pick a service, choose from verified professionals with transparent, upfront pricing, and get a confirmed time slot instantly — same-day availability in most areas.',
             'cta_label' => __('messages.landing.flow_direct_cta'),
             'cta_href' => route('services.index'),
-            'icon' => '<rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 11h16" stroke-linecap="round"/>',
+            'image' => 'Booking.jpeg', 'ratio' => '1126/1397',
         ],
         [
-            'tone' => 'from-sky-600 to-sky-900', 'iconBg' => 'bg-sky-500',
             'eyebrow' => __('messages.landing.flow_contract_title'),
             'title' => 'Multi-service projects, one contract',
             'desc' => "Renovating a whole floor or fitting out an office? Bundle multiple services into a single contract with milestone-based payments, so the whole project is tracked and paid for in stages, not chaos.",
             'cta_label' => __('messages.landing.flow_contract_cta'),
-            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.contracts.create') : route('register'),
-            'icon' => '<path d="M9 4h6l4 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 12h6M9 16h6" stroke-linecap="round"/>',
+            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.contracts.create') : route('login'),
+            'image' => 'Contract.jpeg', 'ratio' => '1536/1024',
         ],
         [
-            'tone' => 'from-accent-600 to-accent-900', 'iconBg' => 'bg-accent-500',
             'eyebrow' => __('messages.landing.flow_sos_title'),
             'title' => 'Emergencies, handled right now',
             'desc' => "Burst pipe, no power, locked out? Send an SOS and the nearest available, verified provider is notified immediately. No waiting on hold, no scheduling back-and-forth — just help, fast.",
             'cta_label' => __('messages.landing.flow_sos_cta'),
-            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.emergencies.create') : route('register'),
-            'icon' => '<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" stroke-linejoin="round"/>',
+            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.emergencies.create') : route('login'),
+            'image' => 'Emergenct.jpeg', 'ratio' => '1448/1086',
         ],
     ];
 @endphp
@@ -234,15 +227,12 @@
     <div class="mx-auto max-w-7xl space-y-16 px-4 sm:px-6 lg:space-y-24 lg:px-8">
         @foreach ($milestones as $i => $m)
             <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
-                {{-- Image side — alternates left/right via DOM order + lg:order --}}
+                {{-- Image side — alternates left/right via DOM order + lg:order. Each block
+                     uses its own image's native aspect ratio so nothing crops or letterboxes. --}}
                 <div class="reveal {{ $i % 2 === 1 ? 'lg:order-2' : '' }}">
-                    <div class="relative aspect-[960/700] overflow-hidden rounded-3xl bg-gradient-to-br {{ $m['tone'] }} shadow-xl">
-                        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 20% 20%, white 1px, transparent 1px); background-size: 22px 22px;"></div>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <span class="flex h-24 w-24 items-center justify-center rounded-3xl {{ $m['iconBg'] }} shadow-lg sm:h-28 sm:w-28">
-                                <svg viewBox="0 0 24 24" class="h-12 w-12 text-white" fill="none" stroke="currentColor" stroke-width="1.6">{!! $m['icon'] !!}</svg>
-                            </span>
-                        </div>
+                    <div class="overflow-hidden rounded-3xl shadow-xl" style="aspect-ratio: {{ $m['ratio'] }};">
+                        <img src="/images/{{ $m['image'] }}?v={{ filemtime(public_path('images/' . $m['image'])) }}"
+                             alt="{{ $m['title'] }}" class="h-full w-full object-cover" loading="lazy">
                     </div>
                 </div>
 
@@ -420,7 +410,7 @@
         <div class="grid items-start gap-14 lg:grid-cols-2">
             {{-- Left: banner image --}}
             <div class="reveal order-2 self-center overflow-hidden rounded-3xl lg:order-1">
-                <img src="/images/Hero.png?v={{ filemtime(public_path('images/Hero.png')) }}" alt="The Sahoulat team" class="h-full w-full object-cover">
+                <img src="/images/Hero.jpeg?v={{ filemtime(public_path('images/Hero.jpeg')) }}" alt="The Sahoulat team" class="h-full w-full object-cover">
             </div>
 
             {{-- Right --}}
@@ -472,27 +462,11 @@
 
 {{-- ============================================== Subscription plans band --}}
 <section class="border-t border-slate-100 py-16 dark:border-slate-800 sm:py-20">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-        <div class="reveal  overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 p-10 shadow-2xl shadow-brand-900/30 ring-1 ring-white/10 sm:p-14">
-
-            
-
-            <div class="relative flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-                <div class="max-w-xl">
-                    <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white">
-                        <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 2.1l4 4-4 4M7 21.9l-4-4 4-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 12a8.5 8.5 0 0 1 14.5-6h-4M20.5 12a8.5 8.5 0 0 1-14.5 6h4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        {{ __('messages.nav.plans') }}
-                    </span>
-                    <h2 class="mt-4 font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Set it and forget it</h2>
-                    <p class="mt-3 text-brand-50">Subscribe to a recurring maintenance plan — AC servicing, generator upkeep, and more — and we'll schedule and assign a trusted provider automatically, every time.</p>
-                </div>
-                <a href="{{ route('subscription-plans.index') }}"
-                   class="btn-shine group relative inline-flex shrink-0 items-center gap-2 rounded-xl bg-white px-7 py-4 text-base font-bold text-brand-800 shadow-xl shadow-black/20 transition hover:scale-105 hover:bg-brand-50">
-                    Browse plans
-                    <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-            </div>
-        </div>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <a href="{{ route('subscription-plans.index') }}" class="reveal card-lift block overflow-hidden rounded-3xl shadow-2xl shadow-brand-900/30 ring-1 ring-white/10">
+            <img src="/images/MaintenanceHome.png?v={{ filemtime(public_path('images/MaintenanceHome.png')) }}"
+                 alt="Maintenance Plan — regular maintenance today, worry-free living tomorrow" class="h-auto w-full md:h-1/3 md:object-cover" loading="lazy">
+        </a>
     </div>
 </section>
 
@@ -611,29 +585,10 @@
 {{-- ======================================================= Careers band --}}
 <section class="border-t border-slate-100 py-16 dark:border-slate-800 sm:py-20">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="reveal relative overflow-hidden rounded-3xl border-2 border-brand-500/40 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-10 shadow-2xl shadow-brand-900/20 sm:p-14 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-            <span aria-hidden="true" class="urdu-watermark absolute -bottom-8 start-4 text-[7rem] text-white/[0.05]">سہولت</span>
-            <div class="animate-blob-slow absolute -bottom-20 -start-20 h-64 w-64 rounded-full bg-brand-500/10 blur-3xl"></div>
-
-            <div class="relative flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-                <div class="max-w-xl">
-                    <span class="inline-flex items-center gap-2 rounded-full border border-brand-400/40 bg-brand-500/15 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-300">
-                        <span class="relative flex h-2 w-2">
-                            <span class="animate-ping-ring absolute inline-flex h-full w-full rounded-full bg-brand-400"></span>
-                            <span class="relative inline-flex h-2 w-2 rounded-full bg-brand-400"></span>
-                        </span>
-                        {{ __('messages.landing.careers_badge') }}
-                    </span>
-                    <h2 class="mt-4 font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">{{ __('messages.landing.careers_title') }}</h2>
-                    <p class="mt-3 text-slate-300">{{ __('messages.landing.careers_sub') }}</p>
-                </div>
-                <a href="{{ route('careers.index') }}"
-                   class="btn-shine group relative inline-flex shrink-0 items-center gap-2 rounded-xl bg-brand-500 px-7 py-4 text-base font-bold text-white shadow-xl shadow-brand-900/40 transition hover:scale-105 hover:bg-brand-400">
-                    {{ __('messages.landing.careers_btn') }}
-                    <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-            </div>
-        </div>
+        <a href="{{ route('careers.index') }}" class="reveal card-lift block overflow-hidden rounded-3xl border-2 border-brand-500/40 shadow-2xl shadow-brand-900/20">
+            <img src="/images/CareerHome.jpeg?v={{ filemtime(public_path('images/CareerHome.jpeg')) }}"
+                 alt="We're Hiring — build your career, build the future" class="h-auto w-full md:h-100 md:object-cover" loading="lazy">
+        </a>
     </div>
 </section>
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BookingRoomController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DisputeController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ProviderDirectoryController;
 use App\Http\Controllers\Api\ServiceAreaController;
@@ -45,6 +46,13 @@ use Illuminate\Support\Facades\Route;
 // ─── Public (no auth) ────────────────────────────────────────────────
 Route::post('register', [AuthController::class, 'register'])->name('api.register');
 Route::post('login', [AuthController::class, 'login'])->name('api.login');
+
+Route::post('forgot-password', [PasswordResetController::class, 'sendOtp'])
+    ->name('api.forgot-password')
+    ->middleware('throttle:password-reset');
+Route::post('reset-password', [PasswordResetController::class, 'reset'])
+    ->name('api.reset-password')
+    ->middleware('throttle:password-reset');
 
 Route::get('categories', [CategoryController::class, 'index'])->name('api.categories.index');
 Route::get('services', [ServiceController::class, 'index'])->name('api.services.index');

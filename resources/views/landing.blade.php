@@ -65,7 +65,7 @@
             {{-- ── RIGHT: image + overlays ── --}}
             <div class="relative col-span-1 lg:col-span-2">
                 <div class="relative overflow-hidden rounded-3xl dark:border-slate-800">
-                    <img src="/images/Hero.png?v={{ filemtime(public_path('images/Hero.png')) }}" alt="Sahoulat Hero" class="w-full object-cover" loading="eager">
+                    <img src="/images/Hero.jpeg?v={{ filemtime(public_path('images/Hero.jpeg')) }}" alt="Sahoulat Hero" class="w-full object-cover" loading="eager">
                     <div class="absolute inset-0 bg-gradient-to-t from-brand-800/60 via-transparent to-transparent"></div>
 
                     
