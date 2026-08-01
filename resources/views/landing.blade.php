@@ -30,142 +30,38 @@
 @php
     $isUrdu = app()->getLocale() === 'ur';
 @endphp
-<section class="relative overflow-hidden bg-dot-grid">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="grid items-center gap-10 py-14 lg:grid-cols-3 lg:gap-8 lg:py-20">
+<section class="relative isolate flex min-h-screen items-center overflow-hidden bg-brand-900">
+    {{-- Background image --}}
+    <img class="absolute inset-0 -z-10 h-full w-full object-cover object-center"
+         src="/images/Hero.jpeg?v={{ filemtime(public_path('images/Hero.jpeg')) }}" alt="">
+    {{-- Scrim so centered white text stays legible over the image — brand-green wash at ~70% opacity --}}
+    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-950/70 via-brand-900/60 to-brand-950/75"></div>
+    <div class="pointer-events-none absolute -end-24 -top-24 -z-10 h-80 w-80 rounded-full bg-brand-400/20 blur-3xl"></div>
 
-            {{-- ── LEFT ── --}}
-            <div class="animate-fade-up {{ $isUrdu ? 'text-right' : '' }}">
-                <div class="mb-5 inline-flex items-center gap-2 {{ $isUrdu ? 'flex-row-reverse' : '' }}">
-                    <span class="h-0.5 w-6 rounded bg-accent-600"></span>
-                    <span class="text-xs font-bold uppercase tracking-widest text-accent-600 {{ $isUrdu ? 'font-urdu text-sm not-italic tracking-normal' : '' }}">
-                        {{ __('messages.hero.eyebrow') }}
-                    </span>
-                </div>
+    <div class="mx-auto w-full max-w-4xl px-4 py-24 text-center sm:px-6 lg:px-8">
+        {{-- 1. Logo --}}
+        <!-- <img src="/images/WhiteLogo.png?v={{ filemtime(public_path('images/WhiteLogo.png')) }}" alt="{{ config('app.name') }}"
+             class="animate-fade-up mx-auto h-16 w-auto sm:h-20"> -->
 
-                <div class="mb-3 font-display text-4xl font-bold leading-tight text-slate-900 dark:text-white sm:text-4xl">
-                    {{ __('messages.hero.line1') }}
-                    <br>
-                    <span class="text-brand-600">{{ __('messages.hero.line2') }}</span>
-                    <br>
-                    <span class=" text-accent-600">{{ __('messages.hero.line3') }}</span>
-                </div>
+        {{-- 2. Title --}}
+        <h1 class="animate-fade-up font-display text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl" style="--reveal-delay: 80ms">
+            <span class="text-white">{{ __('messages.landing.hero_title_line1') }}</span><br class="hidden sm:block"> <span class="text-white">{{ __('messages.landing.hero_title_line2') }}</span>
+        </h1>
 
-               
-                <p class="mb-7 max-w-lg text-base leading-relaxed text-slate-500 dark:text-slate-400 {{ $isUrdu ? 'font-urdu text-lg leading-loose' : '' }}">
-                    {{ __('messages.hero.subtitle') }}
-                </p>
-
-                {{-- Search bar --}}
-                <div class="mb-4">
-                    <x-service-search :index="$serviceSearchIndex" :action="route('services.index')" />
-                </div>
-            </div>
-
-            {{-- ── RIGHT: image + overlays ── --}}
-            <div class="relative col-span-1 lg:col-span-2">
-                <div class="relative overflow-hidden rounded-3xl dark:border-slate-800">
-                    <img src="/images/Hero.jpeg?v={{ filemtime(public_path('images/Hero.jpeg')) }}" alt="Sahoulat Hero" class="w-full object-cover" loading="eager">
-                    <div class="absolute inset-0 bg-gradient-to-t from-brand-800/60 via-transparent to-transparent"></div>
-
-                    
-                </div>
-
-                {{-- Floating card 1: verified pro --}}
-                <div class="absolute -top-4 left-3 flex max-w-[180px] items-center gap-3 rounded-2xl border border-slate-100 bg-white p-3 shadow-xl dark:border-slate-700 dark:bg-slate-900 md:-left-4">
-                    <span class="grid h-9 w-9 flex-shrink-0 place-items-center rounded-xl bg-brand-100 dark:bg-brand-900/40">
-                        <svg viewBox="0 0 24 24" class="h-4 w-4 text-brand-600" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 12.5 11 14.5 15.5 10" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9"/></svg>
-                    </span>
-                    <div>
-                        <p class="mb-0.5 text-xs font-bold leading-none text-slate-900 dark:text-white">Verified Pro</p>
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400">Background checked</p>
-                    </div>
-                </div>
-
-                {{-- Floating card 2: booking --}}
-                <div class="absolute -bottom-4 right-2 flex max-w-[180px] items-center gap-3 rounded-2xl border border-slate-100 bg-white p-3 shadow-xl dark:border-slate-700 dark:bg-slate-900 md:-right-4">
-                    <span class="grid h-9 w-9 flex-shrink-0 place-items-center rounded-xl bg-accent-50 dark:bg-accent-900/30">
-                        <svg viewBox="0 0 24 24" class="h-4 w-4 text-accent-600" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 11h16M9 16l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </span>
-                    <div>
-                        <p class="mb-0.5 text-xs font-bold leading-none text-slate-900 dark:text-white">Book in 2 min</p>
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400">Same-day available</p>
-                    </div>
-                </div>
-
-                {{-- Rating card --}}
-                <div class="absolute right-3 top-1/2 -translate-y-1/2 rounded-2xl border border-slate-100 bg-white p-3 shadow-xl dark:border-slate-700 dark:bg-slate-900 md:-right-5">
-                    <div class="mb-0.5 flex gap-0.5 text-sm text-amber-400" aria-hidden="true">★★★★★</div>
-                    <p class="text-xs font-bold text-slate-900 dark:text-white">{{ $stats['rating'] > 0 ? number_format($stats['rating'], 1) : '4.9' }} / 5.0</p>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400">{{ max($stats['bookings'], 500) }}+ reviews</p>
-                </div>
-            </div>
+        {{-- 3. Search bar — wider, centered --}}
+        <div class="animate-fade-up mt-9 flex justify-center" style="--reveal-delay: 140ms">
+            <x-service-search :index="$serviceSearchIndex" :action="route('services.index')" wrapper-class="w-full max-w-2xl" />
         </div>
-    </div>
-</section>
-
-{{-- ================================================== Cities marquee --}}
-<section class="border-y border-slate-100 bg-white py-6 dark:border-slate-800 dark:bg-slate-950" aria-label="{{ __('messages.landing.cities_label') }}">
-    <p class="mb-4 text-center text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">{{ __('messages.landing.cities_label') }}</p>
-    <div class="marquee-mask overflow-hidden" dir="ltr">
-        <div class="animate-marquee flex w-max items-center gap-10">
-            @foreach ([1, 2] as $pass)
-@foreach ([
-    'DHA',
-    'DHA City',
-    'Bahria Town',
-    'Scheme 33',
-    'Gulistan-e-Jauhar',
-    'Gulshan-e-Iqbal',
-    'Bahadurabad',
-    'PECHS',
-    'North Nazimabad',
-    'Nazimabad',
-    'Clifton',   
-] as $city)                    <span class="inline-flex items-center gap-2 whitespace-nowrap font-display text-lg font-bold text-slate-400 dark:text-slate-700" @if($pass === 2) aria-hidden="true" @endif>
-                        <svg viewBox="0 0 24 24" class="h-4 w-4 text-brand-300 dark:text-brand-800" fill="currentColor"><circle cx="12" cy="9" r="3"/><path d="M12 2c4 0 7 3 7 7 0 4.5-7 13-7 13S5 13.5 5 9c0-4 3-7 7-7z" opacity=".35"/></svg>
-                        {{ $city }}
-                    </span>
-                @endforeach
-            @endforeach
-        </div>
-    </div>
-</section>
-
-{{-- ======================================================= Stats band --}}
-<section class="bg-gradient-to-r from-brand-700 via-brand-600 to-brand-700 dark:from-brand-900 dark:via-brand-800 dark:to-brand-900">
-    <div class="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
-        @php
-            $statItems = [
-                ['value' => max($stats['pros'], 250), 'suffix' => '+', 'decimals' => 0, 'label' => __('messages.landing.stats_pros')],
-                ['value' => max($stats['bookings'], 1200), 'suffix' => '+', 'decimals' => 0, 'label' => __('messages.landing.stats_bookings')],
-                ['value' => max($stats['cities'], 10), 'suffix' => '+', 'decimals' => 0, 'label' => __('messages.landing.stats_cities')],
-                ['value' => $stats['rating'], 'suffix' => ' ★', 'decimals' => 1, 'label' => __('messages.landing.stats_rating')],
-            ];
-        @endphp
-        @foreach ($statItems as $i => $stat)
-            <div class="reveal text-center" style="--reveal-delay: {{ $i * 90 }}ms">
-                <p class="font-display text-3xl font-extrabold text-white sm:text-4xl"
-                   data-counter="{{ $stat['value'] }}" data-counter-suffix="{{ $stat['suffix'] }}" data-counter-decimals="{{ $stat['decimals'] }}">0</p>
-                <p class="mt-1.5 text-sm font-medium text-brand-100">{{ $stat['label'] }}</p>
-            </div>
-        @endforeach
     </div>
 </section>
 
 {{-- ======================================================== Services --}}
 <section id="services" class="py-16 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="reveal flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-end">
-            <div class="max-w-2xl">
-                <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent-600">{{ __('messages.nav.services') }}</p>
-                <h2 class="mt-2 font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.services_title') }}</h2>
-                <p class="mt-3 text-slate-600 dark:text-slate-400">{{ __('messages.landing.services_sub') }}</p>
-            </div>
-            <a href="{{ route('services.index') }}" class="btn-shine group inline-flex shrink-0 items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
-                {{ __('messages.landing.browse_all') }}
-                <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
+        <div class="reveal max-w-2xl">
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent-600">{{ __('messages.nav.services') }}</p>
+            <h2 class="mt-2 font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.services_title') }}</h2>
+            <p class="mt-3 text-slate-600 dark:text-slate-400">{{ __('messages.landing.services_sub') }}</p>
         </div>
 
         @php
@@ -235,8 +131,20 @@
         </div>
 
         <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {{-- Flow B — post a job & bid --}}
+            <div class="reveal card-lift rounded-3xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white p-7 dark:border-slate-800 dark:from-slate-900/70 dark:to-slate-900">
+                <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-800 text-white shadow-md shadow-slate-800/30 dark:bg-slate-700">
+                    <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <h3 class="mt-5 font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('messages.landing.flow_bid_title') }}</h3>
+                <p class="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_bid_desc') }}</p>
+                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.jobs.create') : route('login') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg border-2 border-slate-800 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-800 hover:text-white dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
+                    {{ __('messages.landing.flow_bid_cta') }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
+                </a>
+            </div>
+
             {{-- Flow A — direct booking --}}
-            <div class="reveal card-lift rounded-3xl border border-slate-200 bg-gradient-to-b from-brand-50/70 to-white p-7 dark:border-slate-800 dark:from-brand-950/40 dark:to-slate-900">
+            <div class="reveal card-lift rounded-3xl border border-slate-200 bg-gradient-to-b from-brand-50/70 to-white p-7 dark:border-slate-800 dark:from-brand-950/40 dark:to-slate-900" style="--reveal-delay: 90ms">
                 <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-md shadow-brand-600/30">
                     <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 11h16" stroke-linecap="round"/></svg>
                 </span>
@@ -247,18 +155,6 @@
                 </a>
             </div>
 
-            {{-- Flow B — post & bid --}}
-            <div class="reveal card-lift rounded-3xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white p-7 dark:border-slate-800 dark:from-slate-900/70 dark:to-slate-900" style="--reveal-delay: 90ms">
-                <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-800 text-white shadow-md shadow-slate-800/30 dark:bg-slate-700">
-                    <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </span>
-                <h3 class="mt-5 font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('messages.landing.flow_bid_title') }}</h3>
-                <p class="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_bid_desc') }}</p>
-                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.jobs.create') : route('register') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg border-2 border-slate-800 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-800 hover:text-white dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
-                    {{ __('messages.landing.flow_bid_cta') }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
-                </a>
-            </div>
-
             {{-- Flow D — contracts (multi-service projects) --}}
             <div class="reveal card-lift rounded-3xl border border-slate-200 bg-gradient-to-b from-sky-50/70 to-white p-7 dark:border-slate-800 dark:from-sky-950/30 dark:to-slate-900" style="--reveal-delay: 140ms">
                 <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-600 text-white shadow-md shadow-sky-600/30">
@@ -266,7 +162,7 @@
                 </span>
                 <h3 class="mt-5 font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('messages.landing.flow_contract_title') }}</h3>
                 <p class="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_contract_desc') }}</p>
-                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.contracts.create') : route('register') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700">
+                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.contracts.create') : route('login') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700">
                     {{ __('messages.landing.flow_contract_cta') }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
                 </a>
             </div>
@@ -279,11 +175,75 @@
                 </span>
                 <h3 class="mt-5 font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('messages.landing.flow_sos_title') }}</h3>
                 <p class="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_sos_desc') }}</p>
-                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.emergencies.create') : route('register') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-accent-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-700">
+                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.emergencies.create') : route('login') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-accent-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-700">
                     {{ __('messages.landing.flow_sos_cta') }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
                 </a>
             </div>
         </div>
+    </div>
+</section>
+
+{{-- ================================================ Four milestones detail --}}
+@php
+    $milestones = [
+        [
+            'eyebrow' => __('messages.landing.flow_bid_title'),
+            'title' => __('messages.landing.milestone_bid_title'),
+            'desc' => __('messages.landing.milestone_bid_desc'),
+            'cta_label' => __('messages.landing.flow_bid_cta'),
+            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.jobs.create') : route('login'),
+            'image' => 'Job.jpeg', 'ratio' => '1536/1024',
+        ],
+        [
+            'eyebrow' => __('messages.landing.flow_direct_title'),
+            'title' => __('messages.landing.milestone_direct_title'),
+            'desc' => __('messages.landing.milestone_direct_desc'),
+            'cta_label' => __('messages.landing.flow_direct_cta'),
+            'cta_href' => route('services.index'),
+            'image' => 'Booking.jpeg', 'ratio' => '1535/901',
+        ],
+        [
+            'eyebrow' => __('messages.landing.flow_contract_title'),
+            'title' => __('messages.landing.milestone_contract_title'),
+            'desc' => __('messages.landing.milestone_contract_desc'),
+            'cta_label' => __('messages.landing.flow_contract_cta'),
+            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.contracts.create') : route('login'),
+            'image' => 'Contract.jpeg', 'ratio' => '1536/1024',
+        ],
+        [
+            'eyebrow' => __('messages.landing.flow_sos_title'),
+            'title' => __('messages.landing.milestone_sos_title'),
+            'desc' => __('messages.landing.milestone_sos_desc'),
+            'cta_label' => __('messages.landing.flow_sos_cta'),
+            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.emergencies.create') : route('login'),
+            'image' => 'Emergency.jpeg', 'ratio' => '1448/1086',
+        ],
+    ];
+@endphp
+<section class="border-t border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
+    <div class="mx-auto max-w-7xl space-y-16 px-4 sm:px-6 lg:space-y-24 lg:px-8">
+        @foreach ($milestones as $i => $m)
+            <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
+                {{-- Image side — alternates left/right via DOM order + lg:order. Each block
+                     uses its own image's native aspect ratio so nothing crops or letterboxes. --}}
+                <div class="reveal {{ $i % 2 === 1 ? 'lg:order-2' : '' }}">
+                    <div class="overflow-hidden rounded-3xl shadow-xl" style="aspect-ratio: {{ $m['ratio'] }};">
+                        <img src="/images/{{ $m['image'] }}?v={{ filemtime(public_path('images/' . $m['image'])) }}"
+                             alt="{{ $m['title'] }}" class="h-full w-full object-cover" loading="lazy">
+                    </div>
+                </div>
+
+                {{-- Text side --}}
+                <div class="reveal {{ $i % 2 === 1 ? 'lg:order-1' : '' }} {{ $isUrdu ? 'text-right' : '' }}">
+                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent-600">{{ $m['eyebrow'] }}</p>
+                    <h3 class="mt-2 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">{{ $m['title'] }}</h3>
+                    <p class="mt-4 leading-relaxed text-slate-600 dark:text-slate-400">{{ $m['desc'] }}</p>
+                    <a href="{{ $m['cta_href'] }}" class="mt-6 inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
+                        {{ $m['cta_label'] }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
+                    </a>
+                </div>
+            </div>
+        @endforeach
     </div>
 </section>
 
@@ -335,8 +295,51 @@
                 </div>
             @endforeach
         </div>
+    </div>
 
-        <img src="/images/HeroBanner.jpeg?v={{ filemtime(public_path('images/HeroBanner.jpeg')) }}" alt="Sahoulat professionals at work" class="mt-8 w-full rounded-2xl object-cover shadow-sm" loading="lazy">
+    {{-- ── Areas we serve — full-width, own section, as it originally was ── --}}
+    <div class="mt-10 border-y border-slate-100 bg-white py-6 dark:border-slate-800 dark:bg-slate-950" aria-label="{{ __('messages.landing.cities_label') }}">
+        <p class="mb-4 text-center text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">{{ __('messages.landing.cities_label') }}</p>
+        <div class="marquee-mask overflow-hidden" dir="ltr">
+            <div class="animate-marquee flex w-max items-center gap-10">
+                @foreach ([1, 2] as $pass)
+                    @foreach ([
+                        'DHA', 'DHA City', 'Bahria Town', 'Scheme 33', 'Gulistan-e-Jauhar',
+                        'Gulshan-e-Iqbal', 'Bahadurabad', 'PECHS', 'North Nazimabad', 'Nazimabad', 'Clifton',
+                    ] as $city)
+                        <span class="inline-flex items-center gap-2 whitespace-nowrap font-display text-lg font-bold text-slate-400 dark:text-slate-700" @if($pass === 2) aria-hidden="true" @endif>
+                            <svg viewBox="0 0 24 24" class="h-4 w-4 text-brand-300 dark:text-brand-800" fill="currentColor"><circle cx="12" cy="9" r="3"/><path d="M12 2c4 0 7 3 7 7 0 4.5-7 13-7 13S5 13.5 5 9c0-4 3-7 7-7z" opacity=".35"/></svg>
+                            {{ $city }}
+                        </span>
+                    @endforeach
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    {{-- ── Platform numbers — full-width, own green band, as it originally was ── --}}
+    <div class="bg-gradient-to-r from-brand-700 via-brand-600 to-brand-700 dark:from-brand-900 dark:via-brand-800 dark:to-brand-900">
+        <div class="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
+            @php
+                $statItems = [
+                    ['value' => max($stats['pros'], 250), 'suffix' => '+', 'decimals' => 0, 'label' => __('messages.landing.stats_pros')],
+                    ['value' => max($stats['bookings'], 1200), 'suffix' => '+', 'decimals' => 0, 'label' => __('messages.landing.stats_bookings')],
+                    ['value' => max($stats['cities'], 10), 'suffix' => '+', 'decimals' => 0, 'label' => __('messages.landing.stats_cities')],
+                    ['value' => $stats['rating'], 'suffix' => ' ★', 'decimals' => 1, 'label' => __('messages.landing.stats_rating')],
+                ];
+            @endphp
+            @foreach ($statItems as $i => $stat)
+                <div class="reveal text-center" style="--reveal-delay: {{ $i * 90 }}ms">
+                    <p class="font-display text-3xl font-extrabold text-white sm:text-4xl"
+                       data-counter="{{ $stat['value'] }}" data-counter-suffix="{{ $stat['suffix'] }}" data-counter-decimals="{{ $stat['decimals'] }}">0</p>
+                    <p class="mt-1.5 text-sm font-medium text-brand-100">{{ $stat['label'] }}</p>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    <div class="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
+        <img src="/images/HeroBanner.jpeg?v={{ filemtime(public_path('images/HeroBanner.jpeg')) }}" alt="Sahoulat professionals at work" class="w-full rounded-2xl object-cover shadow-sm" loading="lazy">
     </div>
 </section>
 
@@ -398,29 +401,69 @@
     </div>
 </section>
 
-{{-- ============================================== Subscription plans band --}}
-<section class="border-t border-slate-100 py-16 dark:border-slate-800 sm:py-20">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-        <div class="reveal  overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 p-10 shadow-2xl shadow-brand-900/30 ring-1 ring-white/10 sm:p-14">
+{{-- ======================================================== About Sahoulat --}}
+<section id="about" class="bg-brand-50/60 py-16 dark:bg-slate-900/40 sm:py-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid items-start gap-14 lg:grid-cols-2">
+            {{-- Left: banner image --}}
+            <div class="reveal order-2 self-center overflow-hidden rounded-3xl lg:order-1">
+                <img src="/images/Hero.jpeg?v={{ filemtime(public_path('images/Hero.jpeg')) }}" alt="The Sahoulat team" class="h-full w-full object-cover">
+            </div>
 
-            
-
-            <div class="relative flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-                <div class="max-w-xl">
-                    <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white">
-                        <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 2.1l4 4-4 4M7 21.9l-4-4 4-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 12a8.5 8.5 0 0 1 14.5-6h-4M20.5 12a8.5 8.5 0 0 1-14.5 6h4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        {{ __('messages.nav.plans') }}
-                    </span>
-                    <h2 class="mt-4 font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Set it and forget it</h2>
-                    <p class="mt-3 text-brand-50">Subscribe to a recurring maintenance plan — AC servicing, generator upkeep, and more — and we'll schedule and assign a trusted provider automatically, every time.</p>
+            {{-- Right --}}
+            <div class="reveal order-1 lg:order-2 {{ $isUrdu ? 'text-right' : '' }}">
+                <div class="mb-3 inline-flex items-center gap-2 {{ $isUrdu ? 'flex-row-reverse' : '' }}">
+                    <span class="h-0.5 w-5 rounded bg-accent-600"></span>
+                    <span class="text-xs font-bold uppercase tracking-widest text-accent-600 {{ $isUrdu ? 'font-urdu text-sm not-italic tracking-normal' : '' }}">{{ __('messages.landing.about_eyebrow') }}</span>
                 </div>
-                <a href="{{ route('subscription-plans.index') }}"
-                   class="btn-shine group relative inline-flex shrink-0 items-center gap-2 rounded-xl bg-white px-7 py-4 text-base font-bold text-brand-800 shadow-xl shadow-black/20 transition hover:scale-105 hover:bg-brand-50">
-                    Browse plans
-                    <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
+                <h2 class="mb-3 font-display text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.about_title') }}</h2>
+                <p class="mb-8 text-slate-500 dark:text-slate-400 {{ $isUrdu ? 'font-urdu text-lg leading-loose' : '' }}">
+                    {{ __('messages.landing.about_intro') }}
+                </p>
+
+                @php
+                    $aboutPoints = [
+                        ['icon' => 'user', 'tone' => 'green', 'title' => __('messages.landing.about_who_title'), 'desc' => __('messages.landing.about_who_desc')],
+                        ['icon' => 'shield', 'tone' => 'red', 'title' => __('messages.landing.about_stand_title'), 'desc' => __('messages.landing.about_stand_desc')],
+                        ['icon' => 'clock', 'tone' => 'green', 'title' => __('messages.landing.about_work_title'), 'desc' => __('messages.landing.about_work_desc')],
+                    ];
+                @endphp
+
+                <div class="flex flex-col gap-4">
+                    @foreach ($aboutPoints as $p)
+                        <div class="flex items-start gap-4 rounded-2xl border border-slate-100 bg-white p-4 transition-colors hover:border-brand-400 dark:border-slate-800 dark:bg-slate-900 {{ $isUrdu ? 'flex-row-reverse' : '' }}">
+                            <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl {{ $p['tone'] === 'green' ? 'bg-brand-50 dark:bg-brand-950/50' : 'bg-accent-50 dark:bg-accent-950/40' }}">
+                                @switch($p['icon'])
+                                    @case('user')
+                                        <svg viewBox="0 0 24 24" class="h-5 w-5 {{ $p['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0" stroke-linecap="round"/></svg>
+                                        @break
+                                    @case('shield')
+                                        <svg viewBox="0 0 24 24" class="h-5 w-5 {{ $p['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 5 6v5c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6l-7-3z" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        @break
+                                    @case('clock')
+                                        <svg viewBox="0 0 24 24" class="h-5 w-5 {{ $p['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        @break
+                                @endswitch
+                            </span>
+                            <div class="{{ $isUrdu ? 'flex-1 text-right' : '' }}">
+                                <p class="mb-1 text-sm font-semibold text-slate-900 dark:text-white {{ $isUrdu ? 'font-urdu text-base' : '' }}">{{ $p['title'] }}</p>
+                                <p class="text-xs leading-relaxed text-slate-500 dark:text-slate-400 {{ $isUrdu ? 'font-urdu text-sm leading-loose' : '' }}">{{ $p['desc'] }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         </div>
+    </div>
+</section>
+
+{{-- ============================================== Subscription plans band --}}
+<section class="border-t border-slate-100 py-16 dark:border-slate-800 sm:py-20">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <a href="{{ route('subscription-plans.index') }}" class="reveal card-lift block overflow-hidden rounded-3xl shadow-2xl shadow-brand-900/30 ring-1 ring-white/10">
+            <img src="/images/MaintenanceHome.jpeg?v={{ filemtime(public_path('images/MaintenanceHome.jpeg')) }}"
+                 alt="Maintenance Plan — regular maintenance today, worry-free living tomorrow" class="h-auto w-full md:h-1/3 md:object-cover" loading="lazy">
+        </a>
     </div>
 </section>
 
@@ -539,29 +582,10 @@
 {{-- ======================================================= Careers band --}}
 <section class="border-t border-slate-100 py-16 dark:border-slate-800 sm:py-20">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="reveal relative overflow-hidden rounded-3xl border-2 border-brand-500/40 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-10 shadow-2xl shadow-brand-900/20 sm:p-14 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-            <span aria-hidden="true" class="urdu-watermark absolute -bottom-8 start-4 text-[7rem] text-white/[0.05]">سہولت</span>
-            <div class="animate-blob-slow absolute -bottom-20 -start-20 h-64 w-64 rounded-full bg-brand-500/10 blur-3xl"></div>
-
-            <div class="relative flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-                <div class="max-w-xl">
-                    <span class="inline-flex items-center gap-2 rounded-full border border-brand-400/40 bg-brand-500/15 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-300">
-                        <span class="relative flex h-2 w-2">
-                            <span class="animate-ping-ring absolute inline-flex h-full w-full rounded-full bg-brand-400"></span>
-                            <span class="relative inline-flex h-2 w-2 rounded-full bg-brand-400"></span>
-                        </span>
-                        {{ __('messages.landing.careers_badge') }}
-                    </span>
-                    <h2 class="mt-4 font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">{{ __('messages.landing.careers_title') }}</h2>
-                    <p class="mt-3 text-slate-300">{{ __('messages.landing.careers_sub') }}</p>
-                </div>
-                <a href="{{ route('careers.index') }}"
-                   class="btn-shine group relative inline-flex shrink-0 items-center gap-2 rounded-xl bg-brand-500 px-7 py-4 text-base font-bold text-white shadow-xl shadow-brand-900/40 transition hover:scale-105 hover:bg-brand-400">
-                    {{ __('messages.landing.careers_btn') }}
-                    <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-            </div>
-        </div>
+        <a href="{{ route('careers.index') }}" class="reveal card-lift block overflow-hidden rounded-3xl shadow-2xl shadow-brand-900/20">
+            <img src="/images/CareerHome.jpeg?v={{ filemtime(public_path('images/CareerHome.jpeg')) }}"
+                 alt="We're Hiring — build your career, build the future" class="h-auto w-full md:h-100 md:object-cover" loading="lazy">
+        </a>
     </div>
 </section>
 

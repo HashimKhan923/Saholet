@@ -8,15 +8,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\View\View;
 
 class ContactController extends Controller
 {
-    public function create(): View
-    {
-        return view('contact');
-    }
-
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([

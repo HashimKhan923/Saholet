@@ -80,8 +80,6 @@ use Illuminate\Support\Facades\Route;
 
 // ─── Public ──────────────────────────────────────────────────────────
 Route::get('/', [HomeController::class, 'index'])->name('home');
-// Sandbox homepage — edit resources/views/landing-dev.blade.php freely without touching the live "/".
-Route::get('/dev', [HomeController::class, 'devIndex'])->name('dev.home');
 
 Route::get('locale/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
 Route::get('manifest.webmanifest', [PwaController::class, 'manifest'])->name('pwa.manifest');
@@ -108,8 +106,7 @@ Route::get('plans', [SubscriptionPlanController::class, 'index'])->name('subscri
 Route::view('privacy-policy', 'legal.privacy')->name('legal.privacy');
 Route::view('terms-and-conditions', 'legal.terms')->name('legal.terms');
 
-// Contact us
-Route::get('contact', [ContactController::class, 'create'])->name('contact');
+// Contact us — the form lives embedded on the homepage (#contact), no standalone page.
 Route::post('contact', [ContactController::class, 'store'])->name('contact.store')->middleware('throttle:6,1');
 
 // Redirect-gateway return/webhook callback (JazzCash, EasyPaisa) — off-site,

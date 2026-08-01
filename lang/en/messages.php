@@ -26,22 +26,10 @@ return [
     ],
 
     // Landing
-    'hero' => [
-        'badge' => 'Trusted home services, on demand',
-        'title' => 'Pakistan Most Trusted Home Services Platform',
-        'subtitle' => 'AC repair, plumbing, electrical, cleaning and more — book verified professionals across Pakistan with upfront pricing, live tracking, and secure payments.',
-        'explore' => 'Explore services',
-        'how' => 'How it works',
-        'verified' => 'Verified & KYC-checked pros',
-        'secure' => 'Secure payments',
-        'tracking' => 'Live tracking',
-        'eyebrow' => 'Trusted home services, on demand',
-        'line1' => 'Pakistan\'s Complete',
-        'line2' => 'Home & Facility',
-        'line3' => 'Services Platform',
-        'urdu' => 'سہولت آپ کے لیے',
-    ],
     'landing' => [
+        'hero_title_line1' => 'Home & Facility',
+        'hero_title_line2' => 'Maintenance Services',
+
         'services_title' => 'All Home Services, One Platform',
         'services_sub' => 'From everyday repairs to specialised installations we cover every corner of your home.',
         'services_count' => '{0} No services yet|{1} :count service|[2,*] :count services',
@@ -87,6 +75,16 @@ return [
         'flow_sos_desc' => 'Burst pipe at midnight? Broadcast an emergency and the nearest available pro accepts instantly.',
         'flow_sos_cta' => 'Raise an emergency',
 
+        // Four milestones detail (image + text blocks)
+        'milestone_bid_title' => 'Post a job, let providers come to you',
+        'milestone_bid_desc' => 'Describe what you need, set a budget, and verified providers bid for the work. Compare their profiles, ratings and quotes, then pick who you trust — no cold-calling around for quotes.',
+        'milestone_direct_title' => 'Book a verified pro in minutes',
+        'milestone_direct_desc' => 'Already know what you need? Pick a service, choose from verified professionals with transparent, upfront pricing, and get a confirmed time slot instantly — same-day availability in most areas.',
+        'milestone_contract_title' => 'Multi-service projects, one contract',
+        'milestone_contract_desc' => 'Renovating a whole floor or fitting out an office? Bundle multiple services into a single contract with milestone-based payments, so the whole project is tracked and paid for in stages, not chaos.',
+        'milestone_sos_title' => 'Emergencies, handled right now',
+        'milestone_sos_desc' => 'Burst pipe, no power, locked out? Send an SOS and the nearest available, verified provider is notified immediately. No waiting on hold, no scheduling back-and-forth — just help, fast.',
+
         // Why Sahoulat
         'why_eyebrow' => 'Why Sahoulat',
         'why_title' => 'Why homeowners choose us',
@@ -100,11 +98,16 @@ return [
         'why_r4_t' => 'Secure & guaranteed',
         'why_r4_d' => 'Cashless payments and a full service guarantee — if you\'re not happy, we\'ll make it right.',
 
-        // Careers band
-        'careers_badge' => 'We\'re hiring',
-        'careers_title' => 'We’re hiring',
-        'careers_sub' => 'Join our team or one of our partner crews. Browse open roles and apply in minutes — no experience filing paperwork required.',
-        'careers_btn' => 'Browse open roles',
+        // About Sahoulat
+        'about_eyebrow' => 'About us',
+        'about_title' => 'About Sahoulat',
+        'about_intro' => 'Sahoulat exists because finding someone you can actually trust to fix your home or manage your facility shouldn\'t be this hard. We built a single platform where every professional is verified, every price is upfront, and every job — from a leaky tap to a full building contract — is tracked from booking to completion.',
+        'about_who_title' => 'Who we are',
+        'about_who_desc' => 'A Pakistan-based home & facility management platform connecting verified professionals with households and businesses.',
+        'about_stand_title' => 'What we stand for',
+        'about_stand_desc' => 'Trust, transparency, and accountability — every provider is KYC-verified before they can take a single booking.',
+        'about_work_title' => 'How we work',
+        'about_work_desc' => 'Direct booking, post-a-job bidding, multi-service contracts, and emergency response — one platform, every way you need help.',
 
         // Testimonials
         'testimonials_title' => 'Loved by homes like yours',

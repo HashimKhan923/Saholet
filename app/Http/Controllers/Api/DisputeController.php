@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 
 class DisputeController extends Controller
 {
+    /** Body: reason (required, max 2000), photos[]? (up to 5 images, multipart) — evidence for the complaint. */
     public function store(Request $request, Booking $booking): JsonResponse
     {
         $user = $request->user();
@@ -25,6 +26,8 @@ class DisputeController extends Controller
 
         $data = $request->validate([
             'reason' => ['required', 'string', 'max:2000'],
+            'photos' => ['nullable', 'array', 'max:5'],
+            'photos.*' => ['image', 'mimes:jpg,jpeg,png,webp,heic,heif', 'max:8192'],
         ]);
 
         $dispute = $booking->dispute()->create([
@@ -34,6 +37,16 @@ class DisputeController extends Controller
             'reason' => $data['reason'],
             'status' => Dispute::STATUS_OPEN,
         ]);
+
+        foreach ($request->file('photos', []) as $i => $photo) {
+            $dispute->photos()->create([
+                'path' => $photo->store('dispute-photos', 'public'),
+                'original_name' => $photo->getClientOriginalName(),
+                'mime_type' => $photo->getClientMimeType(),
+                'size' => $photo->getSize(),
+                'sort_order' => $i,
+            ]);
+        }
 
         $otherParty = $booking->consumer_id === $user->id
             ? $booking->providerProfile->user
@@ -47,12 +60,12 @@ class DisputeController extends Controller
             route('provider.bookings.show', $booking)
         );
 
-        return response()->json(['dispute' => new DisputeResource($dispute)], 201);
+        return response()->json(['dispute' => new DisputeResource($dispute->fresh('photos'))], 201);
     }
 
     public function show(Request $request, Dispute $dispute): JsonResponse
     {
-        $dispute->load(['booking.service', 'booking.providerProfile.user', 'booking.consumer', 'opener']);
+        $dispute->load(['booking.service', 'booking.providerProfile.user', 'booking.consumer', 'opener', 'photos']);
 
         $this->authorize('view', $dispute);
 

@@ -43,7 +43,7 @@ class BookingController extends Controller
     {
         $this->authorize('view', $booking);
 
-        $booking->load(['service.category', 'providerProfile.user', 'payments', 'review', 'dispute']);
+        $booking->load(['service.category', 'providerProfile.user', 'payments', 'review', 'dispute', 'beforePhotos', 'afterPhotos']);
 
         return response()->json(['booking' => new BookingResource($booking)]);
     }
