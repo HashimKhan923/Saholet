@@ -19,6 +19,10 @@ class DisputeResource extends JsonResource
             'resolution_note' => $this->resolution_note,
             'resolved_at' => $this->resolved_at?->toIso8601String(),
             'created_at' => $this->created_at?->toIso8601String(),
+            'photos' => $this->whenLoaded('photos', fn () => $this->photos->map(fn ($photo) => [
+                'id' => $photo->id,
+                'url' => $photo->url(),
+            ])->values()),
         ];
     }
 }

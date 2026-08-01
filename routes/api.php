@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\SubscriptionPlanController;
 use App\Http\Controllers\Api\Consumer\AddressController as ConsumerAddressController;
 use App\Http\Controllers\Api\Consumer\BookingController as ConsumerBookingController;
+use App\Http\Controllers\Api\Consumer\CompletionPaymentController as ConsumerCompletionPaymentController;
 use App\Http\Controllers\Api\Consumer\ContractController as ConsumerContractController;
 use App\Http\Controllers\Api\Consumer\DashboardController as ConsumerDashboardController;
 use App\Http\Controllers\Api\Consumer\EmergencyController as ConsumerEmergencyController;
@@ -105,6 +106,9 @@ Route::middleware(['auth:sanctum', 'api.not.suspended'])->group(function () {
         Route::get('bookings/{booking}/payment-options', [ConsumerPaymentController::class, 'options'])->name('bookings.payment-options');
         Route::post('bookings/{booking}/pay', [ConsumerPaymentController::class, 'store'])->name('bookings.pay');
         Route::post('bookings/{booking}/release', [ConsumerPaymentController::class, 'release'])->name('bookings.release');
+
+        Route::get('bookings/{booking}/completion-payment-options', [ConsumerCompletionPaymentController::class, 'options'])->name('bookings.completion-payment-options');
+        Route::post('bookings/{booking}/completion-payment', [ConsumerCompletionPaymentController::class, 'store'])->name('bookings.completion-payment');
 
         Route::post('bookings/{booking}/review', [ConsumerReviewController::class, 'store'])->name('bookings.review');
 

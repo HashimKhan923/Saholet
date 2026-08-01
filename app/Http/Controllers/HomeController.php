@@ -22,16 +22,6 @@ class HomeController extends Controller
         return view('landing', $this->landingData());
     }
 
-    /**
-     * A sandbox copy of the homepage at /dev — same live data, separate view
-     * file (landing-dev.blade.php) so it can be edited freely without ever
-     * touching the real homepage until changes are ready to promote.
-     */
-    public function devIndex(): View
-    {
-        return view('landing-dev', $this->landingData());
-    }
-
     private function landingData(): array
     {
         $allCategories = $this->catalog->categories();

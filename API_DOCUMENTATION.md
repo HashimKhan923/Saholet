@@ -268,11 +268,11 @@ Post a live location pin (typically the provider en route). **Body:** `latitude`
 **Response `201`:** `{ "tracking": {...} }`
 
 ### `POST /api/bookings/{id}/dispute`
-**Body:** `reason` (string, required, max 2000)
+**Body:** `reason` (string, required, max 2000), `photos[]` (optional, up to 5 images, 8MB each, multipart) — evidence for the complaint.
 **Response `201`:** `{ "dispute": {...} }`
 
 ### `GET /api/disputes/{id}`
-Response: `{ "dispute": { "id","reference","opened_by_role","reason","status","resolution","resolution_note","resolved_at","created_at" } }`
+Response: `{ "dispute": { "id","reference","opened_by_role","reason","status","resolution","resolution_note","resolved_at","created_at","photos":[{"id":1,"url":"https://..."}] } }`
 
 ---
 
@@ -320,6 +320,10 @@ Response `201`: `{ "booking": {...BookingResource...} }`. `422` if the provider 
 
 **`POST /bookings/{id}/review`** — Body: `rating` (1–5, required), `comment` (optional, max 1000). Only once, only after completion. Response `201`: `{ "review": {...} }`
 
+**`GET /bookings/{id}/completion-payment-options`** — for bookings that skip pre-payment and only ask for money once the job is actually done (see `permissions.needs_completion_payment` below, and `Booking::needsCompletionPayment()`). `404` if this booking isn't one of those. Response: `{ "amount": 1000, "methods": ["cash","bank_transfer"], "company_account": {...bank details for a manual transfer...} }`
+
+**`POST /bookings/{id}/completion-payment`** — record how a just-completed job got paid. Body: `method` (required, `cash`\|`bank_transfer`), `screenshot` (required if `method` is `bank_transfer`, image, multipart, max 8MB). `cash` is recorded immediately (commission is deducted from the provider's wallet automatically) and the customer is emailed a PDF invoice right away. `bank_transfer` needs an admin to verify the screenshot first (web-only step) — the invoice email goes out once that happens. Response `201`: `{ "message": "...", "payment": {...} }`. `422` if this booking isn't awaiting completion payment.
+
 ### Booking resource shape (used throughout)
 ```json
 {
@@ -331,17 +335,21 @@ Response `201`: `{ "booking": {...BookingResource...} }`. `422` if the provider 
   "price": 3000, "duration_minutes": 90, "address": "House 1, Karachi",
   "latitude": null, "longitude": null, "notes": null,
   "cancelled_by": null, "cancellation_reason": null,
+  "completion_notes": null,
   "confirmed_at": "...", "started_at": null, "completed_at": null, "cancelled_at": null,
   "created_at": "...",
+  "before_photos": [ {"id": 1, "url": "https://..."} ],
+  "after_photos": [ {"id": 2, "url": "https://..."} ],
+  "visit_charge": null,
   "payments": [ {...} ], "review": null, "dispute": null,
   "permissions": {
-    "can_cancel": true, "is_payable": true, "is_reviewable": false,
+    "can_cancel": true, "is_payable": true, "needs_completion_payment": false, "is_reviewable": false,
     "is_disputable": false, "is_communicable": true, "can_share_location": false,
     "is_provider": false
   }
 }
 ```
-`permissions` tells the app which action buttons to show — always trust this over re-deriving the logic client-side.
+`permissions` tells the app which action buttons to show — always trust this over re-deriving the logic client-side. `before_photos`/`after_photos` are only present when the booking detail endpoint eager-loads them (both consumer and provider `GET /bookings/{id}` do). `visit_charge` is non-null only when a provider cancelled an in-progress booking after collecting the visit charge on inspection (see the provider status endpoint below) — shape: `{ "amount": 500, "method": "cash", "screenshot_url": null, "collected_at": "..." }`. This money is never part of commission/wallet accounting — it's the provider's directly.
 
 ### Jobs (post & bid flow)
 
@@ -474,7 +482,7 @@ Home-screen summary: counters, wallet balances, 6-month earnings trend, completi
 }
 ```
 
-**`PUT /onboarding`** — Body: `experience_years`, `city`, `cnic_number` (required); `business_name`, `bio`, `address`, `latitude`, `longitude` (optional). Blocked (`422`) once submitted/approved.
+**`PUT /onboarding`** — Body: `experience_years`, `city`, `cnic_number` (required); `business_name`, `bio`, `address`, `latitude`, `longitude` (optional). Blocked (`422`) once submitted/approved. `cnic_number` accepts any format but is normalized and stored as `42101-1234567-8` (13 digits required after stripping non-digits — an unexpected digit count is left as submitted).
 
 **`POST /onboarding/documents`** — multipart. Body: `type` (one of the `document_types` keys), `file` (jpg/jpeg/png/pdf, max 4MB). Replaces any existing document of the same type. Response `201`: `{ "document": {...} }`
 
@@ -499,7 +507,23 @@ Home-screen summary: counters, wallet balances, 6-month earnings trend, completi
 
 **`GET /bookings/{id}`** — full detail.
 
-**`POST /bookings/{id}/status`** — Body: `action` (required — `confirm`\|`decline`\|`start`\|`complete`\|`cancel`), `cancellation_reason` (optional, used for `decline`/`cancel`). Valid transitions: `pending →(confirm/decline)→`, `confirmed →(start/cancel)→`, `in_progress →(complete)→`. Declining/cancelling auto-refunds escrow. Response: `{ "message": "...", "booking": {...} }`
+**`POST /bookings/{id}/status`** — multipart when completing (photos) or cancelling with a bank-transfer visit charge (screenshot). Valid transitions: `pending →(confirm/decline)→`, `confirmed →(start/cancel)→`, `in_progress →(complete/cancel)→`. Declining/cancelling auto-refunds escrow.
+
+| Body field | Required when | Notes |
+|---|---|---|
+| `action` | always | `confirm`\|`decline`\|`start`\|`complete`\|`cancel` |
+| `cancellation_reason` | no | max 1000, used for `decline`/`cancel` |
+| `completion_notes` | no | max 1000, used for `complete` |
+| `before_photos[]` | `action=complete` | **required**, 1–6 images, 5MB each — proof of work |
+| `after_photos[]` | `action=complete` | **required**, 1–6 images, 5MB each |
+| `visit_charge_method` | `action=cancel` **and** the booking is currently `in_progress` | `cash`\|`bank_transfer` — see below |
+| `visit_charge_screenshot` | same, **and** `visit_charge_method=bank_transfer` | image, max 8MB |
+
+Two things worth calling out:
+- **`complete` now requires before/after photos** (it didn't before) and automatically generates an invoice for the booking, emailed to the customer once payment is confirmed.
+- **`cancel` while `in_progress`** is a distinct scenario from cancelling a `confirmed` (not-yet-visited) booking: it means the provider inspected the job on-site and the customer decided not to proceed. In that case `visit_charge_method` is required — it records the provider's visit charge as collected (see `visit_charge` on the booking resource above) entirely outside commission/wallet accounting. Cancelling a `confirmed` booking (before any visit happened) does **not** need these fields.
+
+Response: `{ "message": "...", "booking": {...} }`
 
 ### Jobs & bids
 
@@ -583,7 +607,7 @@ Quick field reference for nested objects that recur throughout the API.
 
 **PaymentResource** — `{ "id","reference","gateway","amount","credit_applied","status","paid_at","released_at","refunded_at" }`. `status` ∈ `pending` \| `escrow` \| `released` \| `refunded` \| `failed`.
 
-**DisputeResource** — `{ "id","reference","opened_by_role","reason","status","resolution","resolution_note","resolved_at","created_at" }`. `status` ∈ `open` \| `resolved` \| `dismissed` (resolution is set by an admin).
+**DisputeResource** — `{ "id","reference","opened_by_role","reason","status","resolution","resolution_note","resolved_at","created_at","photos" }`. `status` ∈ `open` \| `resolved` \| `dismissed` (resolution is set by an admin). `photos` is `[{"id","url"}]`, only present when loaded (both `POST .../dispute` and `GET /disputes/{id}` load it).
 
 ---
 
@@ -607,4 +631,4 @@ curl https://your-domain/api/me \
   -H "Accept: application/json" -H "Authorization: Bearer <token>"
 ```
 
-Every endpoint in this document was hit with real requests against a local instance during development (full booking → escrow → completion → wallet release cycle, jobs/bids, emergency accept, contract creation, dispute open, and token revocation on logout all verified working).
+Every endpoint in this document was hit with real requests against a local instance during development (full booking → escrow → completion → wallet release cycle, jobs/bids, emergency accept, contract creation, dispute open, and token revocation on logout all verified working) — including the completion-required-photos flow, the cash/bank-transfer completion-payment flow, the in-progress visit-charge cancellation, dispute photo evidence, and CNIC normalization on onboarding, all added in this pass.
