@@ -173,6 +173,7 @@ Active categories with their active services (the "browse services" catalog, cac
   ]
 }
 ```
+`icon` is either a legacy icon-name key (e.g. `"ac"`, rendered client-side from a bundled icon set — true for any category that predates icon uploads) or, once a category has an uploaded icon image, the ready-to-use absolute URL for it (e.g. `"https://sahoulat.com/storage/categories/xyz.jpg"`). Check whether it starts with `http` to tell which case you're in. Same behavior on the nested `category.icon` in `ServiceResource`.
 
 ### `GET /api/services`
 All active services (flat list, e.g. for search/typeahead). Response: `{ "services": [ {...ServiceResource...} ] }`
@@ -584,7 +585,7 @@ Quick field reference for nested objects that recur throughout the API.
 **ProviderProfileResource**
 ```json
 {
-  "id": 21, "user_id": 23, "name": "Test Pro", "business_name": null,
+  "id": 21, "user_id": 23, "name": "Test Pro", "avatar_url": null, "business_name": null,
   "display_name": "Test Pro", "bio": null, "experience_years": 5,
   "rating_avg": 5.0, "reviews_count": 1, "city": "Karachi", "address": null,
   "latitude": null, "longitude": null, "status": "approved", "rejection_reason": null,

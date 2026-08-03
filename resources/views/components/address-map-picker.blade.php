@@ -12,7 +12,7 @@
         </button>
     </div>
 
-    <input type="text" x-ref="search" placeholder="Search for a location…"
+    <input type="text" x-ref="search" placeholder="Search for a location…" @keydown.enter.prevent
         class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
 
     <div x-ref="map" class="mt-2 h-56 w-full rounded-lg border border-slate-300 bg-slate-100 dark:border-slate-700 dark:bg-slate-800"></div>

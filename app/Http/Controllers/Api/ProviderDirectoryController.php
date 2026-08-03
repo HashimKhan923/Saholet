@@ -23,7 +23,7 @@ class ProviderDirectoryController extends Controller
         $query = ProviderProfile::query()
             ->approved()
             ->with([
-                'user:id,name',
+                'user:id,name,avatar',
                 'providerServices' => fn ($q) => $q->where('is_active', true)->with('service.category'),
             ]);
 
@@ -71,7 +71,7 @@ class ProviderDirectoryController extends Controller
         abort_unless($provider->isApproved(), 404);
 
         $provider->load([
-            'user:id,name',
+            'user:id,name,avatar',
             'providerServices' => fn ($q) => $q->where('is_active', true)
                 ->with('service.category')
                 ->orderBy('price'),
