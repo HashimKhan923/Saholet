@@ -93,9 +93,12 @@ document.addEventListener('alpine:init', () => {
             geocoder.geocode({ location: latLng }, (results, status) => {
                 if (status !== 'OK' || !results || !results[0]) return;
                 if (updateAddress) this.setAddressField(results[0].formatted_address);
-                const comp = results[0].address_components.find(
-                    (c) => c.types.includes('locality') || c.types.includes('administrative_area_level_2')
-                );
+                const cityTypes = ['locality', 'postal_town', 'administrative_area_level_2', 'sublocality', 'administrative_area_level_1'];
+                let comp = null;
+                for (const type of cityTypes) {
+                    comp = results[0].address_components.find((c) => c.types.includes(type));
+                    if (comp) break;
+                }
                 if (comp) this.setCityField(comp.long_name);
             });
         },
@@ -109,7 +112,7 @@ document.addEventListener('alpine:init', () => {
         },
         setCityField(value) {
             const el = this.fieldIn('city');
-            if (el && !el.value) el.value = value;
+            if (el) el.value = value;
         },
         setLatLng(lat, lng) {
             this.lat = lat;

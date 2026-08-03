@@ -13,6 +13,7 @@ class ProviderProfileResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'name' => $this->whenLoaded('user', fn () => $this->user?->name),
+            'avatar_url' => $this->whenLoaded('user', fn () => $this->user?->avatar_url),
             'business_name' => $this->business_name,
             'display_name' => $this->business_name ?: $this->whenLoaded('user', fn () => $this->user?->name),
             'bio' => $this->bio,
