@@ -50,7 +50,21 @@ return [
              *
              */
 
-            'credentials' => env('FIREBASE_CREDENTIALS', env('GOOGLE_APPLICATION_CREDENTIALS')),
+            // A relative FIREBASE_CREDENTIALS path (e.g. "storage/app/x.json") is
+            // resolved against the project root — the underlying SDK checks is_file()
+            // on the raw string, which otherwise resolves against PHP-FPM's working
+            // directory (often the public/ webroot on a real server, not the project
+            // root), so a path that works under `php artisan serve` locally can
+            // silently fail to be found in production.
+            'credentials' => (static function (): ?string {
+                $path = env('FIREBASE_CREDENTIALS', env('GOOGLE_APPLICATION_CREDENTIALS'));
+
+                if (! $path || str_starts_with($path, '/') || preg_match('#^[A-Za-z]:[\\\\/]#', $path)) {
+                    return $path;
+                }
+
+                return base_path($path);
+            })(),
 
             /*
              * ------------------------------------------------------------------------
