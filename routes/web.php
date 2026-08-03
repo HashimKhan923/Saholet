@@ -116,6 +116,7 @@ Route::match(['get', 'post'], 'payments/{gateway}/return', [PaymentReturnControl
 // ─── Guest (auth) ────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
+    Route::post('register/check', [RegisteredUserController::class, 'check'])->middleware('throttle:register')->name('register.check');
     Route::post('register', [RegisteredUserController::class, 'store'])->middleware('throttle:register');
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
@@ -439,6 +440,7 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
             Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
             Route::post('users/{user}/suspend', [AdminUserController::class, 'suspend'])->name('users.suspend');
             Route::post('users/{user}/unsuspend', [AdminUserController::class, 'unsuspend'])->name('users.unsuspend');
+            Route::delete('users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
         });
 
         // Staff accounts — admin-only, never delegable to a staff account itself.

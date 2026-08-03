@@ -17,6 +17,8 @@
         'sky'    => ['from-sky-400 to-sky-600', 'bg-sky-500/10'],
         'violet' => ['from-violet-400 to-violet-600', 'bg-violet-500/10'],
         'red'    => ['from-red-400 to-red-600', 'bg-red-500/10'],
+        'slate'  => ['from-slate-400 to-slate-600', 'bg-slate-500/10'],
+        'pink'   => ['from-pink-400 to-pink-600', 'bg-pink-500/10'],
     ];
     [$iconGradient, $glowTone] = $tones[$tone] ?? $tones['brand'];
     $tag = $href ? 'a' : 'div';

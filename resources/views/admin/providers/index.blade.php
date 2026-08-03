@@ -29,6 +29,7 @@
         <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
             <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:bg-slate-800 dark:text-slate-100">
                 <tr>
+                    <th class="px-5 py-3">ID</th>
                     <th class="px-5 py-3">Provider</th>
                     <th class="px-5 py-3">Business</th>
                     <th class="px-5 py-3">City</th>
@@ -41,6 +42,7 @@
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                 @forelse ($profiles as $profile)
                     <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/60">
+                        <td class="px-5 py-3 text-slate-500 dark:text-slate-400">{{ $profile->user_id }}</td>
                         <td class="px-5 py-3">
                             <div class="font-medium text-slate-900 dark:text-white">{{ $profile->user->name }}</div>
                             <div class="text-xs text-slate-500 dark:text-slate-400">{{ $profile->user->email }}</div>
@@ -76,7 +78,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="px-5 py-10 text-center text-slate-500 dark:text-slate-400">No applications in this view.</td>
+                        <td colspan="8" class="px-5 py-10 text-center text-slate-500 dark:text-slate-400">No applications in this view.</td>
                     </tr>
                 @endforelse
             </tbody>

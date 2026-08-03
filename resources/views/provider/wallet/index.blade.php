@@ -81,11 +81,11 @@
                         <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display:none">
                             <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="open = false"></div>
                             <div class="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl dark:bg-slate-900" @click.outside="open = false">
-                                <h3 class="font-display text-base font-bold text-slate-900 dark:text-white">Withdraw funds</h3>
+                                <h3 class="text-left font-display text-base font-bold text-slate-900 dark:text-white">Withdraw funds</h3>
                                 @php
                                     $payoutMethodLabels = ['bank' => 'Bank transfer', 'jazzcash' => 'JazzCash', 'easypaisa' => 'Easypaisa'];
                                 @endphp
-                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                <p class="mt-1 text-left text-xs text-slate-500 dark:text-slate-400">
                                     To {{ $payoutMethodLabels[$profile->payout_method] ?? ucfirst($profile->payout_method) }} · {{ $profile->payout_account_title }} ({{ $profile->payout_account_number }})
                                 </p>
 

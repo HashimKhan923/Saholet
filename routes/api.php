@@ -45,6 +45,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // ─── Public (no auth) ────────────────────────────────────────────────
+Route::post('register/check', [AuthController::class, 'check'])->name('api.register.check');
 Route::post('register', [AuthController::class, 'register'])->name('api.register');
 Route::post('login', [AuthController::class, 'login'])->name('api.login');
 

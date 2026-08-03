@@ -40,7 +40,8 @@ class UserController extends Controller
             'consumers' => User::where('role', User::ROLE_CONSUMER)->count(),
             'providers' => User::where('role', User::ROLE_PROVIDER)->count(),
             'job_seekers' => User::where('role', User::ROLE_JOB_SEEKER)->count(),
-            'suspended' => User::whereNotNull('suspended_at')->count(),
+            'suspended' => User::whereNotNull('suspended_at')->where('email', 'not like', 'deleted-%')->count(),
+            'deleted' => User::where('email', 'like', 'deleted-%')->count(),
         ];
 
         return view('admin.users.index', compact('users', 'role', 'q', 'counts'));
@@ -70,5 +71,25 @@ class UserController extends Controller
         $user->update(['suspended_at' => null]);
 
         return back()->with('success', $user->name . ' has been reinstated.');
+    }
+
+    /**
+     * Anonymizes rather than hard-deletes — every booking/payment/wallet/review
+     * FK cascades from users, so a real delete would destroy that history too.
+     */
+    public function destroy(User $user): RedirectResponse
+    {
+        if (! $user->canBeDeleted()) {
+            return back()->with('error', 'This account cannot be deleted.');
+        }
+
+        if ($user->isDeleted()) {
+            return back()->with('error', 'This account has already been deleted.');
+        }
+
+        $name = $user->name;
+        $user->anonymize();
+
+        return back()->with('success', $name . ' has been deleted.');
     }
 }

@@ -9,7 +9,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
@@ -83,22 +82,7 @@ class ProfileController extends Controller
             'password' => ['required', 'current_password'],
         ]);
 
-        $user = $request->user();
-
-        if ($user->avatar) {
-            Storage::disk('public')->delete($user->avatar);
-        }
-
-        $user->update([
-            'name' => 'Deleted User',
-            'email' => 'deleted+' . $user->id . '+' . Str::random(8) . '@sahoulat.local',
-            'phone' => null,
-            'avatar' => null,
-            'password' => Hash::make(Str::random(40)),
-            'suspended_at' => now(),
-        ]);
-
-        $user->tokens()->delete();
+        $request->user()->anonymize();
 
         return response()->json(['message' => 'Account deleted.']);
     }

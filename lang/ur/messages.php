@@ -217,6 +217,13 @@ return [
         'confirm_password' => 'پاس ورڈ کی تصدیق',
         'min_chars' => 'کم از کم 8 حروف۔',
         'create_btn' => 'اکاؤنٹ بنائیں',
+        'send_code_btn' => 'جمع کروائیں',
+        'verify_phone_title' => 'اپنا فون نمبر تصدیق کریں',
+        'verify_phone_sub' => 'ہم نے :phone پر 6 ہندسوں کا کوڈ بھیجا ہے',
+        'otp_code_label' => 'تصدیقی کوڈ',
+        'verify_btn' => 'تصدیق کریں اور اکاؤنٹ بنائیں',
+        'resend_btn' => 'کوڈ دوبارہ بھیجیں',
+        'change_phone' => 'فون نمبر تبدیل کریں',
     ],
 
     'consumer_dashboard' => [
