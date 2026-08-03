@@ -51,6 +51,7 @@ document.addEventListener('alpine:init', () => {
         countdown: 0,
         countdownTimer: null,
         role: cfg.initialRole || 'consumer',
+        verifySubTemplate: cfg.verifySubTemplate || '',
 
         init() {
             ensureAuth(cfg.firebaseConfig);
