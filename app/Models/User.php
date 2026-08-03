@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
@@ -56,6 +57,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'phone_verified_at' => 'datetime',
             'suspended_at' => 'datetime',
             'password' => 'hashed',
             'credit_balance' => 'decimal:2',
@@ -188,6 +190,41 @@ class User extends Authenticatable
     public function canBeSuspended(): bool
     {
         return ! $this->isAdmin();
+    }
+
+    /** True once the account has gone through anonymized deletion — {@see canBeDeleted()}. */
+    public function isDeleted(): bool
+    {
+        return str_starts_with((string) $this->email, 'deleted-');
+    }
+
+    /** Admins can never be deleted. */
+    public function canBeDeleted(): bool
+    {
+        return ! $this->isAdmin();
+    }
+
+    /**
+     * Wipes personally-identifying fields, disables login, and revokes tokens —
+     * without hard-deleting the row, since every booking/payment/review/dispute
+     * FK cascades from users and would otherwise be destroyed with it.
+     */
+    public function anonymize(): void
+    {
+        if ($this->avatar) {
+            Storage::disk('public')->delete($this->avatar);
+        }
+
+        $this->update([
+            'name' => 'Deleted User',
+            'email' => 'deleted-' . $this->id . '@sahoulat.local',
+            'phone' => null,
+            'avatar' => null,
+            'password' => Hash::make(Str::random(40)),
+            'suspended_at' => now(),
+        ]);
+
+        $this->tokens()->delete();
     }
 
     public function dashboardRoute(): string

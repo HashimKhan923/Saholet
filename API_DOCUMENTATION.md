@@ -70,6 +70,20 @@ All amounts are numbers (PKR), not strings, e.g. `"price": 3000` not `"price": "
 
 ## 2. Auth
 
+### Phone verification (registration)
+
+Registration requires proof the phone number is real, verified via Firebase Phone Auth **on the client** before calling `/api/register` — the backend never sends an OTP itself, it only re-verifies the token Firebase issues.
+
+1. The app initializes the Firebase SDK and calls `signInWithPhoneNumber(auth, "+92XXXXXXXXXX", ...)` (E.164 format — country code `92`, no leading `0`). Firebase sends the SMS.
+2. The user enters the code; the app calls `confirmationResult.confirm(code)`, then `user.getIdToken()` to get a short-lived signed JWT proving that phone number.
+3. That token is submitted as `firebase_id_token` on `/api/register`. The backend verifies it server-side (Firebase Admin SDK) and extracts the phone number from the token's `phone_number` claim — **the `phone` field you submit is only used for the pre-flight uniqueness check below; the account's actual stored phone number always comes from the verified token, not from client input.**
+
+Use Firebase Console's "Phone numbers for testing" feature during development to get fixed OTP codes without sending real SMS / spending quota.
+
+### `POST /api/register/check`
+**Auth:** none
+Pre-flight validation only — validates the same fields as `/api/register` below (minus `firebase_id_token`) and returns `{ "ok": true }` or a `422` with field errors. **No account is created.** Call this before starting the Firebase phone-verification flow, so a taken email/phone is caught before an OTP is sent (SMS isn't free).
+
 ### `POST /api/register`
 **Auth:** none
 **Body:**
@@ -77,21 +91,24 @@ All amounts are numbers (PKR), not strings, e.g. `"price": 3000` not `"price": "
 |---|---|---|
 | `name` | string | required |
 | `email` | string | required, unique |
-| `phone` | string | required — any format accepted; normalized server-side to `03XX-XXXXXXX` (see note below) |
+| `phone` | string | required — used only for the pre-flight check; the phone actually stored comes from `firebase_id_token` (see above) |
 | `role` | string | required — `consumer`, `provider`, or `job_seeker` |
 | `password` | string | required, min 8 |
 | `password_confirmation` | string | required, must match `password` |
 | `referral_code` | string | optional |
 | `device_name` | string | required — label for this token, e.g. `"iPhone 15"` |
+| `firebase_id_token` | string | required — from Firebase's `signInWithPhoneNumber` + `confirm()` flow, see above |
 
-Pakistani phone numbers are reformatted to `03XX-XXXXXXX` on save (a leading `+92`/`92` country code is stripped and replaced with a trunk `0` first). The stored/returned value may therefore differ from what was submitted — e.g. `+923001234567` or `03001234567` both come back as `0300-1234567`. Numbers that aren't 11 digits after stripping non-digits are left as-is.
+The verified phone number is reformatted to `03XX-XXXXXXX` on save (Firebase returns E.164; a leading `92` country code is stripped and replaced with a trunk `0`). `phone_verified_at` is set on the user at creation time.
+
+**Errors:** `422` on `firebase_id_token` if it's missing, expired, invalid, or not tied to a phone number — e.g. `{"errors":{"firebase_id_token":["Phone verification failed or expired. Please verify your number again."]}}`. The account is never created if verification fails.
 
 **Response `201`:**
 ```json
 {
   "user": {
     "id": 22, "name": "Test Consumer", "email": "test@example.com",
-    "phone": "0300-1234567", "role": "consumer", "referral_code": "OG1EGG",
+    "phone": "0300-1234567", "phone_verified": true, "role": "consumer", "referral_code": "OG1EGG",
     "credit_balance": 0, "is_suspended": false,
     "provider_status": null,
     "created_at": "2026-07-21T12:12:07+00:00"

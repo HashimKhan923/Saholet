@@ -234,6 +234,13 @@ return [
         'confirm_password' => 'Confirm password',
         'min_chars' => 'At least 8 characters.',
         'create_btn' => 'Create account',
+        'send_code_btn' => 'Submit',
+        'verify_phone_title' => 'Verify your phone',
+        'verify_phone_sub' => 'We sent a 6-digit code to :phone',
+        'otp_code_label' => 'Verification code',
+        'verify_btn' => 'Verify & create account',
+        'resend_btn' => 'Resend code',
+        'change_phone' => 'Change phone number',
     ],
 
     'consumer_dashboard' => [

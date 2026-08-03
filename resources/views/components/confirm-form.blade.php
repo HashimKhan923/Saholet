@@ -23,8 +23,8 @@
         <div class="fixed inset-0 bg-slate-900/50" x-transition.opacity @click="open = false"></div>
         <div x-show="open" x-transition
             class="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl dark:bg-slate-800">
-            <h3 class="font-display text-base font-bold text-slate-900 dark:text-white">{{ $title }}</h3>
-            <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{{ $message }}</p>
+            <h3 class="text-left font-display text-base font-bold text-slate-900 dark:text-white">{{ $title }}</h3>
+            <p class="mt-2 text-left text-sm text-slate-600 dark:text-slate-400">{{ $message }}</p>
             <div class="mt-6 flex justify-end gap-2">
                 <button type="button" @click="open = false"
                     class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">

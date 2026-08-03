@@ -39,4 +39,15 @@ return [
         'key' => env('GOOGLE_MAPS_API_KEY'),
     ],
 
+    // Client-safe web config for the Firebase JS SDK (phone OTP on registration).
+    // Server-side verification credentials live in config/firebase.php instead.
+    'firebase_web' => [
+        'api_key' => env('FIREBASE_API_KEY'),
+        'auth_domain' => env('FIREBASE_AUTH_DOMAIN'),
+        'project_id' => env('FIREBASE_PROJECT_ID'),
+        'storage_bucket' => env('FIREBASE_STORAGE_BUCKET'),
+        'messaging_sender_id' => env('FIREBASE_MESSAGING_SENDER_ID'),
+        'app_id' => env('FIREBASE_APP_ID'),
+    ],
+
 ];
