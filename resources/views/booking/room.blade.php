@@ -87,9 +87,14 @@
             <div class="flex h-136 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex items-center justify-between border-b border-slate-200 px-5 py-3 dark:border-slate-800">
                     <h2 class="font-display text-sm font-bold text-slate-900 dark:text-white">Live tracking</h2>
-                    <template x-if="tracking">
-                        <span class="text-xs text-slate-400 dark:text-slate-500">Updated <span x-text="tracking.time"></span></span>
-                    </template>
+                    <div class="text-right">
+                        <template x-if="tracking">
+                            <span class="block text-xs text-slate-400 dark:text-slate-500">Updated <span x-text="tracking.time"></span></span>
+                        </template>
+                        <template x-if="routeInfo">
+                            <span class="block text-xs font-semibold text-brand-700 dark:text-brand-400" x-text="routeInfo.distance + ' · ' + routeInfo.duration + ' away'"></span>
+                        </template>
+                    </div>
                 </div>
 
                 <div class="relative flex-1">
@@ -296,8 +301,12 @@ document.addEventListener('alpine:init', () => {
         map: null,
         marker: null,
         destMarker: null,
-        trail: null,
-        pathCoords: [],
+        fallbackLine: null,
+        directionsService: null,
+        directionsRenderer: null,
+        routeInfo: null,
+        lastRouteAt: 0,
+        lastRoutePos: null,
 
         initMap() {
             if (!this.$refs.mapEl || this.map) return;
@@ -330,14 +339,13 @@ document.addEventListener('alpine:init', () => {
                 });
             }
 
-            // Breadcrumb trail — every point recorded for this job, oldest first.
-            this.pathCoords = (this.trackingHistory || []).map((p) => ({ lat: p.lat, lng: p.lng }));
-            this.trail = new google.maps.Polyline({
-                path: this.pathCoords,
+            // Actual driving route, not a straight line — suppressMarkers since we
+            // already place our own custom "Provider"/destination pins above.
+            this.directionsService = new google.maps.DirectionsService();
+            this.directionsRenderer = new google.maps.DirectionsRenderer({
                 map: this.map,
-                strokeColor: '#1a7a35',
-                strokeOpacity: 0.85,
-                strokeWeight: 4,
+                suppressMarkers: true,
+                polylineOptions: { strokeColor: '#1a7a35', strokeOpacity: 0.9, strokeWeight: 5 },
             });
 
             if (this.tracking) {
@@ -365,27 +373,87 @@ document.addEventListener('alpine:init', () => {
                 this.marker.setPosition(pos);
             }
 
-            if (this.trail) {
-                const last = this.pathCoords[this.pathCoords.length - 1];
-                if (!last || last.lat !== pos.lat || last.lng !== pos.lng) {
-                    this.pathCoords.push(pos);
-                    this.trail.setPath(this.pathCoords);
-                }
-            }
-
-            if (this.destMarker) {
-                const bounds = new google.maps.LatLngBounds();
-                bounds.extend(pos);
-                bounds.extend(this.destMarker.getPosition());
-                this.map.fitBounds(bounds, 64);
+            if (this.destination) {
+                this.updateRoute(pos);
             } else {
                 this.map.panTo(pos);
             }
         },
 
+        /** Straight-line distance in meters — used only to decide whether a position moved enough to justify a fresh route request, not for display. */
+        haversineMeters(a, b) {
+            const R = 6371000;
+            const toRad = (d) => (d * Math.PI) / 180;
+            const dLat = toRad(b.lat - a.lat);
+            const dLng = toRad(b.lng - a.lng);
+            const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
+            return 2 * R * Math.asin(Math.sqrt(h));
+        },
+
+        /**
+         * Re-routes at most every ~25s (or sooner if the position moved a
+         * meaningful distance) — pings arrive every 8s, but there's no reason
+         * to re-query Directions that often, especially while stationary.
+         */
+        updateRoute(pos) {
+            if (!this.destination || !this.directionsService) return;
+
+            const now = Date.now();
+            const moved = !this.lastRoutePos || this.haversineMeters(this.lastRoutePos, pos) > 40;
+            if (!moved && now - this.lastRouteAt < 25000) return;
+
+            this.lastRouteAt = now;
+            this.lastRoutePos = pos;
+
+            this.directionsService.route({
+                origin: pos,
+                destination: { lat: this.destination.lat, lng: this.destination.lng },
+                travelMode: google.maps.TravelMode.DRIVING,
+            }, (result, status) => {
+                if (status === 'OK' && result.routes[0]) {
+                    if (this.fallbackLine) this.fallbackLine.setMap(null);
+                    this.directionsRenderer.setDirections(result);
+                    const leg = result.routes[0].legs[0];
+                    this.routeInfo = { distance: leg.distance?.text, duration: leg.duration?.text };
+                } else {
+                    this.routeInfo = null;
+                    this.showFallbackLine(pos);
+                }
+            });
+        },
+
+        /** Directions unavailable (API not enabled yet, no route between the points, etc.) — fall back to a plain dashed line so there's still some visual, clearly distinct from a real route. */
+        showFallbackLine(pos) {
+            const destPos = { lat: this.destination.lat, lng: this.destination.lng };
+
+            if (!this.fallbackLine) {
+                this.fallbackLine = new google.maps.Polyline({
+                    map: this.map,
+                    strokeOpacity: 0,
+                    icons: [{
+                        icon: { path: 'M 0,-1 0,1', strokeOpacity: 1, scale: 3 },
+                        offset: '0',
+                        repeat: '12px',
+                    }],
+                });
+            }
+            this.fallbackLine.setPath([pos, destPos]);
+
+            const bounds = new google.maps.LatLngBounds();
+            bounds.extend(pos);
+            bounds.extend(destPos);
+            this.map.fitBounds(bounds, 64);
+        },
+
         mapsLink() {
             if (!this.tracking) return '#';
-            return 'https://www.google.com/maps?q=' + this.tracking.latitude + ',' + this.tracking.longitude;
+            const origin = this.tracking.latitude + ',' + this.tracking.longitude;
+            if (this.destination) {
+                return 'https://www.google.com/maps/dir/?api=1&origin=' + origin
+                    + '&destination=' + this.destination.lat + ',' + this.destination.lng
+                    + '&travelmode=driving';
+            }
+            return 'https://www.google.com/maps?q=' + origin;
         },
 
         /**

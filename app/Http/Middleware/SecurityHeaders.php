@@ -38,18 +38,14 @@ class SecurityHeaders
                 }
             }
 
-            // Firebase Phone Auth's reCAPTCHA check calls Google's Identity Toolkit
-            // API and loads the reCAPTCHA script/iframe from these origins — without
-            // them, both the config fetch and the fallback reCAPTCHA v2 widget are
-            // silently blocked, and "Send verification code" fails with no clear error.
             $csp = implode('; ', [
                 "default-src 'self'",
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://maps.gstatic.com https://www.gstatic.com https://www.google.com https://www.recaptcha.net{$viteDevOrigins}",
-                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.gstatic.com{$viteDevOrigins}",
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://maps.gstatic.com{$viteDevOrigins}",
+                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com{$viteDevOrigins}",
                 "font-src 'self' https://fonts.gstatic.com",
                 "img-src 'self' data: blob: https:",
-                "connect-src 'self' {$ws} https://nominatim.openstreetmap.org https://maps.googleapis.com https://maps.gstatic.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://www.google.com{$viteDevOrigins}",
-                "frame-src 'self' https://www.google.com https://www.recaptcha.net https://maps.google.com",
+                "connect-src 'self' {$ws} https://nominatim.openstreetmap.org https://maps.googleapis.com https://maps.gstatic.com{$viteDevOrigins}",
+                "frame-src 'self' https://www.google.com https://maps.google.com",
                 "frame-ancestors 'self'",
                 "base-uri 'self'",
                 "form-action 'self'",

@@ -13,8 +13,8 @@
                         <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6z" stroke-linejoin="round"/></svg>
                     </span>
                     <div class="min-w-0 flex-1">
-                        <p class="text-sm font-semibold text-slate-900 dark:text-slate-100" x-text="toast.title"></p>
-                        <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400" x-text="toast.body"></p>
+                        <p class="text-left text-sm font-semibold text-slate-900 dark:text-slate-100" x-text="toast.title"></p>
+                        <p class="mt-0.5 text-left text-xs text-slate-500 dark:text-slate-400" x-text="toast.body"></p>
                     </div>
                     <button type="button" @click="$store.notifications.dismissToast(toast.id)" class="flex-shrink-0 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" aria-label="Dismiss">
                         <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg>

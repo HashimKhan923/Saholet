@@ -217,7 +217,7 @@
                             </a>
                             <a href="{{ route('home') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700">
                                 <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1V10" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                Visit main site
+                                {{ __('messages.nav.visit_site') }}
                             </a>
                             <div class="my-1.5 border-t border-slate-100 dark:border-slate-700"></div>
                             <form method="POST" action="{{ route('logout') }}">

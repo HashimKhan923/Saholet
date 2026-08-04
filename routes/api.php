@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\Provider\EmergencyController as ProviderEmergencyCo
 use App\Http\Controllers\Api\Provider\JobController as ProviderJobController;
 use App\Http\Controllers\Api\Provider\OnboardingController as ProviderOnboardingController;
 use App\Http\Controllers\Api\Provider\PayoutMethodController as ProviderPayoutMethodController;
+use App\Http\Controllers\Api\Provider\SettlementController as ProviderSettlementController;
 use App\Http\Controllers\Api\Provider\PortfolioController as ProviderPortfolioController;
 use App\Http\Controllers\Api\Provider\ProviderServiceController;
 use App\Http\Controllers\Api\Provider\WalletController as ProviderWalletController;
@@ -45,7 +46,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 // ─── Public (no auth) ────────────────────────────────────────────────
-Route::post('register/check', [AuthController::class, 'check'])->name('api.register.check');
 Route::post('register', [AuthController::class, 'register'])->name('api.register');
 Route::post('login', [AuthController::class, 'login'])->name('api.login');
 
@@ -132,6 +132,8 @@ Route::middleware(['auth:sanctum', 'api.not.suspended'])->group(function () {
         Route::post('emergencies', [ConsumerEmergencyController::class, 'store'])->name('emergencies.store');
         Route::get('emergencies/{emergencyRequest}', [ConsumerEmergencyController::class, 'show'])->name('emergencies.show');
         Route::post('emergencies/{emergencyRequest}/cancel', [ConsumerEmergencyController::class, 'cancel'])->name('emergencies.cancel');
+        Route::post('emergencies/{emergencyRequest}/accept-quote', [ConsumerEmergencyController::class, 'acceptQuote'])->name('emergencies.accept-quote');
+        Route::post('emergencies/{emergencyRequest}/decline-quote', [ConsumerEmergencyController::class, 'declineQuote'])->name('emergencies.decline-quote');
 
         Route::get('subscriptions', [ConsumerSubscriptionController::class, 'index'])->name('subscriptions.index');
         Route::post('subscription-plans/{plan:slug}/subscribe', [ConsumerSubscriptionController::class, 'store'])->name('subscriptions.store');
@@ -173,6 +175,10 @@ Route::middleware(['auth:sanctum', 'api.not.suspended'])->group(function () {
         Route::get('wallet', [ProviderWalletController::class, 'index'])->name('wallet.index');
         Route::post('payout-method', [ProviderPayoutMethodController::class, 'update'])->name('payout-method.update');
         Route::post('withdrawals', [ProviderWithdrawalController::class, 'store'])->name('withdrawals.store');
+        Route::post('withdrawals/{withdrawal}/confirm-receipt', [ProviderWithdrawalController::class, 'confirmReceipt'])->name('withdrawals.confirm-receipt');
+
+        Route::get('settlements', [ProviderSettlementController::class, 'index'])->name('settlements.index');
+        Route::post('settlements', [ProviderSettlementController::class, 'store'])->name('settlements.store');
 
         Route::get('portfolio', [ProviderPortfolioController::class, 'index'])->name('portfolio.index');
         Route::post('portfolio', [ProviderPortfolioController::class, 'store'])->name('portfolio.store');

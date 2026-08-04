@@ -7,7 +7,6 @@ import './pk-format';
 import './file-drop';
 import './ui';
 import './push';
-import './register-otp';
 
 import Alpine from 'alpinejs';
 import notifications from './stores/notifications';

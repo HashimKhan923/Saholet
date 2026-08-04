@@ -67,9 +67,27 @@
                         <dd class="font-medium text-slate-800 dark:text-slate-200">{{ $companyAccount['account_title'] }}</dd>
                     </div>
                     <div class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5 dark:bg-slate-800">
-                        <dt class="text-slate-500 dark:text-slate-400">Account / IBAN</dt>
+                        <dt class="text-slate-500 dark:text-slate-400">Account number</dt>
                         <dd class="font-mono font-medium text-slate-800 dark:text-slate-200">{{ $companyAccount['account_number'] }}</dd>
                     </div>
+                    @if (!empty($companyAccount['iban']))
+                        <div class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5 dark:bg-slate-800">
+                            <dt class="text-slate-500 dark:text-slate-400">IBAN</dt>
+                            <dd class="font-mono font-medium text-slate-800 dark:text-slate-200">{{ $companyAccount['iban'] }}</dd>
+                        </div>
+                    @endif
+                    @if (!empty($companyAccount['swift_code']))
+                        <div class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5 dark:bg-slate-800">
+                            <dt class="text-slate-500 dark:text-slate-400">SWIFT code</dt>
+                            <dd class="font-mono font-medium text-slate-800 dark:text-slate-200">{{ $companyAccount['swift_code'] }}</dd>
+                        </div>
+                    @endif
+                    @if (!empty($companyAccount['branch_name']))
+                        <div class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5 dark:bg-slate-800">
+                            <dt class="text-slate-500 dark:text-slate-400">Branch</dt>
+                            <dd class="text-end font-medium text-slate-800 dark:text-slate-200">{{ $companyAccount['branch_name'] }}</dd>
+                        </div>
+                    @endif
                 @endif
                 @if ($companyAccount['jazzcash_number'])
                     <div class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5 dark:bg-slate-800">

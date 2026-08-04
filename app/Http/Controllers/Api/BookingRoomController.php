@@ -30,6 +30,11 @@ class BookingRoomController extends Controller
             'messages' => MessageResource::collection($messages),
             'latest_tracking' => $tracking ? new TrackingUpdateResource($tracking) : null,
             'tracking_history' => TrackingUpdateResource::collection($trackingHistory),
+            'destination' => ($booking->latitude !== null && $booking->longitude !== null) ? [
+                'latitude' => (float) $booking->latitude,
+                'longitude' => (float) $booking->longitude,
+                'address' => $booking->address,
+            ] : null,
         ]);
     }
 

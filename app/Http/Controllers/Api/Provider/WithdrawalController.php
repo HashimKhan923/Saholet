@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Provider;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\WithdrawalRequestResource;
+use App\Models\WithdrawalRequest;
 use App\Services\Notifier;
 use App\Services\WalletService;
 use App\Services\WithdrawalService;
@@ -47,5 +48,30 @@ class WithdrawalController extends Controller
             'message' => 'Withdrawal requested. We\'ll process it and mark it paid once the transfer is sent.',
             'withdrawal' => new WithdrawalRequestResource($withdrawal),
         ], 201);
+    }
+
+    /** Two-party confirmation — the provider confirms they actually received a bank-transfer payout admin marked as sent. */
+    public function confirmReceipt(Request $request, WithdrawalRequest $withdrawal): JsonResponse
+    {
+        $profile = $request->user()->providerProfile;
+        abort_unless($profile && $withdrawal->provider_profile_id === $profile->id, 403);
+
+        if (! $withdrawal->isAwaitingConfirmation()) {
+            return response()->json(['message' => 'There\'s nothing to confirm for this withdrawal.'], 422);
+        }
+
+        $this->withdrawals->confirmReceipt($withdrawal);
+
+        app(Notifier::class)->notifyAdmins(
+            'withdrawal',
+            'Withdrawal receipt confirmed',
+            $profile->business_name . ' confirmed receiving Rs. ' . number_format($withdrawal->amount, 0) . ' (' . $withdrawal->reference . ').',
+            route('admin.withdrawals.show', $withdrawal)
+        );
+
+        return response()->json([
+            'message' => 'Thanks for confirming!',
+            'withdrawal' => new WithdrawalRequestResource($withdrawal->fresh()),
+        ]);
     }
 }

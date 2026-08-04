@@ -70,20 +70,6 @@ All amounts are numbers (PKR), not strings, e.g. `"price": 3000` not `"price": "
 
 ## 2. Auth
 
-### Phone verification (registration)
-
-Registration requires proof the phone number is real, verified via Firebase Phone Auth **on the client** before calling `/api/register` — the backend never sends an OTP itself, it only re-verifies the token Firebase issues.
-
-1. The app initializes the Firebase SDK and calls `signInWithPhoneNumber(auth, "+92XXXXXXXXXX", ...)` (E.164 format — country code `92`, no leading `0`). Firebase sends the SMS.
-2. The user enters the code; the app calls `confirmationResult.confirm(code)`, then `user.getIdToken()` to get a short-lived signed JWT proving that phone number.
-3. That token is submitted as `firebase_id_token` on `/api/register`. The backend verifies it server-side (Firebase Admin SDK) and extracts the phone number from the token's `phone_number` claim — **the `phone` field you submit is only used for the pre-flight uniqueness check below; the account's actual stored phone number always comes from the verified token, not from client input.**
-
-Use Firebase Console's "Phone numbers for testing" feature during development to get fixed OTP codes without sending real SMS / spending quota.
-
-### `POST /api/register/check`
-**Auth:** none
-Pre-flight validation only — validates the same fields as `/api/register` below (minus `firebase_id_token`) and returns `{ "ok": true }` or a `422` with field errors. **No account is created.** Call this before starting the Firebase phone-verification flow, so a taken email/phone is caught before an OTP is sent (SMS isn't free).
-
 ### `POST /api/register`
 **Auth:** none
 **Body:**
@@ -91,24 +77,21 @@ Pre-flight validation only — validates the same fields as `/api/register` belo
 |---|---|---|
 | `name` | string | required |
 | `email` | string | required, unique |
-| `phone` | string | required — used only for the pre-flight check; the phone actually stored comes from `firebase_id_token` (see above) |
+| `phone` | string | required — any format accepted; normalized server-side to `03XX-XXXXXXX` (see note below) |
 | `role` | string | required — `consumer`, `provider`, or `job_seeker` |
 | `password` | string | required, min 8 |
 | `password_confirmation` | string | required, must match `password` |
 | `referral_code` | string | optional |
 | `device_name` | string | required — label for this token, e.g. `"iPhone 15"` |
-| `firebase_id_token` | string | required — from Firebase's `signInWithPhoneNumber` + `confirm()` flow, see above |
 
-The verified phone number is reformatted to `03XX-XXXXXXX` on save (Firebase returns E.164; a leading `92` country code is stripped and replaced with a trunk `0`). `phone_verified_at` is set on the user at creation time.
-
-**Errors:** `422` on `firebase_id_token` if it's missing, expired, invalid, or not tied to a phone number — e.g. `{"errors":{"firebase_id_token":["Phone verification failed or expired. Please verify your number again."]}}`. The account is never created if verification fails.
+Pakistani phone numbers are reformatted to `03XX-XXXXXXX` on save (a leading `+92`/`92` country code is stripped and replaced with a trunk `0` first). The stored/returned value may therefore differ from what was submitted — e.g. `+923001234567` or `03001234567` both come back as `0300-1234567`. Numbers that aren't 11 digits after stripping non-digits are left as-is.
 
 **Response `201`:**
 ```json
 {
   "user": {
     "id": 22, "name": "Test Consumer", "email": "test@example.com",
-    "phone": "0300-1234567", "phone_verified": true, "role": "consumer", "referral_code": "OG1EGG",
+    "phone": "0300-1234567", "role": "consumer", "referral_code": "OG1EGG",
     "credit_balance": 0, "is_suspended": false,
     "provider_status": null,
     "created_at": "2026-07-21T12:12:07+00:00"
@@ -273,9 +256,11 @@ Chat history + tracking pin(s) for a booking (both consumer and provider on the 
   "can_share_location": true,
   "messages": [ { "id":1, "sender_id":22, "sender_name":"Test Consumer", "body":"...", "created_at":"..." } ],
   "latest_tracking": { "id":1, "latitude":24.86, "longitude":67.01, "note":null, "created_at":"..." },
-  "tracking_history": [ { "id":1, "latitude":24.86, "longitude":67.01, "note":null, "created_at":"..." }, "...up to the most recent 500 points, oldest first — draw as a breadcrumb trail" ]
+  "tracking_history": [ { "id":1, "latitude":24.86, "longitude":67.01, "note":null, "created_at":"..." }, "...up to the most recent 500 points, oldest first — draw as a breadcrumb trail" ],
+  "destination": { "latitude":24.90, "longitude":67.05, "address":"House 1, Karachi" }
 }
 ```
+`destination` is the booking's own address coordinates (`null` if the booking has none) — feed `latest_tracking` as the origin and `destination` as the destination into the Google Directions API client-side to draw the actual driving route + ETA, the same way the web app's booking room does (`google.maps.DirectionsService`/`DirectionsRenderer`). It's static for the life of the booking, so fetch it once alongside everything else here rather than re-deriving it.
 
 ### `POST /api/bookings/{id}/messages`
 **Body:** `body` (string, required, max 2000)
@@ -338,7 +323,26 @@ Response `201`: `{ "booking": {...BookingResource...} }`. `422` if the provider 
 
 **`POST /bookings/{id}/review`** — Body: `rating` (1–5, required), `comment` (optional, max 1000). Only once, only after completion. Response `201`: `{ "review": {...} }`
 
-**`GET /bookings/{id}/completion-payment-options`** — for bookings that skip pre-payment and only ask for money once the job is actually done (see `permissions.needs_completion_payment` below, and `Booking::needsCompletionPayment()`). `404` if this booking isn't one of those. Response: `{ "amount": 1000, "methods": ["cash","bank_transfer"], "company_account": {...bank details for a manual transfer...} }`
+**`GET /bookings/{id}/completion-payment-options`** — for bookings that skip pre-payment and only ask for money once the job is actually done (see `permissions.needs_completion_payment` below, and `Booking::needsCompletionPayment()`). `404` if this booking isn't one of those. Response:
+```json
+{
+  "amount": 1000,
+  "methods": ["cash", "bank_transfer"],
+  "company_account": {
+    "bank_name": "Bank Al Habib Ltd",
+    "account_title": "Sahoulat Facility Management Services",
+    "account_number": "5052-0081-001208-01-4",
+    "iban": "PK15BAHL50520081001208014",
+    "swift_code": "BAHLPKKA",
+    "branch_name": "Islamic Midway Commercial \"A\" Bahria Town Karachi",
+    "branch_code": "5052",
+    "branch_address": "Showroom # 1, SQ Trade Center, Plot A-118 Midway Commercial \"A\" Bahria Town Karachi Pakistan",
+    "jazzcash_number": "",
+    "easypaisa_number": ""
+  }
+}
+```
+This is Sahoulat's own receiving account for a manual bank transfer — display it in full so the customer can copy every field (`iban`/`swift_code` matter for interbank/international transfers). `jazzcash_number`/`easypaisa_number` are currently empty (not yet configured) — omit those rows client-side when blank, same as the web app does.
 
 **`POST /bookings/{id}/completion-payment`** — record how a just-completed job got paid. Body: `method` (required, `cash`\|`bank_transfer`), `screenshot` (required if `method` is `bank_transfer`, image, multipart, max 8MB). `cash` is recorded immediately (commission is deducted from the provider's wallet automatically) and the customer is emailed a PDF invoice right away. `bank_transfer` needs an admin to verify the screenshot first (web-only step) — the invoice email goes out once that happens. Response `201`: `{ "message": "...", "payment": {...} }`. `422` if this booking isn't awaiting completion payment.
 
@@ -446,9 +450,11 @@ Response `201`: `{ "contract": {...} }` — status starts as `submitted`; an adm
 
 Response `201`: `{ "emergency": {...} }`
 
-**`GET /emergencies/{id}`** — includes `matched_provider` and `booking` once accepted.
+**`GET /emergencies/{id}`** — includes `matched_provider` and `booking` once accepted, and `quoted_price` once an admin has quoted it.
 
-**`POST /emergencies/{id}/cancel`** — only while still `open`.
+**`POST /emergencies/{id}/cancel`** — while `open` or `quoted`.
+
+**`POST /emergencies/{id}/accept-quote`** / **`POST /emergencies/{id}/decline-quote`** — respond to an admin's price quote (`status` must currently be `quoted`, i.e. `quoted_price` is set). Accepting moves it to `accepted` (admin assigns a provider next); declining moves it to `declined`, a terminal state. `422` if there's no pending quote. Response: `{ "message": "...", "emergency": {...} }`
 
 ### Subscriptions (maintenance plans)
 
@@ -585,6 +591,29 @@ Response: `{ "message": "...", "booking": {...} }`
 
 **`POST /withdrawals`** — Body: `amount` (required, ≥ `min_withdrawal`, ≤ current available balance). Requires a payout method already saved. Response `201`: `{ "message": "...", "withdrawal": {...} }`
 
+**`POST /withdrawals/{id}/confirm-receipt`** — two-party confirmation: after an admin marks a bank-transfer withdrawal `awaiting_confirmation` (sent, pending the provider's acknowledgement), the provider confirms they actually received it, flipping it to `paid`. `422` if the withdrawal isn't currently `awaiting_confirmation`. Response: `{ "message": "...", "withdrawal": {...} }`
+
+### Settlements (paying off cash-commission debt)
+
+For cash-collected bookings, commission is never deducted at source — it posts as a negative `available_balance` instead (see `WalletService::chargeCashCommission()`). A provider carrying this debt past `settlement_grace_days` (7 days by default) gets auto-suspended from accepting new bookings until it's settled.
+
+**`GET /settlements`** — how much is currently owed + past settlement submissions.
+```json
+{
+  "owed": 500,
+  "is_suspended": false,
+  "settlements": [
+    { "id":1, "reference":"STL-...", "method":"bank_transfer", "method_label":"Bank transfer",
+      "amount": 500, "confirmed_amount": null, "status":"pending", "admin_notes": null,
+      "confirmed_at": null, "created_at": "..." }
+  ],
+  "pagination": { "current_page": 1, "last_page": 1, "total": 1 }
+}
+```
+`status` ∈ `pending` \| `confirmed` \| `rejected`. Submitting a settlement doesn't touch the wallet or lift the suspension by itself — only an admin confirming the amount actually received does (which also auto-unsuspends the provider once `available_balance >= 0` again).
+
+**`POST /settlements`** — Body: `method` (`cash`\|`bank_transfer`, required), `amount` (required, ≤ `owed`), `screenshot` (required if `method` is `bank_transfer`, image, multipart, max 8MB). `422` if nothing is currently owed. Response `201`: `{ "message": "...", "settlement": {...} }`
+
 ### Portfolio
 
 | Method | Path | Body | Notes |
@@ -619,7 +648,7 @@ Quick field reference for nested objects that recur throughout the API.
 
 **ContractResource** — `{ "id","reference","title","description","address","latitude","longitude","city","preferred_start_date","status","quoted_total","items":[...ContractItemResource...],"photos":[...],"milestones":[...ContractMilestoneResource...],"permissions":{"is_quoted","is_accepted","is_cancellable"},"accepted_at","completed_at","cancelled_at","created_at" }`. `status` ∈ `submitted` \| `quoted` \| `accepted` \| `rejected` \| `in_progress` \| `completed` \| `cancelled`.
 
-**EmergencyRequestResource** — `{ "id","reference","status","service","consumer","address","city","notes","booking_id","booking","matched_provider","matched_at","cancelled_at","created_at","my_price" }`. `status` ∈ `open` \| `matched` \| `cancelled`. `my_price` only populated on the provider board endpoint.
+**EmergencyRequestResource** — `{ "id","reference","status","service","consumer","address","city","notes","quoted_price","quoted_at","accepted_at","declined_at","booking_id","booking","matched_provider","matched_at","cancelled_at","created_at","my_price" }`. `status` ∈ `open` \| `quoted` \| `accepted` \| `declined` \| `matched` \| `cancelled` (an admin sets `quoted_price` and moves it to `quoted`; the consumer then accepts/declines). `my_price` only populated on the provider board endpoint.
 
 **SubscriptionResource** — `{ "id","reference","status","plan","provider","address","city","next_visit_date","visits_used","is_cancellable","bookings","cancelled_at","created_at" }`. `status` ∈ `pending_assignment` \| `active` \| `cancelled` \| `completed`.
 

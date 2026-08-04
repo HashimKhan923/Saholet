@@ -116,7 +116,6 @@ Route::match(['get', 'post'], 'payments/{gateway}/return', [PaymentReturnControl
 // ─── Guest (auth) ────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
-    Route::post('register/check', [RegisteredUserController::class, 'check'])->middleware('throttle:register')->name('register.check');
     Route::post('register', [RegisteredUserController::class, 'store'])->middleware('throttle:register');
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');

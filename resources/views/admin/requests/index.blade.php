@@ -6,12 +6,12 @@
 <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
     <div>
         <a href="{{ route('admin.dashboard') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Dashboard</a>
-        <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ __('messages.admin_requests.title') }}</h1>
+        <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ __('admin.requests.title') }}</h1>
         <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
             @if ($totalPending > 0)
-                {{ __('messages.admin_requests.subtitle_pending', ['count' => $totalPending, 'items' => __('messages.admin_requests.' . ($totalPending === 1 ? 'item' : 'items'))]) }}
+                {{ __('admin.requests.subtitle_pending', ['count' => $totalPending, 'items' => __('admin.requests.' . ($totalPending === 1 ? 'item' : 'items'))]) }}
             @else
-                {{ __('messages.admin_requests.subtitle_empty') }}
+                {{ __('admin.requests.subtitle_empty') }}
             @endif
         </p>
     </div>
@@ -20,26 +20,26 @@
         $sections = [
             [
                 'key' => 'providers', 'tone' => 'violet',
-                'title' => __('messages.admin_requests.provider_approvals'),
-                'items' => $pendingProviders, 'empty' => __('messages.admin_requests.empty_providers'),
+                'title' => __('admin.requests.provider_approvals'),
+                'items' => $pendingProviders, 'empty' => __('admin.requests.empty_providers'),
                 'icon' => '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke-linecap="round"/>',
             ],
             [
                 'key' => 'disputes', 'tone' => 'red',
-                'title' => __('messages.admin_requests.open_disputes'),
-                'items' => $openDisputes, 'empty' => __('messages.admin_requests.empty_disputes'),
+                'title' => __('admin.requests.open_disputes'),
+                'items' => $openDisputes, 'empty' => __('admin.requests.empty_disputes'),
                 'icon' => '<path d="M12 9v4M12 16.5v.5" stroke-linecap="round"/><path d="M10.3 3.3 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0z" stroke-linejoin="round"/>',
             ],
             [
                 'key' => 'contracts', 'tone' => 'amber',
-                'title' => __('messages.admin_requests.contracts_awaiting_quote'),
-                'items' => $submittedContracts, 'empty' => __('messages.admin_requests.empty_contracts'),
+                'title' => __('admin.requests.contracts_awaiting_quote'),
+                'items' => $submittedContracts, 'empty' => __('admin.requests.empty_contracts'),
                 'icon' => '<path d="M9 4h6l4 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 12h6M9 16h6" stroke-linecap="round"/>',
             ],
             [
                 'key' => 'applications', 'tone' => 'sky',
-                'title' => __('messages.admin_requests.new_applications'),
-                'items' => $newApplications, 'empty' => __('messages.admin_requests.empty_applications'),
+                'title' => __('admin.requests.new_applications'),
+                'items' => $newApplications, 'empty' => __('admin.requests.empty_applications'),
                 'icon' => '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke-linecap="round" stroke-linejoin="round"/>',
             ],
             [

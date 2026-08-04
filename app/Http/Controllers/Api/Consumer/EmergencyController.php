@@ -84,8 +84,8 @@ class EmergencyController extends Controller
     {
         $this->authorize('cancel', $emergencyRequest);
 
-        if (! $emergencyRequest->isOpen()) {
-            return response()->json(['message' => 'Only an open request can be cancelled.'], 422);
+        if (! in_array($emergencyRequest->status, [EmergencyRequest::STATUS_OPEN, EmergencyRequest::STATUS_QUOTED], true)) {
+            return response()->json(['message' => 'This request can no longer be cancelled.'], 422);
         }
 
         $emergencyRequest->update([
@@ -94,6 +94,60 @@ class EmergencyController extends Controller
         ]);
 
         return response()->json(['message' => 'Emergency request cancelled.']);
+    }
+
+    /** Accept the admin's price quote for this emergency request. */
+    public function acceptQuote(Request $request, EmergencyRequest $emergencyRequest): JsonResponse
+    {
+        $this->authorize('respond', $emergencyRequest);
+
+        if (! $emergencyRequest->isQuoted()) {
+            return response()->json(['message' => 'This request does not have a pending quote.'], 422);
+        }
+
+        $emergencyRequest->update([
+            'status' => EmergencyRequest::STATUS_ACCEPTED,
+            'accepted_at' => now(),
+        ]);
+
+        app(Notifier::class)->notifyAdmins(
+            'emergency',
+            'Emergency quote accepted',
+            'The customer accepted the Rs. ' . number_format((float) $emergencyRequest->quoted_price, 0) . ' quote for ' . $emergencyRequest->reference . ' — assign a provider.',
+            route('admin.emergencies.show', $emergencyRequest)
+        );
+
+        return response()->json([
+            'message' => 'Quote accepted. We\'ll assign a provider shortly.',
+            'emergency' => new EmergencyRequestResource($emergencyRequest->fresh()),
+        ]);
+    }
+
+    /** Decline the admin's price quote for this emergency request. */
+    public function declineQuote(Request $request, EmergencyRequest $emergencyRequest): JsonResponse
+    {
+        $this->authorize('respond', $emergencyRequest);
+
+        if (! $emergencyRequest->isQuoted()) {
+            return response()->json(['message' => 'This request does not have a pending quote.'], 422);
+        }
+
+        $emergencyRequest->update([
+            'status' => EmergencyRequest::STATUS_DECLINED,
+            'declined_at' => now(),
+        ]);
+
+        app(Notifier::class)->notifyAdmins(
+            'emergency',
+            'Emergency quote declined',
+            'The customer declined the quote for ' . $emergencyRequest->reference . '.',
+            route('admin.emergencies.show', $emergencyRequest)
+        );
+
+        return response()->json([
+            'message' => 'Quote declined.',
+            'emergency' => new EmergencyRequestResource($emergencyRequest->fresh()),
+        ]);
     }
 
     private function notifyMatchingProviders(EmergencyRequest $emergency, Service $service): void
