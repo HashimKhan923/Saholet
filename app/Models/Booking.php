@@ -221,9 +221,14 @@ class Booking extends Model
         return in_array($this->status, self::ACTIVE_STATUSES, true);
     }
 
+    /**
+     * Only while `confirmed` — the point of live tracking is showing the
+     * provider's route/ETA to the job. Once `in_progress` they've arrived,
+     * so there's nothing left to route to and sharing auto-stops.
+     */
     public function canShareLocation(): bool
     {
-        return in_array($this->status, [self::STATUS_CONFIRMED, self::STATUS_IN_PROGRESS], true);
+        return $this->status === self::STATUS_CONFIRMED;
     }
 
     public function isPayable(): bool

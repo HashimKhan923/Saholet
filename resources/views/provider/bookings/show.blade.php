@@ -189,21 +189,21 @@
                         @csrf
                         <input type="hidden" name="action" value="complete">
 
-                        {{-- Bold, hard-to-miss proof-of-work box — required to mark this booking complete --}}
+                        {{-- Bold, hard-to-miss proof-of-work box — optional, but encouraged, before marking a booking complete --}}
                         <div class="rounded-2xl border-2 border-amber-300 bg-amber-50 p-4 shadow-sm dark:border-amber-800 dark:bg-amber-950/30">
                             <div class="flex items-center gap-2">
                                 <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 16.5v.5" stroke-linecap="round"/><path d="M10.3 3.3 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0z" stroke-linejoin="round"/></svg>
-                                <h3 class="font-display text-sm font-extrabold uppercase tracking-wide text-amber-900 dark:text-amber-300">Proof of work required</h3>
+                                <h3 class="font-display text-sm font-extrabold uppercase tracking-wide text-amber-900 dark:text-amber-300">Proof of work</h3>
                             </div>
-                            <p class="mt-1 text-xs text-amber-800 dark:text-amber-400">At least one before photo and one after photo are required to mark this job complete.</p>
+                            <p class="mt-1 text-xs text-amber-800 dark:text-amber-400">Adding before/after photos helps protect you in a dispute — recommended, but not required.</p>
 
                             <div class="mt-4">
-                                <label class="block text-xs font-bold uppercase tracking-wide text-amber-900 dark:text-amber-300">Before photos <span class="font-semibold normal-case text-amber-700 dark:text-amber-500">(required, up to 6)</span></label>
+                                <label class="block text-xs font-bold uppercase tracking-wide text-amber-900 dark:text-amber-300">Before photos <span class="font-semibold normal-case text-amber-700 dark:text-amber-500">(optional, up to 6)</span></label>
                                 <div class="mt-1.5"><x-photo-picker name="before_photos" :max="6" /></div>
                                 <x-field-error name="before_photos" />
                             </div>
                             <div class="mt-4">
-                                <label class="block text-xs font-bold uppercase tracking-wide text-amber-900 dark:text-amber-300">After photos <span class="font-semibold normal-case text-amber-700 dark:text-amber-500">(required, up to 6)</span></label>
+                                <label class="block text-xs font-bold uppercase tracking-wide text-amber-900 dark:text-amber-300">After photos <span class="font-semibold normal-case text-amber-700 dark:text-amber-500">(optional, up to 6)</span></label>
                                 <div class="mt-1.5"><x-photo-picker name="after_photos" :max="6" /></div>
                                 <x-field-error name="after_photos" />
                             </div>

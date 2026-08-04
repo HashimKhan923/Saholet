@@ -161,6 +161,8 @@ class JobController extends Controller
                 'price' => $bid->amount,
                 'duration_minutes' => $jobPost->service->duration_minutes,
                 'address' => $jobPost->address,
+                'latitude' => $jobPost->latitude,
+                'longitude' => $jobPost->longitude,
                 'notes' => $jobPost->description,
                 'status' => Booking::STATUS_CONFIRMED,
                 'confirmed_at' => now(),

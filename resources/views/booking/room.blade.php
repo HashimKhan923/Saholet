@@ -157,7 +157,7 @@
                             </div>
                         </template>
                         <template x-if="! canShare">
-                            <p class="ms-auto text-xs text-slate-400 dark:text-slate-500">Location sharing is available while the booking is active.</p>
+                            <p class="ms-auto text-xs text-slate-400 dark:text-slate-500">Location sharing is available once the booking is confirmed, until you start the job.</p>
                         </template>
                     @else
                         <p class="ms-auto text-xs text-slate-400 dark:text-slate-500">Your provider's live location appears here once they're on the way — no need to refresh.</p>
@@ -213,7 +213,10 @@ document.addEventListener('alpine:init', () => {
                     this.channel.listen('.status.updated', (e) => {
                         this.status = e.status;
                         this.statusLabel = e.status_label;
-                        if ((e.status === 'completed' || e.status === 'cancelled') && this.liveTracking) {
+                        // canShare was computed once at page load — keep it in sync as the
+                        // booking's status actually changes while this tab stays open.
+                        this.canShare = this.isProvider && e.status === 'confirmed';
+                        if ((e.status === 'in_progress' || e.status === 'completed' || e.status === 'cancelled') && this.liveTracking) {
                             this.stopLiveTracking();
                         }
                     });

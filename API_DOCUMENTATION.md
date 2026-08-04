@@ -166,7 +166,7 @@ Active categories with their active services (the "browse services" catalog, cac
       "description": "...", "icon": "ac", "image_url": null,
       "services": [
         { "id": 2, "category_id": 1, "name": "AC Gas Refill", "slug": "ac-gas-refill",
-          "description": "...", "base_price": 3500,
+          "description": "...", "base_price": 3500, "visit_charge": null,
           "duration_minutes": 90, "is_active": true }
       ]
     }
@@ -174,6 +174,8 @@ Active categories with their active services (the "browse services" catalog, cac
 }
 ```
 `icon` is either a legacy icon-name key (e.g. `"ac"`, rendered client-side from a bundled icon set — true for any category that predates icon uploads) or, once a category has an uploaded icon image, the ready-to-use absolute URL for it (e.g. `"https://sahoulat.com/storage/categories/xyz.jpg"`). Check whether it starts with `http` to tell which case you're in. Same behavior on the nested `category.icon` in `ServiceResource`.
+
+`visit_charge` (nullable) is a fixed, non-negotiable fee some services carry, payable if a provider cancels after inspecting the job in person — separate from and in addition to the service's `base_price`. **Disclose it up front, before booking** — the web app shows it as a prominent callout on the service detail page and a small line on service cards, precisely because it can surprise a customer if they only learn about it after the fact. See `POST /provider/bookings/{id}/status` (`visit_charge_method`/`visit_charge_screenshot`) for how it actually gets collected, and the `visit_charge` object on `BookingResource` for the collected record.
 
 ### `GET /api/services`
 All active services (flat list, e.g. for search/typeahead). Response: `{ "services": [ {...ServiceResource...} ] }`
@@ -261,6 +263,8 @@ Chat history + tracking pin(s) for a booking (both consumer and provider on the 
 }
 ```
 `destination` is the booking's own address coordinates (`null` if the booking has none) — feed `latest_tracking` as the origin and `destination` as the destination into the Google Directions API client-side to draw the actual driving route + ETA, the same way the web app's booking room does (`google.maps.DirectionsService`/`DirectionsRenderer`). It's static for the life of the booking, so fetch it once alongside everything else here rather than re-deriving it.
+
+`can_share_location` is `true` only while the booking is `confirmed` — once it flips to `in_progress` the provider has arrived, so there's nothing left to route to and this goes back to `false`. Stop sending tracking pings (and hide the "share my location" control) the moment this flips, rather than only reacting to a `422` from the tracking endpoint.
 
 ### `POST /api/bookings/{id}/messages`
 **Body:** `body` (string, required, max 2000)
@@ -446,7 +450,10 @@ Response `201`: `{ "contract": {...} }` — status starts as `submitted`; an adm
 |---|---|
 | `service_id` | yes, must be active |
 | `address`, `city` | yes |
+| `latitude`, `longitude` | no |
 | `notes` | no |
+
+Send `latitude`/`longitude` when you have them (e.g. from the map picker) — they carry straight through to the `Booking` once a provider accepts, same as a direct booking's coordinates.
 
 Response `201`: `{ "emergency": {...} }`
 
@@ -538,13 +545,13 @@ Home-screen summary: counters, wallet balances, 6-month earnings trend, completi
 | `action` | always | `confirm`\|`decline`\|`start`\|`complete`\|`cancel` |
 | `cancellation_reason` | no | max 1000, used for `decline`/`cancel` |
 | `completion_notes` | no | max 1000, used for `complete` |
-| `before_photos[]` | `action=complete` | **required**, 1–6 images, 5MB each — proof of work |
-| `after_photos[]` | `action=complete` | **required**, 1–6 images, 5MB each |
+| `before_photos[]` | no | optional, 0–6 images, 5MB each — proof of work, recommended but not enforced |
+| `after_photos[]` | no | optional, 0–6 images, 5MB each |
 | `visit_charge_method` | `action=cancel` **and** the booking is currently `in_progress` | `cash`\|`bank_transfer` — see below |
 | `visit_charge_screenshot` | same, **and** `visit_charge_method=bank_transfer` | image, max 8MB |
 
 Two things worth calling out:
-- **`complete` now requires before/after photos** (it didn't before) and automatically generates an invoice for the booking, emailed to the customer once payment is confirmed.
+- **`complete` accepts optional before/after photos** and automatically generates an invoice for the booking, emailed to the customer once payment is confirmed.
 - **`cancel` while `in_progress`** is a distinct scenario from cancelling a `confirmed` (not-yet-visited) booking: it means the provider inspected the job on-site and the customer decided not to proceed. In that case `visit_charge_method` is required — it records the provider's visit charge as collected (see `visit_charge` on the booking resource above) entirely outside commission/wallet accounting. Cancelling a `confirmed` booking (before any visit happened) does **not** need these fields.
 
 Response: `{ "message": "...", "booking": {...} }`
@@ -648,7 +655,7 @@ Quick field reference for nested objects that recur throughout the API.
 
 **ContractResource** — `{ "id","reference","title","description","address","latitude","longitude","city","preferred_start_date","status","quoted_total","items":[...ContractItemResource...],"photos":[...],"milestones":[...ContractMilestoneResource...],"permissions":{"is_quoted","is_accepted","is_cancellable"},"accepted_at","completed_at","cancelled_at","created_at" }`. `status` ∈ `submitted` \| `quoted` \| `accepted` \| `rejected` \| `in_progress` \| `completed` \| `cancelled`.
 
-**EmergencyRequestResource** — `{ "id","reference","status","service","consumer","address","city","notes","quoted_price","quoted_at","accepted_at","declined_at","booking_id","booking","matched_provider","matched_at","cancelled_at","created_at","my_price" }`. `status` ∈ `open` \| `quoted` \| `accepted` \| `declined` \| `matched` \| `cancelled` (an admin sets `quoted_price` and moves it to `quoted`; the consumer then accepts/declines). `my_price` only populated on the provider board endpoint.
+**EmergencyRequestResource** — `{ "id","reference","status","service","consumer","address","latitude","longitude","city","notes","quoted_price","quoted_at","accepted_at","declined_at","booking_id","booking","matched_provider","matched_at","cancelled_at","created_at","my_price" }`. `latitude`/`longitude` are nullable. `status` ∈ `open` \| `quoted` \| `accepted` \| `declined` \| `matched` \| `cancelled` (an admin sets `quoted_price` and moves it to `quoted`; the consumer then accepts/declines). `my_price` only populated on the provider board endpoint.
 
 **SubscriptionResource** — `{ "id","reference","status","plan","provider","address","city","next_visit_date","visits_used","is_cancellable","bookings","cancelled_at","created_at" }`. `status` ∈ `pending_assignment` \| `active` \| `cancelled` \| `completed`.
 
