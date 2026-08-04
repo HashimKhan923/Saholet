@@ -19,6 +19,8 @@ class EmergencyRequestResource extends JsonResource
                 fn () => ['id' => $this->consumer?->id, 'name' => $this->consumer?->name, 'phone' => $this->consumer?->phone]
             ),
             'address' => $this->address,
+            'latitude' => $this->latitude !== null ? (float) $this->latitude : null,
+            'longitude' => $this->longitude !== null ? (float) $this->longitude : null,
             'city' => $this->city,
             'notes' => $this->notes,
             'quoted_price' => $this->quoted_price !== null ? (float) $this->quoted_price : null,

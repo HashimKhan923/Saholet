@@ -131,6 +131,8 @@ class EmergencyController extends Controller
                 'price' => $fresh->quoted_price,
                 'duration_minutes' => $emergencyRequest->service->duration_minutes,
                 'address' => $fresh->address,
+                'latitude' => $fresh->latitude,
+                'longitude' => $fresh->longitude,
                 'notes' => $fresh->notes ?: ('Emergency request ' . $fresh->reference),
                 'status' => Booking::STATUS_CONFIRMED,
                 'confirmed_at' => now(),

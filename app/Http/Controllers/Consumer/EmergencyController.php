@@ -45,6 +45,8 @@ class EmergencyController extends Controller
         $data = $request->validate([
             'service_id' => ['required', 'exists:services,id'],
             'address' => ['required', 'string', 'max:500'],
+            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'city' => ['required', 'string', 'max:120'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
@@ -67,6 +69,8 @@ class EmergencyController extends Controller
             'consumer_id' => $request->user()->id,
             'service_id' => $service->id,
             'address' => $data['address'],
+            'latitude' => $data['latitude'] ?? null,
+            'longitude' => $data['longitude'] ?? null,
             'city' => $data['city'],
             'notes' => $data['notes'] ?? null,
             'status' => EmergencyRequest::STATUS_OPEN,

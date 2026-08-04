@@ -20,6 +20,8 @@ class EmergencyRequest extends Model
         'consumer_id',
         'service_id',
         'address',
+        'latitude',
+        'longitude',
         'city',
         'notes',
         'status',
@@ -38,6 +40,8 @@ class EmergencyRequest extends Model
     protected function casts(): array
     {
         return [
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
             'quoted_price' => 'decimal:2',
             'quoted_at' => 'datetime',
             'accepted_at' => 'datetime',

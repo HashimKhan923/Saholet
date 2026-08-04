@@ -25,6 +25,7 @@ class ServiceResource extends JsonResource
             'slug' => $this->slug,
             'description' => $this->description,
             'base_price' => (float) $this->base_price,
+            'visit_charge' => $this->visit_charge !== null ? (float) $this->visit_charge : null,
             'duration_minutes' => $this->duration_minutes,
             'is_active' => (bool) $this->is_active,
         ];

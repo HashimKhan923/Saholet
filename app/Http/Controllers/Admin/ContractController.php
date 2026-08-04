@@ -168,6 +168,8 @@ class ContractController extends Controller
                 'price' => $item->quoted_price,
                 'duration_minutes' => $item->service->duration_minutes,
                 'address' => $contract->address,
+                'latitude' => $contract->latitude,
+                'longitude' => $contract->longitude,
                 'notes' => $item->notes,
                 'status' => Booking::STATUS_CONFIRMED,
                 'confirmed_at' => now(),
