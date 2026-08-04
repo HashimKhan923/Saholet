@@ -7,7 +7,7 @@
     $status   = $profile?->status ?? 'draft';
     $approved = (bool) $profile?->isApproved();
     $hour     = now()->hour;
-    $greeting = $hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening');
+    $greetingKey = $hour < 12 ? 'greeting_morning' : ($hour < 17 ? 'greeting_afternoon' : 'greeting_evening');
     $maxEarn  = max(1, (float) $earningsSeries->max('value'));
 @endphp
 
@@ -17,10 +17,10 @@
     @if ($profile?->isSuspended())
         <div class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-red-200 bg-red-50 p-5 dark:border-red-900/60 dark:bg-red-950/30">
             <div>
-                <p class="text-sm font-bold text-red-900 dark:text-red-300">Your account is paused</p>
-                <p class="mt-1 text-xs text-red-800 dark:text-red-400/90">{{ $profile->suspension_reason }} You can't accept new bookings until this is settled.</p>
+                <p class="text-sm font-bold text-red-900 dark:text-red-300">{{ __('provider.dashboard.suspended_title') }}</p>
+                <p class="mt-1 text-xs text-red-800 dark:text-red-400/90">{{ $profile->suspension_reason }} {{ __('provider.dashboard.suspended_desc_suffix') }}</p>
             </div>
-            <a href="{{ route('provider.settlements.index') }}" class="shrink-0 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700">Settle now</a>
+            <a href="{{ route('provider.settlements.index') }}" class="shrink-0 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700">{{ __('provider.dashboard.settle_now') }}</a>
         </div>
     @endif
 
@@ -35,21 +35,23 @@
                     @if ($approved)
                         <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-2.5 py-0.5 text-[11px] font-bold text-brand-700 dark:bg-brand-950/50 dark:text-brand-400">
                             <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12.5 10 17l9-10" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            Verified
+                            {{ __('provider.dashboard.verified') }}
                         </span>
                     @endif
                 </div>
 
                 <h1 class="mt-2 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
-                    {{ $greeting }}, {{ auth()->user()->name }}
+                    {{ __('provider.dashboard.' . $greetingKey) }}, {{ auth()->user()->name }}
                 </h1>
 
                 <p class="mt-2 max-w-prose text-sm leading-relaxed text-slate-500 dark:text-slate-400">
                     @if ($approved)
-                        You have <span class="font-semibold text-slate-700 dark:text-slate-200">{{ $activeBookings }}</span> active {{ \Illuminate\Support\Str::plural('booking', $activeBookings) }}
-                        and <span class="font-semibold text-slate-700 dark:text-slate-200">{{ $availableJobs }}</span> open {{ \Illuminate\Support\Str::plural('job', $availableJobs) }} matching your services.
+                        {{ __('provider.dashboard.matching_services_line', [
+                            'active' => trans_choice('provider.dashboard.active_bookings_choice', $activeBookings, ['count' => $activeBookings]),
+                            'jobs' => trans_choice('provider.dashboard.open_jobs_choice', $availableJobs, ['count' => $availableJobs]),
+                        ]) }}
                     @else
-                        Complete verification to list services, bid on jobs and accept bookings.
+                        {{ __('provider.dashboard.complete_verification_prompt') }}
                     @endif
                 </p>
 
@@ -64,7 +66,7 @@
                 <div class="flex shrink-0 flex-wrap gap-2.5">
                     <a href="{{ route('provider.jobs.index') }}" class="btn-shine inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
                         <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"/></svg>
-                        Browse jobs
+                        {{ __('provider.dashboard.browse_jobs') }}
                     </a>
                 </div>
             @endif
@@ -80,9 +82,9 @@
                         <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </span>
                     <div>
-                        <h2 class="font-display text-lg font-bold text-amber-900 dark:text-amber-300">Application under review</h2>
-                        <p class="mt-1 text-sm text-amber-800 dark:text-amber-400/90">Our team is reviewing your documents. You'll see your status update here.</p>
-                        <a href="{{ route('provider.onboarding') }}" class="mt-3 inline-block text-sm font-semibold text-amber-900 underline dark:text-amber-300">View submission</a>
+                        <h2 class="font-display text-lg font-bold text-amber-900 dark:text-amber-300">{{ __('provider.dashboard.app_under_review_title') }}</h2>
+                        <p class="mt-1 text-sm text-amber-800 dark:text-amber-400/90">{{ __('provider.dashboard.app_under_review_desc') }}</p>
+                        <a href="{{ route('provider.onboarding') }}" class="mt-3 inline-block text-sm font-semibold text-amber-900 underline dark:text-amber-300">{{ __('provider.dashboard.view_submission') }}</a>
                     </div>
                 </div>
             </div>
@@ -93,11 +95,11 @@
                         <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7l10 10M17 7 7 17" stroke-linecap="round"/></svg>
                     </span>
                     <div>
-                        <h2 class="font-display text-lg font-bold text-red-900 dark:text-red-300">Application needs changes</h2>
+                        <h2 class="font-display text-lg font-bold text-red-900 dark:text-red-300">{{ __('provider.dashboard.app_needs_changes_title') }}</h2>
                         @if ($profile?->rejection_reason)
-                            <p class="mt-1 text-sm text-red-800 dark:text-red-400/90"><span class="font-semibold">Reason:</span> {{ $profile->rejection_reason }}</p>
+                            <p class="mt-1 text-sm text-red-800 dark:text-red-400/90"><span class="font-semibold">{{ __('provider.dashboard.reason_label') }}</span> {{ $profile->rejection_reason }}</p>
                         @endif
-                        <a href="{{ route('provider.onboarding') }}" class="mt-3 inline-flex items-center rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700">Update &amp; resubmit</a>
+                        <a href="{{ route('provider.onboarding') }}" class="mt-3 inline-flex items-center rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700">{{ __('provider.dashboard.update_resubmit') }}</a>
                     </div>
                 </div>
             </div>
@@ -109,12 +111,12 @@
                             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 5 6v5c0 4.5 3.2 7.8 8 9 4.8-1.2 8-4.5 8-9V6l-8-3z" stroke-linejoin="round"/><path d="M9 12.5l2 2 4-4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                         <div>
-                            <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Complete your verification</h2>
-                            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Add your profile details and upload KYC documents to start earning.</p>
+                            <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.complete_verification_title') }}</h2>
+                            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('provider.dashboard.complete_verification_desc') }}</p>
                         </div>
                     </div>
                     <a href="{{ route('provider.onboarding') }}" class="btn-shine inline-flex shrink-0 items-center rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
-                        {{ $profile ? 'Continue' : 'Get started' }}
+                        {{ $profile ? __('provider.dashboard.continue') : __('provider.dashboard.get_started') }}
                     </a>
                 </div>
             </div>
@@ -124,37 +126,37 @@
     @if ($approved)
         {{-- ═══ Headline stats ═══ --}}
         <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <x-stat-card label="Available balance" :value="$walletAvailable" prefix="Rs. " :href="route('provider.wallet.index')"
-                :hint="'Rs. ' . number_format($walletEscrow, 0) . ' pending'" tone="brand">
+            <x-stat-card :label="__('provider.dashboard.available_balance')" :value="$walletAvailable" prefix="Rs. " :href="route('provider.wallet.index')"
+                :hint="'Rs. ' . number_format($walletEscrow, 0) . ' ' . __('provider.dashboard.pending_suffix')" tone="brand">
                 <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h2M3 10h18" stroke-linecap="round"/></svg>
             </x-stat-card>
 
-            <x-stat-card label="Earned this month" :value="$earningsMonth" prefix="Rs. " :delta="$earningsDelta"
-                :hint="'Rs. ' . number_format($earningsTotal, 0) . ' all time'" tone="violet">
+            <x-stat-card :label="__('provider.dashboard.earned_this_month')" :value="$earningsMonth" prefix="Rs. " :delta="$earningsDelta"
+                :hint="'Rs. ' . number_format($earningsTotal, 0) . ' ' . __('provider.dashboard.all_time_suffix')" tone="violet">
                 <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 18V9M10 18V5M16 18v-6M20 18h-.01M4 21h16" stroke-linecap="round"/></svg>
             </x-stat-card>
 
-            <x-stat-card label="Jobs completed" :value="$jobsCompleted" :href="route('provider.bookings.index')"
-                :hint="$activeBookings . ' active right now'" tone="sky">
+            <x-stat-card :label="__('provider.dashboard.jobs_completed')" :value="$jobsCompleted" :href="route('provider.bookings.index')"
+                :hint="$activeBookings . ' ' . __('provider.dashboard.active_right_now_suffix')" tone="sky">
                 <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 7 9.5 17.5 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </x-stat-card>
 
-            <x-stat-card label="Average rating" :value="$profile->rating_avg" :decimals="1" suffix=" / 5"
-                :hint="$profile->reviews_count . ' ' . \Illuminate\Support\Str::plural('review', $profile->reviews_count)" tone="amber">
+            <x-stat-card :label="__('provider.dashboard.average_rating')" :value="$profile->rating_avg" :decimals="1" suffix=" / 5"
+                :hint="trans_choice('provider.dashboard.review_choice', $profile->reviews_count, ['count' => $profile->reviews_count])" tone="amber">
                 <svg viewBox="0 0 20 20" class="h-5 w-5" fill="currentColor"><path d="M10 1.6l2.5 5.1 5.6.8-4 3.9 1 5.6L10 14.4 5 17l1-5.6-4-3.9 5.6-.8L10 1.6z"/></svg>
             </x-stat-card>
         </section>
 
         {{-- ═══ Performance ═══ --}}
         <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">Performance</h2>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">How customers experience you on Sahoulat.</p>
+            <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.performance_title') }}</h2>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('provider.dashboard.performance_subtitle') }}</p>
 
             <div class="mt-5 grid gap-6 sm:grid-cols-3">
                 @php
                     $metrics = [
-                        ['Completion rate', $completionRate, '%', 'Bookings finished vs cancelled', 'bg-brand-500'],
-                        ['Bid win rate', $bidWinRate, '%', $bidsPending . ' ' . \Illuminate\Support\Str::plural('bid', $bidsPending) . ' awaiting a decision', 'bg-sky-500'],
+                        [__('provider.dashboard.completion_rate'), $completionRate, '%', __('provider.dashboard.completion_rate_hint'), 'bg-brand-500'],
+                        [__('provider.dashboard.bid_win_rate'), $bidWinRate, '%', trans_choice('provider.dashboard.bid_pending_choice', $bidsPending, ['count' => $bidsPending]), 'bg-sky-500'],
                     ];
                 @endphp
 
@@ -175,14 +177,14 @@
 
                 <div>
                     <div class="flex items-baseline justify-between">
-                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Response time</p>
+                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ __('provider.dashboard.response_time') }}</p>
                         <p class="font-display text-lg font-extrabold text-slate-900 dark:text-white">
                             @if (is_null($responseMinutes))
                                 —
                             @elseif ($responseMinutes < 60)
-                                {{ $responseMinutes }}<span class="text-sm text-slate-400"> min</span>
+                                {{ $responseMinutes }}<span class="text-sm text-slate-400"> {{ __('provider.dashboard.min_suffix') }}</span>
                             @else
-                                {{ round($responseMinutes / 60, 1) }}<span class="text-sm text-slate-400"> hrs</span>
+                                {{ round($responseMinutes / 60, 1) }}<span class="text-sm text-slate-400"> {{ __('provider.dashboard.hrs_suffix') }}</span>
                             @endif
                         </p>
                     </div>
@@ -191,7 +193,7 @@
                         <div class="h-full rounded-full bg-violet-500 transition-[width] duration-700 ease-out"
                             style="width: {{ is_null($responseMinutes) ? 0 : max(4, min(100, (int) round((1 - min($responseMinutes, 240) / 240) * 100))) }}%"></div>
                     </div>
-                    <p class="mt-2 text-xs text-slate-400 dark:text-slate-500">Average time to confirm a booking</p>
+                    <p class="mt-2 text-xs text-slate-400 dark:text-slate-500">{{ __('provider.dashboard.response_time_hint') }}</p>
                 </div>
             </div>
         </section>
@@ -204,10 +206,10 @@
                 <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
                         <div>
-                            <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">Today's schedule</h2>
+                            <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.todays_schedule') }}</h2>
                             <p class="mt-0.5 text-xs text-slate-400">{{ now()->format('D, d M') }}</p>
                         </div>
-                        <a href="{{ route('provider.bookings.index') }}" class="text-sm font-semibold text-brand-700 transition hover:text-brand-800 dark:text-brand-400">All bookings</a>
+                        <a href="{{ route('provider.bookings.index') }}" class="text-sm font-semibold text-brand-700 transition hover:text-brand-800 dark:text-brand-400">{{ __('provider.dashboard.all_bookings') }}</a>
                     </div>
 
                     @if ($todaySchedule->isEmpty())
@@ -215,9 +217,9 @@
                             <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50 text-slate-300 dark:bg-slate-800 dark:text-slate-600">
                                 <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 10h16" stroke-linecap="round"/></svg>
                             </span>
-                            <p class="mt-3 text-sm font-semibold text-slate-700 dark:text-slate-200">Nothing scheduled today</p>
-                            <p class="mt-1 text-sm text-slate-400">Bid on open jobs to fill your calendar.</p>
-                            <a href="{{ route('provider.jobs.index') }}" class="mt-4 inline-flex items-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700">Find jobs</a>
+                            <p class="mt-3 text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('provider.dashboard.nothing_scheduled_title') }}</p>
+                            <p class="mt-1 text-sm text-slate-400">{{ __('provider.dashboard.nothing_scheduled_desc') }}</p>
+                            <a href="{{ route('provider.jobs.index') }}" class="mt-4 inline-flex items-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700">{{ __('provider.dashboard.find_jobs') }}</a>
                         </div>
                     @else
                         <ul class="divide-y divide-slate-100 dark:divide-slate-800">
@@ -230,7 +232,7 @@
                                         </div>
                                         <div class="h-10 w-px shrink-0 bg-slate-200 dark:bg-slate-700"></div>
                                         <div class="min-w-0 flex-1">
-                                            <p class="truncate text-sm font-semibold text-slate-900 dark:text-white">{{ $booking->service?->name ?? 'Service' }}</p>
+                                            <p class="truncate text-sm font-semibold text-slate-900 dark:text-white">{{ $booking->service?->name ?? __('provider.dashboard.service_fallback') }}</p>
                                             <p class="mt-0.5 truncate text-xs text-slate-400">{{ $booking->consumer?->name }} · {{ $booking->address }}</p>
                                         </div>
                                         <div class="hidden shrink-0 text-end sm:block">
@@ -248,8 +250,8 @@
                 <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between">
                         <div>
-                            <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">Earnings</h2>
-                            <p class="mt-0.5 text-xs text-slate-400">Last 6 months, after commission</p>
+                            <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.earnings_title') }}</h2>
+                            <p class="mt-0.5 text-xs text-slate-400">{{ __('provider.dashboard.earnings_subtitle') }}</p>
                         </div>
                         <p class="font-display text-xl font-extrabold text-brand-700 dark:text-brand-400">Rs. {{ number_format($earningsTotal, 0) }}</p>
                     </div>
@@ -279,12 +281,12 @@
                 {{-- Activity feed --}}
                 <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="border-b border-slate-100 px-5 py-4 dark:border-slate-800">
-                        <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">Recent activity</h2>
+                        <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.recent_activity') }}</h2>
                     </div>
 
                     @if ($activity->isEmpty())
                         <div class="px-5 py-10 text-center">
-                            <p class="text-sm text-slate-400">No activity yet. Your bookings, bids and payouts will show up here.</p>
+                            <p class="text-sm text-slate-400">{{ __('provider.dashboard.no_activity') }}</p>
                         </div>
                     @else
                         @php
@@ -325,14 +327,14 @@
 
                 {{-- Quick actions --}}
                 <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">Quick actions</h2>
+                    <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.quick_actions') }}</h2>
 
                     @php
                         $actions = [
-                            ['Available jobs', route('provider.jobs.index'), $availableJobs, 'sky'],
-                            ['Pending bookings', route('provider.bookings.index'), $pendingBookings, 'amber'],
-                            ['My bids', route('provider.bids.index'), $bidsPending, 'slate'],
-                            ['My services', route('provider.services.index'), 0, 'slate'],
+                            [__('provider.dashboard.qa_available_jobs'), route('provider.jobs.index'), $availableJobs, 'sky'],
+                            [__('provider.dashboard.qa_pending_bookings'), route('provider.bookings.index'), $pendingBookings, 'amber'],
+                            [__('provider.dashboard.qa_my_bids'), route('provider.bids.index'), $bidsPending, 'slate'],
+                            [__('provider.dashboard.qa_my_services'), route('provider.services.index'), 0, 'slate'],
                         ];
                         $badgeTones = [
                             'sky'   => 'bg-sky-500',

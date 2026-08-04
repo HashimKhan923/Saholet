@@ -18,10 +18,14 @@ return [
     // transfer" after a booking completes — they send here, not to the
     // provider, and admin verifies against the real statement.
     'company_account' => [
-        'bank_name' => env('COMPANY_BANK_NAME', 'Meezan Bank'),
-        'account_title' => env('COMPANY_ACCOUNT_TITLE', 'Sahoulat Services'),
-        'account_number' => env('COMPANY_ACCOUNT_NUMBER', ''),
-        'iban' => env('COMPANY_IBAN', ''),
+        'bank_name' => env('COMPANY_BANK_NAME', 'Bank Al Habib Ltd'),
+        'account_title' => env('COMPANY_ACCOUNT_TITLE', 'Sahoulat Facility Management Services'),
+        'account_number' => env('COMPANY_ACCOUNT_NUMBER', '5052-0081-001208-01-4'),
+        'iban' => env('COMPANY_IBAN', 'PK15BAHL50520081001208014'),
+        'swift_code' => env('COMPANY_SWIFT_CODE', 'BAHLPKKA'),
+        'branch_name' => env('COMPANY_BRANCH_NAME', 'Islamic Midway Commercial "A" Bahria Town Karachi'),
+        'branch_code' => env('COMPANY_BRANCH_CODE', '5052'),
+        'branch_address' => env('COMPANY_BRANCH_ADDRESS', 'Showroom # 1, SQ Trade Center, Plot A-118 Midway Commercial "A" Bahria Town Karachi Pakistan'),
         'jazzcash_number' => env('COMPANY_JAZZCASH_NUMBER', ''),
         'easypaisa_number' => env('COMPANY_EASYPAISA_NUMBER', ''),
     ],
