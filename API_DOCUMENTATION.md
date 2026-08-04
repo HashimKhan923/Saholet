@@ -465,7 +465,7 @@ Response `201`: `{ "message": "...", "payment": {...} }` in all cases (except th
 **`POST /emergencies`** — broadcasts to nearby approved providers offering that service in that city (realtime + notification).
 | Field | Required |
 |---|---|
-| `service_id` | yes, must be active |
+| `service_id` | yes, must be active **and** flagged emergency-available — `422` otherwise |
 | `address`, `city` | yes |
 | `latitude`, `longitude` | no |
 | `notes` | no |
@@ -676,7 +676,9 @@ Quick field reference for nested objects that recur throughout the API.
 
 **SubscriptionResource** — `{ "id","reference","status","plan","provider","address","city","next_visit_date","visits_used","is_cancellable","bookings","cancelled_at","created_at" }`. `status` ∈ `pending_assignment` \| `active` \| `cancelled` \| `completed`.
 
-**PaymentResource** — `{ "id","reference","gateway","amount","credit_applied","status","paid_at","released_at","refunded_at" }`. `status` ∈ `pending` \| `escrow` \| `released` \| `refunded` \| `failed`.
+**PaymentResource** — `{ "id","reference","gateway","amount","credit_applied","status","screenshot_url","paid_at","released_at","refunded_at" }`. `status` ∈ `pending` \| `escrow` \| `released` \| `refunded` \| `failed`. `screenshot_url` is only non-null for `gateway=bank_transfer` payments — the consumer's own uploaded transfer proof, absolute URL ready to display/download.
+
+**WithdrawalRequestResource** — `{ "id","reference","amount","status","payout_method","method_label","admin_notes","screenshot_url","processed_at","created_at" }`. `screenshot_url` is the admin's proof-of-transfer for a `bank`-method payout once processed (null until then) — same absolute-URL pattern as `PaymentResource`.
 
 **DisputeResource** — `{ "id","reference","opened_by_role","reason","status","resolution","resolution_note","resolved_at","created_at","photos" }`. `status` ∈ `open` \| `resolved` \| `dismissed` (resolution is set by an admin). `photos` is `[{"id","url"}]`, only present when loaded (both `POST .../dispute` and `GET /disputes/{id}` load it).
 

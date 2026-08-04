@@ -101,4 +101,31 @@ class Contract extends Model
     {
         return in_array($this->status, [self::STATUS_SUBMITTED, self::STATUS_QUOTED], true);
     }
+
+    /**
+     * Every item's work is done (or was cancelled) and every milestone's
+     * money has actually left escrow (released or refunded) — the point
+     * where an admin can close the contract out. Assumes items/milestones
+     * are already loaded; call loadMissing('items', 'milestones') first.
+     */
+    public function canBeMarkedCompleted(): bool
+    {
+        if ($this->status !== self::STATUS_IN_PROGRESS) {
+            return false;
+        }
+
+        if ($this->items->isEmpty()) {
+            return false;
+        }
+
+        $itemsDone = $this->items->every(
+            fn (ContractItem $item) => in_array($item->status, [ContractItem::STATUS_COMPLETED, ContractItem::STATUS_CANCELLED], true)
+        );
+
+        $milestonesSettled = $this->milestones->every(
+            fn (ContractMilestone $m) => in_array($m->status, [ContractMilestone::STATUS_RELEASED, ContractMilestone::STATUS_REFUNDED], true)
+        );
+
+        return $itemsDone && $milestonesSettled;
+    }
 }

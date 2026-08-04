@@ -362,7 +362,7 @@ class ContractController extends Controller
         $payment->update(['screenshot_path' => $path]);
 
         app(Notifier::class)->notifyAdmins(
-            'contract',
+            'payment',
             'Payment awaiting verification',
             'Bank transfer for ' . $milestone->title . ' (' . $contract->reference . ') needs verification (Rs. ' . number_format((float) $milestone->amount, 0) . ').',
             route('admin.payments.show', $payment)

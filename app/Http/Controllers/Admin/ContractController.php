@@ -60,7 +60,9 @@ class ContractController extends Controller
             }
         }
 
-        return view('admin.contracts.show', compact('contract', 'eligibleProviders'));
+        $canMarkComplete = $contract->canBeMarkedCompleted();
+
+        return view('admin.contracts.show', compact('contract', 'eligibleProviders', 'canMarkComplete'));
     }
 
     public function quote(Request $request, Contract $contract): RedirectResponse
@@ -240,6 +242,27 @@ class ContractController extends Controller
         );
 
         return back()->with('success', 'Milestone released.');
+    }
+
+    public function markComplete(Contract $contract): RedirectResponse
+    {
+        $contract->loadMissing('items', 'milestones', 'consumer');
+
+        if (! $contract->canBeMarkedCompleted()) {
+            return back()->with('error', 'Every item must be completed or cancelled, and every milestone released or refunded, before closing this contract.');
+        }
+
+        $contract->update(['status' => Contract::STATUS_COMPLETED, 'completed_at' => now()]);
+
+        app(Notifier::class)->notify(
+            $contract->consumer,
+            'contract',
+            'Contract completed',
+            'Your contract ' . $contract->reference . ' has been marked as completed. Thank you!',
+            route('consumer.contracts.show', $contract)
+        );
+
+        return back()->with('success', 'Contract marked as completed.');
     }
 
     private function generateBookingReference(): string
