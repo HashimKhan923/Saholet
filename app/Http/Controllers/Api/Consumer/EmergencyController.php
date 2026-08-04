@@ -47,7 +47,10 @@ class EmergencyController extends Controller
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $service = Service::where('id', $data['service_id'])->where('is_active', true)->first();
+        $service = Service::where('id', $data['service_id'])
+            ->where('is_active', true)
+            ->where('is_emergency_available', true)
+            ->first();
         if (! $service) {
             return response()->json(['message' => 'That service is currently unavailable.'], 422);
         }

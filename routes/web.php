@@ -396,6 +396,7 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
             Route::post('contracts/{contract}/quote', [AdminContractController::class, 'quote'])->name('contracts.quote');
             Route::post('contracts/{contract}/items/{item}/assign', [AdminContractController::class, 'assignProvider'])->name('contracts.items.assign');
             Route::post('contracts/{contract}/milestones/{milestone}/release', [AdminContractController::class, 'releaseMilestone'])->name('contracts.milestones.release');
+            Route::post('contracts/{contract}/complete', [AdminContractController::class, 'markComplete'])->name('contracts.complete');
         });
 
         Route::middleware('permission:providers')->group(function () {
