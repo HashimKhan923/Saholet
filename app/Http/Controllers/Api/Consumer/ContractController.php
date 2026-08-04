@@ -196,14 +196,18 @@ class ContractController extends Controller
         abort_unless($milestone->isPayable(), 404);
 
         $gateways = collect($this->payments->all())
-            ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false) || $g->key() === 'mock')
+            ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false))
             ->map(fn ($g) => ['key' => $g->key(), 'label' => $g->label()])
             ->values();
+
+        $gateways->push(['key' => Payment::GATEWAY_CASH, 'label' => 'Cash']);
+        $gateways->push(['key' => Payment::GATEWAY_BANK_TRANSFER, 'label' => 'Bank transfer']);
 
         return response()->json([
             'gateways' => $gateways,
             'max_credit_applicable' => min((float) $request->user()->credit_balance, (float) $milestone->amount),
             'amount' => (float) $milestone->amount,
+            'company_account' => config('payments.company_account'),
         ]);
     }
 
@@ -224,13 +228,62 @@ class ContractController extends Controller
         $fullyCoveredByCredit = $creditApplied >= (float) $milestone->amount;
 
         $available = collect($this->payments->all())
-            ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false) || $g->key() === 'mock')
+            ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false))
             ->map->key()
+            ->push(Payment::GATEWAY_CASH)
+            ->push(Payment::GATEWAY_BANK_TRANSFER)
             ->all();
 
         $data = $request->validate([
             'gateway' => [$fullyCoveredByCredit ? 'nullable' : 'required', Rule::in($available)],
+            'screenshot' => [
+                Rule::requiredIf(! $fullyCoveredByCredit && $request->input('gateway') === Payment::GATEWAY_BANK_TRANSFER),
+                'nullable', 'image', 'mimes:jpg,jpeg,png,webp,heic,heif', 'max:8192',
+            ],
         ]);
+
+        if (! $fullyCoveredByCredit && in_array($data['gateway'], [Payment::GATEWAY_CASH, Payment::GATEWAY_BANK_TRANSFER], true)) {
+            $payment = Payment::create([
+                'reference' => $this->generatePaymentReference(),
+                'contract_milestone_id' => $milestone->id,
+                'consumer_id' => $consumer->id,
+                'gateway' => $data['gateway'],
+                'amount' => $milestone->amount,
+                'credit_applied' => $creditApplied,
+                'status' => Payment::STATUS_PENDING,
+            ]);
+
+            if ($data['gateway'] === Payment::GATEWAY_CASH) {
+                $this->finalizer->finalizeMilestonePayment($payment, 'CASH-' . $payment->reference);
+
+                app(Notifier::class)->notifyAdmins(
+                    'contract',
+                    'Milestone paid in cash',
+                    $milestone->title . ' for ' . $contract->reference . ' was recorded as paid in cash.',
+                    route('admin.contracts.show', $contract)
+                );
+
+                return response()->json([
+                    'message' => 'Cash payment recorded. Held pending until work progresses.',
+                    'payment' => new PaymentResource($payment->fresh()),
+                ], 201);
+            }
+
+            $path = $request->file('screenshot')->store('payment-screenshots', 'public');
+            $payment->update(['screenshot_path' => $path]);
+
+            app(Notifier::class)->notifyAdmins(
+                'payment',
+                'Payment awaiting verification',
+                'Bank transfer for ' . $milestone->title . ' (' . $contract->reference . ') needs verification (Rs. ' . number_format((float) $milestone->amount, 0) . ').',
+                route('admin.payments.show', $payment)
+            );
+
+            return response()->json([
+                'message' => "Thanks — we'll confirm your transfer shortly.",
+                'payment' => new PaymentResource($payment->fresh()),
+            ], 201);
+        }
 
         if ($fullyCoveredByCredit) {
             $payment = Payment::create([

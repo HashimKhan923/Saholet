@@ -15,6 +15,8 @@ class Payment extends Model
 
     public const GATEWAY_CASH = 'cash';
     public const GATEWAY_BANK_TRANSFER = 'bank_transfer';
+    /** Auto-recorded when an admin assigns a provider to a contract item — the contract's actual cost is collected via its milestones, not a per-item gateway pick. */
+    public const GATEWAY_CONTRACT = 'contract';
 
     protected $fillable = [
         'reference',

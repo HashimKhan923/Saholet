@@ -33,7 +33,7 @@ class PaymentController extends Controller
         abort_unless($booking->isPayable(), 404);
 
         $gateways = collect($this->payments->all())
-            ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false) || $g->key() === 'mock')
+            ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false))
             ->map(fn ($g) => ['key' => $g->key(), 'label' => $g->label()])
             ->values();
 
@@ -62,7 +62,7 @@ class PaymentController extends Controller
         $fullyCoveredByCredit = $creditApplied >= (float) $booking->price;
 
         $available = collect($this->payments->all())
-            ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false) || $g->key() === 'mock')
+            ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false))
             ->map->key()
             ->all();
 

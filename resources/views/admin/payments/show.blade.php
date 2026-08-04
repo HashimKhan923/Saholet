@@ -29,10 +29,16 @@
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Details</h2>
                 <dl class="mt-4 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-2">
-                    <div><dt class="text-slate-500 dark:text-slate-400">Booking</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->booking->reference ?? '—' }}</dd></div>
-                    <div><dt class="text-slate-500 dark:text-slate-400">Service</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->booking->service->name ?? '—' }}</dd></div>
-                    <div><dt class="text-slate-500 dark:text-slate-400">Customer</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->consumer->name ?? '—' }}</dd></div>
-                    <div><dt class="text-slate-500 dark:text-slate-400">Provider</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->booking->providerProfile->business_name ?? $payment->booking->providerProfile->user->name ?? '—' }}</dd></div>
+                    @if ($payment->booking)
+                        <div><dt class="text-slate-500 dark:text-slate-400">Booking</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->booking->reference }}</dd></div>
+                        <div><dt class="text-slate-500 dark:text-slate-400">Service</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->booking->service?->name ?? '—' }}</dd></div>
+                        <div><dt class="text-slate-500 dark:text-slate-400">Customer</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->consumer->name ?? '—' }}</dd></div>
+                        <div><dt class="text-slate-500 dark:text-slate-400">Provider</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->booking->providerProfile?->business_name ?? $payment->booking->providerProfile?->user?->name ?? '—' }}</dd></div>
+                    @elseif ($payment->contractMilestone)
+                        <div><dt class="text-slate-500 dark:text-slate-400">Contract</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->contractMilestone->contract?->reference ?? '—' }}</dd></div>
+                        <div><dt class="text-slate-500 dark:text-slate-400">Milestone</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->contractMilestone->title }}</dd></div>
+                        <div><dt class="text-slate-500 dark:text-slate-400">Customer</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->consumer->name ?? '—' }}</dd></div>
+                    @endif
                     <div><dt class="text-slate-500 dark:text-slate-400">Amount</dt><dd class="font-medium text-slate-800 dark:text-slate-200">Rs. {{ number_format((float) $payment->amount, 0) }}</dd></div>
                     <div><dt class="text-slate-500 dark:text-slate-400">Submitted</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->created_at->format('d M Y, h:i A') }}</dd></div>
                     @if ($payment->verified_at)
@@ -64,7 +70,9 @@
                 @if ($payment->isPending())
                     <form method="POST" action="{{ route('admin.payments.verify', $payment) }}" class="mt-4">
                         @csrf
-                        <button type="submit" class="w-full rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Verify &amp; release to provider</button>
+                        <button type="submit" class="w-full rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
+                            {{ $payment->booking ? 'Verify & release to provider' : 'Verify & hold in escrow' }}
+                        </button>
                     </form>
 
                     <form method="POST" action="{{ route('admin.payments.reject', $payment) }}" class="mt-4 space-y-3">
@@ -78,8 +86,10 @@
                     <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">
                         @if ($payment->status === 'failed')
                             Rejected. The customer has been asked to resubmit.
-                        @else
+                        @elseif ($payment->booking)
                             Verified and released to the provider's wallet.
+                        @else
+                            Verified and held in escrow for this contract.
                         @endif
                     </p>
                 @endif

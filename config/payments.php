@@ -31,9 +31,12 @@ return [
     ],
 
     'gateways' => [
+        // Instant-success fake gateway for local dev/testing — never a real charge.
+        // Defaults to off in production so a live customer can never "pay" for
+        // free; explicitly override with MOCK_PAYMENTS_ENABLED if ever needed.
         'mock' => [
             'label' => 'Test payment (sandbox)',
-            'enabled' => true,
+            'enabled' => env('MOCK_PAYMENTS_ENABLED', env('APP_ENV') !== 'production'),
         ],
         'jazzcash' => [
             'label' => 'JazzCash',

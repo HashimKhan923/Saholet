@@ -35,7 +35,7 @@
         <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
             <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:bg-slate-800 dark:text-slate-100">
                 <tr>
-                    <th class="px-5 py-3">Booking</th>
+                    <th class="px-5 py-3">For</th>
                     <th class="px-5 py-3">Customer</th>
                     <th class="px-5 py-3">Amount</th>
                     <th class="px-5 py-3">Status</th>
@@ -47,8 +47,15 @@
                 @forelse ($payments as $payment)
                     <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/60">
                         <td class="px-5 py-3">
-                            <div class="font-medium text-slate-900 dark:text-white">{{ $payment->booking->service->name ?? '—' }}</div>
-                            <div class="text-xs text-slate-500 dark:text-slate-400">{{ $payment->booking->reference ?? '—' }}</div>
+                            @if ($payment->booking)
+                                <div class="font-medium text-slate-900 dark:text-white">{{ $payment->booking->service?->name ?? '—' }}</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">{{ $payment->booking->reference }}</div>
+                            @elseif ($payment->contractMilestone)
+                                <div class="font-medium text-slate-900 dark:text-white">{{ $payment->contractMilestone->title }}</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">{{ $payment->contractMilestone->contract?->reference ?? '—' }}</div>
+                            @else
+                                <div class="text-slate-400 dark:text-slate-500">—</div>
+                            @endif
                         </td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $payment->consumer->name ?? '—' }}</td>
                         <td class="px-5 py-3 font-semibold text-slate-900 dark:text-white">Rs. {{ number_format((float) $payment->amount, 0) }}</td>
