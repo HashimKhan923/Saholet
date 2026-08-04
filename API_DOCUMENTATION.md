@@ -319,9 +319,9 @@ Response `201`: `{ "booking": {...BookingResource...} }`. `422` if the provider 
 
 **`POST /bookings/{id}/cancel`** — only while cancellable by the consumer (not yet in progress). Auto-refunds escrow if already paid. `{ "message": "...", "booking": {...} }`
 
-**`GET /bookings/{id}/payment-options`** — `{ "gateways": [{"key":"mock","label":"Test payment (sandbox)"}], "max_credit_applicable": 0, "amount": 3000 }`
+**`GET /bookings/{id}/payment-options`** — `{ "gateways": [{"key":"mock","label":"Test payment (sandbox)"}], "max_credit_applicable": 0, "amount": 3000 }`. `mock` only ever appears outside production (`APP_ENV`) or when explicitly forced on via `MOCK_PAYMENTS_ENABLED` — it must never be reachable on the live site, since it always succeeds instantly with no real money. `jazzcash`/`easypaisa` only appear once their env credentials + `*_ENABLED=true` are configured. If neither real gateway is configured and mock is correctly off (production default), this list can be empty — that's expected, not a bug; pre-payment is optional (see `permissions.needs_completion_payment`/`isPayable` below), the consumer can just pay cash/bank-transfer once the job is done instead.
 
-**`POST /bookings/{id}/pay`** — Body: `gateway` (required unless referral credit fully covers the amount — currently only `"mock"` is enabled by default; `jazzcash`/`easypaisa` activate via env config), `apply_credit` (bool, optional — applies available referral credit first). Response `201`: `{ "message": "...", "payment": {...} }`, or, for gateways needing an off-site redirect: `{ "status": "pending", "redirect_url": "...", "redirect_fields": {...} }`.
+**`POST /bookings/{id}/pay`** — Body: `gateway` (required unless referral credit fully covers the amount — must be one of the keys returned by `payment-options` above), `apply_credit` (bool, optional — applies available referral credit first). Response `201`: `{ "message": "...", "payment": {...} }`, or, for gateways needing an off-site redirect: `{ "status": "pending", "redirect_url": "...", "redirect_fields": {...} }`.
 
 **`POST /bookings/{id}/release`** — release escrow to the provider once completed & undisputed. `{ "message": "...", "booking": {...} }`
 
@@ -437,9 +437,26 @@ Response `201`: `{ "contract": {...} }` — status starts as `submitted`; an adm
 
 **`POST /contracts/{id}/cancel`** — only while cancellable.
 
-**`GET /contracts/{id}/milestones/{milestoneId}/payment-options`** — same shape as booking payment-options.
+**`GET /contracts/{id}/milestones/{milestoneId}/payment-options`** — same shape as booking payment-options, **plus `cash` and `bank_transfer` are always included** (unlike bookings, a milestone has no pay-after-completion fallback, so these two are the reliable path while no online gateway is configured). Also includes `company_account` (see the completion-payment shape above) for the bank-transfer instructions. Response:
+```json
+{
+  "gateways": [
+    {"key": "mock", "label": "Test payment (sandbox)"},
+    {"key": "cash", "label": "Cash"},
+    {"key": "bank_transfer", "label": "Bank transfer"}
+  ],
+  "max_credit_applicable": 0,
+  "amount": 3000,
+  "company_account": { "...": "same shape as the booking completion-payment endpoint" }
+}
+```
 
-**`POST /contracts/{id}/milestones/{milestoneId}/pay`** — same body/response shape as booking `/pay`.
+**`POST /contracts/{id}/milestones/{milestoneId}/pay`** — Body: `gateway` (required unless credit fully covers it — one of the keys from `payment-options`), `apply_credit` (bool, optional), `screenshot` (required if `gateway=bank_transfer`, image, multipart, max 8MB).
+- `gateway=cash` — trusted immediately, no proof required (same as a real gateway success): the payment and milestone both move straight to escrow.
+- `gateway=bank_transfer` — the payment stays `pending` until an admin verifies the screenshot in the admin panel; only then does it move to escrow. The consumer isn't blocked from anything in the meantime — this is just slower than cash.
+- A real gateway key — unchanged, synchronous success moves straight to escrow (or `{"status":"pending","redirect_url":...}` for an off-site redirect gateway).
+
+Response `201`: `{ "message": "...", "payment": {...} }` in all cases (except the off-site redirect case, same shape as booking `/pay`).
 
 ### Emergencies (SOS)
 

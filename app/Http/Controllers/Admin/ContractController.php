@@ -10,6 +10,7 @@ use App\Models\ContractMilestone;
 use App\Models\Payment;
 use App\Models\ProviderProfile;
 use App\Services\Notifier;
+use App\Services\WalletService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -123,7 +124,7 @@ class ContractController extends Controller
             ->with('success', 'Quote sent to the consumer.');
     }
 
-    public function assignProvider(Request $request, Contract $contract, ContractItem $item): RedirectResponse
+    public function assignProvider(Request $request, Contract $contract, ContractItem $item, WalletService $wallets): RedirectResponse
     {
         abort_unless($item->contract_id === $contract->id, 404);
 
@@ -155,7 +156,7 @@ class ContractController extends Controller
 
         $item->load('service', 'contract');
 
-        [$booking, $payment] = DB::transaction(function () use ($item, $contract, $provider, $data) {
+        [$booking, $payment] = DB::transaction(function () use ($item, $contract, $provider, $data, $wallets) {
             $booking = Booking::create([
                 'reference' => $this->generateBookingReference(),
                 'consumer_id' => $contract->consumer_id,
@@ -179,11 +180,17 @@ class ContractController extends Controller
                 'reference' => $this->generatePaymentReference(),
                 'booking_id' => $booking->id,
                 'consumer_id' => $contract->consumer_id,
-                'gateway' => 'contract',
+                'gateway' => Payment::GATEWAY_CONTRACT,
                 'amount' => $item->quoted_price,
                 'status' => Payment::STATUS_ESCROW,
                 'paid_at' => now(),
             ]);
+
+            // The contract's cost was already collected via its milestones — this
+            // record only marks the item's booking as covered so it doesn't also
+            // prompt the consumer to pay again. It still needs a real escrow hold
+            // so the provider's wallet accounts for it correctly when released.
+            $wallets->holdInEscrow($payment, $provider->user);
 
             $item->update([
                 'status' => ContractItem::STATUS_ASSIGNED,

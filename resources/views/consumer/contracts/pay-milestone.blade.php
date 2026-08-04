@@ -27,7 +27,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('consumer.contracts.milestones.pay.store', [$contract, $milestone]) }}" class="mt-6 space-y-5"
+    <form method="POST" action="{{ route('consumer.contracts.milestones.pay.store', [$contract, $milestone]) }}" enctype="multipart/form-data" class="mt-6 space-y-5"
           x-data="{
               gateway: '{{ old('gateway', $gateways->first()?->key()) }}',
               applyCredit: {{ old('apply_credit') ? 'true' : 'false' }},
@@ -69,6 +69,61 @@
                         @endif
                     </label>
                 @endforeach
+
+                <label class="flex cursor-pointer items-center justify-between rounded-xl border p-4 transition"
+                       :class="gateway === 'cash' ? 'border-brand-500 bg-brand-50 ring-2 ring-brand-200 dark:bg-brand-950/40 dark:ring-brand-900' : 'border-slate-200 hover:border-slate-300 dark:border-slate-700 dark:hover:border-slate-600'">
+                    <span class="flex items-center gap-3">
+                        <input type="radio" name="gateway" value="cash" x-model="gateway" class="h-4 w-4 text-brand-600 focus:ring-brand-200">
+                        <span class="block text-sm font-semibold text-slate-900 dark:text-white">Cash</span>
+                    </span>
+                </label>
+
+                <label class="flex cursor-pointer items-center justify-between rounded-xl border p-4 transition"
+                       :class="gateway === 'bank_transfer' ? 'border-brand-500 bg-brand-50 ring-2 ring-brand-200 dark:bg-brand-950/40 dark:ring-brand-900' : 'border-slate-200 hover:border-slate-300 dark:border-slate-700 dark:hover:border-slate-600'">
+                    <span class="flex items-center gap-3">
+                        <input type="radio" name="gateway" value="bank_transfer" x-model="gateway" class="h-4 w-4 text-brand-600 focus:ring-brand-200">
+                        <span class="block text-sm font-semibold text-slate-900 dark:text-white">Bank transfer</span>
+                    </span>
+                </label>
+            </div>
+
+            <div x-show="gateway === 'bank_transfer'" x-cloak class="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+                <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Send Rs. {{ number_format($milestone->amount, 0) }} to</h3>
+                <dl class="mt-3 space-y-2 text-sm">
+                    @if (!empty($companyAccount['account_number']))
+                        <div class="flex items-center justify-between rounded-lg bg-white px-3 py-2.5 dark:bg-slate-900">
+                            <dt class="text-slate-500 dark:text-slate-400">Bank</dt>
+                            <dd class="font-medium text-slate-800 dark:text-slate-200">{{ $companyAccount['bank_name'] }}</dd>
+                        </div>
+                        <div class="flex items-center justify-between rounded-lg bg-white px-3 py-2.5 dark:bg-slate-900">
+                            <dt class="text-slate-500 dark:text-slate-400">Account title</dt>
+                            <dd class="font-medium text-slate-800 dark:text-slate-200">{{ $companyAccount['account_title'] }}</dd>
+                        </div>
+                        <div class="flex items-center justify-between rounded-lg bg-white px-3 py-2.5 dark:bg-slate-900">
+                            <dt class="text-slate-500 dark:text-slate-400">Account number</dt>
+                            <dd class="font-mono font-medium text-slate-800 dark:text-slate-200">{{ $companyAccount['account_number'] }}</dd>
+                        </div>
+                        @if (!empty($companyAccount['iban']))
+                            <div class="flex items-center justify-between rounded-lg bg-white px-3 py-2.5 dark:bg-slate-900">
+                                <dt class="text-slate-500 dark:text-slate-400">IBAN</dt>
+                                <dd class="font-mono font-medium text-slate-800 dark:text-slate-200">{{ $companyAccount['iban'] }}</dd>
+                            </div>
+                        @endif
+                        @if (!empty($companyAccount['swift_code']))
+                            <div class="flex items-center justify-between rounded-lg bg-white px-3 py-2.5 dark:bg-slate-900">
+                                <dt class="text-slate-500 dark:text-slate-400">SWIFT code</dt>
+                                <dd class="font-mono font-medium text-slate-800 dark:text-slate-200">{{ $companyAccount['swift_code'] }}</dd>
+                            </div>
+                        @endif
+                    @endif
+                </dl>
+
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Upload your payment screenshot</label>
+                    <div class="mt-2"><x-file-drop name="screenshot" /></div>
+                    <x-field-error name="screenshot" />
+                    <p class="mt-1.5 text-xs text-slate-400">We'll confirm your transfer against our account and notify you once it's verified.</p>
+                </div>
             </div>
         </div>
 

@@ -4,21 +4,31 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
+use App\Models\User;
 use App\Services\InvoiceService;
 use App\Services\Notifier;
+use App\Services\PaymentFinalizer;
 use App\Services\WalletService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
- * Bank-transfer-to-Sahoulat payments (submitted after a booking completes)
- * waiting on a human to cross-check the screenshot against the real account
- * statement before the amount is released to the provider's wallet.
+ * Bank-transfer-to-Sahoulat payments waiting on a human to cross-check the
+ * screenshot against the real account statement before being confirmed.
+ * Covers two sources: a booking's completion payment (work is already done —
+ * verifying immediately releases the provider's wallet), and a contract
+ * milestone payment (may be paid before any provider is even assigned to the
+ * contract — verifying just moves it to escrow, same as a real gateway
+ * success; the wallet only gets touched later, when a provider is assigned).
  */
 class PaymentVerificationController extends Controller
 {
-    public function __construct(private WalletService $wallets, private InvoiceService $invoices) {}
+    public function __construct(
+        private WalletService $wallets,
+        private InvoiceService $invoices,
+        private PaymentFinalizer $finalizer,
+    ) {}
 
     public function index(Request $request): View
     {
@@ -30,7 +40,7 @@ class PaymentVerificationController extends Controller
         }
 
         $query = Payment::where('gateway', Payment::GATEWAY_BANK_TRANSFER)
-            ->with(['booking.service', 'consumer'])
+            ->with(['booking.service', 'contractMilestone.contract', 'consumer'])
             ->latest();
 
         match ($status) {
@@ -53,7 +63,7 @@ class PaymentVerificationController extends Controller
     {
         abort_unless($payment->isBankTransfer(), 404);
 
-        $payment->load(['booking.service', 'booking.providerProfile.user', 'consumer', 'verifier']);
+        $payment->load(['booking.service', 'booking.providerProfile.user', 'contractMilestone.contract.consumer', 'consumer', 'verifier']);
 
         return view('admin.payments.show', compact('payment'));
     }
@@ -64,6 +74,10 @@ class PaymentVerificationController extends Controller
 
         if (! $payment->isPending()) {
             return back()->with('error', 'This payment has already been processed.');
+        }
+
+        if ($payment->contract_milestone_id) {
+            return $this->verifyMilestonePayment($payment, $request->user());
         }
 
         $payment->load('booking.providerProfile.user');
@@ -90,6 +104,26 @@ class PaymentVerificationController extends Controller
         return back()->with('success', 'Payment verified and released to the provider.');
     }
 
+    private function verifyMilestonePayment(Payment $payment, User $admin): RedirectResponse
+    {
+        $payment->load('contractMilestone.contract.consumer');
+        $milestone = $payment->contractMilestone;
+        $contract = $milestone->contract;
+
+        $payment->update(['verified_at' => now(), 'verified_by' => $admin->id]);
+        $this->finalizer->finalizeMilestonePayment($payment, 'BANKTRANSFER-' . $payment->reference);
+
+        app(Notifier::class)->notify(
+            $contract->consumer,
+            'payment',
+            'Payment confirmed',
+            'Your bank transfer for ' . $milestone->title . ' (' . $contract->reference . ') has been confirmed. Thank you!',
+            route('consumer.contracts.show', $contract)
+        );
+
+        return back()->with('success', 'Payment verified and held in escrow for this contract.');
+    }
+
     public function reject(Request $request, Payment $payment): RedirectResponse
     {
         abort_unless($payment->isBankTransfer(), 404);
@@ -102,8 +136,24 @@ class PaymentVerificationController extends Controller
             'notes' => ['required', 'string', 'max:500'],
         ]);
 
-        $payment->load('booking.consumer');
         $payment->update(['status' => Payment::STATUS_FAILED, 'notes' => $data['notes']]);
+
+        if ($payment->contract_milestone_id) {
+            $payment->load('contractMilestone.contract.consumer');
+            $contract = $payment->contractMilestone->contract;
+
+            app(Notifier::class)->notify(
+                $contract->consumer,
+                'payment',
+                'Payment could not be verified',
+                $data['notes'] . ' Please submit a new payment for ' . $payment->contractMilestone->title . '.',
+                route('consumer.contracts.milestones.pay', [$contract, $payment->contractMilestone])
+            );
+
+            return back()->with('success', 'Payment rejected. The customer has been notified to resubmit.');
+        }
+
+        $payment->load('booking.consumer');
 
         app(Notifier::class)->notify(
             $payment->booking->consumer,

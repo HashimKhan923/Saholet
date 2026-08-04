@@ -9,6 +9,7 @@ use App\Models\ContractMilestone;
 use App\Models\Payment;
 use App\Models\Service;
 use App\Models\ServiceArea;
+use App\Models\User;
 use App\Payments\PaymentManager;
 use App\Services\GeofenceService;
 use App\Services\Notifier;
@@ -202,12 +203,13 @@ class ContractController extends Controller
         abort_unless($milestone->isPayable(), 404);
 
         $gateways = collect($this->payments->all())
-            ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false) || $g->key() === 'mock')
+            ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false))
             ->values();
 
         $maxCreditApplicable = min((float) $request->user()->credit_balance, (float) $milestone->amount);
+        $companyAccount = config('payments.company_account');
 
-        return view('consumer.contracts.pay-milestone', compact('contract', 'milestone', 'gateways', 'maxCreditApplicable'));
+        return view('consumer.contracts.pay-milestone', compact('contract', 'milestone', 'gateways', 'maxCreditApplicable', 'companyAccount'));
     }
 
     public function storeMilestonePayment(Request $request, Contract $contract, ContractMilestone $milestone): RedirectResponse|View
@@ -228,13 +230,23 @@ class ContractController extends Controller
         $fullyCoveredByCredit = $creditApplied >= (float) $milestone->amount;
 
         $available = collect($this->payments->all())
-            ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false) || $g->key() === 'mock')
+            ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false))
             ->map->key()
+            ->push(Payment::GATEWAY_CASH)
+            ->push(Payment::GATEWAY_BANK_TRANSFER)
             ->all();
 
         $data = $request->validate([
             'gateway' => [$fullyCoveredByCredit ? 'nullable' : 'required', Rule::in($available)],
+            'screenshot' => [
+                Rule::requiredIf(! $fullyCoveredByCredit && $request->input('gateway') === Payment::GATEWAY_BANK_TRANSFER),
+                'nullable', 'image', 'mimes:jpg,jpeg,png,webp,heic,heif', 'max:8192',
+            ],
         ]);
+
+        if (! $fullyCoveredByCredit && in_array($data['gateway'], [Payment::GATEWAY_CASH, Payment::GATEWAY_BANK_TRANSFER], true)) {
+            return $this->storeMilestoneCashOrBankTransfer($request, $contract, $milestone, $consumer, $data, $creditApplied);
+        }
 
         if ($fullyCoveredByCredit) {
             $payment = Payment::create([
@@ -304,6 +316,61 @@ class ContractController extends Controller
         return redirect()
             ->route('consumer.contracts.show', $contract)
             ->with('success', 'Milestone paid and held safely in escrow.');
+    }
+
+    /**
+     * Cash or bank-transfer-with-screenshot, offered whenever no online gateway
+     * is configured. Cash is trusted immediately (no provider is assigned to a
+     * milestone yet, so there's no wallet to hold against — same as a real
+     * gateway success, {@see PaymentFinalizer::finalizeMilestonePayment()}).
+     * Bank transfer stays pending until an admin verifies the screenshot.
+     */
+    private function storeMilestoneCashOrBankTransfer(
+        Request $request,
+        Contract $contract,
+        ContractMilestone $milestone,
+        User $consumer,
+        array $data,
+        float $creditApplied
+    ): RedirectResponse {
+        $payment = Payment::create([
+            'reference' => $this->generatePaymentReference(),
+            'contract_milestone_id' => $milestone->id,
+            'consumer_id' => $consumer->id,
+            'gateway' => $data['gateway'],
+            'amount' => $milestone->amount,
+            'credit_applied' => $creditApplied,
+            'status' => Payment::STATUS_PENDING,
+        ]);
+
+        if ($data['gateway'] === Payment::GATEWAY_CASH) {
+            $this->finalizer->finalizeMilestonePayment($payment, 'CASH-' . $payment->reference);
+
+            app(Notifier::class)->notifyAdmins(
+                'contract',
+                'Milestone paid in cash',
+                $milestone->title . ' for ' . $contract->reference . ' was recorded as paid in cash.',
+                route('admin.contracts.show', $contract)
+            );
+
+            return redirect()
+                ->route('consumer.contracts.show', $contract)
+                ->with('success', 'Cash payment recorded. Held pending until work progresses.');
+        }
+
+        $path = $request->file('screenshot')->store('payment-screenshots', 'public');
+        $payment->update(['screenshot_path' => $path]);
+
+        app(Notifier::class)->notifyAdmins(
+            'contract',
+            'Payment awaiting verification',
+            'Bank transfer for ' . $milestone->title . ' (' . $contract->reference . ') needs verification (Rs. ' . number_format((float) $milestone->amount, 0) . ').',
+            route('admin.payments.show', $payment)
+        );
+
+        return redirect()
+            ->route('consumer.contracts.show', $contract)
+            ->with('success', "Thanks — we'll confirm your transfer shortly.");
     }
 
     private function generatePaymentReference(): string
