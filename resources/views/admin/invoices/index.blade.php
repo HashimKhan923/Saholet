@@ -39,7 +39,8 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                     @forelse ($invoices as $invoice)
-                        <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/60">
+                        @php($pendingRequest = $invoice->latestEditRequest?->isPending() ? $invoice->latestEditRequest : null)
+                        <tr x-data="{ open: false }" class="hover:bg-slate-50/60 dark:hover:bg-slate-800/60">
                             <td class="px-5 py-3">
                                 <p class="font-medium text-slate-900 dark:text-white">{{ $invoice->title ?: $invoice->reference }}</p>
                                 <p class="text-xs text-slate-400 dark:text-slate-500">{{ $invoice->reference }}</p>
@@ -57,10 +58,44 @@
                             <td class="px-5 py-3">
                                 <div class="flex items-center justify-end gap-2">
                                     <a href="{{ route('admin.invoices.show', $invoice) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">View</a>
-                                    <a href="{{ route('admin.invoices.edit', $invoice) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Edit</a>
-                                    <x-confirm-form :action="route('admin.invoices.destroy', $invoice)" method="DELETE"
-                                        button-label="Delete" button-class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/40"
-                                        title="Delete this document?" message="This permanently removes the document and its line items." confirm-label="Delete" />
+
+                                    @if (auth()->user()->isAdmin())
+                                        <a href="{{ route('admin.invoices.edit', $invoice) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Edit</a>
+                                    @endif
+
+                                    @if (auth()->user()->isAdmin() && $pendingRequest)
+                                        <button type="button" @click="open = true" class="relative cursor-pointer whitespace-nowrap rounded-lg border border-amber-300 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 transition hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-400">
+                                            Request
+                                        </button>
+
+                                        <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
+                                            <div class="fixed inset-0 bg-slate-900/50" x-transition.opacity @click="open = false"></div>
+                                            <div x-show="open" x-transition class="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl dark:bg-slate-800">
+                                                <button type="button" @click="open = false" class="absolute right-4 top-4 cursor-pointer rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-200" aria-label="Close">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                                                </button>
+                                                <h3 class="pr-6 font-display text-base font-bold text-slate-900 dark:text-white">{{ $invoice->title ?: $invoice->reference }}</h3>
+                                                <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">Requested by {{ $pendingRequest->requestedBy?->name }} on {{ $pendingRequest->created_at->format('d M Y, h:i A') }}</p>
+                                                <p class="mt-4 whitespace-pre-line rounded-lg bg-slate-50 p-3 text-sm text-slate-700 dark:bg-slate-900 dark:text-slate-300">{{ $pendingRequest->reason }}</p>
+                                                <div class="mt-6 flex justify-end gap-2">
+                                                    <form method="POST" action="{{ route('admin.invoice-edit-requests.decline', $pendingRequest) }}">
+                                                        @csrf
+                                                        <button type="submit" class="rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/40">Decline</button>
+                                                    </form>
+                                                    <form method="POST" action="{{ route('admin.invoice-edit-requests.approve', $pendingRequest) }}">
+                                                        @csrf
+                                                        <button type="submit" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Approve</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    @if (auth()->user()->isAdmin())
+                                        <x-confirm-form :action="route('admin.invoices.destroy', $invoice)" method="DELETE"
+                                            button-label="Delete" button-class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/40"
+                                            title="Delete this document?" message="This permanently removes the document and its line items." confirm-label="Delete" />
+                                    @endif
                                 </div>
                             </td>
                         </tr>

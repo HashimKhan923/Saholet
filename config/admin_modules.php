@@ -12,7 +12,9 @@ return [
     'faqs' => ['label' => 'FAQs', 'actions' => ['view', 'create', 'edit', 'delete']],
     'bookings' => ['label' => 'Bookings', 'actions' => ['view', 'create']],
     'emergencies' => ['label' => 'Emergencies', 'actions' => ['view', 'edit']],
-    'invoices' => ['label' => 'Invoices', 'actions' => ['view', 'create', 'edit', 'delete']],
+    // Delete is deliberately absent — staff can never be granted delete access to
+    // invoices/quotations, only admins can remove a document (from its own page).
+    'invoices' => ['label' => 'Invoices', 'actions' => ['view', 'create', 'edit']],
     'contracts' => ['label' => 'Contracts', 'actions' => ['view', 'edit']],
     'subscriptions' => ['label' => 'Subscriptions & plans', 'actions' => ['view', 'create', 'edit', 'delete']],
     'corporate-accounts' => ['label' => 'Corporate accounts', 'actions' => ['view']],

@@ -135,6 +135,23 @@ class WalletService
         $this->release($payment, $providerUser);
     }
 
+    /**
+     * A bank transfer paid *before* the job is done (e.g. a booking prepayment) —
+     * unlike the completion-time transfer above, the work isn't finished yet, so
+     * verifying it only moves it into escrow. It sits there like any other
+     * prepaid gateway charge until the consumer confirms release post-completion.
+     */
+    public function verifyBankTransferToEscrow(Payment $payment, User $providerUser, User $admin): void
+    {
+        $payment->update([
+            'status' => Payment::STATUS_ESCROW,
+            'verified_at' => now(),
+            'verified_by' => $admin->id,
+        ]);
+
+        $this->holdInEscrow($payment, $providerUser);
+    }
+
     /** Booking cancelled/refunded after payment → remove escrow hold (full refund). */
     public function refund(Payment $payment, User $providerUser): void
     {

@@ -81,15 +81,40 @@ class PaymentVerificationController extends Controller
         }
 
         $payment->load('booking.providerProfile.user');
+        $booking = $payment->booking;
 
-        $this->wallets->verifyAndReleaseBankTransfer($payment, $payment->booking->providerProfile->user, $request->user());
-        $this->invoices->emailPaymentConfirmation($payment->booking, $payment);
+        if (! $booking->isCompleted()) {
+            // Prepaid before the job was done — hold it in escrow like any other
+            // gateway charge instead of releasing to a job that isn't finished.
+            $this->wallets->verifyBankTransferToEscrow($payment, $booking->providerProfile->user, $request->user());
+
+            app(Notifier::class)->notify(
+                $booking->providerProfile->user,
+                'payment',
+                'Payment verified',
+                'The bank transfer for booking ' . $booking->reference . ' has been verified and is held pending until the job is complete.',
+                route('provider.wallet.index')
+            );
+
+            app(Notifier::class)->notify(
+                $payment->consumer,
+                'payment',
+                'Payment confirmed',
+                'Your bank transfer for booking ' . $booking->reference . ' has been confirmed and is held safely until the job is complete.',
+                route('consumer.bookings.show', $booking)
+            );
+
+            return back()->with('success', 'Payment verified and held in escrow until the job is complete.');
+        }
+
+        $this->wallets->verifyAndReleaseBankTransfer($payment, $booking->providerProfile->user, $request->user());
+        $this->invoices->emailPaymentConfirmation($booking, $payment);
 
         app(Notifier::class)->notify(
-            $payment->booking->providerProfile->user,
+            $booking->providerProfile->user,
             'payment',
             'Payment verified',
-            'The bank transfer for booking ' . $payment->booking->reference . ' has been verified and released to your wallet.',
+            'The bank transfer for booking ' . $booking->reference . ' has been verified and released to your wallet.',
             route('provider.wallet.index')
         );
 
@@ -97,8 +122,8 @@ class PaymentVerificationController extends Controller
             $payment->consumer,
             'payment',
             'Payment confirmed',
-            'Your bank transfer for booking ' . $payment->booking->reference . ' has been confirmed. Thank you!',
-            route('consumer.bookings.show', $payment->booking)
+            'Your bank transfer for booking ' . $booking->reference . ' has been confirmed. Thank you!',
+            route('consumer.bookings.show', $booking)
         );
 
         return back()->with('success', 'Payment verified and released to the provider.');

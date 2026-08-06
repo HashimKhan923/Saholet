@@ -57,6 +57,11 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
+            // Fixed offset (Pakistan has no DST) so MySQL's own TIMESTAMP column
+            // conversion always agrees with the app's `Asia/Karachi` timezone
+            // above — without this it silently falls back to the server's
+            // SYSTEM zone, which may not match and can skew stored/read times.
+            'timezone' => env('DB_TIMEZONE', '+05:00'),
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 (defined('Pdo\\Mysql::ATTR_SSL_CA') ? \Pdo\Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],

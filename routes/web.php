@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\TalentSearchController as AdminTalentSearchContro
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\EmergencyController as AdminEmergencyController;
 use App\Http\Controllers\Admin\InvoiceController as AdminInvoiceController;
+use App\Http\Controllers\Admin\InvoiceEditRequestController as AdminInvoiceEditRequestController;
 use App\Http\Controllers\Admin\ContractController as AdminContractController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\DisputeController as AdminDisputeController;
@@ -388,6 +389,10 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
             Route::put('invoices/{invoice}', [AdminInvoiceController::class, 'update'])->name('invoices.update');
             Route::delete('invoices/{invoice}', [AdminInvoiceController::class, 'destroy'])->name('invoices.destroy');
             Route::get('invoices/{invoice}/download', [AdminInvoiceController::class, 'download'])->name('invoices.download');
+            Route::get('invoices/{invoice}/download-internal', [AdminInvoiceController::class, 'downloadInternal'])->name('invoices.download-internal');
+            Route::post('invoices/{invoice}/edit-requests', [AdminInvoiceEditRequestController::class, 'store'])->name('invoice-edit-requests.store');
+            Route::post('invoice-edit-requests/{editRequest}/approve', [AdminInvoiceEditRequestController::class, 'approve'])->name('invoice-edit-requests.approve');
+            Route::post('invoice-edit-requests/{editRequest}/decline', [AdminInvoiceEditRequestController::class, 'decline'])->name('invoice-edit-requests.decline');
         });
 
         Route::middleware('permission:contracts')->group(function () {
