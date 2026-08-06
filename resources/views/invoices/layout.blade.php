@@ -14,9 +14,11 @@
         @page { margin: 230px 0 240px 0; size: A4; }
         body { font-family: 'Helvetica', 'Arial', sans-serif; font-size: 12px; color: #1e293b; margin: 0; padding: 0; }
 
-        .toolbar { max-width: 794px; margin: 0 auto 16px auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-family: 'Helvetica', 'Arial', sans-serif; }
-        .toolbar a { display: inline-flex; align-items: center; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; }
+        .toolbar { max-width: 794px; margin: 0 auto 16px auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-family: 'Helvetica', 'Arial', sans-serif; flex-wrap: wrap; }
+        .toolbar a, .toolbar button { display: inline-flex; align-items: center; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; cursor: pointer; font-family: inherit; }
         .toolbar .primary { background: #1a7a35; color: #ffffff; border-color: #1a7a35; }
+        .toolbar-badge { display: inline-flex; align-items: center; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; }
+        .toolbar-badge.pending { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
 
         @if ($__env->hasSection('toolbar'))
             /* Browser preview: real browsers have no concept of "PDF pages", so a single
@@ -75,6 +77,8 @@
         table.totals .value { text-align: right; width: 130px; font-weight: bold; }
         table.totals .grand td { border-top: 2px solid #1a7a35; font-size: 15px; font-weight: bold; color: #1a7a35; padding-top: 8px; }
         table.totals .discount-row td { color: #c4341f; font-weight: bold; }
+        table.totals .profit-row td { color: #1a7a35; font-weight: bold; }
+        table.totals .divider td { border-top: 1px solid #cbd5e1; padding-top: 8px; }
 
         .status-box { margin-top: 20px; padding: 10px 16px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 4px; font-size: 11px; color: #166534; }
         .notes-box { margin-top: 16px; font-size: 11px; color: #64748b; white-space: pre-line; }

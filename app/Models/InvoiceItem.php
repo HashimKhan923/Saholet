@@ -12,6 +12,7 @@ class InvoiceItem extends Model
         'description',
         'quantity',
         'unit_price',
+        'actual_price',
         'total',
         'sort_order',
     ];
@@ -21,6 +22,7 @@ class InvoiceItem extends Model
         return [
             'quantity' => 'decimal:2',
             'unit_price' => 'decimal:2',
+            'actual_price' => 'decimal:2',
             'total' => 'decimal:2',
         ];
     }

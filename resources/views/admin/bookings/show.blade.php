@@ -151,6 +151,23 @@
                 </div>
             </div>
 
+            {{-- Invoice (auto-generated on completion payment — view/download only, never editable) --}}
+            @if ($invoice && auth()->user()->isAdmin())
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">Invoice</p>
+                    <div class="mt-3 flex items-center justify-between gap-2 text-sm">
+                        <div>
+                            <p class="font-medium text-slate-900 dark:text-white">{{ $invoice->reference }}</p>
+                            <p class="text-xs text-slate-400 dark:text-slate-500">Rs. {{ number_format((float) $invoice->total, 0) }} · auto-generated</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <a href="{{ route('admin.invoices.show', $invoice) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">View</a>
+                            <a href="{{ route('admin.invoices.download', $invoice) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Download PDF</a>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             {{-- Dispute --}}
             @if ($booking->dispute)
                 <div class="rounded-2xl border border-red-200 bg-red-50/40 p-5 dark:border-red-900/40 dark:bg-red-950/20">

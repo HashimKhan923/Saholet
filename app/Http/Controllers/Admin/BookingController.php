@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\ProviderProfile;
 use App\Models\User;
+use App\Services\InvoiceService;
 use App\Services\Notifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -65,8 +66,9 @@ class BookingController extends Controller
     public function show(Booking $booking): View
     {
         $booking->load(['service.category', 'consumer', 'providerProfile.user', 'payments', 'review', 'dispute', 'completionPhotos']);
+        $invoice = app(InvoiceService::class)->findForBooking($booking);
 
-        return view('admin.bookings.show', compact('booking'));
+        return view('admin.bookings.show', compact('booking', 'invoice'));
     }
 
     public function create(): View

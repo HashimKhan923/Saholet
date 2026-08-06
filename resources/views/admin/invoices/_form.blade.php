@@ -1,8 +1,8 @@
 @php
     $isEdit = isset($invoice);
     $existingItems = $isEdit
-        ? $invoice->items->map(fn ($item) => ['description' => $item->description, 'quantity' => (float) $item->quantity, 'unit_price' => (float) $item->unit_price])->all()
-        : [['description' => '', 'quantity' => 1, 'unit_price' => 0]];
+        ? $invoice->items->map(fn ($item) => ['description' => $item->description, 'quantity' => (float) $item->quantity, 'unit_price' => (float) $item->unit_price, 'actual_price' => $item->actual_price !== null ? (float) $item->actual_price : null])->all()
+        : [['description' => '', 'quantity' => 1, 'unit_price' => 0, 'actual_price' => null]];
 @endphp
 
 <form method="POST" action="{{ $isEdit ? route('admin.invoices.update', $invoice) : route('admin.invoices.store') }}" class="mt-6 space-y-6"
@@ -10,12 +10,15 @@
           submitting: false,
           items: @js(old('items', $existingItems)),
           discount: @js((float) old('discount', $isEdit ? $invoice->discount : 0)),
-          addItem() { this.items.push({ description: '', quantity: 1, unit_price: 0 }) },
+          addItem() { this.items.push({ description: '', quantity: 1, unit_price: 0, actual_price: null }) },
           removeItem(i) { if (this.items.length > 1) this.items.splice(i, 1) },
           lineTotal(item) { return (parseFloat(item.quantity) || 0) * (parseFloat(item.unit_price) || 0) },
+          lineProfit(item) { return item.actual_price === null || item.actual_price === '' ? null : (parseFloat(item.quantity) || 0) * ((parseFloat(item.unit_price) || 0) - (parseFloat(item.actual_price) || 0)) },
           get subtotal() { return this.items.reduce((sum, item) => sum + this.lineTotal(item), 0) },
           get discountAmount() { return Math.min(parseFloat(this.discount) || 0, this.subtotal) },
           get total() { return this.subtotal - this.discountAmount },
+          get totalProfit() { return this.items.reduce((sum, item) => { const p = this.lineProfit(item); return p === null ? sum : sum + p; }, 0) },
+          get hasAnyActualPrice() { return this.items.some(item => item.actual_price !== null && item.actual_price !== ''); },
       }"
       @submit="submitting = true">
     @csrf
@@ -89,24 +92,34 @@
                         <button type="button" x-show="items.length > 1" @click="removeItem(index)" class="text-xs font-semibold text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">Remove</button>
                     </div>
 
-                    <div class="mt-3 grid gap-4 sm:grid-cols-6">
-                        <div class="sm:col-span-3">
+                    <div class="mt-3 grid grid-cols-12 gap-2">
+                        <div class="col-span-4">
                             <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Description</label>
                             <input type="text" :name="'items[' + index + '][description]'" x-model="item.description" required
                                 class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
                         </div>
-                        <div>
+                        <div class="col-span-2">
                             <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Qty</label>
                             <input type="number" min="0.01" step="0.01" :name="'items[' + index + '][quantity]'" x-model="item.quantity" required
-                                class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                                class="mt-1 block w-full rounded-lg border border-slate-300 px-2 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
                         </div>
-                        <div class="sm:col-span-2">
+                        <div class="col-span-3">
                             <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Unit price (Rs.)</label>
                             <input type="number" min="0" step="0.01" :name="'items[' + index + '][unit_price]'" x-model="item.unit_price" required
                                 class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
                         </div>
+                        <div class="col-span-3">
+                            <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Actual price (Rs.)</label>
+                            <input type="number" min="0" step="0.01" :name="'items[' + index + '][actual_price]'" x-model="item.actual_price"
+                                class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                        </div>
                     </div>
-                    <p class="mt-2 text-right text-xs font-semibold text-slate-500 dark:text-slate-400">Line total: Rs. <span x-text="lineTotal(item).toLocaleString()"></span></p>
+                    <p class="mt-2 text-right text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        Line total: Rs. <span x-text="lineTotal(item).toLocaleString()"></span>
+                        <template x-if="lineProfit(item) !== null">
+                            <span class="text-brand-600 dark:text-brand-400"> &middot; Profit: Rs. <span x-text="lineProfit(item).toLocaleString()"></span></span>
+                        </template>
+                    </p>
                 </div>
             </template>
         </div>
@@ -140,6 +153,13 @@
                 <span class="text-sm text-slate-500 dark:text-slate-400">Total</span>
                 <span class="font-display text-xl font-extrabold text-slate-900 dark:text-white">Rs. <span x-text="total.toLocaleString()"></span></span>
             </div>
+
+            <template x-if="hasAnyActualPrice">
+                <div class="flex items-center justify-end gap-3 border-t border-dashed border-slate-200 pt-3 text-sm dark:border-slate-700">
+                    <span class="font-medium text-brand-700 dark:text-brand-400">Profit (admin copy only)</span>
+                    <span class="w-28 text-right font-bold text-brand-700 dark:text-brand-400">Rs. <span x-text="totalProfit.toLocaleString()"></span></span>
+                </div>
+            </template>
         </div>
     </div>
 
