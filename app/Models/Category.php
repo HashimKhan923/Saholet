@@ -16,7 +16,6 @@ class Category extends Model
         'description',
         'icon',
         'image',
-        'commission_rate',
         'is_active',
         'sort_order',
     ];
@@ -30,7 +29,6 @@ class Category extends Model
     {
         return [
             'is_active' => 'boolean',
-            'commission_rate' => 'decimal:2',
         ];
     }
 

@@ -54,7 +54,7 @@ class JobController extends Controller
             'photos.*' => ['image', 'mimes:jpg,jpeg,png', 'max:5120'],
         ]);
 
-        if (! $this->geofence->isAllowed($data['city'])) {
+        if (! $this->geofence->isAllowed($data['latitude'] ?? null, $data['longitude'] ?? null)) {
             return response()->json(['message' => 'Sorry, we\'re not serving that city yet.'], 422);
         }
 

@@ -3,6 +3,7 @@ import './echo';
 import './charts';
 import './geolocation';
 import './address-map';
+import './service-area-polygon';
 import './pk-format';
 import './file-drop';
 import './ui';

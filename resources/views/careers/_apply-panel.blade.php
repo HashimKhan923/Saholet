@@ -31,19 +31,37 @@
             @php $profile = auth()->user()->jobSeekerProfile; @endphp
             <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('messages.careers.apply_title') }}</h2>
 
-            @if ($profile && $profile->hasResume())
-                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{{ __('messages.careers.resume_saved_prefix') }} <span class="font-medium text-slate-800 dark:text-slate-200">{{ $profile->resume_original_name }}</span>{{ __('messages.careers.resume_saved_suffix') }}</p>
-            @else
+            @if (! $profile || ! $profile->hasResume())
                 <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{{ __('messages.careers.resume_upload_prompt') }}</p>
             @endif
 
-            <form method="POST" action="{{ route('job-seeker.careers.apply', $listing) }}" enctype="multipart/form-data" class="mt-4 space-y-4">
+            <form method="POST" action="{{ route('job-seeker.careers.apply', $listing) }}" enctype="multipart/form-data" class="mt-4 space-y-4"
+                @if ($profile && $profile->hasResume()) x-data="{ resumeChoice: 'saved' }" @endif>
                 @csrf
                 <input type="hidden" name="_listing_id" value="{{ $listing->id }}">
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">{{ __('messages.careers.resume_label') }} {{ $profile && $profile->hasResume() ? __('messages.careers.resume_replace_hint') : '' }}</label>
-                    <input type="file" name="resume" accept=".pdf,.doc,.docx" {{ $profile && $profile->hasResume() ? '' : 'required' }}
-                        class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">{{ __('messages.careers.resume_label') }}</label>
+
+                    @if ($profile && $profile->hasResume())
+                        <input type="hidden" name="resume_choice" :value="resumeChoice">
+                        <div class="mt-1.5 space-y-2">
+                            <label class="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
+                                <input type="radio" x-model="resumeChoice" value="saved" class="text-brand-600 focus:ring-brand-200">
+                                {{ __('messages.careers.resume_saved_prefix') }} <span class="font-medium text-slate-800 dark:text-slate-200">{{ $profile->resume_original_name }}</span>
+                            </label>
+                            <label class="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
+                                <input type="radio" x-model="resumeChoice" value="upload" class="text-brand-600 focus:ring-brand-200">
+                                {{ __('messages.careers.resume_upload_different') }}
+                            </label>
+                        </div>
+                        <div class="mt-2" x-show="resumeChoice === 'upload'" x-cloak>
+                            <input type="file" name="resume" accept=".pdf,.doc,.docx" :required="resumeChoice === 'upload'"
+                                class="block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                        </div>
+                    @else
+                        <input type="file" name="resume" accept=".pdf,.doc,.docx" required
+                            class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                    @endif
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">{{ __('messages.careers.cover_letter_label') }} <span class="text-slate-400 dark:text-slate-500">{{ __('messages.careers.optional') }}</span></label>

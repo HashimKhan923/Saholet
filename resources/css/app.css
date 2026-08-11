@@ -253,6 +253,23 @@
 }
 
 /* ---------------------------------------------------------------------------
+ * google.maps.places.PlaceAutocompleteElement — the shadow-DOM widget that
+ * replaced the deprecated Autocomplete class. It renders its own internal
+ * input, so we can't reach it with normal Tailwind classes; these CSS custom
+ * properties are the widget's own supported styling hooks, used to blend it
+ * into the wrapping bordered/rounded container in address-map-picker.blade.php
+ * and service-area-polygon-picker.blade.php instead of looking like a
+ * completely foreign element.
+ * ------------------------------------------------------------------------ */
+.address-autocomplete gmp-place-autocomplete {
+    --gmpx-color-surface: transparent;
+    --gmpx-font-family-base: inherit;
+    --gmpx-font-size-base: 0.875rem;
+    width: 100%;
+    display: block;
+}
+
+/* ---------------------------------------------------------------------------
  * Accessibility: honor reduced-motion everywhere
  * ------------------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {

@@ -253,8 +253,16 @@
                 <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Decision</h2>
 
                 @if ($provider->isPending())
-                    <form method="POST" action="{{ route('admin.providers.approve', $provider) }}" class="mt-4">
+                    <form method="POST" action="{{ route('admin.providers.approve', $provider) }}" class="mt-4 space-y-3">
                         @csrf
+                        <div>
+                            <label for="commission_rate" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Commission (%)</label>
+                            <p class="mt-0.5 text-xs text-slate-400 dark:text-slate-500">The platform's cut on this provider's bookings — set once here, adjustable later.</p>
+                            <input id="commission_rate" name="commission_rate" type="number" step="0.5" min="0" max="50" required
+                                value="{{ old('commission_rate') }}" placeholder="e.g. 10"
+                                class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                            <x-field-error name="commission_rate" />
+                        </div>
                         <button type="submit" class="w-full rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Approve</button>
                     </form>
 
@@ -277,6 +285,24 @@
                     </p>
                 @endif
             </div>
+
+            {{-- Commission --}}
+            @if ($provider->isApproved())
+                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Commission</h2>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">The platform's cut, taken from this provider's balance when a payment is released.</p>
+                    <form method="POST" action="{{ route('admin.providers.commission', $provider) }}" class="mt-4 flex items-end gap-2">
+                        @csrf
+                        <div class="flex-1">
+                            <label for="commission_rate_update" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Commission (%)</label>
+                            <input id="commission_rate_update" name="commission_rate" type="number" step="0.5" min="0" max="50" required
+                                value="{{ old('commission_rate', (float) $provider->commission_rate) }}"
+                                class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                        </div>
+                        <button type="submit" class="rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Save</button>
+                    </form>
+                </div>
+            @endif
 
             {{-- Account status (suspend / reactivate) --}}
             @if ($provider->isApproved())

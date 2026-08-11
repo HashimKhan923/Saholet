@@ -231,7 +231,7 @@ Bookable dates + time slots for a specific provider/service pairing — call thi
 Active maintenance/AMC plans. Response: `{ "plans": [ { "id":1, "name":"...", "slug":"...", "service": {...}, "frequency_months":1, "frequency_label":"Monthly", "total_visits":12, "price_per_visit":2000, "is_active":true } ] }`
 
 ### `GET /api/cities`
-Cities currently served (for city pickers / client-side coverage checks). Response: `{ "cities": ["Islamabad", "Karachi", "Lahore"] }`
+Cities with at least one approved provider — for populating city pickers, purely informational (this list has no bearing on geo-fencing, which is boundary-only now, not city-based). Response: `{ "cities": ["Islamabad", "Karachi", "Lahore"] }`
 
 ---
 
@@ -298,6 +298,8 @@ Home-screen summary. Response: `{ "recent_bookings": [ {...BookingResource, up t
 
 Address shape: `{ "id","label","address","city","latitude","longitude","is_default" }`
 
+**Geo-fencing on POST/PUT**: same boundary check as bookings/emergencies/etc. (see `POST /bookings` above) — when geo-fencing is on, `latitude`/`longitude` are checked against active `ServiceArea` boundaries before the address is saved. Outside every drawn boundary → `422` with `{ "message": "Sorry, we don't operate in the \"{address}\" area yet." }`.
+
 ### Bookings (direct booking flow)
 
 **`GET /bookings`** — paginated, newest first. `{ "bookings": [...], "pagination": {...} }`
@@ -313,7 +315,9 @@ Address shape: `{ "id","label","address","city","latitude","longitude","is_defau
 | `latitude`, `longitude` | no | |
 | `notes` | no | max 1000 |
 
-Response `201`: `{ "booking": {...BookingResource...} }`. `422` if the provider is outside served cities or the slot just got taken.
+Response `201`: `{ "booking": {...BookingResource...} }`. `422` if the *customer's own address* (not the provider's city, as it used to be — see below) is outside our served areas while geo-fencing is on, or if the slot just got taken.
+
+**Geo-fencing** (applies here and to `POST /emergencies`, `POST /job-posts`, `POST /contracts`, `POST /subscriptions` — all identical behavior): when the admin-side "Geo-fencing" setting is on, each of these is checked against active `ServiceArea` rows before it's created. This is purely a point-in-polygon check against **real coordinates** — every service area has an admin-drawn boundary (a `city` field/string match is no longer part of this at all), so you must supply real `latitude`/`longitude`, not just an address string, or the request is rejected outright. A location outside every drawn boundary is always treated as outside the service area, with no city-name fallback. If it fails, the response is `422` with a `message` explaining the location isn't served. When geo-fencing is off (default) or no service areas are configured yet, nothing is blocked.
 
 **`GET /bookings/{id}`** — `{ "booking": {...} }` (full detail incl. `payments`, `review`, `dispute`)
 
@@ -678,7 +682,7 @@ Quick field reference for nested objects that recur throughout the API.
 
 **SubscriptionResource** — `{ "id","reference","status","plan","provider","address","city","next_visit_date","visits_used","is_cancellable","bookings","cancelled_at","created_at" }`. `status` ∈ `pending_assignment` \| `active` \| `cancelled` \| `completed`.
 
-**PaymentResource** — `{ "id","reference","gateway","amount","credit_applied","status","screenshot_url","paid_at","released_at","refunded_at" }`. `status` ∈ `pending` \| `escrow` \| `released` \| `refunded` \| `failed`. `screenshot_url` is only non-null for `gateway=bank_transfer` payments — the consumer's own uploaded transfer proof, absolute URL ready to display/download.
+**PaymentResource** — `{ "id","reference","gateway","amount","credit_applied","commission_rate","commission_amount","provider_amount","status","screenshot_url","paid_at","released_at","refunded_at" }`. `status` ∈ `pending` \| `escrow` \| `released` \| `refunded` \| `failed`. `screenshot_url` is only non-null for `gateway=bank_transfer` payments — the consumer's own uploaded transfer proof, absolute URL ready to display/download. `commission_rate`/`commission_amount`/`provider_amount` are only ever non-null once a payment is `released` (they're written by `WalletService::release()`/`chargeCashCommission()`), **and only visible to the requesting user if they're an admin or a provider** — a consumer viewing their own booking's payment always gets `null` for these three, since the commission split is between the platform and the provider, not the consumer's business. Commission is per-provider now (see `ProviderProfile.commission_rate`, set by an admin at approval time), not a single platform-wide rate.
 
 **WithdrawalRequestResource** — `{ "id","reference","amount","status","payout_method","method_label","admin_notes","screenshot_url","processed_at","created_at" }`. `screenshot_url` is the admin's proof-of-transfer for a `bank`-method payout once processed (null until then) — same absolute-URL pattern as `PaymentResource`.
 
@@ -689,7 +693,7 @@ Quick field reference for nested objects that recur throughout the API.
 ## 8. What's intentionally out of scope here
 
 - **Admin panel** — stays web-only; not part of this API.
-- **Job seeker (careers/recruitment) flows** — the mobile app is for customers + professionals, not the internal hiring board.
+- **Job seeker (careers/recruitment) flows** — the mobile app is for customers + professionals, not the internal hiring board. The web-only flow (`app/Http/Controllers/JobSeeker/*`, `app/Http/Controllers/Admin/CareerApplicationController.php`) covers: a profile with `skills` stored as a real JSON array (tag/pill UI, not a comma string), an explicit "use my saved resume vs. upload a different one" choice when applying, and a per-application audit trail (`career_application_events` — one row per submit/status-change/note/withdrawal, so admin review history is never overwritten). None of this has an API surface; add one under `/api/job-seeker/*` the same way the consumer/provider routes were mirrored if the app ever needs it.
 - **Corporate/B2B accounts, referrals dashboard** — not wired into this API pass; can be added the same way (they already have web controllers to mirror) if the app needs them later.
 - **Push notification delivery** — this API stores/reads in-app `Notification` rows (badge counts, notification center), but does not yet register Expo/FCM/APNs device tokens or send pushes. That's a separate small piece of work (a `device_tokens` table + a dispatch step in `Notifier`) worth doing once the app shell exists.
 - **Real payment gateways** — JazzCash/Easypaisa drivers exist server-side but are disabled by default (`config/payments.php`); only the `mock` gateway is enabled out of the box, same as the web app.

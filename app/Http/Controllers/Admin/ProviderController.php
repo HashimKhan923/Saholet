@@ -93,28 +93,49 @@ class ProviderController extends Controller
         return view('admin.providers.show', compact('provider', 'bookings', 'bookingCounts', 'earnings'));
     }
 
-    public function approve(ProviderProfile $provider): RedirectResponse
+    public function approve(Request $request, ProviderProfile $provider): RedirectResponse
     {
         if (! $provider->isPending()) {
             return back()->with('error', 'Only pending applications can be approved.');
         }
 
+        // Documents are verified in this same step, so the commission rate this
+        // provider will run on is set right here too — every provider now runs
+        // on their own negotiated rate rather than one platform-wide default.
+        $data = $request->validate([
+            'commission_rate' => ['required', 'numeric', 'min:0', 'max:50'],
+        ]);
+
         $provider->update([
-                    'status' => ProviderProfile::STATUS_APPROVED,
-                    'reviewed_at' => now(),
-                    'reviewed_by' => auth()->id(),
-                    'rejection_reason' => null,
-                ]);
+            'status' => ProviderProfile::STATUS_APPROVED,
+            'reviewed_at' => now(),
+            'reviewed_by' => auth()->id(),
+            'rejection_reason' => null,
+            'commission_rate' => $data['commission_rate'],
+        ]);
 
-                app(\App\Services\Notifier::class)->notify(
-                    $provider->user,
-                    'provider',
-                    'You’re verified',
-                    'Your provider application has been approved. You can now list services and accept bookings.',
-                    route('provider.dashboard')
-                );
+        app(\App\Services\Notifier::class)->notify(
+            $provider->user,
+            'provider',
+            'You’re verified',
+            'Your provider application has been approved. You can now list services and accept bookings.',
+            route('provider.dashboard')
+        );
 
-                return back()->with('success', 'Provider approved.');
+        return back()->with('success', 'Provider approved.');
+    }
+
+    public function updateCommission(Request $request, ProviderProfile $provider): RedirectResponse
+    {
+        abort_unless($provider->isApproved(), 404);
+
+        $data = $request->validate([
+            'commission_rate' => ['required', 'numeric', 'min:0', 'max:50'],
+        ]);
+
+        $provider->update(['commission_rate' => $data['commission_rate']]);
+
+        return back()->with('success', 'Commission rate updated.');
     }
 
     public function reject(Request $request, ProviderProfile $provider): RedirectResponse

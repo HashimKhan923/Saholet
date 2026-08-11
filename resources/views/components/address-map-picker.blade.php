@@ -1,6 +1,12 @@
 @props(['lat' => null, 'lng' => null])
 
-<div x-data="addressMapPicker({ key: @js(config('services.google_maps.key')), lat: @js($lat), lng: @js($lng) })" x-init="init()" class="mt-3">
+@php
+    $activeGeofenceAreas = app(\App\Services\GeofenceService::class)->isEnabled()
+        ? \App\Models\ServiceArea::active()->get()->filter->hasBoundary()->map(fn ($a) => ['name' => $a->name, 'boundary' => $a->boundary])->values()
+        : collect();
+@endphp
+
+<div x-data="addressMapPicker({ key: @js(config('services.google_maps.key')), lat: @js($lat), lng: @js($lng), areas: @js($activeGeofenceAreas) })" x-init="init()" class="mt-3">
     <div class="flex items-center justify-between gap-3">
         <label class="text-xs font-medium text-slate-700 dark:text-slate-300">Pin location on map</label>
         <button type="button" @click="locate()" :disabled="locating"
@@ -12,11 +18,20 @@
         </button>
     </div>
 
-    <input type="text" x-ref="search" placeholder="Search for a location…" @keydown.enter.prevent
-        class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+    <div x-ref="search" class="address-autocomplete mt-1.5 overflow-hidden rounded-lg border border-slate-300 shadow-sm dark:border-slate-700"></div>
 
     <div x-ref="map" class="mt-2 h-56 w-full rounded-lg border border-slate-300 bg-slate-100 dark:border-slate-700 dark:bg-slate-800"></div>
 
-    <p x-show="!mapError" class="mt-1.5 text-[11px] text-slate-400 dark:text-slate-500">Drag the pin, click the map, or search above to set the exact location.</p>
+    @if ($activeGeofenceAreas->isNotEmpty())
+        <p class="mt-1.5 flex items-center gap-1.5 text-[11px] text-slate-400 dark:text-slate-500">
+            <span class="inline-block h-2.5 w-2.5 rounded-sm border border-brand-600/60 bg-brand-600/10"></span>
+            Shaded area is where we currently operate.
+        </p>
+    @endif
+
+    <p x-show="!mapError && !outsideServiceArea" class="mt-1.5 text-[11px] text-slate-400 dark:text-slate-500">Drag the pin, click the map, or search above to set the exact location.</p>
     <p x-show="mapError" x-cloak x-text="mapError" class="mt-1.5 text-xs text-red-600 dark:text-red-400"></p>
+    <p x-show="outsideServiceArea" x-cloak class="mt-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">
+        We don't operate in your "<span x-text="outsideAreaLabel"></span>" area yet — move the pin inside the shaded zone to save this address.
+    </p>
 </div>

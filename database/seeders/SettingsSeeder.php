@@ -9,7 +9,6 @@ class SettingsSeeder extends Seeder
 {
     public function run(): void
     {
-        Setting::updateOrCreate(['key' => 'commission_rate'], ['value' => '10']);
         Setting::updateOrCreate(['key' => 'geofencing_enabled'], ['value' => '0']);
     }
 }

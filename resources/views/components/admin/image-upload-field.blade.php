@@ -13,7 +13,7 @@
 @endphp
 
 <div x-data="{ preview: null }">
-    <label for="{{ $name }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ $label }} <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
+    <label for="{{ $name }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ $label }} <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
     @if ($help)
         <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ $help }}</p>
     @endif

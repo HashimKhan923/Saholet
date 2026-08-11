@@ -153,7 +153,7 @@
                     <form x-show="declining" x-cloak x-collapse method="POST" action="{{ route('provider.bookings.status', $booking) }}" class="mt-4 space-y-3">
                         @csrf
                         <input type="hidden" name="action" value="decline">
-                        <label for="decline_reason" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Reason <span class="normal-case text-slate-400">(optional)</span></label>
+                        <label for="decline_reason" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Reason <span class="normal-case text-slate-400">(opt)</span></label>
                         <textarea id="decline_reason" name="cancellation_reason" rows="3"
                             class="block w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-red-400 focus:ring-2 focus:ring-red-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white"></textarea>
                         <button type="submit" class="w-full rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700">Submit decline</button>
@@ -176,7 +176,7 @@
                     <form x-show="cancelling" x-cloak x-collapse method="POST" action="{{ route('provider.bookings.status', $booking) }}" class="mt-4 space-y-3">
                         @csrf
                         <input type="hidden" name="action" value="cancel">
-                        <label for="cancel_reason" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Reason <span class="normal-case text-slate-400">(optional)</span></label>
+                        <label for="cancel_reason" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Reason <span class="normal-case text-slate-400">(opt)</span></label>
                         <textarea id="cancel_reason" name="cancellation_reason" rows="3"
                             class="block w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-red-400 focus:ring-2 focus:ring-red-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white"></textarea>
                         <button type="submit" class="w-full rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700">Submit cancellation</button>
@@ -210,7 +210,7 @@
                         </div>
 
                         <div>
-                            <label for="completion_notes" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Completion notes <span class="normal-case text-slate-400">(optional)</span></label>
+                            <label for="completion_notes" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Completion notes <span class="normal-case text-slate-400">(opt)</span></label>
                             <textarea id="completion_notes" name="completion_notes" rows="3"
                                 class="mt-1.5 block w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white"></textarea>
                         </div>
@@ -257,7 +257,7 @@
                                 <x-field-error name="visit_charge_method" />
                             </div>
 
-                            <label for="decline_after_inspection_reason" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Notes <span class="normal-case text-slate-400">(optional)</span></label>
+                            <label for="decline_after_inspection_reason" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Notes <span class="normal-case text-slate-400">(opt)</span></label>
                             <textarea id="decline_after_inspection_reason" name="cancellation_reason" rows="2"
                                 class="block w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-red-400 focus:ring-2 focus:ring-red-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white"></textarea>
 
@@ -304,6 +304,11 @@
                     <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
                         Released to your <a href="{{ route('provider.wallet.index') }}" class="font-semibold text-brand-700 underline underline-offset-2 hover:text-brand-800 dark:text-brand-400">wallet</a>.
                     </p>
+                    @if ($payment->commission_amount !== null)
+                        <p class="mt-1 text-sm font-semibold text-red-600 dark:text-red-400">
+                            Commission deducted: Rs. {{ number_format((float) $payment->commission_amount, 0) }} ({{ rtrim(rtrim(number_format((float) $payment->commission_rate, 2), '0'), '.') }}%)
+                        </p>
+                    @endif
                 @elseif ($payment && $payment->isRefunded())
                     <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">The pending payment was refunded to the customer.</p>
                 @else

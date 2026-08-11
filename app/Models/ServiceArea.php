@@ -9,10 +9,10 @@ class ServiceArea extends Model
 {
     protected $fillable = [
         'name',
-        'city',
         'latitude',
         'longitude',
         'radius_km',
+        'boundary',
         'is_active',
     ];
 
@@ -22,6 +22,7 @@ class ServiceArea extends Model
             'latitude' => 'decimal:7',
             'longitude' => 'decimal:7',
             'radius_km' => 'integer',
+            'boundary' => 'array',
             'is_active' => 'boolean',
         ];
     }
@@ -29,5 +30,10 @@ class ServiceArea extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
+    }
+
+    public function hasBoundary(): bool
+    {
+        return is_array($this->boundary) && count($this->boundary) >= 3;
     }
 }

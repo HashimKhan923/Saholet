@@ -35,5 +35,28 @@
             </div>
         @endif
     </div>
+
+    <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Timeline</h2>
+        <ul class="mt-4 space-y-4">
+            @foreach ($application->events->where('type', '!=', \App\Models\CareerApplicationEvent::TYPE_NOTE_ADDED) as $event)
+                @php
+                    [$dotClass, $label] = match ($event->type) {
+                        \App\Models\CareerApplicationEvent::TYPE_SUBMITTED => ['bg-brand-500', 'Application submitted'],
+                        \App\Models\CareerApplicationEvent::TYPE_STATUS_CHANGED => ['bg-sky-500', 'Status changed to ' . ucfirst(str_replace('_', ' ', $event->to_status))],
+                        \App\Models\CareerApplicationEvent::TYPE_WITHDRAWN => ['bg-red-500', 'Application withdrawn'],
+                        default => ['bg-slate-400', ucfirst(str_replace('_', ' ', $event->type))],
+                    };
+                @endphp
+                <li class="flex gap-3">
+                    <span class="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full {{ $dotClass }}"></span>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-sm font-medium text-slate-800 dark:text-slate-200">{{ $label }}</p>
+                        <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ $event->created_at->format('d M Y, g:ia') }}</p>
+                    </div>
+                </li>
+            @endforeach
+        </ul>
+    </div>
 </section>
 @endsection

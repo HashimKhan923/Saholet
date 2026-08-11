@@ -6,7 +6,6 @@ use App\Models\Booking;
 use App\Models\Faq;
 use App\Models\ProviderProfile;
 use App\Models\Review;
-use App\Models\ServiceArea;
 use App\Services\CatalogCache;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
@@ -49,7 +48,7 @@ class HomeController extends Controller
             return [
                 'pros' => ProviderProfile::approved()->count(),
                 'bookings' => Booking::where('status', Booking::STATUS_COMPLETED)->count(),
-                'cities' => max(ServiceArea::count(), ProviderProfile::approved()->distinct('city')->count('city')),
+                'cities' => ProviderProfile::approved()->distinct('city')->count('city'),
                 'rating' => $ratingAvg > 0 ? round($ratingAvg, 1) : 4.9,
             ];
         });

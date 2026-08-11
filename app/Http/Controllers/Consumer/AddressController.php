@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Consumer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Address;
+use App\Services\GeofenceService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +12,8 @@ use Illuminate\View\View;
 
 class AddressController extends Controller
 {
+    public function __construct(private GeofenceService $geofence) {}
+
     public function index(Request $request): View
     {
         $addresses = $request->user()->addresses;
@@ -21,6 +24,10 @@ class AddressController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validateData($request);
+
+        if (! $this->geofence->isAllowed($data['latitude'] ?? null, $data['longitude'] ?? null)) {
+            return back()->withInput()->with('error', "Sorry, we don't operate in the \"{$data['address']}\" area yet.");
+        }
 
         DB::transaction(function () use ($request, $data) {
             if ($data['is_default'] ?? false) {
@@ -38,6 +45,10 @@ class AddressController extends Controller
         $this->authorize('update', $address);
 
         $data = $this->validateData($request);
+
+        if (! $this->geofence->isAllowed($data['latitude'] ?? null, $data['longitude'] ?? null)) {
+            return back()->withInput()->with('error', "Sorry, we don't operate in the \"{$data['address']}\" area yet.");
+        }
 
         DB::transaction(function () use ($request, $address, $data) {
             if ($data['is_default'] ?? false) {

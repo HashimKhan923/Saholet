@@ -55,10 +55,6 @@ class BookingController extends Controller
     {
         $providerService = $this->resolveOffering($provider, $service);
 
-        if (! $this->geofence->isAllowed($provider->city)) {
-            return back()->withInput()->with('error', 'Sorry, this provider is outside our current service areas.');
-        }
-
         $dateValues = array_column($this->bookableDates(), 'value');
 
         $validated = $request->validate([
@@ -69,6 +65,12 @@ class BookingController extends Controller
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
+
+        // Gate on the customer's own job address, not the provider's registered
+        // city — the whole point is whether this job is inside our service area.
+        if (! $this->geofence->isAllowed($validated['latitude'] ?? null, $validated['longitude'] ?? null)) {
+            return back()->withInput()->with('error', 'Sorry, this address is outside our current service areas.');
+        }
 
         $slots = collect($this->availableSlotsFor($provider, Carbon::parse($validated['scheduled_date'])));
         $slot = $slots->firstWhere('value', $validated['scheduled_time']);

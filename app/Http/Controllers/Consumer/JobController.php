@@ -7,7 +7,6 @@ use App\Models\Bid;
 use App\Models\Booking;
 use App\Models\JobPost;
 use App\Models\Service;
-use App\Models\ServiceArea;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -38,9 +37,8 @@ class JobController extends Controller
             ->get();
 
         $selectedService = $request->query('service');
-        $cities = ServiceArea::active()->pluck('city')->unique()->sort()->values();
 
-        return view('consumer.jobs.create', compact('services', 'selectedService', 'cities'));
+        return view('consumer.jobs.create', compact('services', 'selectedService'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -58,7 +56,7 @@ class JobController extends Controller
             'photos.*' => ['image', 'mimes:jpg,jpeg,png', 'max:5120'],
         ]);
 
-        if (! $this->geofence->isAllowed($data['city'])) {
+        if (! $this->geofence->isAllowed($data['latitude'] ?? null, $data['longitude'] ?? null)) {
             return back()->withInput()->with('error', 'Sorry, we’re not serving that city yet.');
         }
 

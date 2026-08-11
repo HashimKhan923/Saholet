@@ -38,6 +38,7 @@ class ProviderProfile extends Model
         'reviewed_by',
         'suspended_at',
         'suspension_reason',
+        'commission_rate',
     ];
 
     protected function casts(): array
@@ -51,6 +52,7 @@ class ProviderProfile extends Model
             'submitted_at' => 'datetime',
             'reviewed_at' => 'datetime',
             'suspended_at' => 'datetime',
+            'commission_rate' => 'decimal:2',
         ];
     }
 

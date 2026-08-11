@@ -42,12 +42,10 @@
                     <x-field-error name="service_id" />
                 </div>
 
-                <x-address-input label="Your address" :value="old('address')" />
-
-                <x-city-input :value="old('city')" :cities="$cities" />
+                <x-saved-address-picker label="Your address" />
 
                 <div>
-                    <label for="notes" class="block text-sm font-medium text-slate-700 dark:text-slate-200">What’s happening? <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
+                    <label for="notes" class="block text-sm font-medium text-slate-700 dark:text-slate-200">What’s happening? <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
                     <textarea id="notes" name="notes" rows="3" placeholder="Briefly describe the emergency…"
                         @error('notes') aria-invalid="true" @enderror
                         class="mt-1.5 block w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:ring-2 dark:bg-slate-900 dark:text-white

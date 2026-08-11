@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Consumer;
 
 use App\Http\Controllers\Controller;
-use App\Models\ServiceArea;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Services\GeofenceService;
@@ -32,9 +31,7 @@ class SubscriptionController extends Controller
     {
         abort_unless($plan->is_active, 404);
 
-        $cities = ServiceArea::active()->pluck('city')->unique()->sort()->values();
-
-        return view('consumer.subscriptions.create', compact('plan', 'cities'));
+        return view('consumer.subscriptions.create', compact('plan'));
     }
 
     public function store(Request $request, SubscriptionPlan $plan): RedirectResponse
@@ -49,7 +46,7 @@ class SubscriptionController extends Controller
             'start_date' => ['required', 'date', 'after_or_equal:today'],
         ]);
 
-        if (! $this->geofence->isAllowed($data['city'])) {
+        if (! $this->geofence->isAllowed($data['latitude'] ?? null, $data['longitude'] ?? null)) {
             return back()->withInput()->with('error', 'Sorry, we’re not serving that city yet.');
         }
 

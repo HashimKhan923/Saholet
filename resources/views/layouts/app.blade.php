@@ -333,6 +333,7 @@
 
     <div>
         &copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('messages.footer.rights') }}
+        &middot; Developed by <a href="https://skartistic.com/" target="_blank" rel="noopener" class="transition hover:text-brand-300">SK Artistic</a>
     </div>
 
     <div class="flex flex-wrap items-center justify-center gap-4">

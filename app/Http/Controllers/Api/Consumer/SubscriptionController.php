@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Consumer;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SubscriptionResource;
-use App\Models\ServiceArea;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Services\GeofenceService;
@@ -48,7 +47,7 @@ class SubscriptionController extends Controller
             'start_date' => ['required', 'date', 'after_or_equal:today'],
         ]);
 
-        if (! $this->geofence->isAllowed($data['city'])) {
+        if (! $this->geofence->isAllowed($data['latitude'] ?? null, $data['longitude'] ?? null)) {
             return response()->json(['message' => 'Sorry, we\'re not serving that city yet.'], 422);
         }
 

@@ -173,7 +173,7 @@
                         </div>
 
                         <div>
-                            <label for="message" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Message <span class="normal-case text-slate-400">(optional)</span></label>
+                            <label for="message" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Message <span class="normal-case text-slate-400">(opt)</span></label>
                             <textarea id="message" name="message" rows="3" placeholder="Why you're the right fit…"
                                 class="mt-1.5 block w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white">{{ old('message', $myBid?->message) }}</textarea>
                             <x-field-error name="message" />

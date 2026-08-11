@@ -144,7 +144,6 @@ class CategoryController extends Controller
             'remove_icon' => ['nullable', 'boolean'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'remove_image' => ['nullable', 'boolean'],
-            'commission_rate' => ['nullable', 'numeric', 'min:0', 'max:50'],
             'sort_order' => ['required', 'integer', 'min:0', 'max:9999'],
             'is_active' => ['nullable', 'boolean'],
         ]);

@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\ServiceArea;
+use App\Models\ProviderProfile;
 use Illuminate\Http\JsonResponse;
 
 class ServiceAreaController extends Controller
 {
-    /** Cities currently served — used to populate city pickers and validate coverage client-side. */
+    /** Cities with an approved provider — used to populate city pickers client-side. */
     public function index(): JsonResponse
     {
-        $cities = ServiceArea::active()->pluck('city')->unique()->sort()->values();
+        $cities = ProviderProfile::approved()->pluck('city')->filter()->unique()->sort()->values();
 
         return response()->json(['cities' => $cities]);
     }

@@ -66,7 +66,7 @@ class ContractController extends Controller
             'items.*.notes' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        if (! $this->geofence->isAllowed($data['city'])) {
+        if (! $this->geofence->isAllowed($data['latitude'] ?? null, $data['longitude'] ?? null)) {
             return response()->json(['message' => 'Sorry, we\'re not serving that city yet.'], 422);
         }
 

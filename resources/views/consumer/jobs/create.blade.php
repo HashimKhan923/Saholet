@@ -46,7 +46,7 @@
 
                 <div class="grid gap-5 sm:grid-cols-2">
                     <div>
-                        <label for="budget" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Budget (Rs.) <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
+                        <label for="budget" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Budget (Rs.) <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
                         <input id="budget" name="budget" type="number" step="1" min="0" value="{{ old('budget') }}" placeholder="e.g. 2000"
                             @error('budget') aria-invalid="true" @enderror
                             class="mt-1.5 block w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:ring-2 dark:bg-slate-900 dark:text-white
@@ -54,7 +54,7 @@
                         <x-field-error name="budget" />
                     </div>
                     <div>
-                        <label for="preferred_date" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Preferred date <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
+                        <label for="preferred_date" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Preferred date <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
                         <input id="preferred_date" name="preferred_date" type="date" min="{{ now()->toDateString() }}" value="{{ old('preferred_date') }}"
                             @error('preferred_date') aria-invalid="true" @enderror
                             class="mt-1.5 block w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:ring-2 dark:bg-slate-900 dark:text-white
@@ -63,12 +63,10 @@
                     </div>
                 </div>
 
-                <x-address-input :value="old('address')" />
-
-                <x-city-input :value="old('city')" :cities="$cities" />
+                <x-saved-address-picker />
 
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Photos <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Photos <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
                     <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Add photos of the problem so providers can quote more accurately.</p>
                     <div class="mt-1.5">
                         <x-photo-picker />

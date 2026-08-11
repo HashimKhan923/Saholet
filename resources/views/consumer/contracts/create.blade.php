@@ -45,15 +45,13 @@
                 </div>
 
                 <div>
-                    <label for="preferred_start_date" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Preferred start date <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
+                    <label for="preferred_start_date" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Preferred start date <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
                     <input id="preferred_start_date" name="preferred_start_date" type="date" min="{{ now()->toDateString() }}" value="{{ old('preferred_start_date') }}"
                         class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
                     <x-field-error name="preferred_start_date" />
                 </div>
 
-                <x-address-input :value="old('address')" />
-
-                <x-city-input :value="old('city')" :cities="$cities" />
+                <x-saved-address-picker />
             </div>
         </div>
 
@@ -89,7 +87,7 @@
                         </div>
 
                         <div class="mt-3">
-                            <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Notes <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
+                            <label class="block text-xs font-medium text-slate-700 dark:text-slate-200">Notes <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
                             <input type="text" :name="'items[' + index + '][notes]'" x-model="item.notes" placeholder="Any specifics for this service…"
                                 class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
                         </div>
@@ -102,7 +100,7 @@
         </div>
 
         <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Reference photos <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Reference photos <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
             <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Site photos, plans, or inspiration help us quote more accurately.</p>
             <div class="mt-1.5">
                 <x-photo-picker name="photos" :max="8" />
