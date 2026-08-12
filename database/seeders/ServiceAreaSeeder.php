@@ -2,22 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\ServiceArea;
 use Illuminate\Database\Seeder;
 
 class ServiceAreaSeeder extends Seeder
 {
+    /**
+     * No default rows — a service area now requires a drawn boundary (there's
+     * no sensible polygon to fabricate here), so these are created by an admin
+     * via /admin/service-areas/create instead of being seeded.
+     */
     public function run(): void
     {
-        $areas = [
-            ['name' => 'Karachi', 'city' => 'Karachi'],
-        ];
-
-        foreach ($areas as $area) {
-            ServiceArea::updateOrCreate(
-                ['city' => $area['city']],
-                ['name' => $area['name'], 'is_active' => true]
-            );
-        }
+        //
     }
 }

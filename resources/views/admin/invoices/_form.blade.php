@@ -55,18 +55,18 @@
                 <x-field-error name="bill_to_name" />
             </div>
             <div>
-                <label for="bill_to_phone" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Phone <span class="text-slate-400">(optional)</span></label>
+                <label for="bill_to_phone" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Phone <span class="text-slate-400">(opt)</span></label>
                 <input id="bill_to_phone" name="bill_to_phone" type="text" inputmode="numeric" value="{{ old('bill_to_phone', $isEdit ? $invoice->bill_to_phone : '') }}"
                     data-mask="phone-pk" maxlength="12" placeholder="0300-1234567"
                     class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
             </div>
             <div>
-                <label for="bill_to_email" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Email <span class="text-slate-400">(optional)</span></label>
+                <label for="bill_to_email" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Email <span class="text-slate-400">(opt)</span></label>
                 <input id="bill_to_email" name="bill_to_email" type="email" value="{{ old('bill_to_email', $isEdit ? $invoice->bill_to_email : '') }}"
                     class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
             </div>
             <div>
-                <label for="bill_to_address" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Address <span class="text-slate-400">(optional)</span></label>
+                <label for="bill_to_address" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Address <span class="text-slate-400">(opt)</span></label>
                 <input id="bill_to_address" name="bill_to_address" type="text" value="{{ old('bill_to_address', $isEdit ? $invoice->bill_to_address : '') }}"
                     class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
             </div>
@@ -74,7 +74,7 @@
     </div>
 
     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <label for="inspection_notes" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Inspection / review <span class="text-slate-400">(optional)</span></label>
+        <label for="inspection_notes" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Inspection / review <span class="text-slate-400">(opt)</span></label>
         <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">What was inspected or found on-site — helps the customer understand what the charges below are for. Printed on the document only if filled in.</p>
         <textarea id="inspection_notes" name="inspection_notes" rows="4" placeholder="e.g. Inspected the outdoor unit — found the compressor gas level low and a corroded copper pipe joint causing the leak."
             class="mt-2 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">{{ old('inspection_notes', $isEdit ? $invoice->inspection_notes : '') }}</textarea>
@@ -164,7 +164,7 @@
     </div>
 
     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <label for="notes" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Notes <span class="text-slate-400">(optional)</span></label>
+        <label for="notes" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Notes <span class="text-slate-400">(opt)</span></label>
         <textarea id="notes" name="notes" rows="3" class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">{{ old('notes', $isEdit ? $invoice->notes : '') }}</textarea>
     </div>
 

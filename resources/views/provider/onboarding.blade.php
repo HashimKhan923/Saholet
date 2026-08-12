@@ -90,7 +90,7 @@
                 @method('PUT')
 
                 <div>
-                    <label for="business_name" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Business name <span class="normal-case text-slate-400">(optional)</span></label>
+                    <label for="business_name" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">Business name <span class="normal-case text-slate-400">(opt)</span></label>
                     <input id="business_name" name="business_name" type="text" value="{{ old('business_name', $profile->business_name) }}"
                         @error('business_name') aria-invalid="true" @enderror
                         class="{{ $inputBase }} @error('business_name') {{ $inputBad }} @else {{ $inputOk }} @enderror">
@@ -98,7 +98,7 @@
                 </div>
 
                 <div>
-                    <label for="bio" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">About you / your work <span class="normal-case text-slate-400">(optional)</span></label>
+                    <label for="bio" class="block text-xs font-semibold uppercase tracking-wide text-slate-400">About you / your work <span class="normal-case text-slate-400">(opt)</span></label>
                     <textarea id="bio" name="bio" rows="3" placeholder="What you specialise in, how long you've been doing it…"
                         @error('bio') aria-invalid="true" @enderror
                         class="{{ $inputBase }} placeholder:text-slate-400 @error('bio') {{ $inputBad }} @else {{ $inputOk }} @enderror">{{ old('bio', $profile->bio) }}</textarea>

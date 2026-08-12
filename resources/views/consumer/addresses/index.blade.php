@@ -45,13 +45,10 @@
                 <form x-show="editing" x-cloak method="POST" action="{{ route('consumer.addresses.update', $address) }}" class="space-y-3">
                     @csrf
                     @method('PUT')
-                    <div class="grid gap-3 sm:grid-cols-2">
-                        <input type="text" name="label" value="{{ $address->label }}" maxlength="60" required placeholder="Label (e.g. Home, Office)"
-                            class="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                        <input type="text" name="city" value="{{ $address->city }}" maxlength="120" required placeholder="City"
-                            class="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                    </div>
+                    <input type="text" name="label" value="{{ $address->label }}" maxlength="60" required placeholder="Label (e.g. Home, Office)"
+                        class="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
                     <textarea name="address" rows="2" required placeholder="Full address" class="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">{{ $address->address }}</textarea>
+                    <input type="hidden" name="city" value="{{ $address->city }}">
                     <input type="hidden" name="latitude" value="{{ $address->latitude }}">
                     <input type="hidden" name="longitude" value="{{ $address->longitude }}">
                     <template x-if="editing">
@@ -80,22 +77,16 @@
         <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Add an address</h2>
         <form method="POST" action="{{ route('consumer.addresses.store') }}" class="mt-4 space-y-3">
             @csrf
-            <div class="grid gap-3 sm:grid-cols-2">
-                <div>
-                    <label class="block text-xs font-medium text-slate-700 dark:text-slate-300">Label</label>
-                    <input type="text" name="label" value="{{ old('label') }}" maxlength="60" required placeholder="e.g. Home, Office"
-                        class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-700 dark:text-slate-300">City</label>
-                    <input type="text" name="city" value="{{ old('city') }}" maxlength="120" required
-                        class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                </div>
+            <div>
+                <label class="block text-xs font-medium text-slate-700 dark:text-slate-300">Label</label>
+                <input type="text" name="label" value="{{ old('label') }}" maxlength="60" required placeholder="e.g. Home, Office"
+                    class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
             </div>
             <div>
                 <label class="block text-xs font-medium text-slate-700 dark:text-slate-300">Full address</label>
                 <textarea name="address" rows="2" required placeholder="House, street, area" class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">{{ old('address') }}</textarea>
             </div>
+            <input type="hidden" name="city" value="{{ old('city') }}">
             <input type="hidden" name="latitude" value="{{ old('latitude') }}">
             <input type="hidden" name="longitude" value="{{ old('longitude') }}">
             <x-address-map-picker :lat="old('latitude')" :lng="old('longitude')" />

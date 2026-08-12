@@ -4,52 +4,31 @@
 
 @php
     $u = auth()->user();
-    $showCatalogSection = $u->hasPermission('categories') || $u->hasPermission('services') || $u->hasPermission('service-areas');
-    $showContentSection = $u->hasPermission('faqs');
+    // Ordered by how often an admin actually opens each section day-to-day:
+    // bookings/providers/finance are daily-driver pages, catalog/content are
+    // occasional setup pages, accounts/insights are the least-visited.
     $showBookingsSection = $u->hasPermission('bookings') || $u->hasPermission('emergencies') || $u->hasPermission('contracts')
         || $u->hasPermission('subscriptions') || $u->hasPermission('corporate-accounts');
     $showProvidersSection = $u->hasPermission('providers') || $u->hasPermission('careers') || $u->hasPermission('talent');
     $showFinanceSection = $u->hasPermission('invoices') || $u->isAdmin();
     $showTrustSection = $u->hasPermission('disputes') || $u->hasPermission('fraud');
+    $showCatalogSection = $u->hasPermission('categories') || $u->hasPermission('services') || $u->hasPermission('service-areas');
+    $showContentSection = $u->hasPermission('faqs');
     $showAccountsSection = $u->isAdmin();
-    $showInsightsSection = $u->isAdmin() || $u->hasPermission('settings', 'edit');
 @endphp
 
 @section('nav')
     <x-portal-nav-link :href="route('admin.dashboard')" :label="__('admin.nav.dashboard')" :active="request()->routeIs('admin.dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="12" width="8" height="9" rx="1.5"/><rect x="3" y="14" width="8" height="7" rx="1.5"/></svg>
     </x-portal-nav-link>
+    @if (auth()->user()->isAdmin())
+    <x-portal-nav-link :href="route('admin.analytics.index')" :label="__('admin.nav.analytics')" :active="request()->routeIs('admin.analytics.*')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </x-portal-nav-link>
+    @endif
     @if (auth()->user()->hasPermission('requests'))
     <x-portal-nav-link :href="route('admin.requests.index')" :label="__('admin.nav.requests')" :active="request()->routeIs('admin.requests.*')" :badge="$sidebarTotalRequests ?: null">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 5h14v11H8l-3 3V5Z" stroke-linejoin="round"/><path d="M9 9h6M9 12h4" stroke-linecap="round"/></svg>
-    </x-portal-nav-link>
-    @endif
-
-    @if ($showCatalogSection)
-    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.catalog_section') }}</p>
-    @endif
-    @if (auth()->user()->hasPermission('categories'))
-    <x-portal-nav-link :href="route('admin.categories.index')" :label="__('admin.nav.categories')" :active="request()->routeIs('admin.categories.*')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-    </x-portal-nav-link>
-    @endif
-    @if (auth()->user()->hasPermission('services'))
-    <x-portal-nav-link :href="route('admin.services.index')" :label="__('admin.nav.services')" :active="request()->routeIs('admin.services.*')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="4" y1="9" x2="20" y2="9" stroke-linecap="round"/><circle cx="8" cy="6" r="0.6" fill="currentColor"/></svg>
-    </x-portal-nav-link>
-    @endif
-    @if (auth()->user()->hasPermission('service-areas'))
-    <x-portal-nav-link :href="route('admin.service-areas.index')" :label="__('admin.nav.service_areas')" :active="request()->routeIs('admin.service-areas.*')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="11" r="3"/><path d="M12 2c4 0 7 3 7 7 0 4.5-7 13-7 13S5 13.5 5 9c0-4 3-7 7-7z" stroke-linejoin="round"/></svg>
-    </x-portal-nav-link>
-    @endif
-
-    @if ($showContentSection)
-    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.content_section') }}</p>
-    @endif
-    @if (auth()->user()->hasPermission('faqs'))
-    <x-portal-nav-link :href="route('admin.faqs.index')" :label="__('admin.nav.faqs')" :active="request()->routeIs('admin.faqs.*')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.5 2.5 0 0 1 4.8 1c0 1.5-2.3 1.8-2.3 3.3" stroke-linecap="round"/><circle cx="12" cy="17" r="0.6" fill="currentColor" stroke="none"/></svg>
     </x-portal-nav-link>
     @endif
 
@@ -135,6 +114,34 @@
     </x-portal-nav-link>
     @endif
 
+    @if ($showCatalogSection)
+    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.catalog_section') }}</p>
+    @endif
+    @if (auth()->user()->hasPermission('categories'))
+    <x-portal-nav-link :href="route('admin.categories.index')" :label="__('admin.nav.categories')" :active="request()->routeIs('admin.categories.*')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+    </x-portal-nav-link>
+    @endif
+    @if (auth()->user()->hasPermission('services'))
+    <x-portal-nav-link :href="route('admin.services.index')" :label="__('admin.nav.services')" :active="request()->routeIs('admin.services.*')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="4" y1="9" x2="20" y2="9" stroke-linecap="round"/><circle cx="8" cy="6" r="0.6" fill="currentColor"/></svg>
+    </x-portal-nav-link>
+    @endif
+    @if (auth()->user()->hasPermission('service-areas'))
+    <x-portal-nav-link :href="route('admin.service-areas.index')" :label="__('admin.nav.service_areas')" :active="request()->routeIs('admin.service-areas.*')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="11" r="3"/><path d="M12 2c4 0 7 3 7 7 0 4.5-7 13-7 13S5 13.5 5 9c0-4 3-7 7-7z" stroke-linejoin="round"/></svg>
+    </x-portal-nav-link>
+    @endif
+
+    @if ($showContentSection)
+    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.content_section') }}</p>
+    @endif
+    @if (auth()->user()->hasPermission('faqs'))
+    <x-portal-nav-link :href="route('admin.faqs.index')" :label="__('admin.nav.faqs')" :active="request()->routeIs('admin.faqs.*')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.5 2.5 0 0 1 4.8 1c0 1.5-2.3 1.8-2.3 3.3" stroke-linecap="round"/><circle cx="12" cy="17" r="0.6" fill="currentColor" stroke="none"/></svg>
+    </x-portal-nav-link>
+    @endif
+
     @if ($showAccountsSection)
     <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.accounts_section') }}</p>
     @endif
@@ -146,20 +153,6 @@
     @if (auth()->user()->isAdmin())
     <x-portal-nav-link :href="route('admin.staff.index')" :label="__('admin.nav.staff')" :active="request()->routeIs('admin.staff.*')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="7" height="7" rx="1.5"/><path d="M4.5 20c0-2.8 2.2-5 4.5-5s4.5 2.2 4.5 5" stroke-linecap="round"/><circle cx="17" cy="7.5" r="2.5"/><path d="M14.5 20c.3-2.3 1.6-4 3-4.6" stroke-linecap="round"/></svg>
-    </x-portal-nav-link>
-    @endif
-
-    @if ($showInsightsSection)
-    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.insights_section') }}</p>
-    @endif
-    @if (auth()->user()->isAdmin())
-    <x-portal-nav-link :href="route('admin.analytics.index')" :label="__('admin.nav.analytics')" :active="request()->routeIs('admin.analytics.*')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </x-portal-nav-link>
-    @endif
-    @if (auth()->user()->hasPermission('settings', 'edit'))
-    <x-portal-nav-link :href="route('admin.settings.edit')" :label="__('admin.nav.settings')" :active="request()->routeIs('admin.settings.*')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14 2h-4l-.6 2.7a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2L10 22h4l.6-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z" stroke-linejoin="round"/></svg>
     </x-portal-nav-link>
     @endif
 @endsection

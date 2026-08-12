@@ -55,7 +55,7 @@ class EmergencyController extends Controller
             return response()->json(['message' => 'That service is currently unavailable.'], 422);
         }
 
-        if (! $this->geofence->isAllowed($data['city'])) {
+        if (! $this->geofence->isAllowed($data['latitude'] ?? null, $data['longitude'] ?? null)) {
             return response()->json(['message' => 'Sorry, we\'re not serving that city yet.'], 422);
         }
 
@@ -184,7 +184,7 @@ class EmergencyController extends Controller
                 'booking',
                 'Emergency request nearby',
                 'An urgent ' . $service->name . ' request (' . $emergency->reference . ') is available in ' . $emergency->city . '.',
-                route('provider.emergencies.index')
+                route('api.provider.emergencies.index')
             );
         }
 

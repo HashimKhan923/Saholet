@@ -231,7 +231,7 @@ document.addEventListener('alpine:init', () => {
                 this.mapError = 'Google Maps API key is not configured.';
                 return;
             }
-            if (window.google && window.google.maps) {
+            if (window.google && window.google.maps && window.google.maps.marker) {
                 this.initMap();
                 return;
             }
@@ -240,7 +240,8 @@ document.addEventListener('alpine:init', () => {
 
             const script = document.createElement('script');
             script.id = 'google-maps-script';
-            script.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(this.googleMapsKey) + '&loading=async&callback=__initGoogleMaps';
+            // `marker` is required for AdvancedMarkerElement (google.maps.Marker is deprecated).
+            script.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(this.googleMapsKey) + '&loading=async&libraries=marker&callback=__initGoogleMaps';
             script.async = true;
             script.defer = true;
             script.onerror = () => { this.mapError = 'Could not load Google Maps.'; };
@@ -321,24 +322,26 @@ document.addEventListener('alpine:init', () => {
             this.map = new google.maps.Map(this.$refs.mapEl, {
                 center,
                 zoom: 14,
+                mapId: 'DEMO_MAP_ID',
                 streetViewControl: false,
                 mapTypeControl: false,
                 fullscreenControl: false,
             });
 
             if (this.destination) {
-                this.destMarker = new google.maps.Marker({
+                const destDot = document.createElement('div');
+                destDot.style.width = '16px';
+                destDot.style.height = '16px';
+                destDot.style.borderRadius = '50%';
+                destDot.style.background = '#c4341f';
+                destDot.style.border = '2px solid #ffffff';
+                destDot.style.boxShadow = '0 0 0 1px rgba(0,0,0,0.25)';
+
+                this.destMarker = new google.maps.marker.AdvancedMarkerElement({
                     position: { lat: this.destination.lat, lng: this.destination.lng },
                     map: this.map,
                     title: this.destination.address || 'Job location',
-                    icon: {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        scale: 8,
-                        fillColor: '#c4341f',
-                        fillOpacity: 1,
-                        strokeColor: '#ffffff',
-                        strokeWeight: 2,
-                    },
+                    content: destDot,
                 });
             }
 
@@ -367,13 +370,13 @@ document.addEventListener('alpine:init', () => {
             const pos = { lat: parseFloat(this.tracking.latitude), lng: parseFloat(this.tracking.longitude) };
 
             if (!this.marker) {
-                this.marker = new google.maps.Marker({
+                this.marker = new google.maps.marker.AdvancedMarkerElement({
                     position: pos,
                     map: this.map,
                     title: 'Provider',
                 });
             } else {
-                this.marker.setPosition(pos);
+                this.marker.position = pos;
             }
 
             if (this.destination) {

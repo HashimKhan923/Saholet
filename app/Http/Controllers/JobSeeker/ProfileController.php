@@ -27,13 +27,12 @@ class ProfileController extends Controller
             'city' => ['nullable', 'string', 'max:120'],
             'experience_years' => ['required', 'integer', 'min:0', 'max:60'],
             'current_position' => ['nullable', 'string', 'max:255'],
-            'skills' => ['nullable', 'string', 'max:1000'],
+            'skills' => ['nullable', 'array'],
+            'skills.*' => ['string', 'max:60'],
             'linkedin_url' => ['nullable', 'url', 'max:255'],
         ]);
 
-        $data['skills'] = $data['skills']
-            ? array_values(array_filter(array_map('trim', explode(',', $data['skills']))))
-            : [];
+        $data['skills'] = $data['skills'] ?? [];
 
         $profile->fill($data)->save();
 

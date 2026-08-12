@@ -3,24 +3,23 @@
 namespace App\Services;
 
 use App\Models\Booking;
-use App\Models\Setting;
 
 class CommissionService
 {
     public const DEFAULT_RATE = 10.0;
 
-    /** Resolve the commission percent for a booking: category override → global setting → default. */
+    /**
+     * Resolve the commission percent for a booking: the provider's own
+     * negotiated rate, set by an admin at approval time — a last-resort
+     * default only covers a provider somehow left without one.
+     */
     public function rateFor(Booking $booking): float
     {
-        $booking->loadMissing('service.category');
+        $booking->loadMissing('providerProfile');
 
-        $category = $booking->service?->category;
-
-        if ($category && $category->commission_rate !== null) {
-            return (float) $category->commission_rate;
-        }
-
-        return (float) Setting::get('commission_rate', self::DEFAULT_RATE);
+        return $booking->providerProfile?->commission_rate !== null
+            ? (float) $booking->providerProfile->commission_rate
+            : self::DEFAULT_RATE;
     }
 
     /**

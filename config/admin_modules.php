@@ -23,7 +23,6 @@ return [
     'talent' => ['label' => 'Talent search', 'actions' => ['view']],
     'disputes' => ['label' => 'Disputes', 'actions' => ['view', 'edit']],
     'fraud' => ['label' => 'Fraud signals', 'actions' => ['view']],
-    'settings' => ['label' => 'Settings', 'actions' => ['edit']],
 
     // 'withdrawals', 'users', and 'analytics' are deliberately absent — these are
     // money/account-level pages that stay admin-only, never grantable to staff.

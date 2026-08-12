@@ -106,7 +106,7 @@
         </div>
 
         <div>
-            <label for="notes" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Notes <span class="text-slate-400">(optional)</span></label>
+            <label for="notes" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Notes <span class="text-slate-400">(opt)</span></label>
             <textarea id="notes" name="notes" rows="3" class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">{{ old('notes') }}</textarea>
         </div>
 

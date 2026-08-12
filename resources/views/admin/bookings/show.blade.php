@@ -142,6 +142,11 @@
                             <div>
                                 <p class="font-medium text-slate-900 dark:text-white">Rs. {{ number_format((float) $payment->amount, 0) }}</p>
                                 <p class="text-xs text-slate-400">{{ strtoupper($payment->gateway) }} · {{ $payment->reference }}</p>
+                                @if ($payment->commission_amount !== null)
+                                    <p class="mt-1 text-xs font-semibold text-green-600 dark:text-green-400">
+                                        Commission: Rs. {{ number_format((float) $payment->commission_amount, 0) }} ({{ rtrim(rtrim(number_format((float) $payment->commission_rate, 2), '0'), '.') }}%)
+                                    </p>
+                                @endif
                             </div>
                             <x-payment-status :status="$payment->status" />
                         </div>

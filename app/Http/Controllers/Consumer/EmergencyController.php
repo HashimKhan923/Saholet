@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Consumer;
 use App\Http\Controllers\Controller;
 use App\Models\EmergencyRequest;
 use App\Models\Service;
-use App\Models\ServiceArea;
 use App\Services\GeofenceService;
 use App\Services\Notifier;
 use Illuminate\Http\RedirectResponse;
@@ -35,9 +34,7 @@ class EmergencyController extends Controller
             ->orderBy('name')
             ->get();
 
-        $cities = ServiceArea::active()->pluck('city')->unique()->sort()->values();
-
-        return view('consumer.emergencies.create', compact('services', 'cities'));
+        return view('consumer.emergencies.create', compact('services'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -60,7 +57,7 @@ class EmergencyController extends Controller
             return back()->withInput()->with('error', 'That service is currently unavailable.');
         }
 
-        if (! $this->geofence->isAllowed($data['city'])) {
+        if (! $this->geofence->isAllowed($data['latitude'] ?? null, $data['longitude'] ?? null)) {
             return back()->withInput()->with('error', 'Sorry, we’re not serving that city yet.');
         }
 

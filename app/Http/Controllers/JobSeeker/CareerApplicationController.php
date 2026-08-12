@@ -4,6 +4,7 @@ namespace App\Http\Controllers\JobSeeker;
 
 use App\Http\Controllers\Controller;
 use App\Models\CareerApplication;
+use App\Models\CareerApplicationEvent;
 use App\Models\CareerListing;
 use App\Models\JobSeekerProfile;
 use App\Services\Notifier;
@@ -28,7 +29,7 @@ class CareerApplicationController extends Controller
     {
         $this->authorize('view', $application);
 
-        $application->load('listing.category');
+        $application->load('listing.category', 'events');
 
         return view('job-seeker.applications.show', compact('application'));
     }
@@ -43,9 +44,13 @@ class CareerApplicationController extends Controller
 
         $profile = JobSeekerProfile::firstOrCreate(['user_id' => $request->user()->id]);
 
+        // A saved resume can be reused only when the applicant explicitly chose "use saved" —
+        // if they chose "upload a different one" (or there's nothing saved yet), a file is required.
+        $resumeRequired = ! $profile->hasResume() || $request->input('resume_choice') === 'upload';
+
         $data = $request->validate([
             'cover_letter' => ['nullable', 'string', 'max:3000'],
-            'resume' => [$profile->hasResume() ? 'nullable' : 'required', 'file', 'mimes:' . implode(',', config('careers.accepted_mimes')), 'max:' . config('careers.max_size_kb')],
+            'resume' => [$resumeRequired ? 'required' : 'nullable', 'file', 'mimes:' . implode(',', config('careers.accepted_mimes')), 'max:' . config('careers.max_size_kb')],
         ]);
 
         $disk = config('careers.disk');
@@ -70,6 +75,13 @@ class CareerApplicationController extends Controller
             'status' => CareerApplication::STATUS_SUBMITTED,
         ]);
 
+        CareerApplicationEvent::create([
+            'career_application_id' => $application->id,
+            'type' => CareerApplicationEvent::TYPE_SUBMITTED,
+            'to_status' => CareerApplication::STATUS_SUBMITTED,
+            'caused_by' => $request->user()->id,
+        ]);
+
         app(Notifier::class)->notifyAdmins(
             'career',
             'New job application',
@@ -90,7 +102,17 @@ class CareerApplicationController extends Controller
             return back()->with('error', 'This application can no longer be withdrawn.');
         }
 
+        $fromStatus = $application->status;
+
         $application->update(['status' => CareerApplication::STATUS_WITHDRAWN]);
+
+        CareerApplicationEvent::create([
+            'career_application_id' => $application->id,
+            'type' => CareerApplicationEvent::TYPE_WITHDRAWN,
+            'from_status' => $fromStatus,
+            'to_status' => CareerApplication::STATUS_WITHDRAWN,
+            'caused_by' => $request->user()->id,
+        ]);
 
         return back()->with('success', 'Application withdrawn.');
     }

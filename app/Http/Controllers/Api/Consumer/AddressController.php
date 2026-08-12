@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Api\Consumer;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AddressResource;
 use App\Models\Address;
+use App\Services\GeofenceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AddressController extends Controller
 {
+    public function __construct(private GeofenceService $geofence) {}
+
     public function index(Request $request): JsonResponse
     {
         return response()->json(['addresses' => AddressResource::collection($request->user()->addresses)]);
@@ -19,6 +22,10 @@ class AddressController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $this->validateData($request);
+
+        if (! $this->geofence->isAllowed($data['latitude'] ?? null, $data['longitude'] ?? null)) {
+            return response()->json(['message' => "Sorry, we don't operate in the \"{$data['address']}\" area yet."], 422);
+        }
 
         $address = DB::transaction(function () use ($request, $data) {
             if ($data['is_default'] ?? false) {
@@ -36,6 +43,10 @@ class AddressController extends Controller
         $this->authorize('update', $address);
 
         $data = $this->validateData($request);
+
+        if (! $this->geofence->isAllowed($data['latitude'] ?? null, $data['longitude'] ?? null)) {
+            return response()->json(['message' => "Sorry, we don't operate in the \"{$data['address']}\" area yet."], 422);
+        }
 
         DB::transaction(function () use ($request, $address, $data) {
             if ($data['is_default'] ?? false) {

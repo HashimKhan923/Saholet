@@ -4,8 +4,7 @@
     $u = auth()->user();
     $showOperationsSection = $u->hasPermission('bookings') || $u->hasPermission('categories') || $u->hasPermission('services')
         || $u->hasPermission('providers') || $u->hasPermission('disputes');
-    $showToolsSection = $u->isAdmin() || $u->hasPermission('service-areas')
-        || $u->hasPermission('fraud') || $u->hasPermission('settings', 'edit');
+    $showToolsSection = $u->isAdmin() || $u->hasPermission('service-areas') || $u->hasPermission('fraud');
 @endphp
 
 @section('title', ($u->isStaff() ? 'Staff dashboard' : 'Admin dashboard') . ' — ' . config('app.name'))
@@ -113,13 +112,6 @@
             <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/50 dark:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 4 6v5c0 4.5 3.2 7.8 8 9 4.8-1.2 8-4.5 8-9V6l-8-3z" stroke-linejoin="round"/><path d="M9.5 12 11 13.5 14.5 10" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             <h3 class="mt-4 font-display text-base font-bold text-slate-900 dark:text-white">{{ __('admin.dashboard.fraud_title') }}</h3>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('admin.dashboard.fraud_desc') }}</p>
-        </a>
-        @endif
-        @if ($u->hasPermission('settings', 'edit'))
-        <a href="{{ route('admin.settings.edit') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
-            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/50 dark:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14 2h-4l-.6 2.7a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2L10 22h4l.6-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z" stroke-linejoin="round"/></svg></span>
-            <h3 class="mt-4 font-display text-base font-bold text-slate-900 dark:text-white">{{ __('admin.dashboard.settings_title') }}</h3>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('admin.dashboard.settings_desc') }}</p>
         </a>
         @endif
     </div>

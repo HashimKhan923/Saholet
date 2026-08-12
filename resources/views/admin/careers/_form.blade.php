@@ -42,7 +42,7 @@
     </div>
 
     <div>
-        <label for="requirements" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Requirements <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
+        <label for="requirements" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Requirements <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
         <textarea id="requirements" name="requirements" rows="4"
             class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">{{ old('requirements', $listing?->requirements) }}</textarea>
         <x-field-error name="requirements" />
@@ -59,7 +59,7 @@
             </select>
         </div>
         <div>
-            <label for="city" class="block text-sm font-medium text-slate-700 dark:text-slate-300">City <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
+            <label for="city" class="block text-sm font-medium text-slate-700 dark:text-slate-300">City <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
             <input id="city" name="city" type="text" value="{{ old('city', $listing?->city) }}"
                 class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
         </div>
@@ -76,18 +76,18 @@
 
     <div class="grid gap-5 sm:grid-cols-3">
         <div>
-            <label for="salary_min" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Salary min (Rs.) <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
+            <label for="salary_min" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Salary min (Rs.) <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
             <input id="salary_min" name="salary_min" type="number" step="1" min="0" value="{{ old('salary_min', $listing?->salary_min !== null ? (float) $listing->salary_min : '') }}"
                 class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
         </div>
         <div>
-            <label for="salary_max" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Salary max (Rs.) <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
+            <label for="salary_max" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Salary max (Rs.) <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
             <input id="salary_max" name="salary_max" type="number" step="1" min="0" value="{{ old('salary_max', $listing?->salary_max !== null ? (float) $listing->salary_max : '') }}"
                 class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
             <x-field-error name="salary_max" />
         </div>
         <div>
-            <label for="closes_at" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Closes at <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
+            <label for="closes_at" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Closes at <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
             <input id="closes_at" name="closes_at" type="datetime-local" value="{{ $closesAtValue }}"
                 class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
         </div>

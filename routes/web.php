@@ -25,7 +25,6 @@ use App\Http\Controllers\Admin\FraudController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\ServiceAreaController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
-use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StaffController as AdminStaffController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -411,6 +410,7 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
             Route::post('providers/{provider}/reject', [AdminProviderController::class, 'reject'])->name('providers.reject');
             Route::post('providers/{provider}/suspend', [AdminProviderController::class, 'suspend'])->name('providers.suspend');
             Route::post('providers/{provider}/resume', [AdminProviderController::class, 'resume'])->name('providers.resume');
+            Route::post('providers/{provider}/commission', [AdminProviderController::class, 'updateCommission'])->name('providers.commission');
         });
 
         Route::middleware('permission:disputes')->group(function () {
@@ -424,16 +424,14 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
             Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
         });
 
-        Route::middleware('permission:settings')->group(function () {
-            Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
-            Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
-        });
-
         Route::middleware('permission:service-areas')->group(function () {
             Route::get('service-areas', [ServiceAreaController::class, 'index'])->name('service-areas.index');
+            Route::get('service-areas/create', [ServiceAreaController::class, 'create'])->name('service-areas.create');
             Route::post('service-areas', [ServiceAreaController::class, 'store'])->name('service-areas.store');
+            Route::get('service-areas/{serviceArea}/edit', [ServiceAreaController::class, 'edit'])->name('service-areas.edit');
             Route::put('service-areas/{serviceArea}', [ServiceAreaController::class, 'update'])->name('service-areas.update');
             Route::delete('service-areas/{serviceArea}', [ServiceAreaController::class, 'destroy'])->name('service-areas.destroy');
+            Route::post('service-areas/geofencing', [ServiceAreaController::class, 'toggleGeofencing'])->name('service-areas.geofencing');
         });
 
         Route::middleware('permission:fraud')->group(function () {

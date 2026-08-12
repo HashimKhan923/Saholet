@@ -47,8 +47,13 @@ class CareerListingController extends Controller
     public function edit(CareerListing $career): View
     {
         $categories = CareerCategory::orderBy('name')->get();
+        $applicationsCount = $career->applications()->count();
 
-        return view('admin.careers.edit', ['listing' => $career, 'categories' => $categories]);
+        return view('admin.careers.edit', [
+            'listing' => $career,
+            'categories' => $categories,
+            'applicationsCount' => $applicationsCount,
+        ]);
     }
 
     public function update(Request $request, CareerListing $career): RedirectResponse

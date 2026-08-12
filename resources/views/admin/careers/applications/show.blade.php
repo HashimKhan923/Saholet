@@ -31,7 +31,14 @@
                         <div><dt class="text-slate-500 dark:text-slate-400">Experience</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $p->experience_years }} yr</dd></div>
                         <div><dt class="text-slate-500 dark:text-slate-400">City</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $p->city ?: '—' }}</dd></div>
                         @if ($p->skills)
-                            <div class="sm:col-span-2"><dt class="text-slate-500 dark:text-slate-400">Skills</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ implode(', ', $p->skills) }}</dd></div>
+                            <div class="sm:col-span-2">
+                                <dt class="text-slate-500 dark:text-slate-400">Skills</dt>
+                                <dd class="mt-1.5 flex flex-wrap gap-1.5">
+                                    @foreach ($p->skills as $skill)
+                                        <span class="inline-flex items-center rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-950/40 dark:text-brand-400">{{ $skill }}</span>
+                                    @endforeach
+                                </dd>
+                            </div>
                         @endif
                     @endif
                 </dl>
@@ -52,15 +59,34 @@
                 </div>
             @endif
 
-            @if ($application->admin_notes)
-                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Notes</h2>
-                    <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ $application->admin_notes }}</p>
-                    @if ($application->reviewer)
-                        <p class="mt-2 text-xs text-slate-400 dark:text-slate-500">Last updated by {{ $application->reviewer->name }} on {{ $application->reviewed_at?->format('d M Y') }}</p>
-                    @endif
-                </div>
-            @endif
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Timeline</h2>
+                <ul class="mt-4 space-y-4">
+                    @foreach ($application->events as $event)
+                        @php
+                            [$dotClass, $label] = match ($event->type) {
+                                \App\Models\CareerApplicationEvent::TYPE_SUBMITTED => ['bg-brand-500', 'Application submitted'],
+                                \App\Models\CareerApplicationEvent::TYPE_STATUS_CHANGED => ['bg-sky-500', 'Status changed to ' . ucfirst(str_replace('_', ' ', $event->to_status))],
+                                \App\Models\CareerApplicationEvent::TYPE_NOTE_ADDED => ['bg-slate-400', 'Note added'],
+                                \App\Models\CareerApplicationEvent::TYPE_WITHDRAWN => ['bg-red-500', 'Application withdrawn'],
+                                default => ['bg-slate-400', ucfirst(str_replace('_', ' ', $event->type))],
+                            };
+                        @endphp
+                        <li class="flex gap-3">
+                            <span class="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full {{ $dotClass }}"></span>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-sm font-medium text-slate-800 dark:text-slate-200">{{ $label }}</p>
+                                @if ($event->type === \App\Models\CareerApplicationEvent::TYPE_NOTE_ADDED && $event->note)
+                                    <p class="mt-1 whitespace-pre-line text-sm text-slate-600 dark:text-slate-400">{{ $event->note }}</p>
+                                @endif
+                                <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">
+                                    {{ $event->causedBy?->name ?? 'System' }} &middot; {{ $event->created_at->format('d M Y, g:ia') }}
+                                </p>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
         </div>
 
         <aside class="lg:col-span-1">

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Provider;
 use App\Http\Controllers\Controller;
 use App\Models\ProviderDocument;
 use App\Models\ProviderProfile;
-use App\Models\ServiceArea;
 use App\Support\PakFormat;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,7 +20,7 @@ class OnboardingController extends Controller
         $profile->load('documents');
 
         $documentTypes = config('kyc.documents');
-        $cities = ServiceArea::active()->pluck('city')->unique()->sort()->values();
+        $cities = ProviderProfile::approved()->pluck('city')->filter()->unique()->sort()->values();
 
         /* ── Step 1: details ── */
         $detailsDone = filled($profile->city) && filled($profile->cnic_number);
