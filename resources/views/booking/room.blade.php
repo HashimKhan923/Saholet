@@ -174,6 +174,31 @@ window.__initGoogleMaps = function () {
     document.dispatchEvent(new Event('google-maps-ready'));
 };
 
+/** Small circular map badge with a centered icon — used for both the provider (person) and destination (home) markers. */
+function buildMapBadge(bgColor, iconSvgPath) {
+    const badge = document.createElement('div');
+    badge.style.width = '32px';
+    badge.style.height = '32px';
+    badge.style.borderRadius = '50%';
+    badge.style.background = bgColor;
+    badge.style.border = '2px solid #ffffff';
+    badge.style.boxShadow = '0 1px 4px rgba(0,0,0,0.35)';
+    badge.style.display = 'flex';
+    badge.style.alignItems = 'center';
+    badge.style.justifyContent = 'center';
+    badge.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + iconSvgPath + '</svg>';
+    return badge;
+}
+
+function buildPersonBadge() {
+    // Brand green — matches the driving route line, so it's visually clear it's "the provider on the move".
+    return buildMapBadge('#1a7a35', '<circle cx="12" cy="8" r="3.2"/><path d="M5.5 20c0-3.3 2.9-6 6.5-6s6.5 2.7 6.5 6"/>');
+}
+
+function buildHomeBadge() {
+    return buildMapBadge('#c4341f', '<path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9"/><path d="M10 20v-5h4v5"/>');
+}
+
 document.addEventListener('alpine:init', () => {
     Alpine.data('bookingRoom', (cfg) => ({
         bookingId: cfg.bookingId,
@@ -329,19 +354,11 @@ document.addEventListener('alpine:init', () => {
             });
 
             if (this.destination) {
-                const destDot = document.createElement('div');
-                destDot.style.width = '16px';
-                destDot.style.height = '16px';
-                destDot.style.borderRadius = '50%';
-                destDot.style.background = '#c4341f';
-                destDot.style.border = '2px solid #ffffff';
-                destDot.style.boxShadow = '0 0 0 1px rgba(0,0,0,0.25)';
-
                 this.destMarker = new google.maps.marker.AdvancedMarkerElement({
                     position: { lat: this.destination.lat, lng: this.destination.lng },
                     map: this.map,
                     title: this.destination.address || 'Job location',
-                    content: destDot,
+                    content: buildHomeBadge(),
                 });
             }
 
@@ -374,6 +391,7 @@ document.addEventListener('alpine:init', () => {
                     position: pos,
                     map: this.map,
                     title: 'Provider',
+                    content: buildPersonBadge(),
                 });
             } else {
                 this.marker.position = pos;

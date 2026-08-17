@@ -29,6 +29,7 @@
                         @php $p = $application->jobSeeker->jobSeekerProfile; @endphp
                         <div><dt class="text-slate-500 dark:text-slate-400">Headline</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $p->headline ?: '—' }}</dd></div>
                         <div><dt class="text-slate-500 dark:text-slate-400">Experience</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $p->experience_years }} yr</dd></div>
+                        <div><dt class="text-slate-500 dark:text-slate-400">Qualification</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $p->qualification ? \App\Models\JobSeekerProfile::QUALIFICATIONS[$p->qualification] ?? $p->qualification : '—' }}</dd></div>
                         <div><dt class="text-slate-500 dark:text-slate-400">Address</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $p->address ?: '—' }}</dd></div>
                         <div><dt class="text-slate-500 dark:text-slate-400">City</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $p->city ?: '—' }}</dd></div>
                         @if ($p->skills)

@@ -8,6 +8,18 @@ use Illuminate\Support\Facades\Storage;
 
 class JobSeekerProfile extends Model
 {
+    /** Pre-defined so admins reviewing candidates get a consistent, filterable value instead of free text. */
+    public const QUALIFICATIONS = [
+        'middle' => 'Middle',
+        'matric' => 'Matric / Secondary (SSC)',
+        'intermediate' => 'Intermediate (HSSC)',
+        'diploma' => 'Diploma / Vocational Certificate',
+        'bachelors' => "Bachelor's",
+        'masters' => "Master's",
+        'mphil' => 'MPhil',
+        'phd' => 'PhD',
+    ];
+
     protected $fillable = [
         'user_id',
         'headline',
@@ -16,6 +28,7 @@ class JobSeekerProfile extends Model
         'address',
         'experience_years',
         'current_position',
+        'qualification',
         'skills',
         'linkedin_url',
         'resume_path',

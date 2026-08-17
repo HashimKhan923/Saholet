@@ -7,6 +7,7 @@ use App\Models\JobSeekerProfile;
 use App\Services\ResumeExtractionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -29,6 +30,7 @@ class ProfileController extends Controller
             'address' => ['nullable', 'string', 'max:500'],
             'experience_years' => ['required', 'integer', 'min:0', 'max:60'],
             'current_position' => ['nullable', 'string', 'max:255'],
+            'qualification' => ['nullable', Rule::in(array_keys(JobSeekerProfile::QUALIFICATIONS))],
             'skills' => ['nullable', 'array'],
             'skills.*' => ['string', 'max:60'],
             'linkedin_url' => ['nullable', 'url', 'max:255'],
