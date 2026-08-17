@@ -13,7 +13,7 @@
     $showFinanceSection = $u->hasPermission('invoices') || $u->isAdmin();
     $showTrustSection = $u->hasPermission('disputes') || $u->hasPermission('fraud');
     $showCatalogSection = $u->hasPermission('categories') || $u->hasPermission('services') || $u->hasPermission('service-areas');
-    $showContentSection = $u->hasPermission('faqs');
+    $showContentSection = $u->hasPermission('faqs') || $u->hasPermission('banners');
     $showAccountsSection = $u->isAdmin();
 @endphp
 
@@ -139,6 +139,11 @@
     @if (auth()->user()->hasPermission('faqs'))
     <x-portal-nav-link :href="route('admin.faqs.index')" :label="__('admin.nav.faqs')" :active="request()->routeIs('admin.faqs.*')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.5 2.5 0 0 1 4.8 1c0 1.5-2.3 1.8-2.3 3.3" stroke-linecap="round"/><circle cx="12" cy="17" r="0.6" fill="currentColor" stroke="none"/></svg>
+    </x-portal-nav-link>
+    @endif
+    @if (auth()->user()->hasPermission('banners'))
+    <x-portal-nav-link :href="route('admin.banners.index')" :label="__('admin.nav.banners')" :active="request()->routeIs('admin.banners.*')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="9" r="1.5"/></svg>
     </x-portal-nav-link>
     @endif
 

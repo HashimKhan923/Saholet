@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Banner;
 use App\Models\Booking;
 use App\Models\Faq;
 use App\Models\ProviderProfile;
@@ -65,12 +66,15 @@ class HomeController extends Controller
 
         $faqs = Cache::remember('landing.faqs', 600, fn () => Faq::active()->ordered()->get());
 
+        $banners = Cache::remember('landing.banners', 600, fn () => Banner::active()->orderBy('sort_order')->get());
+
         return [
             'categories' => $categories,
             'cheapestService' => $cheapestService,
             'stats' => $stats,
             'testimonials' => $testimonials,
             'faqs' => $faqs,
+            'banners' => $banners,
             'serviceSearchIndex' => $serviceSearchIndex,
         ];
     }
