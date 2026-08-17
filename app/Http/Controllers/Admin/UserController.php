@@ -15,15 +15,23 @@ class UserController extends Controller
         $role = $request->query('role', 'all');
         $q = trim((string) $request->query('q', ''));
 
-        if (! in_array($role, ['all', 'consumer', 'provider', 'job_seeker'], true)) {
+        if (! in_array($role, ['all', 'consumer', 'provider', 'job_seeker', 'deleted'], true)) {
             $role = 'all';
         }
 
         $query = User::whereIn('role', [User::ROLE_CONSUMER, User::ROLE_PROVIDER, User::ROLE_JOB_SEEKER])
             ->latest('id');
 
-        if ($role !== 'all') {
-            $query->where('role', $role);
+        // Deleted accounts are anonymized, not removed — they only ever show up
+        // under the "Deleted" tab, never mixed into the normal role tabs.
+        if ($role === 'deleted') {
+            $query->where('email', 'like', 'deleted-%');
+        } else {
+            $query->where('email', 'not like', 'deleted-%');
+
+            if ($role !== 'all') {
+                $query->where('role', $role);
+            }
         }
 
         if ($q !== '') {
@@ -36,10 +44,10 @@ class UserController extends Controller
         $users = $query->paginate(15)->withQueryString();
 
         $counts = [
-            'total' => User::whereIn('role', [User::ROLE_CONSUMER, User::ROLE_PROVIDER, User::ROLE_JOB_SEEKER])->count(),
-            'consumers' => User::where('role', User::ROLE_CONSUMER)->count(),
-            'providers' => User::where('role', User::ROLE_PROVIDER)->count(),
-            'job_seekers' => User::where('role', User::ROLE_JOB_SEEKER)->count(),
+            'total' => User::whereIn('role', [User::ROLE_CONSUMER, User::ROLE_PROVIDER, User::ROLE_JOB_SEEKER])->where('email', 'not like', 'deleted-%')->count(),
+            'consumers' => User::where('role', User::ROLE_CONSUMER)->where('email', 'not like', 'deleted-%')->count(),
+            'providers' => User::where('role', User::ROLE_PROVIDER)->where('email', 'not like', 'deleted-%')->count(),
+            'job_seekers' => User::where('role', User::ROLE_JOB_SEEKER)->where('email', 'not like', 'deleted-%')->count(),
             'suspended' => User::whereNotNull('suspended_at')->where('email', 'not like', 'deleted-%')->count(),
             'deleted' => User::where('email', 'like', 'deleted-%')->count(),
         ];

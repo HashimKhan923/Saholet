@@ -14,6 +14,7 @@
             'pending' => 'Pending (' . $counts['pending'] . ')',
             'approved' => 'Approved (' . $counts['approved'] . ')',
             'rejected' => 'Rejected (' . $counts['rejected'] . ')',
+            'deleted' => 'Deleted (' . $counts['deleted'] . ')',
         ];
     @endphp
     <div class="mt-6 flex flex-wrap gap-2">
@@ -63,6 +64,9 @@
                             @endif
                         </td>
                         <td class="px-5 py-3">
+                            @if ($profile->user->isDeleted())
+                                <span class="inline-flex rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700 dark:bg-red-950/40 dark:text-red-400">Deleted</span>
+                            @else
                             @switch($profile->status)
                                 @case('approved')
                                     <span class="inline-flex rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-950/40 dark:text-brand-400">Approved</span>
@@ -76,6 +80,7 @@
                                 @default
                                     <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400">Draft</span>
                             @endswitch
+                            @endif
                         </td>
                         <td class="px-5 py-3 text-right">
                             <a href="{{ route('admin.providers.show', $profile) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">Review</a>

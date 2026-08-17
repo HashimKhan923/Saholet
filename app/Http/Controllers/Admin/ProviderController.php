@@ -18,7 +18,7 @@ class ProviderController extends Controller
     {
         $status = $request->query('status', 'all');
 
-        if (! in_array($status, ['pending', 'approved', 'rejected', 'all'], true)) {
+        if (! in_array($status, ['pending', 'approved', 'rejected', 'all', 'deleted'], true)) {
             $status = 'all';
         }
 
@@ -27,16 +27,28 @@ class ProviderController extends Controller
             ->latest('submitted_at')
             ->latest('updated_at');
 
-        if ($status !== 'all') {
-            $query->where('status', $status);
+        // A deleted provider's underlying user is anonymized but the ProviderProfile
+        // row (and its stale approved/pending/rejected status) is left alone — so it
+        // only ever shows under "Deleted" here, never mixed into the other tabs.
+        if ($status === 'deleted') {
+            $query->whereHas('user', fn ($q) => $q->where('email', 'like', 'deleted-%'));
+        } else {
+            $query->whereHas('user', fn ($q) => $q->where('email', 'not like', 'deleted-%'));
+
+            if ($status !== 'all') {
+                $query->where('status', $status);
+            }
         }
 
         $profiles = $query->paginate(15)->withQueryString();
 
+        $notDeleted = fn ($q) => $q->whereHas('user', fn ($u) => $u->where('email', 'not like', 'deleted-%'));
+
         $counts = [
-            'pending' => ProviderProfile::where('status', ProviderProfile::STATUS_PENDING)->count(),
-            'approved' => ProviderProfile::where('status', ProviderProfile::STATUS_APPROVED)->count(),
-            'rejected' => ProviderProfile::where('status', ProviderProfile::STATUS_REJECTED)->count(),
+            'pending' => $notDeleted(ProviderProfile::where('status', ProviderProfile::STATUS_PENDING))->count(),
+            'approved' => $notDeleted(ProviderProfile::where('status', ProviderProfile::STATUS_APPROVED))->count(),
+            'rejected' => $notDeleted(ProviderProfile::where('status', ProviderProfile::STATUS_REJECTED))->count(),
+            'deleted' => ProviderProfile::whereHas('user', fn ($q) => $q->where('email', 'like', 'deleted-%'))->count(),
         ];
 
         return view('admin.providers.index', compact('profiles', 'status', 'counts'));

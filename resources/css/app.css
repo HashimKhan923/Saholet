@@ -262,11 +262,26 @@
  * completely foreign element.
  * ------------------------------------------------------------------------ */
 .address-autocomplete gmp-place-autocomplete {
-    --gmpx-color-surface: transparent;
+    /* Forced explicitly rather than left transparent — the widget's shadow-DOM
+     * form control otherwise falls back to a dark theme (following the OS/browser
+     * color-scheme preference), regardless of the page's own light/dark toggle. */
+    color-scheme: light;
+    --gmpx-color-surface: #ffffff;
+    --gmpx-color-on-surface: #0f172a;
+    --gmpx-color-on-surface-variant: #64748b;
+    --gmpx-color-primary: var(--color-brand-600, #16a34a);
     --gmpx-font-family-base: inherit;
     --gmpx-font-size-base: 0.875rem;
     width: 100%;
     display: block;
+}
+
+:root[data-theme="dark"] .address-autocomplete gmp-place-autocomplete,
+.dark .address-autocomplete gmp-place-autocomplete {
+    color-scheme: dark;
+    --gmpx-color-surface: #0f172a;
+    --gmpx-color-on-surface: #f1f5f9;
+    --gmpx-color-on-surface-variant: #94a3b8;
 }
 
 /* ---------------------------------------------------------------------------
