@@ -13,6 +13,7 @@ return [
         'service_areas' => 'سروس ایریاز',
         'content_section' => 'مواد',
         'faqs' => 'اکثر پوچھے گئے سوالات',
+        'banners' => 'بینرز',
         'contact_messages' => 'رابطہ پیغامات',
         'bookings_section' => 'بکنگز اور فراہمی',
         'bookings' => 'بکنگز',

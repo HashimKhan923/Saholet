@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AvailabilityController;
+use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BookingRoomController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DisputeController;
@@ -66,6 +67,8 @@ Route::get('providers/{provider}/services/{service}/availability', [Availability
 
 Route::get('subscription-plans', [SubscriptionPlanController::class, 'index'])->name('api.subscription-plans.index');
 Route::get('cities', [ServiceAreaController::class, 'index'])->name('api.cities.index');
+Route::get('service-areas/geofence', [ServiceAreaController::class, 'geofence'])->name('api.service-areas.geofence');
+Route::get('banners', [BannerController::class, 'index'])->name('api.banners.index');
 
 // ─── Authenticated (all roles) ───────────────────────────────────────
 Route::middleware(['auth:sanctum', 'api.not.suspended'])->group(function () {

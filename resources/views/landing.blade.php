@@ -55,6 +55,59 @@
     </div>
 </section>
 
+{{-- ================================================ Banner slider --}}
+@if ($banners->isNotEmpty())
+<section class="py-10 sm:py-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="relative overflow-hidden rounded-2xl shadow-sm"
+             x-data="{ active: 0 }"
+             x-init="setInterval(() => { active = (active + 1) % {{ $banners->count() }} }, 5000)">
+            <div class="relative aspect-[21/9] w-full bg-slate-100 dark:bg-slate-800">
+                @foreach ($banners as $i => $banner)
+                    @if ($banner->link_url)
+                        <a href="{{ $banner->link_url }}"
+                           class="absolute inset-0"
+                           x-show="active === {{ $i }}"
+                           x-transition:enter="transition-opacity duration-700"
+                           x-transition:enter-start="opacity-0"
+                           x-transition:enter-end="opacity-100"
+                           x-transition:leave="transition-opacity duration-700"
+                           x-transition:leave-start="opacity-100"
+                           x-transition:leave-end="opacity-0"
+                           x-cloak>
+                            <img src="{{ $banner->image_url }}" alt="" class="h-full w-full object-cover">
+                        </a>
+                    @else
+                        <div class="absolute inset-0"
+                             x-show="active === {{ $i }}"
+                             x-transition:enter="transition-opacity duration-700"
+                             x-transition:enter-start="opacity-0"
+                             x-transition:enter-end="opacity-100"
+                             x-transition:leave="transition-opacity duration-700"
+                             x-transition:leave-start="opacity-100"
+                             x-transition:leave-end="opacity-0"
+                             x-cloak>
+                            <img src="{{ $banner->image_url }}" alt="" class="h-full w-full object-cover">
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+
+            @if ($banners->count() > 1)
+                <div class="absolute inset-x-0 bottom-3 flex justify-center gap-1.5">
+                    @foreach ($banners as $i => $banner)
+                        <button type="button" @click="active = {{ $i }}"
+                            class="h-1.5 rounded-full transition-all"
+                            :class="active === {{ $i }} ? 'w-6 bg-white' : 'w-1.5 bg-white/60'"
+                            aria-label="Show banner {{ $i + 1 }}"></button>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    </div>
+</section>
+@endif
+
 {{-- ======================================================== Services --}}
 <section id="services" class="py-16 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

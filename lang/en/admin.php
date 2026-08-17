@@ -13,6 +13,7 @@ return [
         'service_areas' => 'Service areas',
         'content_section' => 'Content',
         'faqs' => 'FAQs',
+        'banners' => 'Banners',
         'contact_messages' => 'Contact messages',
         'bookings_section' => 'Bookings & delivery',
         'bookings' => 'Bookings',
