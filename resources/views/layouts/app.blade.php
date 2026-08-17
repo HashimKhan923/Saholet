@@ -78,7 +78,7 @@
 
             {{-- Socials + language --}}
             <div class="flex items-center gap-3">
-                <a href="https://www.facebook.com/people/Sahoulat/61591342542475/" target="_blank" rel="noopener" aria-label="Facebook" class="grid h-6 w-6 place-items-center rounded bg-white/15 transition-colors hover:bg-white/30">
+                <a href="https://www.facebook.com/profile.php?id=61592766283756" target="_blank" rel="noopener" aria-label="Facebook" class="grid h-6 w-6 place-items-center rounded bg-white/15 transition-colors hover:bg-white/30">
                     <svg viewBox="0 0 24 24" class="h-3 w-3 fill-current"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                 </a>
                 <a href="https://www.instagram.com/sahoulatpk/" target="_blank" rel="noopener" aria-label="Instagram" class="grid h-6 w-6 place-items-center rounded bg-white/15 transition-colors hover:bg-white/30">
@@ -277,7 +277,7 @@
 
                     {{-- Social links --}}
                     <div class="mt-5 flex items-center gap-3">
-                        <a href="https://www.facebook.com/people/Sahoulat/61591342542475/" aria-label="Facebook" class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition hover:bg-brand-50 hover:text-brand-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-brand-950/50 dark:hover:text-brand-400">
+                        <a href="https://www.facebook.com/profile.php?id=61592766283756" aria-label="Facebook" class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition hover:bg-brand-50 hover:text-brand-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-brand-950/50 dark:hover:text-brand-400">
                             <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                         </a>
                         <a href="https://www.instagram.com/sahoulatpk/" aria-label="Instagram" class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition hover:bg-brand-50 hover:text-brand-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-brand-950/50 dark:hover:text-brand-400">
