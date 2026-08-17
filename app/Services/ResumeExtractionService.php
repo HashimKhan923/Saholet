@@ -20,6 +20,7 @@ class ResumeExtractionService
         'summary' => ['summary', 'objective', 'profile', 'about', 'professional summary'],
         'experience' => ['experience', 'work experience', 'employment history', 'professional experience'],
         'skills' => ['skills', 'technical skills', 'core competencies', 'key skills'],
+        'education' => ['education', 'academic background', 'educational qualification', 'qualification', 'qualifications'],
     ];
 
     /**
@@ -28,9 +29,29 @@ class ResumeExtractionService
      * line all the way to the end of the document whenever it's not the last section.
      */
     private const OTHER_HEADINGS = [
-        'education', 'certifications', 'certification', 'projects', 'languages',
+        'certifications', 'certification', 'projects', 'languages',
         'references', 'awards', 'achievements', 'publications', 'volunteer experience',
         'interests', 'hobbies', 'contact', 'personal information', 'training',
+    ];
+
+    /**
+     * Ordered highest → lowest, checked in this order so a resume listing multiple
+     * levels (very common — "Matric... Intermediate... BSc...") maps to the highest
+     * one actually held, not just whichever appears first in the text. Keys must
+     * match JobSeekerProfile::QUALIFICATIONS exactly — this is what gets saved as
+     * old-input for the qualification <select> on the profile form.
+     *
+     * @var array<string, string[]>
+     */
+    private const QUALIFICATION_KEYWORDS = [
+        'phd' => ['phd', 'ph.d', 'doctorate', 'doctoral'],
+        'mphil' => ['mphil', 'm.phil', 'm phil'],
+        'masters' => ['master', "master's", 'masters', 'msc', 'm.sc', 'ms', 'm.s', 'ma', 'm.a', 'm.e', 'mtech', 'm.tech', 'mcom', 'm.com', 'mba', 'mcs', 'llm'],
+        'bachelors' => ['bachelor', "bachelor's", 'bachelors', 'bsc', 'b.sc', 'bs', 'b.s', 'ba', 'b.a', 'b.e', 'btech', 'b.tech', 'bcom', 'b.com', 'bba', 'bcs', 'llb'],
+        'diploma' => ['diploma', 'vocational certificate'],
+        'intermediate' => ['intermediate', 'fsc', 'f.sc', 'hssc', 'a-level', 'a level'],
+        'matric' => ['matric', 'matriculation', 'ssc', 'secondary school certificate', 'o-level', 'o level'],
+        'middle' => ['middle school'],
     ];
 
     /** @return array<string, mixed> Partial set of: headline, bio, current_position, experience_years, skills */
@@ -55,20 +76,22 @@ class ResumeExtractionService
         if (($summary = $sections['summary'] ?? null) !== null) {
             $lines = $this->nonEmptyLines($summary);
             if ($lines !== []) {
-                $bio = trim($summary);
-                if ($bio !== '') {
-                    $result['bio'] = mb_substr($bio, 0, 2000);
-                }
-                if (mb_strlen($lines[0]) <= 255) {
-                    $result['headline'] = $lines[0];
+                // Flattened, not the raw section text — a summary is normally one flowing
+                // paragraph, and PDF extraction breaks lines wherever the page happened to
+                // wrap, not at sentence boundaries. Collapsing that back into a paragraph
+                // keeps both the bio and the headline from being cut off mid-sentence.
+                $flat = trim(preg_replace('/\s+/', ' ', $summary));
+                if ($flat !== '') {
+                    $result['bio'] = mb_substr($flat, 0, 2000);
+                    $result['headline'] = $this->firstSentence($flat, $lines[0]);
                 }
             }
         }
 
         if (($experience = $sections['experience'] ?? null) !== null) {
-            $lines = $this->nonEmptyLines($experience);
-            if ($lines !== [] && mb_strlen($lines[0]) <= 255) {
-                $result['current_position'] = $lines[0];
+            $position = $this->guessCurrentPosition($experience);
+            if ($position !== null) {
+                $result['current_position'] = $position;
             }
         }
 
@@ -81,6 +104,10 @@ class ResumeExtractionService
             if ($parsed !== []) {
                 $result['skills'] = $parsed;
             }
+        }
+
+        if (($qualification = $this->guessQualification($text, $sections['education'] ?? '')) !== null) {
+            $result['qualification'] = $qualification;
         }
 
         return $result;
@@ -176,6 +203,39 @@ class ResumeExtractionService
         return array_values(array_filter($lines, fn ($line) => $line !== ''));
     }
 
+    /** Up through the first sentence-ending punctuation in the flattened paragraph, capped at the field's own 255-char limit — falls back to the raw first line if there's no sentence break early enough to use. */
+    private function firstSentence(string $flatText, string $firstLine): ?string
+    {
+        if (preg_match('/^(.{1,255}?[.!?])(\s|$)/', $flatText, $matches) === 1) {
+            return $matches[1];
+        }
+
+        if (mb_strlen($flatText) <= 255) {
+            return $flatText;
+        }
+
+        return mb_strlen($firstLine) <= 255 ? $firstLine : mb_substr($flatText, 0, 255);
+    }
+
+    /**
+     * The first line of an experience entry isn't always the job title — many resumes
+     * lead with the company/location and a right-aligned date range instead (title on
+     * the line below). Skip any line that looks like that date/meta line rather than
+     * blindly trusting whichever line comes first.
+     */
+    private function guessCurrentPosition(string $experienceSection): ?string
+    {
+        foreach ($this->nonEmptyLines($experienceSection) as $line) {
+            if (preg_match('/\b(19|20)\d{2}\b/', $line) === 1 || stripos($line, 'present') !== false) {
+                continue;
+            }
+
+            return mb_strlen($line) <= 255 ? $line : null;
+        }
+
+        return null;
+    }
+
     private function guessExperienceYears(string $fullText, string $experienceSection): ?int
     {
         if (preg_match('/(\d{1,2})\+?\s*years?\b/i', $fullText, $matches) === 1) {
@@ -192,6 +252,23 @@ class ResumeExtractionService
             $span = max($years) - min($years);
             if ($span >= 0 && $span <= 60) {
                 return $span;
+            }
+        }
+
+        return null;
+    }
+
+    /** Prefers the Education section (if found) over the full text — a "Bachelor's" mentioned in a job title elsewhere shouldn't outrank a real education entry. */
+    private function guessQualification(string $fullText, string $educationSection): ?string
+    {
+        $haystack = trim($educationSection) !== '' ? $educationSection : $fullText;
+        $haystack = strtolower($haystack);
+
+        foreach (self::QUALIFICATION_KEYWORDS as $level => $keywords) {
+            foreach ($keywords as $keyword) {
+                if (preg_match('/\b' . preg_quote($keyword, '/') . '\b/i', $haystack) === 1) {
+                    return $level;
+                }
             }
         }
 
