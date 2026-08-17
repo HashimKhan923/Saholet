@@ -51,12 +51,59 @@
         </div>
     @endif
 
+    @if ($categories->isNotEmpty())
+        @php
+            $categoryPalette = [
+                'plumbing'   => 'bg-sky-50 text-sky-600 dark:bg-sky-950/60 dark:text-sky-400',
+                'ac'         => 'bg-cyan-50 text-cyan-600 dark:bg-cyan-950/60 dark:text-cyan-400',
+                'carpentry'  => 'bg-orange-50 text-orange-700 dark:bg-orange-950/60 dark:text-orange-400',
+                'cleaning'   => 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400',
+                'painting'   => 'bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400',
+                'appliance'  => 'bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400',
+                'pest'       => 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
+                'default'    => 'bg-brand-50 text-brand-600 dark:bg-brand-950/60 dark:text-brand-400',
+            ];
+        @endphp
+        <div class="mb-14 grid grid-cols-2 gap-5 lg:grid-cols-4">
+            @foreach ($categories as $i => $category)
+                @php $iconTone = $categoryPalette[$category->icon] ?? $categoryPalette['default']; @endphp
+                <a href="#category-{{ $category->id }}"
+                   class="reveal card-lift group relative isolate block aspect-square overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-sm ring-1 ring-black/5 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-2xl hover:ring-brand-400/30 dark:border-slate-800 dark:bg-slate-800"
+                   style="--reveal-delay: {{ ($i % 4) * 70 }}ms">
+                    @if ($category->image_url)
+                       <img src="{{ $category->image_url }}" alt="" loading="lazy"
+                             class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.08]">
+                        <div class="absolute inset-0 bg-gradient-to-t from-white via-white/85 via-20% to-transparent dark:from-slate-950 dark:via-slate-950/85"></div>
+                    @else
+                        <div class="absolute inset-0 bg-gradient-to-br from-brand-50 to-white dark:from-slate-900 dark:to-slate-800"></div>
+                    @endif
+
+                    <span class="absolute right-4 top-4 z-10 flex h-8 w-8 -translate-y-1 items-center justify-center rounded-full bg-white text-brand-600 opacity-0 shadow-sm transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 dark:bg-slate-900 dark:text-brand-400">
+                        <svg viewBox="0 0 24 24" class="h-4 w-4 rtl:-scale-x-100" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 17 17 7M8 7h9v9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+
+                    <div class="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-3 p-4 sm:p-5">
+                        <span class="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-white shadow-sm transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-110 sm:h-11 sm:w-11 dark:border-slate-900 {{ $iconTone }}">
+                            <x-service-icon :name="$category->icon" class="h-5 w-5" />
+                        </span>
+                        <div>
+                            <p class="font-display text-base font-bold leading-tight text-slate-900 transition-colors duration-200 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-400 sm:text-lg">{{ $category->name }}</p>
+                            <p class="mt-1 line-clamp-2 text-xs leading-snug text-slate-500 dark:text-slate-400 sm:text-sm">
+                                {{ $category->description ?: trans_choice('messages.landing.services_count', $category->services?->count() ?? 0, ['count' => $category->services?->count() ?? 0]) }}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+    @endif
+
     @forelse ($categories as $category)
         @php
             $categorySearch = mb_strtolower($category->name . ' ' . $category->description);
             $servicesSearch = $category->services->map(fn ($s) => mb_strtolower($s->name . ' ' . $s->description))->all();
         @endphp
-        <div class="mb-14 last:mb-0"
+        <div id="category-{{ $category->id }}" class="mb-14 scroll-mt-44 last:mb-0"
             x-show="q === '' || @js($categorySearch).includes(q.toLowerCase()) || @js($servicesSearch).some(s => s.includes(q.toLowerCase()))">
 
             <div class="flex flex-wrap items-end justify-between gap-4">
