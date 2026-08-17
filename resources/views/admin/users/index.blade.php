@@ -35,7 +35,7 @@
 </svg>        </x-stat-card>
     </div>
 
-    @php $tabs = ['all' => 'All', 'consumer' => 'Consumers', 'provider' => 'Providers', 'job_seeker' => 'Job seekers']; @endphp
+    @php $tabs = ['all' => 'All', 'consumer' => 'Consumers', 'provider' => 'Providers', 'job_seeker' => 'Job seekers', 'deleted' => 'Deleted']; @endphp
     <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
         <div class="flex flex-wrap gap-2">
             @foreach ($tabs as $key => $label)

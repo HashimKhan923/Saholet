@@ -44,7 +44,7 @@ class SecurityHeaders
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com{$viteDevOrigins}",
                 "font-src 'self' https://fonts.gstatic.com",
                 "img-src 'self' data: blob: https:",
-                "connect-src 'self' {$ws} https://nominatim.openstreetmap.org https://maps.googleapis.com https://maps.gstatic.com{$viteDevOrigins}",
+                "connect-src 'self' {$ws} https://nominatim.openstreetmap.org https://maps.googleapis.com https://maps.gstatic.com https://places.googleapis.com{$viteDevOrigins}",
                 "frame-src 'self' https://www.google.com https://maps.google.com",
                 "frame-ancestors 'self'",
                 "base-uri 'self'",

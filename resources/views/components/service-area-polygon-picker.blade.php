@@ -1,6 +1,6 @@
 @props(['boundary' => null])
 
-<div x-data="serviceAreaPolygonPicker({ key: @js(config('services.google_maps.key')), boundary: @js($boundary) })" x-init="init()" class="mt-3">
+<div x-data="serviceAreaPolygonPicker({ key: @js(config('services.google_maps.key')), boundary: @js($boundary) })" class="mt-3">
     <div class="flex flex-wrap items-center justify-between gap-3">
         <label class="text-xs font-medium text-slate-700 dark:text-slate-300">
             Boundary <span class="text-red-500">*</span>
@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <div x-ref="search" class="address-autocomplete mt-1.5 overflow-hidden rounded-lg border border-slate-300 shadow-sm dark:border-slate-700"></div>
+    <div x-ref="search" class="address-autocomplete relative z-10 mt-1.5 rounded-lg border border-slate-300 shadow-sm dark:border-slate-700"></div>
 
     <div x-ref="map" class="mt-2 h-128 w-full rounded-lg border border-slate-300 bg-slate-100 dark:border-slate-700 dark:bg-slate-800"></div>
 

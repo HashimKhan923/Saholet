@@ -14,7 +14,7 @@
             @error('name') aria-invalid="true" @enderror
             class="mt-1.5 block w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:ring-2 dark:bg-slate-900 dark:text-white
                 @error('name') border-red-400 focus:border-red-500 focus:ring-red-200 dark:border-red-500 @else border-slate-300 focus:border-brand-500 focus:ring-brand-200 dark:border-slate-700 @enderror"
-            placeholder="e.g. Bahria Town (Precincts 1-20)">
+            placeholder="e.g. Bahria Town, FB Area, Nazimabad">
         <x-field-error name="name" />
     </div>
 
