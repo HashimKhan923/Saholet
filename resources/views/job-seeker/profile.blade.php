@@ -78,6 +78,12 @@
         </div>
 
         <div>
+            <label for="address" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Address <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
+            <input id="address" name="address" type="text" value="{{ old('address', $profile->address) }}" placeholder="House / street / area"
+                class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+        </div>
+
+        <div>
             <label for="city" class="block text-sm font-medium text-slate-700 dark:text-slate-200">City</label>
             <input id="city" name="city" type="text" value="{{ old('city', $profile->city) }}"
                 class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">

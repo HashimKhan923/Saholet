@@ -4,6 +4,7 @@ namespace App\Http\Controllers\JobSeeker;
 
 use App\Http\Controllers\Controller;
 use App\Models\JobSeekerProfile;
+use App\Services\ResumeExtractionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -25,6 +26,7 @@ class ProfileController extends Controller
             'headline' => ['nullable', 'string', 'max:255'],
             'bio' => ['nullable', 'string', 'max:2000'],
             'city' => ['nullable', 'string', 'max:120'],
+            'address' => ['nullable', 'string', 'max:500'],
             'experience_years' => ['required', 'integer', 'min:0', 'max:60'],
             'current_position' => ['nullable', 'string', 'max:255'],
             'skills' => ['nullable', 'array'],
@@ -39,7 +41,7 @@ class ProfileController extends Controller
         return back()->with('success', 'Profile saved.');
     }
 
-    public function storeResume(Request $request): RedirectResponse
+    public function storeResume(Request $request, ResumeExtractionService $extractor): RedirectResponse
     {
         $profile = $this->profileFor($request);
 
@@ -65,7 +67,13 @@ class ProfileController extends Controller
             'resume_uploaded_at' => now(),
         ]);
 
-        return back()->with('success', 'Resume uploaded.');
+        $extracted = $extractor->extract($path, $disk);
+
+        $message = $extracted !== []
+            ? "Resume uploaded — we've filled in a few fields below from it, please review before saving."
+            : 'Resume uploaded.';
+
+        return back()->withInput($extracted)->with('success', $message);
     }
 
     public function destroyResume(Request $request): RedirectResponse

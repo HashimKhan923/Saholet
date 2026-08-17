@@ -164,7 +164,12 @@
                                     <tr>
                                         <td class="py-2.5 pr-3 font-medium text-slate-800 dark:text-slate-200">{{ $booking->service->name ?? '—' }}</td>
                                         <td class="py-2.5 pr-3 text-slate-600 dark:text-slate-400">{{ $booking->consumer->name ?? '—' }}</td>
-                                        <td class="py-2.5 pr-3 text-slate-500 dark:text-slate-400">{{ $booking->scheduled_date?->format('d M Y') ?? '—' }}</td>
+                                        <td class="py-2.5 pr-3 text-slate-500 dark:text-slate-400">
+                                            {{ $booking->scheduled_date?->format('d M Y') ?? '—' }}
+                                            @if ($booking->scheduled_date && $booking->scheduled_time)
+                                                <span class="block text-xs text-slate-400 dark:text-slate-500">{{ substr($booking->scheduled_time, 0, 5) }}</span>
+                                            @endif
+                                        </td>
                                         <td class="py-2.5 pr-3 text-slate-600 dark:text-slate-400">Rs. {{ number_format((float) $booking->price, 0) }}</td>
                                         <td class="py-2.5">
                                             <span class="inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold capitalize text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ str_replace('_', ' ', $booking->status) }}</span>
