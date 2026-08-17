@@ -76,7 +76,10 @@
                         </td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ ucfirst($user->role) }}</td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $user->phone ?: '—' }}</td>
-                        <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $user->created_at->format('d M Y') }}</td>
+                        <td class="px-5 py-3 text-slate-600 dark:text-slate-400">
+                            {{ $user->created_at->format('d M Y') }}
+                            <span class="block text-xs text-slate-400 dark:text-slate-500">{{ $user->created_at->format('h:i A') }}</span>
+                        </td>
                         <td class="px-5 py-3">
                             @if ($user->isDeleted())
                                 <span class="inline-flex rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700 dark:bg-red-950/40 dark:text-red-400">Deleted</span>

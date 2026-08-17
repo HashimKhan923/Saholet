@@ -13,6 +13,7 @@ class JobSeekerProfile extends Model
         'headline',
         'bio',
         'city',
+        'address',
         'experience_years',
         'current_position',
         'skills',

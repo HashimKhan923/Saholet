@@ -24,7 +24,10 @@
                             <div class="font-medium text-slate-900 dark:text-white">{{ $application->jobSeeker->name }}</div>
                             <div class="text-xs text-slate-500 dark:text-slate-400">{{ $application->jobSeeker->email }}</div>
                         </td>
-                        <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $application->created_at->format('d M Y') }}</td>
+                        <td class="px-5 py-3 text-slate-600 dark:text-slate-400">
+                            {{ $application->created_at->format('d M Y') }}
+                            <span class="block text-xs text-slate-400 dark:text-slate-500">{{ $application->created_at->format('h:i A') }}</span>
+                        </td>
                         <td class="px-5 py-3">
                             <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ ucfirst(str_replace('_', ' ', $application->status)) }}</span>
                         </td>

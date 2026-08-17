@@ -49,7 +49,12 @@
                         </td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $profile->business_name ?: '—' }}</td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $profile->city ?: '—' }}</td>
-                        <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $profile->submitted_at?->format('d M Y') ?? '—' }}</td>
+                        <td class="px-5 py-3 text-slate-600 dark:text-slate-400">
+                            {{ $profile->submitted_at?->format('d M Y') ?? '—' }}
+                            @if ($profile->submitted_at)
+                                <span class="block text-xs text-slate-400 dark:text-slate-500">{{ $profile->submitted_at->format('h:i A') }}</span>
+                            @endif
+                        </td>
                         <td class="px-5 py-3">
                             @if ($profile->reviews_count > 0)
                                 <x-rating-stars :rating="$profile->rating_avg" :count="$profile->reviews_count" />

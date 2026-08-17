@@ -45,7 +45,10 @@
                             <span class="block text-xs text-slate-400 dark:text-slate-500">{{ $dispute->booking->reference }}</span>
                         </td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $dispute->opener->name }} <span class="text-xs text-slate-400 dark:text-slate-500">({{ $dispute->opened_by_role }})</span></td>
-                        <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $dispute->created_at->format('d M Y') }}</td>
+                        <td class="px-5 py-3 text-slate-600 dark:text-slate-400">
+                            {{ $dispute->created_at->format('d M Y') }}
+                            <span class="block text-xs text-slate-400 dark:text-slate-500">{{ $dispute->created_at->format('h:i A') }}</span>
+                        </td>
                         <td class="px-5 py-3"><x-dispute-status :status="$dispute->status" /></td>
                         <td class="px-5 py-3 text-right">
                             <a href="{{ route('admin.disputes.show', $dispute) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">Review</a>

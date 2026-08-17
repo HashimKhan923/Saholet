@@ -50,7 +50,10 @@
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $contract->consumer->name }}</td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $contract->quoted_total ? 'Rs. ' . number_format($contract->quoted_total, 0) : '—' }}</td>
                         <td class="px-5 py-3"><x-contract-status :status="$contract->status" /></td>
-                        <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $contract->created_at->format('d M Y') }}</td>
+                        <td class="px-5 py-3 text-slate-600 dark:text-slate-400">
+                            {{ $contract->created_at->format('d M Y') }}
+                            <span class="block text-xs text-slate-400 dark:text-slate-500">{{ $contract->created_at->format('h:i A') }}</span>
+                        </td>
                         <td class="px-5 py-3 text-right">
                             <a href="{{ route('admin.contracts.show', $contract) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Review</a>
                         </td>

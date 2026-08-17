@@ -33,7 +33,10 @@
                         <td class="px-5 py-3 font-medium text-slate-900 dark:text-white">{{ $account->name }}</td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $account->owner->name }}</td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $account->members_count }}</td>
-                        <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $account->created_at->format('d M Y') }}</td>
+                        <td class="px-5 py-3 text-slate-600 dark:text-slate-400">
+                            {{ $account->created_at->format('d M Y') }}
+                            <span class="block text-xs text-slate-400 dark:text-slate-500">{{ $account->created_at->format('h:i A') }}</span>
+                        </td>
                         <td class="px-5 py-3 text-right">
                             <a href="{{ route('admin.corporate-accounts.show', $account) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">View</a>
                         </td>
