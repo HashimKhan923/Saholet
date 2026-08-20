@@ -81,4 +81,38 @@ class WalletController extends Controller
             'withdrawal_requests' => WithdrawalRequestResource::collection($withdrawalRequests),
         ]);
     }
+
+    /** Full, paginated wallet ledger — the "View All" destination for the dashboard's Recent Activity list.
+     * Query: bucket (all|available|escrow, default all), from/to (Y-m-d, optional date range), page. */
+    public function ledger(Request $request): JsonResponse
+    {
+        $wallet = $this->wallets->walletFor($request->user());
+
+        $bucket = (string) $request->query('bucket', 'all');
+        if (! in_array($bucket, ['all', LedgerEntry::BUCKET_AVAILABLE, LedgerEntry::BUCKET_ESCROW], true)) {
+            $bucket = 'all';
+        }
+
+        $query = $wallet->entries()->with('payment.booking');
+        if ($bucket !== 'all') {
+            $query->where('bucket', $bucket);
+        }
+        if ($from = $request->query('from')) {
+            $query->whereDate('created_at', '>=', $from);
+        }
+        if ($to = $request->query('to')) {
+            $query->whereDate('created_at', '<=', $to);
+        }
+
+        $entries = $query->latest('id')->paginate(20)->withQueryString();
+
+        return response()->json([
+            'entries' => LedgerEntryResource::collection($entries),
+            'pagination' => [
+                'current_page' => $entries->currentPage(),
+                'last_page' => $entries->lastPage(),
+                'total' => $entries->total(),
+            ],
+        ]);
+    }
 }
