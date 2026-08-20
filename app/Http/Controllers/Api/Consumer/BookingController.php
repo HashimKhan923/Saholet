@@ -24,7 +24,7 @@ class BookingController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $bookings = Booking::with(['service', 'providerProfile.user'])
+        $bookings = Booking::with(['service', 'providerProfile.user', 'review'])
             ->where('consumer_id', $request->user()->id)
             ->latest()
             ->paginate(15);

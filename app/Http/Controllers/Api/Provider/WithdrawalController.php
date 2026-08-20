@@ -18,6 +18,33 @@ class WithdrawalController extends Controller
         private WalletService $wallets,
     ) {}
 
+    /** Full, paginated withdrawal-request history — the "View All" destination for the wallet's
+     * Withdrawal Requests list. Query: from/to (Y-m-d, optional date range), page. */
+    public function index(Request $request): JsonResponse
+    {
+        $profile = $request->user()->providerProfile;
+        abort_unless($profile, 404);
+
+        $query = $profile->withdrawalRequests();
+        if ($from = $request->query('from')) {
+            $query->whereDate('created_at', '>=', $from);
+        }
+        if ($to = $request->query('to')) {
+            $query->whereDate('created_at', '<=', $to);
+        }
+
+        $withdrawals = $query->latest()->paginate(20)->withQueryString();
+
+        return response()->json([
+            'withdrawals' => WithdrawalRequestResource::collection($withdrawals),
+            'pagination' => [
+                'current_page' => $withdrawals->currentPage(),
+                'last_page' => $withdrawals->lastPage(),
+                'total' => $withdrawals->total(),
+            ],
+        ]);
+    }
+
     /** Body: amount (>= config min_withdrawal, <= available_balance). Requires a saved payout method. */
     public function store(Request $request): JsonResponse
     {

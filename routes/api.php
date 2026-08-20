@@ -176,7 +176,9 @@ Route::middleware(['auth:sanctum', 'api.not.suspended'])->group(function () {
         Route::post('emergencies/{emergencyRequest}/accept', [ProviderEmergencyController::class, 'accept'])->name('emergencies.accept');
 
         Route::get('wallet', [ProviderWalletController::class, 'index'])->name('wallet.index');
+        Route::get('wallet/ledger', [ProviderWalletController::class, 'ledger'])->name('wallet.ledger');
         Route::post('payout-method', [ProviderPayoutMethodController::class, 'update'])->name('payout-method.update');
+        Route::get('withdrawals', [ProviderWithdrawalController::class, 'index'])->name('withdrawals.index');
         Route::post('withdrawals', [ProviderWithdrawalController::class, 'store'])->name('withdrawals.store');
         Route::post('withdrawals/{withdrawal}/confirm-receipt', [ProviderWithdrawalController::class, 'confirmReceipt'])->name('withdrawals.confirm-receipt');
 

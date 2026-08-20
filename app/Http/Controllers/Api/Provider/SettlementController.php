@@ -40,6 +40,7 @@ class SettlementController extends Controller
             'owed' => $owed,
             'is_suspended' => $profile->isSuspended(),
             'settlements' => ProviderSettlementResource::collection($history),
+            'company_account' => config('payments.company_account'),
             'pagination' => [
                 'current_page' => $history->currentPage(),
                 'last_page' => $history->lastPage(),
