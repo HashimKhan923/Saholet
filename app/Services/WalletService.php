@@ -10,7 +10,11 @@ use Illuminate\Support\Facades\DB;
 
 class WalletService
 {
-    public function __construct(private CommissionService $commission) {}
+    public function __construct(
+        private CommissionService $commission,
+        private InvoiceService $invoices,
+        private Notifier $notifier,
+    ) {}
 
     public function walletFor(User $user): Wallet
     {
@@ -76,6 +80,8 @@ class WalletService
                 'provider_amount' => $split['provider'],
             ]);
         });
+
+        $this->sendInvoiceEmailAndNotify($payment);
     }
 
     /**
@@ -113,6 +119,8 @@ class WalletService
                 'provider_amount' => $split['provider'],
             ]);
         });
+
+        $this->sendInvoiceEmailAndNotify($payment);
     }
 
     /**
@@ -174,6 +182,33 @@ class WalletService
                 'refunded_at' => now(),
             ]);
         });
+    }
+
+    /**
+     * Fires the moment a booking payment is genuinely finalized — release() or
+     * chargeCashCommission() — so the invoice email and "your invoice is ready"
+     * notification always happen together, and only once the email has actually
+     * been sent. Every current caller of release()/chargeCashCommission() passes
+     * a booking-backed Payment, never a contract-milestone one.
+     */
+    private function sendInvoiceEmailAndNotify(Payment $payment): void
+    {
+        $payment->loadMissing('booking.consumer');
+        $booking = $payment->booking;
+
+        if (! $booking) {
+            return;
+        }
+
+        $this->invoices->emailPaymentConfirmation($booking, $payment);
+
+        $this->notifier->notify(
+            $booking->consumer,
+            'booking',
+            'Your invoice is ready',
+            "The invoice for booking {$booking->reference} has been sent to your email.",
+            route('consumer.bookings.show', $booking),
+        );
     }
 
     /** Recompute cached balances from the append-only ledger. */

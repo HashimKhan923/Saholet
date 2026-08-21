@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 
-@section('title', 'Talent search — ' . config('app.name'))
+@section('title', 'Job seekers — ' . config('app.name'))
 
 @section('content')
 <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
     <div>
         <a href="{{ route('admin.dashboard') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Dashboard</a>
-        <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Talent search</h1>
+        <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Job seekers</h1>
         <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Search every job seeker with a resume on file — not just active applicants.</p>
     </div>
 
@@ -45,15 +45,20 @@
                     <th class="px-5 py-3">City</th>
                     <th class="px-5 py-3">Experience</th>
                     <th class="px-5 py-3">Skills</th>
-                    <th class="px-5 py-3 text-right">Resume</th>
+                    <th class="px-5 py-3 text-right">Action</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                 @forelse ($profiles as $profile)
                     <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/60">
                         <td class="px-5 py-3">
-                            <p class="font-medium text-slate-900 dark:text-white">{{ $profile->user->name }}</p>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">{{ $profile->headline ?? $profile->current_position ?? '—' }}</p>
+                            <a href="{{ route('admin.talent.show', $profile) }}" class="flex items-center gap-3 hover:underline">
+                                <x-avatar :url="$profile->user->avatar_url" :name="$profile->user->name" size="sm" />
+                                <div>
+                                    <p class="font-medium text-slate-900 dark:text-white">{{ $profile->user->name }}</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ $profile->headline ?? $profile->current_position ?? '—' }}</p>
+                                </div>
+                            </a>
                         </td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $profile->city ?? '—' }}</td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $profile->experience_years !== null ? $profile->experience_years . ' yrs' : '—' }}</td>
@@ -64,10 +69,13 @@
                                 @empty
                                     <span class="text-xs text-slate-400">—</span>
                                 @endforelse
+                                @if (count($profile->skills ?? []) > 4)
+                                    <span class="inline-flex rounded-full bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-400 dark:bg-slate-800/60 dark:text-slate-500">+{{ count($profile->skills) - 4 }} more</span>
+                                @endif
                             </div>
                         </td>
                         <td class="px-5 py-3 text-right">
-                            <a href="{{ route('job-seeker.resume.show', $profile) }}" target="_blank" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">View resume</a>
+                            <a href="{{ route('admin.talent.show', $profile) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">View</a>
                         </td>
                     </tr>
                 @empty

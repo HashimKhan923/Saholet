@@ -45,8 +45,13 @@
                     <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/60">
                         <td class="px-5 py-3 text-slate-500 dark:text-slate-400">{{ $profile->user_id }}</td>
                         <td class="px-5 py-3">
-                            <div class="font-medium text-slate-900 dark:text-white">{{ $profile->user->name }}</div>
-                            <div class="text-xs text-slate-500 dark:text-slate-400">{{ $profile->user->email }}</div>
+                            <div class="flex items-center gap-3">
+                                <x-avatar :url="$profile->user->avatar_url" :name="$profile->user->name" size="sm" />
+                                <div>
+                                    <div class="font-medium text-slate-900 dark:text-white">{{ $profile->user->name }}</div>
+                                    <div class="text-xs text-slate-500 dark:text-slate-400">{{ $profile->user->email }}</div>
+                                </div>
+                            </div>
                         </td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $profile->business_name ?: '—' }}</td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $profile->city ?: '—' }}</td>

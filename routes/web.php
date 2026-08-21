@@ -334,6 +334,7 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
 
         Route::middleware('permission:talent')->group(function () {
             Route::get('talent', [AdminTalentSearchController::class, 'index'])->name('talent.index');
+            Route::get('talent/{profile}', [AdminTalentSearchController::class, 'show'])->name('talent.show');
         });
 
         // Subscription / AMC plans

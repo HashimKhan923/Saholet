@@ -9,7 +9,10 @@
     </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
-        <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $provider->user->name }}</h1>
+        <div class="flex items-center gap-3">
+            <x-avatar :url="$provider->user->avatar_url" :name="$provider->user->name" size="lg" />
+            <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $provider->user->name }}</h1>
+        </div>
         @switch($provider->status)
             @case('approved')
                 <span class="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-950/40 dark:text-brand-400">Approved</span>
@@ -336,6 +339,19 @@
                             <button type="submit" class="w-full rounded-lg border border-red-300 px-4 py-2.5 text-sm font-semibold text-red-700 transition hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/40">Suspend provider</button>
                         </form>
                     @endif
+                </div>
+            @endif
+
+            {{-- Delete account --}}
+            @if ($provider->user->canBeDeleted() && ! $provider->user->isDeleted())
+                <div class="rounded-2xl border border-red-200 bg-white p-6 shadow-sm dark:border-red-900 dark:bg-slate-900">
+                    <h2 class="font-display text-lg font-bold text-red-700 dark:text-red-400">Delete account</h2>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Wipes their name, email, phone and avatar and disables login — this can't be undone. Their bookings, payments and reviews stay on record.</p>
+                    <div class="mt-4">
+                        <x-confirm-form :action="route('admin.users.destroy', $provider->user)" method="DELETE"
+                            button-label="Delete account" button-class="w-full rounded-lg border border-red-300 px-4 py-2.5 text-sm font-semibold text-red-700 transition hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/40"
+                            title="Delete this provider's account?" message="Their name, email, phone and avatar will be wiped and login disabled — this can't be undone." confirm-label="Delete" />
+                    </div>
                 </div>
             @endif
 

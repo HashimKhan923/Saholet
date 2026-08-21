@@ -212,16 +212,6 @@ class BookingController extends Controller
             route('consumer.bookings.show', $booking)
         );
 
-        if ($action === 'complete') {
-            app(\App\Services\Notifier::class)->notify(
-                $booking->consumer,
-                'booking',
-                'Your invoice is ready',
-                'The invoice for booking ' . $booking->reference . ' is ready to view or download.',
-                route('bookings.receipt', $booking)
-            );
-        }
-
         return response()->json([
             'message' => $message,
             'booking' => new BookingResource($booking->fresh(['service', 'consumer', 'payments', 'beforePhotos', 'afterPhotos'])),

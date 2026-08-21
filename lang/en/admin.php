@@ -24,7 +24,7 @@ return [
         'providers_section' => 'Providers & careers',
         'providers' => 'Providers',
         'careers' => 'Careers',
-        'talent_search' => 'Talent search',
+        'talent_search' => 'Job seekers',
         'finance_section' => 'Finance',
         'invoices' => 'Invoices',
         'payments' => 'Payments',
