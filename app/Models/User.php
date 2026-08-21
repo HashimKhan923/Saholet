@@ -84,6 +84,11 @@ class User extends Authenticatable
         return $this->hasOne(JobSeekerProfile::class);
     }
 
+    public function careerApplications(): HasMany
+    {
+        return $this->hasMany(CareerApplication::class);
+    }
+
     public function addresses(): HasMany
     {
         return $this->hasMany(Address::class)->orderByDesc('is_default')->latest();
@@ -92,6 +97,11 @@ class User extends Authenticatable
     public function pushSubscriptions(): HasMany
     {
         return $this->hasMany(PushSubscription::class);
+    }
+
+    public function deviceTokens(): HasMany
+    {
+        return $this->hasMany(DeviceToken::class);
     }
 
     public function subscriptions(): HasMany
@@ -207,11 +217,20 @@ class User extends Authenticatable
      * Wipes personally-identifying fields, disables login, and revokes tokens —
      * without hard-deleting the row, since every booking/payment/review/dispute
      * FK cascades from users and would otherwise be destroyed with it.
+     *
+     * Job seekers are the one exception: their profile (resume, skills, bio,
+     * address, qualification) isn't transactional history anyone downstream
+     * needs — it's just PII sitting there with nothing referencing it, so it
+     * gets wiped outright rather than kept around like a booking would be.
      */
     public function anonymize(): void
     {
         if ($this->avatar) {
             Storage::disk('public')->delete($this->avatar);
+        }
+
+        if ($this->role === self::ROLE_JOB_SEEKER) {
+            $this->wipeJobSeekerData();
         }
 
         $this->update([
@@ -224,6 +243,26 @@ class User extends Authenticatable
         ]);
 
         $this->tokens()->delete();
+    }
+
+    private function wipeJobSeekerData(): void
+    {
+        if ($profile = $this->jobSeekerProfile) {
+            $profile->deleteResumeFile();
+            $profile->delete();
+        }
+
+        // Each application keeps its own copied resume (separate from the profile's),
+        // per-application per the apply flow — its DB column is required (not-null),
+        // so the file content is wiped but the row and status/timeline history stay,
+        // same "keep the record, drop the PII" treatment as bookings get elsewhere.
+        $disk = config('careers.disk');
+        $this->careerApplications()->get()->each(function (CareerApplication $application) use ($disk) {
+            if ($application->resume_path) {
+                Storage::disk($disk)->delete($application->resume_path);
+            }
+            $application->update(['cover_letter' => null]);
+        });
     }
 
     public function dashboardRoute(): string

@@ -49,4 +49,11 @@ class TalentSearchController extends Controller
             'minExperience' => $minExperience,
         ]);
     }
+
+    public function show(JobSeekerProfile $profile): View
+    {
+        $profile->load('user');
+
+        return view('admin.talent.show', compact('profile'));
+    }
 }

@@ -21,7 +21,7 @@ return [
     'corporate-accounts' => ['label' => 'Corporate accounts', 'actions' => ['view']],
     'providers' => ['label' => 'Providers', 'actions' => ['view', 'edit']],
     'careers' => ['label' => 'Careers & applications', 'actions' => ['view', 'create', 'edit', 'delete']],
-    'talent' => ['label' => 'Talent search', 'actions' => ['view']],
+    'talent' => ['label' => 'Job seekers', 'actions' => ['view']],
     'disputes' => ['label' => 'Disputes', 'actions' => ['view', 'edit']],
     'fraud' => ['label' => 'Fraud signals', 'actions' => ['view']],
 

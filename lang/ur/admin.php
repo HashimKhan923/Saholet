@@ -24,7 +24,7 @@ return [
         'providers_section' => 'فراہم کنندگان اور ملازمتیں',
         'providers' => 'فراہم کنندگان',
         'careers' => 'ملازمتیں',
-        'talent_search' => 'ٹیلنٹ تلاش',
+        'talent_search' => 'نوکری تلاش کرنے والے',
         'finance_section' => 'مالیات',
         'invoices' => 'انوائسز',
         'payments' => 'ادائیگیاں',

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Notification;
+use App\Notifications\ExpoChannel;
 use App\Notifications\LogChannel;
 use App\Notifications\MailChannel;
 use App\Notifications\NotificationManager;
@@ -25,6 +26,7 @@ class NotificationServiceProvider extends ServiceProvider
                 new SmsChannel(),
                 new WhatsAppChannel(),
                 new PushChannel(),
+                new ExpoChannel(),
             ]);
         });
 

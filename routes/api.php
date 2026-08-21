@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AvailabilityController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BookingRoomController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\DeviceTokenController;
 use App\Http\Controllers\Api\DisputeController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PasswordResetController;
@@ -85,6 +86,9 @@ Route::middleware(['auth:sanctum', 'api.not.suspended'])->group(function () {
     Route::get('notifications', [NotificationController::class, 'index'])->name('api.notifications.index');
     Route::post('notifications/read-all', [NotificationController::class, 'readAll'])->name('api.notifications.read-all');
     Route::post('notifications/{notification}/read', [NotificationController::class, 'read'])->name('api.notifications.read');
+
+    Route::post('device-tokens', [DeviceTokenController::class, 'store'])->name('api.device-tokens.store');
+    Route::delete('device-tokens', [DeviceTokenController::class, 'destroy'])->name('api.device-tokens.destroy');
 
     Route::get('bookings/{booking}/room', [BookingRoomController::class, 'show'])->name('api.bookings.room');
     Route::post('bookings/{booking}/messages', [BookingRoomController::class, 'sendMessage'])->name('api.bookings.messages.store');

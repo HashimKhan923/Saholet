@@ -26,5 +26,8 @@ return [
             'vapid_private_key' => env('VAPID_PRIVATE_KEY'),
             'vapid_subject' => env('VAPID_SUBJECT', 'mailto:support@example.com'),
         ],
+        'expo_push' => [
+            'enabled' => env('NOTIFY_EXPO_PUSH', false),
+        ],
     ],
 ];

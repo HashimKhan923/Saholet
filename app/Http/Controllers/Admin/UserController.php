@@ -15,7 +15,7 @@ class UserController extends Controller
         $role = $request->query('role', 'all');
         $q = trim((string) $request->query('q', ''));
 
-        if (! in_array($role, ['all', 'consumer', 'provider', 'job_seeker', 'deleted'], true)) {
+        if (! in_array($role, ['all', 'consumer', 'provider', 'job_seeker', 'suspended', 'deleted'], true)) {
             $role = 'all';
         }
 
@@ -26,6 +26,8 @@ class UserController extends Controller
         // under the "Deleted" tab, never mixed into the normal role tabs.
         if ($role === 'deleted') {
             $query->where('email', 'like', 'deleted-%');
+        } elseif ($role === 'suspended') {
+            $query->whereNotNull('suspended_at')->where('email', 'not like', 'deleted-%');
         } else {
             $query->where('email', 'not like', 'deleted-%');
 

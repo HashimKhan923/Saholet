@@ -8,22 +8,22 @@
     <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Users</h1>
 
     <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        <x-stat-card label="Total" :value="$counts['total']" tone="brand">
+        <x-stat-card label="Total" :value="$counts['total']" tone="brand" :href="route('admin.users.index', ['role' => 'all'])">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 2.7-5 6-5s6 2 6 5M16 11h5M18.5 8.5v5" stroke-linecap="round"/></svg>
         </x-stat-card>
-        <x-stat-card label="Consumers" :value="$counts['consumers']" tone="sky">
+        <x-stat-card label="Consumers" :value="$counts['consumers']" tone="sky" :href="route('admin.users.index', ['role' => 'consumer'])">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke-linecap="round"/></svg>
         </x-stat-card>
-        <x-stat-card label="Providers" :value="$counts['providers']" tone="violet">
+        <x-stat-card label="Providers" :value="$counts['providers']" tone="violet" :href="route('admin.users.index', ['role' => 'provider'])">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 10h16" stroke-linecap="round"/></svg>
         </x-stat-card>
-        <x-stat-card label="Job seekers" :value="$counts['job_seekers']" tone="amber">
+        <x-stat-card label="Job seekers" :value="$counts['job_seekers']" tone="amber" :href="route('admin.users.index', ['role' => 'job_seeker'])">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </x-stat-card>
-        <x-stat-card label="Suspended" :value="$counts['suspended']" tone="pink">
+        <x-stat-card label="Suspended" :value="$counts['suspended']" tone="pink" :href="route('admin.users.index', ['role' => 'suspended'])">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M8.5 8.5l7 7" stroke-linecap="round"/></svg>
         </x-stat-card>
-        <x-stat-card label="Deleted" :value="$counts['deleted']" tone="red">
+        <x-stat-card label="Deleted" :value="$counts['deleted']" tone="red" :href="route('admin.users.index', ['role' => 'deleted'])">
 <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">
     <path
         d="M4 7h16
@@ -35,7 +35,7 @@
 </svg>        </x-stat-card>
     </div>
 
-    @php $tabs = ['all' => 'All', 'consumer' => 'Consumers', 'provider' => 'Providers', 'job_seeker' => 'Job seekers', 'deleted' => 'Deleted']; @endphp
+    @php $tabs = ['all' => 'All', 'consumer' => 'Consumers', 'provider' => 'Providers', 'job_seeker' => 'Job seekers', 'suspended' => 'Suspended', 'deleted' => 'Deleted']; @endphp
     <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
         <div class="flex flex-wrap gap-2">
             @foreach ($tabs as $key => $label)
@@ -71,8 +71,13 @@
                     <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/60">
                         <td class="px-5 py-3 text-slate-500 dark:text-slate-400">{{ $user->id }}</td>
                         <td class="px-5 py-3">
-                            <div class="font-medium text-slate-900 dark:text-white">{{ $user->name }}</div>
-                            <div class="text-xs text-slate-500 dark:text-slate-400">{{ $user->email }}</div>
+                            <div class="flex items-center gap-3">
+                                <x-avatar :url="$user->avatar_url" :name="$user->name" size="sm" />
+                                <div>
+                                    <div class="font-medium text-slate-900 dark:text-white">{{ $user->name }}</div>
+                                    <div class="text-xs text-slate-500 dark:text-slate-400">{{ $user->email }}</div>
+                                </div>
+                            </div>
                         </td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ ucfirst($user->role) }}</td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">{{ $user->phone ?: '—' }}</td>
