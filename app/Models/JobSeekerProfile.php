@@ -26,6 +26,7 @@ class JobSeekerProfile extends Model
         'bio',
         'city',
         'address',
+        'age',
         'experience_years',
         'current_position',
         'qualification',
@@ -41,6 +42,7 @@ class JobSeekerProfile extends Model
     protected function casts(): array
     {
         return [
+            'age' => 'integer',
             'experience_years' => 'integer',
             'skills' => 'array',
             'resume_uploaded_at' => 'datetime',

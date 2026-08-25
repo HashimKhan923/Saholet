@@ -19,7 +19,6 @@ class TalentSearchController extends Controller
         $profiles = JobSeekerProfile::query()
             ->with('user')
             ->whereHas('user', fn ($query) => $query->whereNull('suspended_at'))
-            ->whereNotNull('resume_path')
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($inner) use ($q) {
                     $inner->where('headline', 'like', "%{$q}%")
@@ -30,14 +29,15 @@ class TalentSearchController extends Controller
             ->when($city !== '', fn ($query) => $query->where('city', 'like', "%{$city}%"))
             ->when($skill !== '', fn ($query) => $query->where('skills', 'like', "%{$skill}%"))
             ->when($minExperience !== null && $minExperience !== '', fn ($query) => $query->where('experience_years', '>=', (int) $minExperience))
+            ->orderByRaw('resume_uploaded_at IS NULL')
             ->latest('resume_uploaded_at')
             ->paginate(15)
             ->withQueryString();
 
         $counts = [
-            'total' => JobSeekerProfile::whereNotNull('resume_path')->count(),
-            'with_experience' => JobSeekerProfile::whereNotNull('resume_path')->where('experience_years', '>=', 2)->count(),
-            'cities' => JobSeekerProfile::whereNotNull('resume_path')->distinct('city')->count('city'),
+            'total' => JobSeekerProfile::count(),
+            'with_experience' => JobSeekerProfile::where('experience_years', '>=', 2)->count(),
+            'cities' => JobSeekerProfile::whereNotNull('city')->distinct('city')->count('city'),
         ];
 
         return view('admin.talent.index', [

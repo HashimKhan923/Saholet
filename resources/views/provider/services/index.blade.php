@@ -48,6 +48,9 @@
             </div>
         </div>
     @else
+        @if (session('success'))
+            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-400">{{ session('success') }}</div>
+        @endif
         @if ($errors->any())
             <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-400">
                 <ul class="list-inside list-disc space-y-1">
@@ -146,7 +149,7 @@
                     $taken = (int) ($bookingCounts[$item->service_id] ?? 0);
                     $accent = $accentCycle[$loop->index % count($accentCycle)];
                 @endphp
-                <div class="card-lift group relative mb-3 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/[0.03] transition dark:border-slate-800 dark:bg-slate-900
+                <div class="group relative mb-3 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/[0.03] transition dark:border-slate-800 dark:bg-slate-900
                     {{ $item->is_active ? '' : 'opacity-70' }}"
                     x-data="{ price: {{ (int) $item->price }}, active: {{ $item->is_active ? 'true' : 'false' }}, get dirty() { return this.price !== {{ (int) $item->price }} || this.active !== {{ $item->is_active ? 'true' : 'false' }}; } }">
 

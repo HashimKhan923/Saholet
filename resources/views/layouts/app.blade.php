@@ -329,31 +329,31 @@
                 </div>
             </div>
 
-            <div class="mt-6 flex flex-col items-center justify-between gap-4 border-t border-slate-100 pt-4 text-center text-xs text-white dark:border-slate-800 md:flex-row">
+            <div class="mt-6 flex flex-col items-center justify-between gap-4 border-t-2 border-slate-100  pt-4 text-center text-xs text-white md:flex-row">
 
-    <div>
-        &copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('messages.footer.rights') }}
-        &middot; Developed by <a href="https://skartistic.com/" target="_blank" rel="noopener" class="transition hover:text-brand-300">SK Artistic</a>
-    </div>
+                    <div>
+                        &copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('messages.footer.rights') }}
+                        &middot; Developed by <a href="https://skartistic.com/" target="_blank" rel="noopener" class="transition hover:text-brand-300">SK Artistic</a>
+                    </div>
 
-    <div class="flex flex-wrap items-center justify-center gap-4">
-        <a
-            href="{{ route('legal.privacy') }}"
-            class="transition hover:text-brand-300"
-        >
-            Privacy Policy
-        </a>
+                    <div class="flex flex-wrap items-center justify-center gap-4">
+                        <a
+                            href="{{ route('legal.privacy') }}"
+                            class="transition hover:text-brand-300"
+                        >
+                            Privacy Policy
+                        </a>
 
 
-        <a
-            href="{{ route('legal.terms') }}"
-            class="transition hover:text-brand-300"
-        >
-            Terms &amp; Conditions
-        </a>
-    </div>
+                        <a
+                            href="{{ route('legal.terms') }}"
+                            class="transition hover:text-brand-300"
+                        >
+                            Terms &amp; Conditions
+                        </a>
+                    </div>
 
-</div>
+            </div>
     </footer>
 
     <x-toast-stack />

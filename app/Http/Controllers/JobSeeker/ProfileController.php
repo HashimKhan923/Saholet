@@ -28,6 +28,7 @@ class ProfileController extends Controller
             'bio' => ['nullable', 'string', 'max:2000'],
             'city' => ['nullable', 'string', 'max:120'],
             'address' => ['nullable', 'string', 'max:500'],
+            'age' => ['nullable', 'integer', 'min:14', 'max:100'],
             'experience_years' => ['required', 'integer', 'min:0', 'max:60'],
             'current_position' => ['nullable', 'string', 'max:255'],
             'qualification' => ['nullable', Rule::in(array_keys(JobSeekerProfile::QUALIFICATIONS))],

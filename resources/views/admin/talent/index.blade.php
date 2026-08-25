@@ -7,11 +7,11 @@
     <div>
         <a href="{{ route('admin.dashboard') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Dashboard</a>
         <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Job seekers</h1>
-        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Search every job seeker with a resume on file — not just active applicants.</p>
+        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Every job seeker who's signed up — not just active applicants. Candidates with a resume on file are shown first.</p>
     </div>
 
     <div class="mt-6 grid grid-cols-3 gap-4">
-        <x-stat-card label="Candidates with resume" :value="$counts['total']" tone="brand">
+        <x-stat-card label="Total job seekers" :value="$counts['total']" tone="brand">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke-linecap="round"/></svg>
         </x-stat-card>
         <x-stat-card label="2+ years experience" :value="$counts['with_experience']" tone="brand">

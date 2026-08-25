@@ -3,7 +3,7 @@
 @section('title', __('messages.auth.create_account') . ' — ' . config('app.name'))
 
 @section('content')
-<div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8" x-data="{ role: '{{ old('role', 'consumer') }}' }">
+<div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
     <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">{{ __('messages.auth.create_account') }}</h1>
     <p class="mt-1.5 text-sm text-slate-500">{{ __('messages.auth.register_sub') }}</p>
 
@@ -19,12 +19,6 @@
 
     <form method="POST" action="{{ route('register') }}" class="mt-6 space-y-5">
         @csrf
-        <input type="hidden" name="referral_code" value="{{ old('referral_code', $ref ?? '') }}">
-        @if (!empty($ref))
-            <div class="rounded-lg border border-brand-200 bg-brand-50 px-3.5 py-2.5 text-xs font-medium text-brand-700">
-                {{ __('messages.auth.referral_applied') }}
-            </div>
-        @endif
 
         <div>
             <span class="block text-sm font-medium text-slate-700">{{ __('messages.auth.i_want_to') }}</span>
