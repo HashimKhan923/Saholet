@@ -206,7 +206,7 @@ class WalletService
             $booking->consumer,
             'booking',
             'Your invoice is ready',
-            "The invoice for booking {$booking->reference} has been sent to your email.",
+            "The invoice has been sent to your {$booking->consumer->email}. Check your invoice.",
             route('consumer.bookings.show', $booking),
         );
     }

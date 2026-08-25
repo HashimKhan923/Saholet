@@ -29,6 +29,7 @@
                     <div><dt class="text-slate-500 dark:text-slate-400">Email</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $profile->user->email }}</dd></div>
                     <div><dt class="text-slate-500 dark:text-slate-400">Phone</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $profile->user->phone ?: '—' }}</dd></div>
                     <div><dt class="text-slate-500 dark:text-slate-400">Current position</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $profile->current_position ?: '—' }}</dd></div>
+                    <div><dt class="text-slate-500 dark:text-slate-400">Age</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $profile->age ?? '—' }}</dd></div>
                     <div><dt class="text-slate-500 dark:text-slate-400">Experience</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $profile->experience_years !== null ? $profile->experience_years . ' yr' : '—' }}</dd></div>
                     <div><dt class="text-slate-500 dark:text-slate-400">Qualification</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $profile->qualification ? \App\Models\JobSeekerProfile::QUALIFICATIONS[$profile->qualification] ?? $profile->qualification : '—' }}</dd></div>
                     <div><dt class="text-slate-500 dark:text-slate-400">Address</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $profile->address ?: '—' }}</dd></div>

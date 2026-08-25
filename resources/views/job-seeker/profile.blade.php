@@ -64,10 +64,15 @@
             <textarea id="bio" name="bio" rows="4" class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">{{ old('bio', $profile->bio) }}</textarea>
         </div>
 
-        <div class="grid gap-5 sm:grid-cols-2">
+        <div class="grid gap-5 sm:grid-cols-3">
             <div>
                 <label for="current_position" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Current position <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
                 <input id="current_position" name="current_position" type="text" value="{{ old('current_position', $profile->current_position) }}"
+                    class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+            </div>
+            <div>
+                <label for="age" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Age <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
+                <input id="age" name="age" type="number" min="14" max="100" value="{{ old('age', $profile->age) }}"
                     class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
             </div>
             <div>
@@ -122,12 +127,16 @@
                         <button type="button" @click="remove(index)" class="text-brand-400 hover:text-brand-700 dark:hover:text-brand-200" aria-label="Remove skill">&times;</button>
                     </span>
                 </template>
-                <input id="skill-input" type="text" x-model="draft"
+                <input id="skill-input" x-ref="skillInput" type="text" x-model="draft"
                     @keydown.enter.prevent="add()"
                     @keydown="if ($event.key === ',') { $event.preventDefault(); add(); }"
                     @blur="add()"
-                    placeholder="Type a skill and press Enter"
+                    placeholder="Type a skill…"
                     class="min-w-40 flex-1 border-0 p-0.5 text-sm text-slate-900 outline-none focus:ring-0 dark:bg-transparent dark:text-white">
+                <button type="button" @click="add(); $refs.skillInput.focus()"
+                    class="shrink-0 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-brand-700">
+                    + Add
+                </button>
             </div>
             <template x-for="skill in skills" :key="skill">
                 <input type="hidden" name="skills[]" :value="skill">

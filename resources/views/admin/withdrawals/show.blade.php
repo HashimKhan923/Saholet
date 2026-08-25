@@ -77,12 +77,26 @@
                     button-label="Paid in cash (in-person)" button-class="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700"
                     title="Mark this withdrawal as paid in cash?" message="Confirm only after you've actually handed over the cash." confirm-label="Mark paid" confirm-class="bg-brand-600 hover:bg-brand-700" />
 
-                <div x-data="{ open: false }">
+                <div x-data="{ open: {{ $errors->has('screenshot') ? 'true' : 'false' }} }">
                     <button type="button" @click="open = ! open" class="rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Sent via bank transfer</button>
 
                     <form x-show="open" x-cloak method="POST" action="{{ route('admin.withdrawals.paid-bank-transfer', $withdrawal) }}" enctype="multipart/form-data"
                           class="mt-3 space-y-3" x-data="{...fileDrop(), submitting: false}" @submit="submitting = true">
                         @csrf
+
+                        @if ($withdrawal->payout_bank_name || $withdrawal->payout_account_number)
+                            <div class="rounded-lg border border-slate-200 bg-slate-50 p-3.5 text-xs dark:border-slate-700 dark:bg-slate-800">
+                                <p class="font-semibold text-slate-700 dark:text-slate-200">Send to</p>
+                                <dl class="mt-1.5 space-y-1 text-slate-600 dark:text-slate-400">
+                                    @if ($withdrawal->payout_bank_name)
+                                        <div class="flex justify-between gap-3"><dt>Bank</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $withdrawal->payout_bank_name }}</dd></div>
+                                    @endif
+                                    <div class="flex justify-between gap-3"><dt>Account title</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $withdrawal->payout_account_title }}</dd></div>
+                                    <div class="flex justify-between gap-3"><dt>Account / number</dt><dd class="font-mono font-medium text-slate-800 dark:text-slate-200">{{ $withdrawal->payout_account_number }}</dd></div>
+                                </dl>
+                            </div>
+                        @endif
+
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Attach proof of transfer</label>
                         <div class="flex items-center gap-2">
                             <x-file-drop name="screenshot" />

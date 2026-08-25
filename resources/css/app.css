@@ -39,11 +39,60 @@
     --color-accent-800: #872617;
     --color-accent-900: #70251a;
     --color-accent-950: #3d0f09;
+
+    /*
+     * Client feedback (21 Aug demo): text throughout felt too small and too
+     * light, so the whole type scale is shifted up one step (text-sm now
+     * renders at the old text-base size, etc.) and the semibold/bold/
+     * extrabold weights are each bumped one step heavier. Every existing
+     * text-* / font-* utility class picks this up automatically — nothing
+     * else in the codebase needs to change.
+     */
+    --text-xs: 0.875rem;
+    --text-xs--line-height: calc(1.25 / 0.875);
+    --text-sm: 1rem;
+    --text-sm--line-height: 1.5;
+    --text-base: 1.125rem;
+    --text-base--line-height: calc(1.75 / 1.125);
+    --text-lg: 1.25rem;
+    --text-lg--line-height: calc(1.75 / 1.25);
+    --text-xl: 1.5rem;
+    --text-xl--line-height: calc(2 / 1.5);
+    --text-2xl: 1.875rem;
+    --text-2xl--line-height: 1.2;
+    --text-3xl: 2.25rem;
+    --text-3xl--line-height: calc(2.5 / 2.25);
+    --text-4xl: 3rem;
+    --text-4xl--line-height: 1;
+    --text-5xl: 3.75rem;
+    --text-5xl--line-height: 1;
+    --text-6xl: 4.5rem;
+    --text-6xl--line-height: 1;
+
+    --font-weight-normal: 500;
+    --font-weight-semibold: 700;
+    --font-weight-bold: 800;
+    --font-weight-extrabold: 900;
 }
 
 /* Hide elements until Alpine initializes */
 [x-cloak] {
     display: none !important;
+}
+
+/*
+ * Client feedback (21 Aug demo): section borders read as too faint. Bolds
+ * the default 1px border utilities app-wide — .border-2/-4/etc. (already an
+ * intentionally heavier, explicit choice in a few places) are left alone.
+ */
+.border,
+.border-t,
+.border-b,
+.border-l,
+.border-r,
+.border-x,
+.border-y {
+    border-width: 1.5px;
 }
 
 /* Urdu / RTL: switch font and give headings room for Nastaliq */

@@ -24,30 +24,45 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-slate-50 font-sans text-slate-700 antialiased dark:bg-slate-950 dark:text-slate-300">
-    <div class="relative flex min-h-screen flex-col items-center justify-center px-4 py-12">
-        {{-- Ambient backdrop --}}
-        <div class="absolute inset-x-0 top-0 -z-10 h-72 bg-gradient-to-b from-brand-50 to-slate-50 dark:from-brand-950 dark:to-slate-950"></div>
-        <div class="absolute inset-0 -z-10 bg-dot-grid opacity-40"></div>
+<body class="min-h-screen bg-white font-sans text-slate-700 antialiased dark:bg-slate-950 dark:text-slate-300"
+      x-data="{ role: '{{ old('role', 'consumer') }}' }">
+    <div class="grid min-h-screen lg:grid-cols-2">
+        {{-- Banner — role-aware, hidden on mobile so only the form shows. Stretches
+             to match the form column's natural height, and shows the full image
+             (object-contain, no cropping) framed with some breathing room. --}}
+      <div class="hidden h-full items-center justify-center lg:flex dark:bg-slate-900">
+    <div class="relative h-full w-full">
+        <template x-for="src in ['CustomerBanner', 'ProviderBanner', 'JobSeekerBanner']" :key="src">
+            <img :src="'/images/' + src + '.jpeg'"
+                 x-show="({ consumer: 'CustomerBanner', provider: 'ProviderBanner', job_seeker: 'JobSeekerBanner' })[role] === src"
+                 x-transition.opacity.duration.500ms
+                 class="absolute left-1/2 top-1/2 h-[60rem] w-full -translate-x-1/2 -translate-y-1/2 rounded-2xl object-contain"
+                 alt="">
+        </template>
+    </div>
+</div>
 
-        {{-- Language switcher --}}
-        <div class="absolute top-4 {{ $isRtl ? 'left-4' : 'right-4' }} flex items-center gap-1 text-sm">
-            @foreach ($locales as $code => $meta)
-                <a href="{{ route('locale.switch', $code) }}" class="rounded-lg px-2.5 py-1.5 font-medium transition hover:bg-white dark:hover:bg-slate-800 {{ $code === $current ? 'text-brand-700 dark:text-brand-400' : 'text-slate-500 dark:text-slate-400' }}">{{ $meta['native'] }}</a>
-            @endforeach
-        </div>
+        {{-- Form column --}}
+        <div class="relative flex flex-col items-center justify-center px-4 py-12">
+            {{-- Language switcher --}}
+            <div class="absolute top-4 {{ $isRtl ? 'left-4' : 'right-4' }} flex items-center gap-1 text-sm">
+                @foreach ($locales as $code => $meta)
+                    <a href="{{ route('locale.switch', $code) }}" class="rounded-lg px-2.5 py-1.5 font-medium transition hover:bg-slate-50 dark:hover:bg-slate-800 {{ $code === $current ? 'text-brand-700 dark:text-brand-400' : 'text-slate-500 dark:text-slate-400' }}">{{ $meta['native'] }}</a>
+                @endforeach
+            </div>
 
-        {{-- Logo --}}
-        <a href="{{ route('home') }}" class="animate-fade-up mb-8" aria-label="{{ config('app.name') }} — home">
-            <img src="{{ asset('images/Logo.png') }}?v={{ filemtime(public_path('images/Logo.png')) }}"
-                 alt="{{ config('app.name') }} — سہولت آپ کے لیے"
-                 class="h-20 w-auto"
-                 width="267" height="80" decoding="async">
-        </a>
+            {{-- Logo --}}
+            <a href="{{ route('home') }}" class="animate-fade-up mb-8" aria-label="{{ config('app.name') }} — home">
+                <img src="{{ asset('images/Logo.png') }}?v={{ filemtime(public_path('images/Logo.png')) }}"
+                     alt="{{ config('app.name') }} — سہولت آپ کے لیے"
+                     class="h-20 w-auto"
+                     width="267" height="80" decoding="async">
+            </a>
 
-        {{-- Card --}}
-        <div class="w-full max-w-md">
-            @yield('content')
+            {{-- Card --}}
+            <div class="w-full max-w-md">
+                @yield('content')
+            </div>
         </div>
     </div>
 </body>

@@ -28,28 +28,10 @@
     @endif
 
     <form method="POST" action="{{ route('consumer.payments.store', $booking) }}" enctype="multipart/form-data" class="mt-6 space-y-5"
-          x-data="{
-              gateway: '{{ old('gateway', $gateways->first()?->key()) }}',
-              applyCredit: {{ old('apply_credit') ? 'true' : 'false' }},
-              price: {{ (float) $booking->price }},
-              maxCredit: {{ (float) $maxCreditApplicable }},
-              get remaining() { return Math.max(0, this.price - (this.applyCredit ? this.maxCredit : 0)); },
-          }">
+          x-data="{ gateway: '{{ old('gateway', $gateways->first()?->key()) }}' }">
         @csrf
 
-        @if ($maxCreditApplicable > 0)
-            <div class="rounded-2xl border border-brand-200 bg-brand-50 p-5 dark:border-brand-900 dark:bg-brand-950/30">
-                <label class="flex cursor-pointer items-start gap-3">
-                    <input type="checkbox" name="apply_credit" value="1" x-model="applyCredit" class="mt-0.5 h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-200">
-                    <span class="text-sm">
-                        <span class="block font-semibold text-slate-900 dark:text-white">Use my referral credit</span>
-                        <span class="block text-xs text-slate-600 dark:text-slate-400">Apply Rs. {{ number_format($maxCreditApplicable, 0) }} credit to this payment.</span>
-                    </span>
-                </label>
-            </div>
-        @endif
-
-        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900" x-show="remaining > 0">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Choose a payment method</h2>
             <div class="mt-4 space-y-3">
                 @foreach ($gateways as $g)
@@ -131,8 +113,7 @@
         </div>
 
         <button type="submit" class="w-full rounded-lg bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
-            <span x-show="remaining > 0" x-text="'Pay Rs. ' + remaining.toLocaleString()"></span>
-            <span x-show="remaining <= 0" x-cloak>Pay with referral credit</span>
+            Pay Rs. {{ number_format($booking->price, 0) }}
         </button>
         <p class="text-center text-xs text-slate-400 dark:text-slate-500">By paying you agree funds are held pending until you confirm completion.</p>
     </form>

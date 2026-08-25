@@ -67,28 +67,12 @@
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Save places for one-click checkout.</p>
         </a>
 
-        <a href="{{ route('consumer.referrals.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
-            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/40 dark:text-brand-400">
-                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="7" r="4"/><path d="M23 20v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-            <h2 class="mt-4 font-display text-base font-bold text-slate-900 dark:text-white">Refer & earn</h2>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Invite friends, earn credit — PKR {{ number_format(config('referrals.referrer_reward'), 0) }} per referral.</p>
-        </a>
-
         <a href="{{ route('consumer.subscriptions.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
             <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/40 dark:text-brand-400">
                 <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M17 2.1l4 4-4 4M7 21.9l-4-4 4-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 12a8.5 8.5 0 0 1 14.5-6h-4M20.5 12a8.5 8.5 0 0 1-14.5 6h4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
             <h2 class="mt-4 font-display text-base font-bold text-slate-900 dark:text-white">My subscriptions</h2>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Recurring maintenance plans — never miss a service again.</p>
-        </a>
-
-        <a href="{{ auth()->user()->corporate_account_id ? route('consumer.corporate.show') : route('consumer.corporate.create') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
-            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/40 dark:text-brand-400">
-                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3" width="10" height="18" rx="1"/><path d="M14 8h6v13h-6M7 7h.01M10 7h.01M7 11h.01M10 11h.01M7 15h.01M10 15h.01" stroke-linecap="round"/></svg>
-            </span>
-            <h2 class="mt-4 font-display text-base font-bold text-slate-900 dark:text-white">{{ auth()->user()->corporate_account_id ? 'Company dashboard' : 'Set up a company account' }}</h2>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Add teammates and consolidate billing across your whole company.</p>
         </a>
     </div>
 

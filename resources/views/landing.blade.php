@@ -56,7 +56,7 @@
 </section>
 
 {{-- ================================================ Banner slider --}}
-@if ($banners->isNotEmpty())
+<!-- @if ($banners->isNotEmpty())
 <section class="py-10 sm:py-14">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="relative overflow-hidden rounded-2xl shadow-sm"
@@ -106,12 +106,12 @@
         </div>
     </div>
 </section>
-@endif
+@endif -->
 
 {{-- ======================================================== Services --}}
 <section id="services" class="py-16 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="reveal max-w-2xl">
+        <div class="reveal max-w-4xl">
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent-600">{{ __('messages.nav.services') }}</p>
             <h2 class="mt-2 font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.services_title') }}</h2>
             <p class="mt-3 text-slate-600 dark:text-slate-400">{{ __('messages.landing.services_sub') }}</p>
@@ -412,7 +412,7 @@
                 @php
                     $reasons = [
                         ['icon' => 'user', 'tone' => 'green', 'title' => __('messages.landing.why_r1_t'), 'desc' => __('messages.landing.why_r1_d')],
-                        ['icon' => 'dollar', 'tone' => 'red', 'title' => __('messages.landing.why_r2_t'), 'desc' => __('messages.landing.why_r2_d')],
+                        ['icon' => 'rupee', 'tone' => 'red', 'title' => __('messages.landing.why_r2_t'), 'desc' => __('messages.landing.why_r2_d')],
                         ['icon' => 'clock', 'tone' => 'green', 'title' => __('messages.landing.why_r3_t'), 'desc' => __('messages.landing.why_r3_d')],
                         ['icon' => 'shield', 'tone' => 'red', 'title' => __('messages.landing.why_r4_t'), 'desc' => __('messages.landing.why_r4_d')],
                     ];
@@ -426,8 +426,8 @@
                                     @case('user')
                                         <svg viewBox="0 0 24 24" class="h-5 w-5 {{ $r['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0" stroke-linecap="round"/></svg>
                                         @break
-                                    @case('dollar')
-                                        <svg viewBox="0 0 24 24" class="h-5 w-5 {{ $r['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    @case('rupee')
+                                        <span class="text-base font-bold leading-none {{ $r['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}">₨</span>
                                         @break
                                     @case('clock')
                                         <svg viewBox="0 0 24 24" class="h-5 w-5 {{ $r['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -543,7 +543,7 @@
                 @php
                     $joinBenefits = [
                         ['icon' => 'check', 'tone' => 'green', 'title' => __('messages.landing.join_b1_t'), 'desc' => __('messages.landing.join_b1_d')],
-                        ['icon' => 'dollar', 'tone' => 'red', 'title' => __('messages.landing.join_b2_t'), 'desc' => __('messages.landing.join_b2_d')],
+                        ['icon' => 'rupee', 'tone' => 'red', 'title' => __('messages.landing.join_b2_t'), 'desc' => __('messages.landing.join_b2_d')],
                         ['icon' => 'zap', 'tone' => 'green', 'title' => __('messages.landing.join_b3_t'), 'desc' => __('messages.landing.join_b3_d')],
                         ['icon' => 'star', 'tone' => 'red', 'title' => __('messages.landing.join_b4_t'), 'desc' => __('messages.landing.join_b4_d')],
                     ];
@@ -557,8 +557,8 @@
                                     @case('check')
                                         <svg viewBox="0 0 24 24" class="h-4 w-4 {{ $b['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                         @break
-                                    @case('dollar')
-                                        <svg viewBox="0 0 24 24" class="h-4 w-4 {{ $b['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    @case('rupee')
+                                        <span class="text-sm font-bold leading-none {{ $b['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}">₨</span>
                                         @break
                                     @case('zap')
                                         <svg viewBox="0 0 24 24" class="h-4 w-4 {{ $b['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>
