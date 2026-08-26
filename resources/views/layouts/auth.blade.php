@@ -36,7 +36,7 @@
             <img :src="'/images/' + src + '.jpeg'"
                  x-show="({ consumer: 'CustomerBanner', provider: 'ProviderBanner', job_seeker: 'JobSeekerBanner' })[role] === src"
                  x-transition.opacity.duration.500ms
-                 class="absolute left-1/2 top-1/2 h-[50rem] w-full -translate-x-1/2 -translate-y-1/2 rounded-2xl object-contain"
+                 class="absolute left-1/2 top-1/2 h-[40rem] max-h-[80%] w-full -translate-x-1/2 -translate-y-1/2 rounded-2xl object-contain"
                  alt="">
         </template>
     </div>
