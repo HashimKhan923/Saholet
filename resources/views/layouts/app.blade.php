@@ -134,8 +134,6 @@
                 <a href="{{ route('careers.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('careers.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.careers') }}</a>
                 <a href="{{ route('subscription-plans.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('subscription-plans.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.plans') }}</a>
                 @if (request()->routeIs('home'))
-                    <a href="#how" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.nav.how') }}</a>
-                    <a href="#why-us" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.landing.why_eyebrow') }}</a>
                     <a href="#faq" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.landing.faq_eyebrow') }}</a>
                 @endif
                 <a href="{{ route('home') }}#contact" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400">{{ __('messages.nav.contact') }}</a>
@@ -213,8 +211,6 @@
                 <a href="{{ route('careers.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.careers') }}</a>
                 <a href="{{ route('subscription-plans.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.plans') }}</a>
                 @if (request()->routeIs('home'))
-                    <a href="#how" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.how') }}</a>
-                    <a href="#why-us" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.landing.why_eyebrow') }}</a>
                     <a href="#faq" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.landing.faq_eyebrow') }}</a>
                 @endif
                 <a href="{{ route('home') }}#contact" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.contact') }}</a>
@@ -261,7 +257,7 @@
     </main>
 
     {{-- ========================================================= Footer --}}
-    <footer class="border-t border-slate-200 bg-black dark:border-slate-800 dark:bg-slate-900">
+    <footer class="border-t-2 border-slate-200 bg-black dark:border-slate-800 dark:bg-slate-900">
         <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
             <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
 
