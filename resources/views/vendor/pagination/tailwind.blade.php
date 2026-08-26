@@ -1,5 +1,5 @@
 @if ($paginator->hasPages())
-    <nav class="mt-8 flex items-center justify-between border-t border-slate-100 pt-4" role="navigation">
+    <nav class="mt-8 flex items-center justify-between border-t-2 border-slate-100 pt-4" role="navigation">
         <div class="flex flex-1 items-center justify-between">
             <div>
                 <p class="text-xs text-slate-500">

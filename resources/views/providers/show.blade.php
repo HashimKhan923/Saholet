@@ -150,7 +150,7 @@
                 </div>
 
                 @forelse ($reviews as $review)
-                    <div class="mt-5 border-t border-slate-100 pt-5 first:mt-4 dark:border-slate-800">
+                    <div class="mt-5 border-t-2 border-slate-100 pt-5 first:mt-4 dark:border-slate-800">
                         <div class="flex items-center justify-between gap-3">
                             <div class="flex items-center gap-3">
                                 <span class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">

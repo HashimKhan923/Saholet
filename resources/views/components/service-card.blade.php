@@ -17,7 +17,7 @@
         {{ $service->description }}
     </p>
 
-    <div class="mt-auto border-t border-slate-100 pt-5 dark:border-slate-800">
+    <div class="mt-auto border-t-2 border-slate-100 pt-5 dark:border-slate-800">
         <p class="font-display text-2xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($service->base_price, 0) }}</p>
         <p class="text-xs text-slate-400">starting price</p>
     </div>

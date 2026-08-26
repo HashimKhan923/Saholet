@@ -59,14 +59,14 @@
                 </template>
                 <template x-for="n in $store.notifications.items" :key="n.id">
                     <a :href="n.url ?? '{{ route('notifications.index') }}'"
-                        class="block border-t border-slate-50 px-4 py-3 text-sm transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-700"
+                        class="block border-t-2 border-slate-50 px-4 py-3 text-sm transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-700"
                         :class="n.read_at ? 'text-slate-500' : 'font-semibold text-slate-800 dark:text-slate-100'">
                         <p x-text="n.title"></p>
                         <p class="mt-0.5 text-xs font-normal text-slate-400" x-text="n.body"></p>
                     </a>
                 </template>
             </div>
-            <div x-show="pushSupported" x-cloak class="border-t border-slate-100 px-4 py-2 dark:border-slate-700">
+            <div x-show="pushSupported" x-cloak class="border-t-2 border-slate-100 px-4 py-2 dark:border-slate-700">
                 <button type="button" @click="togglePush()" :disabled="pushBusy"
                     class="flex w-full items-center justify-between text-xs font-medium text-slate-500 transition hover:text-brand-700 disabled:cursor-wait disabled:opacity-60 dark:text-slate-400 dark:hover:text-brand-400">
                     <span class="flex items-center gap-1.5">
@@ -78,7 +78,7 @@
                     </span>
                 </button>
             </div>
-            <div class="border-t border-slate-100 px-4 pt-2 dark:border-slate-700">
+            <div class="border-t-2 border-slate-100 px-4 pt-2 dark:border-slate-700">
                 <a href="{{ route('notifications.index') }}" class="block py-1 text-center text-xs font-semibold text-brand-700 hover:text-brand-800 dark:text-brand-400">View all</a>
             </div>
         </div>

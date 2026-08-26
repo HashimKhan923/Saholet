@@ -144,7 +144,7 @@
 
                     @if ($item->isAssignable())
                         @php $providers = $eligibleProviders[$item->id] ?? collect(); @endphp
-                        <form method="POST" action="{{ route('admin.contracts.items.assign', [$contract, $item]) }}" class="mt-4 grid gap-3 border-t border-slate-100 pt-4 sm:grid-cols-4 dark:border-slate-800">
+                        <form method="POST" action="{{ route('admin.contracts.items.assign', [$contract, $item]) }}" class="mt-4 grid gap-3 border-t-2 border-slate-100 pt-4 sm:grid-cols-4 dark:border-slate-800">
                             @csrf
                             <div class="sm:col-span-2">
                                 <label class="block text-xs font-medium text-slate-700 dark:text-slate-300">Provider</label>

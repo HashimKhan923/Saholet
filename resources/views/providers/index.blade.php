@@ -95,7 +95,7 @@
                     @endif
 
                     {{-- Footer: rating + view link --}}
-                    <div class="mt-auto flex items-center justify-between border-t border-slate-100 pt-4 mt-5 dark:border-slate-800">
+                    <div class="mt-auto flex items-center justify-between border-t-2 border-slate-100 pt-4 mt-5 dark:border-slate-800">
                         @if ($provider->reviews_count > 0)
                             <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-800 dark:text-slate-200">
                                 <svg viewBox="0 0 24 24" class="h-4 w-4 text-amber-400" fill="currentColor"><path d="m12 2 2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 16.9 5.9 20.4l1.5-6.8L2.2 9l6.9-.7L12 2z"/></svg>

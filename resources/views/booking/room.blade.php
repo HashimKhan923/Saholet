@@ -66,7 +66,7 @@
                     </template>
                 </div>
 
-                <div class="border-t border-slate-200 bg-white px-3 py-3 dark:border-slate-800 dark:bg-slate-900">
+                <div class="border-t-2 border-slate-200 bg-white px-3 py-3 dark:border-slate-800 dark:bg-slate-900">
                     <template x-if="canSend">
                         <form @submit.prevent="send()" class="space-y-2">
                             <input x-model="draft" type="text" maxlength="2000" placeholder="Type a message…"
@@ -119,7 +119,7 @@
                     </template>
                 </div>
 
-                <div class="flex flex-wrap items-center gap-3 border-t border-slate-200 bg-slate-50 px-5 py-3 dark:border-slate-800 dark:bg-slate-800/60">
+                <div class="flex flex-wrap items-center gap-3 border-t-2 border-slate-200 bg-slate-50 px-5 py-3 dark:border-slate-800 dark:bg-slate-800/60">
                     <template x-if="tracking && tracking.note">
                         <span class="rounded-full bg-white px-3 py-1 text-xs text-slate-600 shadow-sm dark:bg-slate-900 dark:text-slate-300" x-text="tracking.note"></span>
                     </template>

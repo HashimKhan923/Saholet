@@ -59,7 +59,7 @@
                     <span class="text-2xl font-bold text-brand-200">Rs.</span> {{ number_format((float) $wallet->available_balance, 0) }}
                 </p>
 
-                <div class="mt-6 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-white/15 pt-4">
+                <div class="mt-6 flex flex-wrap items-center gap-x-8 gap-y-3 border-t-2 border-white/15 pt-4">
                     <div>
                         <p class="text-[11px] font-semibold uppercase tracking-wide text-brand-200">This month</p>
                         <p class="mt-0.5 font-display text-lg font-bold text-white">Rs. {{ number_format($earnedThisMonth, 0) }}</p>
@@ -397,7 +397,7 @@
             </ul>
 
             @if ($entries->hasPages())
-                <div class="border-t border-slate-100 px-6 py-4 dark:border-slate-800">{{ $entries->links() }}</div>
+                <div class="border-t-2 border-slate-100 px-6 py-4 dark:border-slate-800">{{ $entries->links() }}</div>
             @endif
         @endif
     </section>
