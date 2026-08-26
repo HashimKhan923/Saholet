@@ -80,7 +80,7 @@
             </nav>
 
             {{-- Bottom user card --}}
-            <div class="border-t border-slate-100 p-3 dark:border-slate-800">
+            <div class="border-t-2 border-slate-100 p-3 dark:border-slate-800">
                 <a href="{{ route('profile.edit') }}" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 transition hover:bg-slate-50 dark:hover:bg-slate-800">
                     @if (auth()->user()->avatar_url)
                         <img src="{{ auth()->user()->avatar_url }}" alt="" class="h-9 w-9 shrink-0 rounded-xl object-cover shadow-sm ring-2 ring-white dark:ring-slate-900">
@@ -136,7 +136,7 @@
                     @yield('nav')
                 </nav>
 
-                <div class="border-t border-slate-100 p-3 dark:border-slate-800">
+                <div class="border-t-2 border-slate-100 p-3 dark:border-slate-800">
                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 transition hover:bg-slate-50 dark:hover:bg-slate-800">
                         @if (auth()->user()->avatar_url)
                             <img src="{{ auth()->user()->avatar_url }}" alt="" class="h-9 w-9 shrink-0 rounded-xl object-cover shadow-sm ring-2 ring-white dark:ring-slate-900">
@@ -219,7 +219,7 @@
                                 <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1V10" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 {{ __('messages.nav.visit_site') }}
                             </a>
-                            <div class="my-1.5 border-t border-slate-100 dark:border-slate-700"></div>
+                            <div class="my-1.5 border-t-2 border-slate-100 dark:border-slate-700"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="flex w-full items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20">

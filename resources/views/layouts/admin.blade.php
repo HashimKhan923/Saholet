@@ -8,13 +8,12 @@
     // bookings/providers/finance are daily-driver pages, catalog/content are
     // occasional setup pages, accounts/insights are the least-visited.
     $showBookingsSection = $u->hasPermission('bookings') || $u->hasPermission('emergencies') || $u->hasPermission('contracts')
-        || $u->hasPermission('subscriptions') || $u->hasPermission('corporate-accounts');
-    $showProvidersSection = $u->hasPermission('providers') || $u->hasPermission('careers') || $u->hasPermission('talent');
+        || $u->hasPermission('subscriptions');
+    $showUsersSection = $u->hasPermission('providers') || $u->hasPermission('talent') || $u->isAdmin();
     $showFinanceSection = $u->hasPermission('invoices') || $u->isAdmin();
     $showTrustSection = $u->hasPermission('disputes') || $u->hasPermission('fraud');
     $showCatalogSection = $u->hasPermission('categories') || $u->hasPermission('services') || $u->hasPermission('service-areas');
-    $showContentSection = $u->hasPermission('faqs') || $u->hasPermission('banners');
-    $showAccountsSection = $u->isAdmin();
+    $showContentSection = $u->hasPermission('faqs') || $u->hasPermission('banners') || $u->hasPermission('careers');
 @endphp
 
 @section('nav')
@@ -55,28 +54,27 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M17 2.1l4 4-4 4M7 21.9l-4-4 4-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 12a8.5 8.5 0 0 1 14.5-6h-4M20.5 12a8.5 8.5 0 0 1-14.5 6h4" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </x-portal-nav-link>
     @endif
-    @if (auth()->user()->hasPermission('corporate-accounts'))
-    <x-portal-nav-link :href="route('admin.corporate-accounts.index')" :label="__('admin.nav.corporate_accounts')" :active="request()->routeIs('admin.corporate-accounts.*')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3" width="10" height="18" rx="1"/><path d="M14 8h6v13h-6M7 7h.01M10 7h.01M7 11h.01M10 11h.01M7 15h.01M10 15h.01" stroke-linecap="round"/></svg>
-    </x-portal-nav-link>
-    @endif
-
-    @if ($showProvidersSection)
-    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.providers_section') }}</p>
+    @if ($showUsersSection)
+    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.users_section') }}</p>
     @endif
     @if (auth()->user()->hasPermission('providers'))
     <x-portal-nav-link :href="route('admin.providers.index')" :label="__('admin.nav.providers')" :active="request()->routeIs('admin.providers.*')" :badge="$sidebarPendingProviders ?: null">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke-linecap="round"/></svg>
     </x-portal-nav-link>
     @endif
-    @if (auth()->user()->hasPermission('careers'))
-    <x-portal-nav-link :href="route('admin.careers.index')" :label="__('admin.nav.careers')" :active="request()->routeIs('admin.careers.*') || request()->routeIs('admin.career-categories.*')" :badge="$sidebarNewApplications ?: null">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h18" stroke-linecap="round"/></svg>
-    </x-portal-nav-link>
-    @endif
     @if (auth()->user()->hasPermission('talent'))
     <x-portal-nav-link :href="route('admin.talent.index')" :label="__('admin.nav.talent_search')" :active="request()->routeIs('admin.talent.*')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
+    </x-portal-nav-link>
+    @endif
+    @if (auth()->user()->isAdmin())
+    <x-portal-nav-link :href="route('admin.users.index')" :label="__('admin.nav.users')" :active="request()->routeIs('admin.users.*')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 2.7-5 6-5s6 2 6 5M16 11h5M18.5 8.5v5" stroke-linecap="round"/></svg>
+    </x-portal-nav-link>
+    @endif
+    @if (auth()->user()->isAdmin())
+    <x-portal-nav-link :href="route('admin.staff.index')" :label="__('admin.nav.staff')" :active="request()->routeIs('admin.staff.*')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="7" height="7" rx="1.5"/><path d="M4.5 20c0-2.8 2.2-5 4.5-5s4.5 2.2 4.5 5" stroke-linecap="round"/><circle cx="17" cy="7.5" r="2.5"/><path d="M14.5 20c.3-2.3 1.6-4 3-4.6" stroke-linecap="round"/></svg>
     </x-portal-nav-link>
     @endif
 
@@ -146,18 +144,9 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="9" r="1.5"/></svg>
     </x-portal-nav-link>
     @endif
-
-    @if ($showAccountsSection)
-    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.accounts_section') }}</p>
-    @endif
-    @if (auth()->user()->isAdmin())
-    <x-portal-nav-link :href="route('admin.users.index')" :label="__('admin.nav.users')" :active="request()->routeIs('admin.users.*')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 2.7-5 6-5s6 2 6 5M16 11h5M18.5 8.5v5" stroke-linecap="round"/></svg>
-    </x-portal-nav-link>
-    @endif
-    @if (auth()->user()->isAdmin())
-    <x-portal-nav-link :href="route('admin.staff.index')" :label="__('admin.nav.staff')" :active="request()->routeIs('admin.staff.*')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="7" height="7" rx="1.5"/><path d="M4.5 20c0-2.8 2.2-5 4.5-5s4.5 2.2 4.5 5" stroke-linecap="round"/><circle cx="17" cy="7.5" r="2.5"/><path d="M14.5 20c.3-2.3 1.6-4 3-4.6" stroke-linecap="round"/></svg>
+    @if (auth()->user()->hasPermission('careers'))
+    <x-portal-nav-link :href="route('admin.careers.index')" :label="__('admin.nav.careers')" :active="request()->routeIs('admin.careers.*') || request()->routeIs('admin.career-categories.*')" :badge="$sidebarNewApplications ?: null">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h18" stroke-linecap="round"/></svg>
     </x-portal-nav-link>
     @endif
 @endsection

@@ -175,7 +175,7 @@
                                 <svg viewBox="0 0 24 24" class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0" stroke-linecap="round"/></svg>
                                 {{ __('messages.profile.title') }}
                             </a>
-                            <div class="my-1.5 border-t border-slate-100 dark:border-slate-700"></div>
+                            <div class="my-1.5 border-t-2 border-slate-100 dark:border-slate-700"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="flex w-full items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20">
@@ -204,7 +204,7 @@
              x-transition:enter="transition ease-out duration-150"
              x-transition:enter-start="opacity-0 -translate-y-1"
              x-transition:enter-end="opacity-100 translate-y-0"
-             class="border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 md:hidden">
+             class="border-t-2 border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 md:hidden">
             <nav class="space-y-1 px-4 py-3">
                 <a href="{{ route('services.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.services') }}</a>
                 <a href="{{ route('providers.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.providers.nav_label') }}</a>

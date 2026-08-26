@@ -128,7 +128,7 @@
             + Add line item
         </button>
 
-        <div class="mt-5 space-y-3 border-t border-slate-100 pt-4 dark:border-slate-800">
+        <div class="mt-5 space-y-3 border-t-2 border-slate-100 pt-4 dark:border-slate-800">
             <div class="flex items-center justify-end gap-3">
                 <label for="discount" class="text-sm font-medium text-slate-700 dark:text-slate-200">Discount <span class="text-slate-400">(Rs., optional)</span></label>
                 <input id="discount" name="discount" type="number" min="0" step="0.01" x-model="discount"
@@ -155,7 +155,7 @@
             </div>
 
             <template x-if="hasAnyActualPrice">
-                <div class="flex items-center justify-end gap-3 border-t border-dashed border-slate-200 pt-3 text-sm dark:border-slate-700">
+                <div class="flex items-center justify-end gap-3 border-t-2 border-dashed border-slate-200 pt-3 text-sm dark:border-slate-700">
                     <span class="font-medium text-brand-700 dark:text-brand-400">Profit (admin copy only)</span>
                     <span class="w-28 text-right font-bold text-brand-700 dark:text-brand-400">Rs. <span x-text="totalProfit.toLocaleString()"></span></span>
                 </div>

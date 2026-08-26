@@ -176,7 +176,7 @@
 
 
 {{-- ================================================= Three flows band --}}
-<section class="border-t border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
+<section class="border-t-2 border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="reveal mx-auto max-w-2xl text-center">
             <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.flows_title') }}</h2>
@@ -273,7 +273,7 @@
         ],
     ];
 @endphp
-<section class="border-t border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
+<section class="border-t-2 border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
     <div class="mx-auto max-w-7xl space-y-16 px-4 sm:px-6 lg:space-y-24 lg:px-8">
         @foreach ($milestones as $i => $m)
             <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
@@ -511,7 +511,7 @@
 </section>
 
 {{-- ============================================== Subscription plans band --}}
-<section class="border-t border-slate-100 py-16 dark:border-slate-800 sm:py-20">
+<section class="border-t-2 border-slate-100 py-16 dark:border-slate-800 sm:py-20">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <a href="{{ route('subscription-plans.index') }}" class="reveal card-lift block overflow-hidden rounded-3xl shadow-2xl shadow-brand-900/30 ring-1 ring-white/10">
             <img src="/images/MaintenanceHome.jpeg?v={{ filemtime(public_path('images/MaintenanceHome.jpeg')) }}"
@@ -589,7 +589,7 @@
 </section>
 
 {{-- ==================================================== Testimonials --}}
-<section class="border-t border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
+<section class="border-t-2 border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="reveal mx-auto max-w-2xl text-center">
             <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.testimonials_title') }}</h2>
@@ -633,7 +633,7 @@
 </section>
 
 {{-- ======================================================= Careers band --}}
-<section class="border-t border-slate-100 py-16 dark:border-slate-800 sm:py-20">
+<section class="border-t-2 border-slate-100 py-16 dark:border-slate-800 sm:py-20">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <a href="{{ route('careers.index') }}" class="reveal card-lift block overflow-hidden rounded-3xl shadow-2xl shadow-brand-900/20">
             <img src="/images/CareerHome.jpeg?v={{ filemtime(public_path('images/CareerHome.jpeg')) }}"
@@ -718,7 +718,7 @@
 </section>
 
 {{-- ===================================================== Contact form --}}
-<section id="contact" class="border-t border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
+<section id="contact" class="border-t-2 border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="reveal mx-auto max-w-2xl text-center {{ $isUrdu ? 'font-urdu' : '' }}">
             <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.contact.title') }}</h2>

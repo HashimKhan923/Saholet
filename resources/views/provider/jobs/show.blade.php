@@ -88,7 +88,7 @@
                 </dl>
 
                 @if ($jobPost->photos->isNotEmpty())
-                    <div class="mt-6 border-t border-slate-100 pt-6 dark:border-slate-800">
+                    <div class="mt-6 border-t-2 border-slate-100 pt-6 dark:border-slate-800">
                         <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Photos from the customer</p>
                         <x-photo-gallery :photos="$jobPost->photos" />
                     </div>
@@ -189,7 +189,7 @@
                     </form>
 
                     @if ($myBid)
-                        <div class="mt-3 border-t border-slate-100 pt-3 dark:border-slate-800" x-show="! jobTaken">
+                        <div class="mt-3 border-t-2 border-slate-100 pt-3 dark:border-slate-800" x-show="! jobTaken">
                             <x-confirm-form :action="route('provider.bids.destroy', $myBid)" method="DELETE"
                                 button-label="Withdraw bid"
                                 button-class="w-full rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950/30"

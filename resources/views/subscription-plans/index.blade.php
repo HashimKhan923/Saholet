@@ -51,7 +51,7 @@
                         {{ $plan->service->category->name ?? '' }} · {{ $plan->total_visits ? $plan->total_visits . ' visits' : 'Ongoing, cancel anytime' }}
                     </p>
 
-                    <div class="mt-auto border-t border-slate-100 pt-5 dark:border-slate-800">
+                    <div class="mt-auto border-t-2 border-slate-100 pt-5 dark:border-slate-800">
                         <p class="font-display text-2xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($plan->price_per_visit, 0) }}</p>
                         <p class="text-xs text-slate-400">per visit</p>
                     </div>
