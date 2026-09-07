@@ -140,6 +140,36 @@
                 </div>
             @endif
 
+            {{-- Shop --}}
+            @if ($provider->products->isNotEmpty())
+                <div class="reveal card-lift rounded-3xl border border-slate-200 bg-white p-7 dark:border-slate-800 dark:bg-slate-900" style="--reveal-delay: 70ms">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50 text-violet-600 dark:bg-violet-950/50 dark:text-violet-400">
+                                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l1.5-5h15L21 9M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9h18M9 13a3 3 0 0 0 6 0" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                            <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Products</h2>
+                        </div>
+                        <a href="{{ route('shop.index', ['provider' => $provider->id]) }}" class="text-xs font-semibold text-brand-700 hover:text-brand-800 dark:text-brand-400">View all &rarr;</a>
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        @foreach ($provider->products as $product)
+                            <a href="{{ route('shop.show', $product) }}" class="group overflow-hidden rounded-xl border border-slate-100 dark:border-slate-800">
+                                <div class="aspect-square w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                    @if ($product->photos->isNotEmpty())
+                                        <img src="{{ $product->photos->first()->url() }}" class="h-full w-full object-cover transition group-hover:scale-105">
+                                    @endif
+                                </div>
+                                <div class="p-2">
+                                    <p class="truncate text-xs font-medium text-slate-800 dark:text-slate-200">{{ $product->name }}</p>
+                                    <p class="text-xs font-bold text-brand-700 dark:text-brand-400">Rs. {{ number_format((float) $product->price, 0) }}</p>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
             {{-- Reviews --}}
             <div class="reveal card-lift rounded-3xl border border-slate-200 bg-white p-7 dark:border-slate-800 dark:bg-slate-900" style="--reveal-delay: 80ms">
                 <div class="flex items-center gap-2.5">

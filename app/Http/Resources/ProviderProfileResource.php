@@ -29,6 +29,17 @@ class ProviderProfileResource extends JsonResource
             'has_payout_method' => $this->hasPayoutMethod(),
             'services' => ProviderServiceResource::collection($this->whenLoaded('providerServices')),
             'portfolio' => ProviderPortfolioPhotoResource::collection($this->whenLoaded('portfolioPhotos')),
+            'shop' => [
+                'shop_name' => $this->shop_name ?: $this->business_name,
+                'sells_products' => $this->canSellProducts(),
+                'offers_delivery' => $this->offersDelivery(),
+                'shipping_type' => $this->shipping_type,
+                'shipping_flat_rate' => $this->shipping_flat_rate !== null ? (float) $this->shipping_flat_rate : null,
+                'shipping_percentage' => $this->shipping_percentage !== null ? (float) $this->shipping_percentage : null,
+                'pickup_enabled' => (bool) $this->pickup_enabled,
+                'pickup_hours' => $this->pickup_hours,
+                'maps_url' => $this->mapsUrl(),
+            ],
         ];
     }
 }

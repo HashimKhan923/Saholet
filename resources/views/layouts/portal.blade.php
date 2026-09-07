@@ -188,7 +188,16 @@
                         </div>
                     </div>
 
-                    <x-theme-toggle />
+                    {{-- Theme toggle — iOS/Android-style switch, matches the main site header --}}
+                    <button type="button" @click="toggleTheme()" role="switch" :aria-checked="dark.toString()" aria-label="Toggle dark mode"
+                        class="relative inline-flex h-5 w-10 shrink-0 items-center rounded-full transition-colors duration-300"
+                        :class="dark ? 'bg-slate-900' : 'bg-slate-200 dark:bg-slate-700'">
+                        <span class="pointer-events-none absolute start-0.5 inline-flex h-4 w-4 transform items-center justify-center rounded-full bg-white shadow transition-transform duration-300"
+                            :class="dark ? 'translate-x-5 rtl:-translate-x-5' : 'translate-x-0'">
+                            <svg x-show="!dark" viewBox="0 0 24 24" class="h-2.5 w-2.5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="4.5"/><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke-linecap="round"/></svg>
+                            <svg x-show="dark" x-cloak viewBox="0 0 24 24" class="h-2.5 w-2.5 text-brand-700" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z" stroke-linejoin="round"/></svg>
+                        </span>
+                    </button>
                     <x-notification-bell />
 
                     {{-- User dropdown --}}

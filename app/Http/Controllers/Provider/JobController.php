@@ -18,7 +18,7 @@ class JobController extends Controller
         if (! $profile || ! $profile->isApproved()) {
             return view('provider.jobs.index', [
                 'approved'     => false,
-                'jobs'         => collect(),
+                'jobs'         => JobPost::whereRaw('1 = 0')->paginate(15),
                 'myBids'       => collect(),
                 'myServiceIds' => collect(),
                 'myBidsCount'  => 0,
@@ -34,19 +34,24 @@ class JobController extends Controller
             ->whereIn('service_id', $serviceIds)
             ->withCount(['bids', 'photos'])
             ->latest()
-            ->get();
+            ->paginate(15)
+            ->withQueryString();
 
         $myBids = Bid::where('provider_profile_id', $profile->id)
             ->whereIn('job_post_id', $jobs->pluck('id'))
             ->get()
             ->keyBy('job_post_id');
 
+        $myBidsCount = Bid::where('provider_profile_id', $profile->id)
+            ->whereIn('job_post_id', JobPost::where('status', JobPost::STATUS_OPEN)->whereIn('service_id', $serviceIds)->pluck('id'))
+            ->count();
+
         return view('provider.jobs.index', [
             'approved'     => true,
             'jobs'         => $jobs,
             'myBids'       => $myBids,
             'myServiceIds' => $serviceIds->values(),
-            'myBidsCount'  => $myBids->count(),
+            'myBidsCount'  => $myBidsCount,
         ]);
     }
 

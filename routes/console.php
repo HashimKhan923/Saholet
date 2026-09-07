@@ -15,6 +15,9 @@ Schedule::command('subscriptions:generate-due-visits')->dailyAt('06:00');
 // Pause providers who've carried unpaid cash-commission debt past the grace period.
 Schedule::command('providers:suspend-overdue')->dailyAt('07:00');
 
+// Nudge consumers to rate products from orders completed 7+ days ago.
+Schedule::command('products:remind-reviews')->dailyAt('10:00');
+
 // Process queued notification deliveries (email/SMS/WhatsApp/push) every minute.
 // Piggybacks on the same cron entry above — no separate `queue:work` daemon needed.
 Schedule::command('queue:work --stop-when-empty --tries=3 --max-time=50')

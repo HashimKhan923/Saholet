@@ -7,13 +7,6 @@
     <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Portfolio</h1>
     <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Show off completed work — before/after shots build trust and win more bookings. Up to 12 photos, visible on your public profile.</p>
 
-    @if (session('success'))
-        <div class="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-400">{{ session('success') }}</div>
-    @endif
-    @if (session('error'))
-        <div class="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">{{ session('error') }}</div>
-    @endif
-
     @php $remaining = 12 - $photos->count(); @endphp
 
     @if ($remaining > 0)

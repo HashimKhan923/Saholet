@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AvailabilityController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BookingRoomController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ProductController as ShopProductController;
 use App\Http\Controllers\Api\DeviceTokenController;
 use App\Http\Controllers\Api\DisputeController;
 use App\Http\Controllers\Api\NotificationController;
@@ -23,9 +24,15 @@ use App\Http\Controllers\Api\Consumer\EmergencyController as ConsumerEmergencyCo
 use App\Http\Controllers\Api\Consumer\JobController as ConsumerJobController;
 use App\Http\Controllers\Api\Consumer\PaymentController as ConsumerPaymentController;
 use App\Http\Controllers\Api\Consumer\ReviewController as ConsumerReviewController;
+use App\Http\Controllers\Api\Consumer\CartController as ConsumerCartController;
+use App\Http\Controllers\Api\Consumer\CheckoutController as ConsumerCheckoutController;
+use App\Http\Controllers\Api\Consumer\OrderController as ConsumerOrderController;
+use App\Http\Controllers\Api\Consumer\WishlistController as ConsumerWishlistController;
 use App\Http\Controllers\Api\Consumer\SubscriptionController as ConsumerSubscriptionController;
 use App\Http\Controllers\Api\Provider\BidController as ProviderBidController;
 use App\Http\Controllers\Api\Provider\BookingController as ProviderBookingController;
+use App\Http\Controllers\Api\Provider\CouponController as ProviderCouponController;
+use App\Http\Controllers\Api\Provider\OrderController as ProviderOrderController;
 use App\Http\Controllers\Api\Provider\DashboardController as ProviderDashboardController;
 use App\Http\Controllers\Api\Provider\EmergencyController as ProviderEmergencyController;
 use App\Http\Controllers\Api\Provider\JobController as ProviderJobController;
@@ -33,7 +40,9 @@ use App\Http\Controllers\Api\Provider\OnboardingController as ProviderOnboarding
 use App\Http\Controllers\Api\Provider\PayoutMethodController as ProviderPayoutMethodController;
 use App\Http\Controllers\Api\Provider\SettlementController as ProviderSettlementController;
 use App\Http\Controllers\Api\Provider\PortfolioController as ProviderPortfolioController;
+use App\Http\Controllers\Api\Provider\ProductController as ProviderProductController;
 use App\Http\Controllers\Api\Provider\ProviderServiceController;
+use App\Http\Controllers\Api\Provider\ShopSettingsController as ProviderShopSettingsController;
 use App\Http\Controllers\Api\Provider\WalletController as ProviderWalletController;
 use App\Http\Controllers\Api\Provider\WithdrawalController as ProviderWithdrawalController;
 use Illuminate\Support\Facades\Route;
@@ -65,6 +74,9 @@ Route::get('services/{service:slug}', [ServiceController::class, 'show'])->name(
 Route::get('providers', [ProviderDirectoryController::class, 'index'])->name('api.providers.index');
 Route::get('providers/{provider}', [ProviderDirectoryController::class, 'show'])->name('api.providers.show');
 Route::get('providers/{provider}/services/{service}/availability', [AvailabilityController::class, 'show'])->name('api.providers.availability');
+
+Route::get('shop/products', [ShopProductController::class, 'index'])->name('api.shop.products.index');
+Route::get('shop/products/{product}', [ShopProductController::class, 'show'])->name('api.shop.products.show');
 
 Route::get('subscription-plans', [SubscriptionPlanController::class, 'index'])->name('api.subscription-plans.index');
 Route::get('cities', [ServiceAreaController::class, 'index'])->name('api.cities.index');
@@ -146,6 +158,22 @@ Route::middleware(['auth:sanctum', 'api.not.suspended'])->group(function () {
         Route::post('subscription-plans/{plan:slug}/subscribe', [ConsumerSubscriptionController::class, 'store'])->name('subscriptions.store');
         Route::get('subscriptions/{subscription}', [ConsumerSubscriptionController::class, 'show'])->name('subscriptions.show');
         Route::post('subscriptions/{subscription}/cancel', [ConsumerSubscriptionController::class, 'cancel'])->name('subscriptions.cancel');
+
+        Route::get('cart', [ConsumerCartController::class, 'index'])->name('cart.index');
+        Route::post('cart/items', [ConsumerCartController::class, 'store'])->name('cart.items.store');
+        Route::put('cart/items/{item}', [ConsumerCartController::class, 'update'])->name('cart.items.update');
+        Route::delete('cart/items/{item}', [ConsumerCartController::class, 'destroy'])->name('cart.items.destroy');
+        Route::post('cart/coupon/preview', [ConsumerCartController::class, 'previewCoupon'])->name('cart.coupon.preview');
+
+        Route::get('wishlist', [ConsumerWishlistController::class, 'index'])->name('wishlist.index');
+        Route::post('wishlist/toggle', [ConsumerWishlistController::class, 'toggle'])->name('wishlist.toggle');
+
+        Route::post('checkout', [ConsumerCheckoutController::class, 'store'])->name('checkout.store');
+
+        Route::get('orders', [ConsumerOrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{order}', [ConsumerOrderController::class, 'show'])->name('orders.show');
+        Route::post('orders/{order}/cancel', [ConsumerOrderController::class, 'cancel'])->name('orders.cancel');
+        Route::post('orders/{order}/reviews', [ConsumerOrderController::class, 'storeReview'])->name('orders.reviews.store');
     });
 
     // ─── Provider ────────────────────────────────────────────────
@@ -192,5 +220,27 @@ Route::middleware(['auth:sanctum', 'api.not.suspended'])->group(function () {
         Route::get('portfolio', [ProviderPortfolioController::class, 'index'])->name('portfolio.index');
         Route::post('portfolio', [ProviderPortfolioController::class, 'store'])->name('portfolio.store');
         Route::delete('portfolio/{photo}', [ProviderPortfolioController::class, 'destroy'])->name('portfolio.destroy');
+
+        Route::get('shop-settings', [ProviderShopSettingsController::class, 'show'])->name('shop-settings.show');
+        Route::put('shop-settings', [ProviderShopSettingsController::class, 'update'])->name('shop-settings.update');
+
+        Route::get('products', [ProviderProductController::class, 'index'])->name('products.index');
+        Route::post('products', [ProviderProductController::class, 'store'])->name('products.store');
+        Route::get('products/{product}', [ProviderProductController::class, 'show'])->name('products.show');
+        Route::put('products/{product}', [ProviderProductController::class, 'update'])->name('products.update');
+        Route::delete('products/{product}', [ProviderProductController::class, 'destroy'])->name('products.destroy');
+        Route::delete('products/photos/{photo}', [ProviderProductController::class, 'destroyPhoto'])->name('products.photos.destroy');
+
+        Route::get('orders', [ProviderOrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{order}', [ProviderOrderController::class, 'show'])->name('orders.show');
+        Route::post('orders/{order}/confirm', [ProviderOrderController::class, 'confirm'])->name('orders.confirm');
+        Route::post('orders/{order}/ready', [ProviderOrderController::class, 'markReady'])->name('orders.ready');
+        Route::post('orders/{order}/complete', [ProviderOrderController::class, 'complete'])->name('orders.complete');
+        Route::post('orders/{order}/cancel', [ProviderOrderController::class, 'cancel'])->name('orders.cancel');
+
+        Route::get('coupons', [ProviderCouponController::class, 'index'])->name('coupons.index');
+        Route::post('coupons', [ProviderCouponController::class, 'store'])->name('coupons.store');
+        Route::post('coupons/{coupon}/toggle-active', [ProviderCouponController::class, 'toggleActive'])->name('coupons.toggle-active');
+        Route::delete('coupons/{coupon}', [ProviderCouponController::class, 'destroy'])->name('coupons.destroy');
     });
 });

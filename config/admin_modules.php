@@ -22,6 +22,10 @@ return [
     'providers' => ['label' => 'Providers', 'actions' => ['view', 'edit']],
     'careers' => ['label' => 'Careers & applications', 'actions' => ['view', 'create', 'edit', 'delete']],
     'talent' => ['label' => 'Job seekers', 'actions' => ['view']],
+    // Moderation only — a product publishes immediately when its provider adds it,
+    // so staff never create one here, only deactivate/remove after the fact.
+    'products' => ['label' => 'Shop products', 'actions' => ['view', 'edit', 'delete']],
+    'orders' => ['label' => 'Shop orders', 'actions' => ['view']],
     'disputes' => ['label' => 'Disputes', 'actions' => ['view', 'edit']],
     'fraud' => ['label' => 'Fraud signals', 'actions' => ['view']],
 

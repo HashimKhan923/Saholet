@@ -497,6 +497,73 @@ Body: `address`, `city` (required), `latitude`, `longitude` (optional), `start_d
 
 **`POST /subscriptions/{id}/cancel`** — Body: `reason` (optional). Already-scheduled visits are unaffected.
 
+### Shop: browsing, cart, checkout, orders
+
+Browsing is public (no auth) at top level, not under `/consumer`; cart/checkout/orders require the `consumer` role.
+
+**`GET /shop/products`** *(public)* — Query: `q`, `category` (id), `city`, `provider` (id, for one provider's own shop). Response: `{ "products": [...], "pagination": {...} }` — only active, in-an-approved-provider's-shop products.
+
+**`GET /shop/products/{id}`** *(public)* — `{ "product": {...}, "related_products": [...up to 4, same provider...] }`. `404` if inactive or the provider is no longer approved.
+
+A product carries an optional sale price: `price` (regular), `discount_price` (nullable, must be lower than `price`), plus computed `has_discount`, `effective_price` (what's actually charged — always use this, never raw `price`, for any total/cart/order math), and `discount_percentage` (rounded int, `0` when there's no discount).
+
+An admin can deactivate a product (`is_active: false`) instead of deleting it, always with a reason and reactivation instructions for the provider; while inactive, `ProductResource` includes `deactivation_reason` and `reactivation_instructions` (both `null` while active) — the provider app should surface these on the product's own screen so they know what to fix.
+
+**Wishlist** — requires auth (`consumer` role); a simple saved-for-later list, independent of the cart.
+
+| Method | Path | Body | Notes |
+|---|---|---|---|
+| GET | `/consumer/wishlist` | – | `{ "products": [...] }` |
+| POST | `/consumer/wishlist/toggle` | `product_id` (required) | Adds if not already wishlisted, removes if it is. `{ "wishlisted": true\|false, "message": "..." }`, `201` when added |
+
+**Cart** — one persistent cart per consumer, items can span multiple providers.
+
+| Method | Path | Body | Notes |
+|---|---|---|---|
+| GET | `/consumer/cart` | – | `{ "groups": [...] }` — see shape below |
+| POST | `/consumer/cart/items` | `product_id` (required), `quantity` (optional, default 1) | Adds to existing quantity, capped at stock. `201` |
+| PUT | `/consumer/cart/items/{id}` | `quantity` (required) | Capped at stock |
+| DELETE | `/consumer/cart/items/{id}` | – | – |
+
+Each response returns the full cart, grouped by provider — this is exactly the shape checkout expects one selection per:
+```json
+{ "groups": [
+  { "provider": {...ProviderProfileResource...}, "items": [...CartItemResource...],
+    "subtotal": 2000, "delivery_estimate": 150, "pickup_available": true }
+] }
+```
+`delivery_estimate` is `null` only when the provider doesn't offer delivery at all (`shipping_type` unset — pickup-only). Whenever `shipping_type` is set (`flat`\|`percentage`\|`free`), the estimate is always a real number here — shipping is priced from the cart subtotal alone, never from the customer's address, so there's nothing further to resolve at checkout.
+
+**Coupons** — a coupon is scoped to one provider (their code, discounting only their products) and redeemable once per customer, enforced at the database level. The web app remembers an "applied" coupon per provider in the session across cart/checkout page loads; a bearer-token API client has no such session, so instead it holds the applied code itself and re-sends it directly on the checkout call. Use this endpoint to validate + preview the discount first:
+
+**`POST /consumer/cart/coupon/preview`** — Body: `provider_profile_id`, `code`. Doesn't persist anything server-side. `422` with `{ "valid": false, "message": "..." }` if the code is unknown, inactive, expired, or already used by this customer. On success: `{ "valid": true, "code": "SAVE10", "label": "10% off", "discount": 200 }` (discount computed against that provider's current cart subtotal).
+
+**`POST /consumer/checkout`** — Body: `orders[]`, one entry per provider group from the cart (a mismatched cart → order split returns `422`). Multipart when any entry pays by `bank_transfer`.
+
+| Field | Required when | Notes |
+|---|---|---|
+| `orders.*.provider_profile_id` | always | must match a group actually in the cart |
+| `orders.*.fulfillment_method` | always | `delivery`\|`pickup` — `422` if that provider doesn't offer it |
+| `orders.*.payment_method` | always | `cash`\|`bank_transfer` |
+| `orders.*.address_id` | `fulfillment_method=delivery` | must belong to the requesting consumer — used only to ship the order to, not to price it |
+| `orders.*.coupon_code` | no | re-validated here regardless of any earlier preview — `422` if it's no longer usable (someone else claimed a limited code, it expired mid-checkout, etc.) |
+| `orders.*.screenshot` | `payment_method=bank_transfer` | image, max 8MB |
+
+Stock is locked and re-validated per item at checkout (not just at add-to-cart) — a race with another buyer, or a provider deactivating/deleting a product, surfaces as `422` rather than silently overselling. A coupon's discount applies to the product subtotal before shipping is added; cancelling an order afterward frees the coupon for reuse (the one-time redemption is deleted). Response `201`: `{ "orders": [...OrderResource, one per provider...] }`.
+
+**Orders**
+
+| Method | Path | Body | Notes |
+|---|---|---|---|
+| GET | `/consumer/orders` | – | `{ "orders": [...], "pagination": {...} }` |
+| GET | `/consumer/orders/{id}` | – | `{ "order": {...} }` |
+| POST | `/consumer/orders/{id}/cancel` | `reason` (optional) | Only while `pending`\|`confirmed` (restocks items; refunds/voids any payment). `422` once `ready` |
+| POST | `/consumer/orders/{id}/reviews` | `product_id`, `rating` (1–5), `comment` (optional) | Rate one product from this order. `422` unless the order is `completed` and that product hasn't already been reviewed on this order — one review per product per order, re-ordering later opens a new one. `201`: `{ "review": {...} }` |
+
+Order lifecycle: `pending` → `confirmed` → `ready` → `completed`, or → `cancelled`. `ready` means "shipped" for a delivery order / "ready for pickup" for a pickup order; `completed` means delivered / collected. For a `cash` order, the **provider's** completion action (see §6) is what actually records the payment and charges commission — there's no separate consumer "I paid" step. For `bank_transfer`, payment is collected up front at checkout and held in escrow once an admin verifies it; it releases to the provider automatically when they mark the order `completed`.
+
+**Product reviews** — 7 days after an order is marked `completed`, a scheduled job (`products:remind-reviews`) notifies the consumer (in-app + email/push, same as any other notification) to rate what they bought, linking back to `GET /consumer/orders/{id}`; the reminder only fires once per order (tracked server-side) and is skipped entirely if every item on the order already has a review. A `ProductResource` (see product browsing above) carries `rating_avg` (null if unreviewed) and `reviews_count`; the product detail page/endpoint's reviews aren't yet exposed as their own list endpoint — for now, fetch them via the web product page or add one if the app needs them directly.
+
 ---
 
 ## 6. Provider API (`/api/provider/*`, role `provider` required)
@@ -652,6 +719,47 @@ For cash-collected bookings, commission is never deducted at source — it posts
 | POST | `/portfolio` | multipart: `photos[]` (images, up to remaining slots under a 12-photo cap), `caption` (optional) | `201`, `{ "photos": [...just the new ones...] }` |
 | DELETE | `/portfolio/{photoId}` | – | `{ "message": "Photo removed." }` |
 
+### Shop (products, for providers who also sell physical goods)
+
+A provider must configure at least one fulfillment method — delivery (`shipping_type` set) or `pickup_enabled` — before any product can be created; `POST /products` returns `422` otherwise. Commission on product sales uses a separate `product_commission_rate` from the booking `commission_rate`, both admin-set per provider.
+
+**`GET /shop-settings`** / **`PUT /shop-settings`** — Body (PUT): `shipping_type` (`flat`\|`percentage`\|`free`\|`null`, nullable), `shipping_flat_rate` (required if `shipping_type=flat`), `shipping_percentage` (required if `shipping_type=percentage`, 0–100), `pickup_enabled` (bool — when true, the provider's own `address`/`latitude`/`longitude` double as the pickup location shown to customers), `pickup_hours` (nullable string, e.g. `"Mon-Sat 9am-8pm"` — cleared automatically if `pickup_enabled` is false). Response: `{ "provider": {...} }` (see `shop` block in the provider resource, §7).
+
+Shipping is intentionally simple and address-blind: a flat fee, a percentage of the order, or free — never priced by the customer's city or checked against a coverage map (that's the admin-side Geo-fencing feature, a separate, platform-wide "do we operate here at all" gate — see §4's Geo-fencing note). If a provider genuinely can't reach wherever an order needs to go, the expectation is they call the customer or cancel the order themselves, the same way a small local business would.
+
+| Method | Path | Body | Notes |
+|---|---|---|---|
+| GET | `/products` | – | `{ "products": [...] }` — this provider's own catalog, all statuses |
+| POST | `/products` | `category_id` (nullable), `name` (required), `description` (nullable), `price` (required, numeric), `stock_quantity` (required, int ≥0), `sku` (nullable), `is_active` (nullable bool, default true), multipart `photos[]` (nullable, up to 8 images, 5MB each) | `422` if no fulfillment method configured yet. `201`, `{ "product": {...} }` |
+| GET | `/products/{id}` | – | `{ "product": {...} }` |
+| PUT | `/products/{id}` | same as POST | `{ "product": {...} }` |
+| DELETE | `/products/{id}` | – | `{ "message": "..." }` |
+| DELETE | `/products/photos/{photoId}` | – | `{ "message": "Photo removed." }` |
+
+### Coupons (discount codes for your shop's products)
+
+| Method | Path | Body | Notes |
+|---|---|---|---|
+| GET | `/coupons` | – | `{ "coupons": [...] }` — this provider's own codes, with redemption counts |
+| POST | `/coupons` | `code` (required, alphanumeric, unique per provider — case-insensitive, stored uppercase), `type` (`flat`\|`percentage`, required), `value` (required, numeric; ≤100 if `type=percentage`), `expires_at` (nullable, must be in the future) | `201`, `{ "coupon": {...} }` |
+| POST | `/coupons/{id}/toggle-active` | – | – |
+| DELETE | `/coupons/{id}` | – | – |
+
+**CouponResource** — `{ "id","code","type","value","label","is_active","expires_at","redemptions_count","created_at" }`. `label` is a ready-to-display string, e.g. `"10% off"` or `"Rs. 200 off"`.
+
+### Orders (fulfilling product sales)
+
+Drives an order through `pending` → `confirmed` → `ready` → `completed`, or → `cancelled`. Every action below requires the order to already be in the state the transition expects (`422` otherwise) and that this provider owns it (`403` otherwise).
+
+| Method | Path | Body | Notes |
+|---|---|---|---|
+| GET | `/orders` | – | Query: `status` (`all`\|`pending`\|`confirmed`\|`ready`\|`completed`\|`cancelled`). `{ "orders": [...], "counts": {...}, "pagination": {...} }` |
+| GET | `/orders/{id}` | – | `{ "order": {...} }` |
+| POST | `/orders/{id}/confirm` | – | `pending` → `confirmed` |
+| POST | `/orders/{id}/ready` | `delivery_method` (optional free text, max 1000 chars — most local delivery here is a rider service (Bykea/InDrive/Yango) or the provider themselves, not a trackable courier waybill, so there's nothing to require or validate the shape of) | `confirmed` → `ready`. Ignored/cleared for a `pickup` order |
+| POST | `/orders/{id}/complete` | – | `ready` → `completed`. **For a `cash` order this is also where payment is recorded and commission is charged** (see §5) — the provider is physically present handing over goods and collecting payment. For `bank_transfer`, this releases the already-escrowed payment to the provider's wallet |
+| POST | `/orders/{id}/cancel` | `reason` (optional) | Only while `pending`\|`confirmed`; restocks items and refunds/voids any payment |
+
 ---
 
 ## 7. Resource reference
@@ -667,10 +775,22 @@ Quick field reference for nested objects that recur throughout the API.
   "latitude": null, "longitude": null, "status": "approved", "rejection_reason": null,
   "has_payout_method": true,
   "services": [ {...ProviderServiceResource, when loaded...} ],
-  "portfolio": [ {...ProviderPortfolioPhotoResource, when loaded...} ]
+  "portfolio": [ {...ProviderPortfolioPhotoResource, when loaded...} ],
+  "shop": {
+    "shop_name": "Test Pro", "sells_products": true, "offers_delivery": true,
+    "shipping_type": "flat", "shipping_flat_rate": 250, "shipping_percentage": null,
+    "pickup_enabled": true, "pickup_hours": "Mon-Sat 9am-8pm",
+    "maps_url": "https://www.google.com/maps/search/?api=1&query=24.86,67.03"
+  }
 }
 ```
-`status` ∈ `draft` \| `pending` \| `approved` \| `rejected`.
+`status` ∈ `draft` \| `pending` \| `approved` \| `rejected`. `shop.sells_products` is true once at least one fulfillment method is configured (delivery or pickup) — that's the gate on whether this provider can have any product go live. `shop.maps_url` is `null` until the provider has a pinned `latitude`/`longitude` on their profile; `shop.pickup_hours` is free text, shown to a customer choosing self-pickup.
+
+**ProductResource** — `{ "id","provider_profile_id","provider":{...ProviderProfileResource, when loaded...},"category":{...CategoryResource, when loaded...},"name","slug","description","price","stock_quantity","in_stock","sku","is_active","photos":[{"id","url","sort_order"}],"created_at" }`
+
+**OrderResource** — `{ "id","reference","status","fulfillment_method","payment_method","provider":{...ProviderProfileResource...},"consumer":{"id","name","phone"},"items":[...OrderItemResource...],"shipping_address","shipping_city","shipping_lat","shipping_lng","subtotal","discount_amount","coupon_code","shipping_amount","total_amount","delivery_method","tracking_reference","cancel_reason","ready_at","completed_at","cancelled_at","created_at","payments":[...PaymentResource...],"permissions":{"can_cancel","is_provider"} }`. `status` ∈ `pending` \| `confirmed` \| `ready` \| `completed` \| `cancelled`. `fulfillment_method` ∈ `delivery` \| `pickup`. `payment_method` ∈ `cash` \| `bank_transfer`. `total_amount` = `subtotal` − `discount_amount` + `shipping_amount`. `coupon_code` is only present when the `coupon` relation was eager-loaded (order-show endpoints do this; order-list ones don't, for a lighter payload).
+
+**OrderItemResource** — `{ "id","product_id","product_name","unit_price","quantity","line_total" }` — `product_name`/`unit_price` are snapshots taken at order time, so they stay accurate even if the product is later renamed, repriced, or deleted.
 
 **ServiceResource** — `{ "id","category_id","category":{...or omitted},"name","slug","description","base_price","duration_minutes","is_active" }`
 

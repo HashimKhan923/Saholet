@@ -21,7 +21,8 @@ class EmergencyController extends Controller
         $requests = EmergencyRequest::with(['service.category'])
             ->where('consumer_id', $request->user()->id)
             ->latest()
-            ->get();
+            ->paginate(15)
+            ->withQueryString();
 
         return view('consumer.emergencies.index', compact('requests'));
     }

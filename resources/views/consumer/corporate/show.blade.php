@@ -10,13 +10,6 @@
     <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $account->name }}</h1>
     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Owner: {{ $account->owner->name }} · {{ $account->billing_email }}</p>
 
-    @if (session('success'))
-        <div class="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-400">{{ session('success') }}</div>
-    @endif
-    @if (session('error'))
-        <div class="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">{{ session('error') }}</div>
-    @endif
-
     <div class="mt-6 grid grid-cols-2 gap-4">
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Team members</p>

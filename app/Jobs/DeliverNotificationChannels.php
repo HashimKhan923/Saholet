@@ -18,15 +18,22 @@ class DeliverNotificationChannels implements ShouldQueue
     public int $tries = 3;
     public int $backoff = 30;
 
-    /** @param array{type: string, title: string, body: string, url: ?string} $payload */
+    /**
+     * @param array{type: string, title: string, body: string, url: ?string} $payload
+     * @param array<int, string> $excludeChannels Channel keys (e.g. 'mail') to skip for this delivery
+     */
     public function __construct(
         public User $recipient,
         public array $payload,
+        public array $excludeChannels = [],
     ) {}
 
     public function handle(NotificationManager $channels): void
     {
         foreach ($channels->enabled() as $channel) {
+            if (in_array($channel->key(), $this->excludeChannels, true)) {
+                continue;
+            }
             try {
                 $channel->deliver($this->recipient, $this->payload);
             } catch (\Throwable $e) {

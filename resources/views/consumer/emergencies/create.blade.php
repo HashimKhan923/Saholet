@@ -14,9 +14,6 @@
     </div>
     <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">We’ll alert available verified providers in your city right away. The first to accept will be assigned instantly.</p>
 
-    @if (session('error'))
-        <div class="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">{{ session('error') }}</div>
-    @endif
     @if ($errors->any())
         <div class="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">
             Please fix the highlighted fields below.

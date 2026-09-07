@@ -15,7 +15,7 @@
         <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('messages.careers.apply_title') }}</h2>
         <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{{ __('messages.careers.sign_in_prompt') }}</p>
         <div class="mt-4 flex gap-3">
-            <a href="{{ route('login') }}" class="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">{{ __('messages.careers.log_in') }}</a>
+            <a href="{{ route('login', ['redirect' => url()->current()]) }}" class="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">{{ __('messages.careers.log_in') }}</a>
             <a href="{{ route('register') }}" class="rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">{{ __('messages.careers.create_account') }}</a>
         </div>
     @else

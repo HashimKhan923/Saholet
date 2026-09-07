@@ -17,6 +17,8 @@ use App\Http\Controllers\Admin\TalentSearchController as AdminTalentSearchContro
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\EmergencyController as AdminEmergencyController;
 use App\Http\Controllers\Admin\InvoiceController as AdminInvoiceController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\InvoiceEditRequestController as AdminInvoiceEditRequestController;
 use App\Http\Controllers\Admin\ContractController as AdminContractController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -35,10 +37,15 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\BookingRoomController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\CategoryController as PublicCategoryController;
+use App\Http\Controllers\ProductController as ShopProductController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CareerResumeController;
 use App\Http\Controllers\Consumer\AddressController as ConsumerAddressController;
 use App\Http\Controllers\Consumer\BookingController as ConsumerBookingController;
+use App\Http\Controllers\Consumer\CartController as ConsumerCartController;
+use App\Http\Controllers\Consumer\CheckoutController as ConsumerCheckoutController;
+use App\Http\Controllers\Consumer\OrderController as ConsumerOrderController;
+use App\Http\Controllers\Consumer\WishlistController as ConsumerWishlistController;
 use App\Http\Controllers\Consumer\ContractController as ConsumerContractController;
 use App\Http\Controllers\Consumer\CorporateAccountController as ConsumerCorporateAccountController;
 use App\Http\Controllers\Consumer\ReferralController as ConsumerReferralController;
@@ -66,6 +73,10 @@ use App\Http\Controllers\Provider\DashboardController as ProviderDashboardContro
 use App\Http\Controllers\Provider\JobController as ProviderJobController;
 use App\Http\Controllers\Provider\OnboardingController;
 use App\Http\Controllers\Provider\PortfolioController as ProviderPortfolioController;
+use App\Http\Controllers\Provider\CouponController as ProviderCouponController;
+use App\Http\Controllers\Provider\OrderController as ProviderOrderController;
+use App\Http\Controllers\Provider\ProductController as ProviderProductController;
+use App\Http\Controllers\Provider\ShopSettingsController as ProviderShopSettingsController;
 use App\Http\Controllers\Provider\ProviderServiceController;
 use App\Http\Controllers\Provider\PayoutMethodController as ProviderPayoutMethodController;
 use App\Http\Controllers\Provider\WalletController as ProviderWalletController;
@@ -95,6 +106,12 @@ Route::get('categories/{category:slug}', [PublicCategoryController::class, 'show
 // Public provider directory (Step 5)
 Route::get('providers', [ProviderDirectoryController::class, 'index'])->name('providers.index');
 Route::get('providers/{provider}', [ProviderDirectoryController::class, 'show'])->name('providers.show');
+
+// Public shop (products) — deliberately separate from the service/category
+// pages above: a product click goes straight to a buyable item, a service
+// click goes to a provider-selection list, so they don't share one page.
+Route::get('shop', [ShopProductController::class, 'index'])->name('shop.index');
+Route::get('shop/{product}', [ShopProductController::class, 'show'])->name('shop.show');
 
 // Public careers (recruitment) board
 Route::get('careers', [CareerController::class, 'index'])->name('careers.index');
@@ -245,6 +262,25 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
         Route::post('emergencies/{emergencyRequest}/cancel', [ConsumerEmergencyController::class, 'cancel'])->name('consumer.emergencies.cancel');
         Route::post('emergencies/{emergencyRequest}/accept-quote', [ConsumerEmergencyController::class, 'acceptQuote'])->name('consumer.emergencies.accept-quote');
         Route::post('emergencies/{emergencyRequest}/decline-quote', [ConsumerEmergencyController::class, 'declineQuote'])->name('consumer.emergencies.decline-quote');
+
+        // Shop: cart, checkout, product orders
+        Route::get('cart', [ConsumerCartController::class, 'index'])->name('consumer.cart.index');
+        Route::post('cart/items', [ConsumerCartController::class, 'store'])->name('consumer.cart.items.store');
+        Route::put('cart/items/{item}', [ConsumerCartController::class, 'update'])->name('consumer.cart.items.update');
+        Route::delete('cart/items/{item}', [ConsumerCartController::class, 'destroy'])->name('consumer.cart.items.destroy');
+        Route::post('cart/coupon', [ConsumerCartController::class, 'applyCoupon'])->name('consumer.cart.coupon.apply');
+        Route::delete('cart/coupon/{provider}', [ConsumerCartController::class, 'removeCoupon'])->name('consumer.cart.coupon.remove');
+
+        Route::get('wishlist', [ConsumerWishlistController::class, 'index'])->name('consumer.wishlist.index');
+        Route::post('wishlist/toggle', [ConsumerWishlistController::class, 'toggle'])->name('consumer.wishlist.toggle');
+
+        Route::get('checkout', [ConsumerCheckoutController::class, 'show'])->name('consumer.checkout.show');
+        Route::post('checkout', [ConsumerCheckoutController::class, 'store'])->name('consumer.checkout.store');
+
+        Route::get('orders', [ConsumerOrderController::class, 'index'])->name('consumer.orders.index');
+        Route::get('orders/{order}', [ConsumerOrderController::class, 'show'])->name('consumer.orders.show');
+        Route::post('orders/{order}/cancel', [ConsumerOrderController::class, 'cancel'])->name('consumer.orders.cancel');
+        Route::post('orders/{order}/reviews', [ConsumerOrderController::class, 'storeReview'])->name('consumer.orders.reviews.store');
     });
 
     // ─── Provider ────────────────────────────────────────────────
@@ -285,6 +321,30 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
         Route::get('portfolio', [ProviderPortfolioController::class, 'index'])->name('portfolio.index');
         Route::post('portfolio', [ProviderPortfolioController::class, 'store'])->name('portfolio.store');
         Route::delete('portfolio/{photo}', [ProviderPortfolioController::class, 'destroy'])->name('portfolio.destroy');
+
+        // Shop: shipping/pickup settings + product catalog.
+        Route::get('shop-settings', [ProviderShopSettingsController::class, 'edit'])->name('shop-settings.edit');
+        Route::post('shop-settings', [ProviderShopSettingsController::class, 'update'])->name('shop-settings.update');
+
+        Route::get('products', [ProviderProductController::class, 'index'])->name('products.index');
+        Route::get('products/create', [ProviderProductController::class, 'create'])->name('products.create');
+        Route::post('products', [ProviderProductController::class, 'store'])->name('products.store');
+        Route::get('products/{product}/edit', [ProviderProductController::class, 'edit'])->name('products.edit');
+        Route::put('products/{product}', [ProviderProductController::class, 'update'])->name('products.update');
+        Route::delete('products/{product}', [ProviderProductController::class, 'destroy'])->name('products.destroy');
+        Route::delete('products/photos/{photo}', [ProviderProductController::class, 'destroyPhoto'])->name('products.photos.destroy');
+
+        Route::get('orders', [ProviderOrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{order}', [ProviderOrderController::class, 'show'])->name('orders.show');
+        Route::post('orders/{order}/confirm', [ProviderOrderController::class, 'confirm'])->name('orders.confirm');
+        Route::post('orders/{order}/ready', [ProviderOrderController::class, 'markReady'])->name('orders.ready');
+        Route::post('orders/{order}/complete', [ProviderOrderController::class, 'complete'])->name('orders.complete');
+        Route::post('orders/{order}/cancel', [ProviderOrderController::class, 'cancel'])->name('orders.cancel');
+
+        Route::get('coupons', [ProviderCouponController::class, 'index'])->name('coupons.index');
+        Route::post('coupons', [ProviderCouponController::class, 'store'])->name('coupons.store');
+        Route::post('coupons/{coupon}/toggle-active', [ProviderCouponController::class, 'toggleActive'])->name('coupons.toggle-active');
+        Route::delete('coupons/{coupon}', [ProviderCouponController::class, 'destroy'])->name('coupons.destroy');
     });
 
     // ─── Job seeker ──────────────────────────────────────────────
@@ -384,6 +444,18 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
             Route::post('emergencies/{emergencyRequest}/assign', [AdminEmergencyController::class, 'assign'])->name('emergencies.assign');
         });
 
+        Route::middleware('permission:products')->group(function () {
+            Route::get('products', [AdminProductController::class, 'index'])->name('products.index');
+            Route::get('products/{product}', [AdminProductController::class, 'show'])->name('products.show');
+            Route::post('products/{product}/toggle-active', [AdminProductController::class, 'toggleActive'])->name('products.toggle-active');
+            Route::delete('products/{product}', [AdminProductController::class, 'destroy'])->name('products.destroy');
+        });
+
+        Route::middleware('permission:orders')->group(function () {
+            Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
+            Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+        });
+
         Route::middleware('permission:invoices')->group(function () {
             Route::get('invoices', [AdminInvoiceController::class, 'index'])->name('invoices.index');
             Route::get('invoices/create', [AdminInvoiceController::class, 'create'])->name('invoices.create');
@@ -411,6 +483,7 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
         Route::middleware('permission:providers')->group(function () {
             Route::get('providers', [AdminProviderController::class, 'index'])->name('providers.index');
             Route::get('providers/{provider}', [AdminProviderController::class, 'show'])->name('providers.show');
+            Route::get('providers/{provider}/shop', [AdminProviderController::class, 'shop'])->name('providers.shop');
             Route::post('providers/{provider}/approve', [AdminProviderController::class, 'approve'])->name('providers.approve');
             Route::post('providers/{provider}/reject', [AdminProviderController::class, 'reject'])->name('providers.reject');
             Route::post('providers/{provider}/suspend', [AdminProviderController::class, 'suspend'])->name('providers.suspend');

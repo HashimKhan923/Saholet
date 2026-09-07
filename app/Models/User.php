@@ -74,6 +74,23 @@ class User extends Authenticatable
         return $this->hasOne(Wallet::class);
     }
 
+    public function cart(): HasOne
+    {
+        return $this->hasOne(Cart::class);
+    }
+
+    public function wishlistItems(): HasMany
+    {
+        return $this->hasMany(WishlistItem::class);
+    }
+
+    public function hasWishlisted(Product $product): bool
+    {
+        return $this->relationLoaded('wishlistItems')
+            ? $this->wishlistItems->contains('product_id', $product->id)
+            : $this->wishlistItems()->where('product_id', $product->id)->exists();
+    }
+
     public function contracts(): HasMany
     {
         return $this->hasMany(Contract::class, 'consumer_id');

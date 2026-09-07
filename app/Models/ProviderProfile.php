@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProviderProfile extends Model
 {
+    use HasFactory;
+
     public const STATUS_DRAFT = 'draft';
     public const STATUS_PENDING = 'pending';
     public const STATUS_APPROVED = 'approved';
@@ -39,6 +42,13 @@ class ProviderProfile extends Model
         'suspended_at',
         'suspension_reason',
         'commission_rate',
+        'shop_name',
+        'shipping_type',
+        'shipping_flat_rate',
+        'shipping_percentage',
+        'pickup_enabled',
+        'pickup_hours',
+        'product_commission_rate',
     ];
 
     protected function casts(): array
@@ -53,6 +63,10 @@ class ProviderProfile extends Model
             'reviewed_at' => 'datetime',
             'suspended_at' => 'datetime',
             'commission_rate' => 'decimal:2',
+            'shipping_flat_rate' => 'decimal:2',
+            'shipping_percentage' => 'decimal:2',
+            'pickup_enabled' => 'boolean',
+            'product_commission_rate' => 'decimal:2',
         ];
     }
 
@@ -113,9 +127,45 @@ class ProviderProfile extends Model
         return $this->hasMany(ProviderSettlement::class);
     }
 
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function coupons(): HasMany
+    {
+        return $this->hasMany(Coupon::class);
+    }
+
+    /** Google Maps link to this provider's pinned location, for a customer choosing self-pickup. */
+    public function mapsUrl(): ?string
+    {
+        if ($this->latitude === null || $this->longitude === null) {
+            return null;
+        }
+
+        return "https://www.google.com/maps/search/?api=1&query={$this->latitude},{$this->longitude}";
+    }
+
     public function hasPayoutMethod(): bool
     {
         return filled($this->payout_method) && filled($this->payout_account_number);
+    }
+
+    /** At least one fulfillment method must be configured before any product can go live. */
+    public function canSellProducts(): bool
+    {
+        return $this->pickup_enabled || filled($this->shipping_type);
+    }
+
+    public function offersDelivery(): bool
+    {
+        return filled($this->shipping_type);
     }
 
     public function isSuspended(): bool

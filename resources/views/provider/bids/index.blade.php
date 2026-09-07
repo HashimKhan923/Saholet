@@ -131,5 +131,6 @@
             </div>
         @endforelse
     </div>
+    <div class="mt-4">{{ $bids->links() }}</div>
 </div>
 @endsection

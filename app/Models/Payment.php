@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Contracts\Payable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -22,6 +23,7 @@ class Payment extends Model
         'reference',
         'booking_id',
         'contract_milestone_id',
+        'order_id',
         'consumer_id',
         'gateway',
         'amount',
@@ -63,6 +65,19 @@ class Payment extends Model
     public function contractMilestone(): BelongsTo
     {
         return $this->belongsTo(ContractMilestone::class);
+    }
+
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
+    }
+
+    /** Whichever of booking/order this payment is tied to — never both, and never neither for a payment WalletService actually processes. */
+    public function payable(): ?Payable
+    {
+        $this->loadMissing(['booking', 'order']);
+
+        return $this->booking ?? $this->order;
     }
 
     public function consumer(): BelongsTo

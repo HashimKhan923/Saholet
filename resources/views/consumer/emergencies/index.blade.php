@@ -35,5 +35,6 @@
             </div>
         @endforelse
     </div>
+    <div class="mt-4">{{ $requests->links() }}</div>
 </section>
 @endsection

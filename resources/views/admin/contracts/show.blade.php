@@ -14,12 +14,6 @@
     </div>
     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ $contract->reference }} · {{ $contract->consumer->name }} ({{ $contract->consumer->email }})</p>
 
-    @if (session('success'))
-        <div class="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-400">{{ session('success') }}</div>
-    @endif
-    @if (session('error'))
-        <div class="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">{{ session('error') }}</div>
-    @endif
     @if ($errors->any())
         <div class="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">
             <ul class="list-inside list-disc space-y-1">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>

@@ -59,6 +59,7 @@
                 <p class="py-6 text-center text-sm text-slate-400">No referrals yet — share your link above to get started.</p>
             @endforelse
         </div>
+        <div class="mt-4">{{ $referredUsers->links() }}</div>
     </div>
 </section>
 @endsection

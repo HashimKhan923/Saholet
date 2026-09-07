@@ -28,7 +28,7 @@ class BidController extends Controller
 
         if (! $profile || ! $profile->isApproved()) {
             return view('provider.bids.index', [
-                'bids'     => collect(),
+                'bids'     => Bid::whereRaw('1 = 0')->paginate(15),
                 'counts'   => array_fill_keys(self::BID_FILTERS, 0),
                 'filter'   => $filter,
                 'winRate'  => null,
@@ -66,7 +66,8 @@ class BidController extends Controller
         $bids = $query
             ->orderByRaw("CASE WHEN status = 'accepted' THEN 0 WHEN status = 'pending' THEN 1 ELSE 2 END")
             ->latest()
-            ->get();
+            ->paginate(15)
+            ->withQueryString();
 
         return view('provider.bids.index', compact('bids', 'counts', 'filter', 'winRate', 'pipeline'));
     }

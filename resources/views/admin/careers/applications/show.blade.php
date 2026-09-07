@@ -14,10 +14,6 @@
     </div>
     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Applied for {{ $listing->title }} on {{ $application->created_at->format('d M Y') }}</p>
 
-    @if (session('success'))
-        <div class="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-400">{{ session('success') }}</div>
-    @endif
-
     <div class="mt-8 grid gap-6 lg:grid-cols-3">
         <div class="space-y-6 lg:col-span-2">
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -64,7 +60,7 @@
 
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Timeline</h2>
-                <ul class="mt-4 space-y-4">
+                <ul class="mt-4">
                     @foreach ($application->events as $event)
                         @php
                             [$dotClass, $label] = match ($event->type) {
@@ -75,18 +71,15 @@
                                 default => ['bg-slate-400', ucfirst(str_replace('_', ' ', $event->type))],
                             };
                         @endphp
-                        <li class="flex gap-3">
-                            <span class="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full {{ $dotClass }}"></span>
-                            <div class="min-w-0 flex-1">
-                                <p class="text-sm font-medium text-slate-800 dark:text-slate-200">{{ $label }}</p>
-                                @if ($event->type === \App\Models\CareerApplicationEvent::TYPE_NOTE_ADDED && $event->note)
-                                    <p class="mt-1 whitespace-pre-line text-sm text-slate-600 dark:text-slate-400">{{ $event->note }}</p>
-                                @endif
-                                <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">
-                                    {{ $event->causedBy?->name ?? 'System' }} &middot; {{ $event->created_at->format('d M Y, g:ia') }}
-                                </p>
-                            </div>
-                        </li>
+                        <x-timeline-item :last="$loop->last" :dot-class="$dotClass">
+                            <p class="text-sm font-medium text-slate-800 dark:text-slate-200">{{ $label }}</p>
+                            @if ($event->type === \App\Models\CareerApplicationEvent::TYPE_NOTE_ADDED && $event->note)
+                                <p class="mt-1 whitespace-pre-line text-sm text-slate-600 dark:text-slate-400">{{ $event->note }}</p>
+                            @endif
+                            <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">
+                                {{ $event->causedBy?->name ?? 'System' }} &middot; {{ $event->created_at->format('d M Y, g:ia') }}
+                            </p>
+                        </x-timeline-item>
                     @endforeach
                 </ul>
             </div>

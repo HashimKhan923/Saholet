@@ -33,7 +33,7 @@ class WalletService
                 'bucket' => LedgerEntry::BUCKET_ESCROW,
                 'type' => 'hold',
                 'amount' => $payment->amount,
-                'description' => 'Payment pending for booking ' . $payment->booking->reference,
+                'description' => 'Payment pending for ' . $payment->payable()->referenceLabel(),
             ]);
 
             $this->recompute($wallet);
@@ -43,12 +43,12 @@ class WalletService
     /** Confirmed complete → remove escrow, credit provider the NET (minus commission). */
     public function release(Payment $payment, User $providerUser): void
     {
-        $payment->loadMissing('booking');
+        $payable = $payment->payable();
 
-        $rate = $this->commission->rateFor($payment->booking);
+        $rate = $this->commission->rateFor($payable);
         $split = $this->commission->compute((float) $payment->amount, $rate);
 
-        DB::transaction(function () use ($payment, $providerUser, $split) {
+        DB::transaction(function () use ($payment, $providerUser, $split, $payable) {
             $wallet = $this->walletFor($providerUser);
 
             LedgerEntry::create([
@@ -57,7 +57,7 @@ class WalletService
                 'bucket' => LedgerEntry::BUCKET_ESCROW,
                 'type' => 'release_out',
                 'amount' => -1 * $payment->amount,
-                'description' => 'Pending cleared for booking ' . $payment->booking->reference,
+                'description' => 'Pending cleared for ' . $payable->referenceLabel(),
             ]);
 
             LedgerEntry::create([
@@ -66,7 +66,7 @@ class WalletService
                 'bucket' => LedgerEntry::BUCKET_AVAILABLE,
                 'type' => 'release_in',
                 'amount' => $split['provider'],
-                'description' => 'Earnings for booking ' . $payment->booking->reference
+                'description' => 'Earnings for ' . $payable->referenceLabel()
                     . ' (after ' . rtrim(rtrim(number_format($split['rate'], 2), '0'), '.') . '% commission)',
             ]);
 
@@ -92,12 +92,12 @@ class WalletService
      */
     public function chargeCashCommission(Payment $payment, User $providerUser): void
     {
-        $payment->loadMissing('booking');
+        $payable = $payment->payable();
 
-        $rate = $this->commission->rateFor($payment->booking);
+        $rate = $this->commission->rateFor($payable);
         $split = $this->commission->compute((float) $payment->amount, $rate);
 
-        DB::transaction(function () use ($payment, $providerUser, $split) {
+        DB::transaction(function () use ($payment, $providerUser, $split, $payable) {
             $wallet = $this->walletFor($providerUser);
 
             LedgerEntry::create([
@@ -106,7 +106,7 @@ class WalletService
                 'bucket' => LedgerEntry::BUCKET_AVAILABLE,
                 'type' => 'cash_commission_due',
                 'amount' => -1 * $split['commission'],
-                'description' => 'Commission owed for cash booking ' . $payment->booking->reference,
+                'description' => 'Commission owed for cash ' . $payable->referenceLabel(),
             ]);
 
             $this->recompute($wallet);
@@ -172,7 +172,7 @@ class WalletService
                 'bucket' => LedgerEntry::BUCKET_ESCROW,
                 'type' => 'refund_out',
                 'amount' => -1 * $payment->amount,
-                'description' => 'Pending payment refunded for booking ' . $payment->booking->reference,
+                'description' => 'Pending payment refunded for ' . $payment->payable()->referenceLabel(),
             ]);
 
             $this->recompute($wallet);
@@ -185,30 +185,41 @@ class WalletService
     }
 
     /**
-     * Fires the moment a booking payment is genuinely finalized — release() or
+     * Fires the moment a payment is genuinely finalized — release() or
      * chargeCashCommission() — so the invoice email and "your invoice is ready"
      * notification always happen together, and only once the email has actually
      * been sent. Every current caller of release()/chargeCashCommission() passes
-     * a booking-backed Payment, never a contract-milestone one.
+     * a booking- or order-backed Payment, never a contract-milestone one.
      */
     private function sendInvoiceEmailAndNotify(Payment $payment): void
     {
-        $payment->loadMissing('booking.consumer');
-        $booking = $payment->booking;
+        $payment->loadMissing(['booking.consumer', 'order.consumer']);
 
-        if (! $booking) {
+        if ($booking = $payment->booking) {
+            $this->invoices->emailPaymentConfirmation($booking, $payment);
+
+            $this->notifier->notify(
+                $booking->consumer,
+                'booking',
+                'Your invoice is ready',
+                "The invoice has been sent to your {$booking->consumer->email}. Check your invoice.",
+                route('consumer.bookings.show', $booking),
+            );
+
             return;
         }
 
-        $this->invoices->emailPaymentConfirmation($booking, $payment);
+        if ($order = $payment->order) {
+            $this->invoices->emailOrderPaymentConfirmation($order, $payment);
 
-        $this->notifier->notify(
-            $booking->consumer,
-            'booking',
-            'Your invoice is ready',
-            "The invoice has been sent to your {$booking->consumer->email}. Check your invoice.",
-            route('consumer.bookings.show', $booking),
-        );
+            $this->notifier->notify(
+                $order->consumer,
+                'order',
+                'Your invoice is ready',
+                "The invoice has been sent to your {$order->consumer->email}. Check your invoice.",
+                route('consumer.orders.show', $order),
+            );
+        }
     }
 
     /** Recompute cached balances from the append-only ledger. */

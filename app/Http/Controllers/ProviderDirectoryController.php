@@ -70,6 +70,7 @@ class ProviderDirectoryController extends Controller
                 ->with('service.category')
                 ->orderBy('price'),
             'portfolioPhotos',
+            'products' => fn ($q) => $q->active()->with('photos')->latest()->limit(4),
         ]);
 
         $reviews = Review::with('consumer:id,name')

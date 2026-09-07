@@ -10,6 +10,7 @@ use App\Models\Contract;
 use App\Models\Dispute;
 use App\Models\EmergencyRequest;
 use App\Models\JobPost;
+use App\Models\Order;
 use App\Models\Notification;
 use App\Models\Payment;
 use App\Models\ProviderProfile;
@@ -118,12 +119,34 @@ class AppServiceProvider extends ServiceProvider
                     ->count();
             }
 
+            $pendingOrders = $profile
+                ? Order::where('provider_profile_id', $profile->id)->where('status', Order::STATUS_PENDING)->count()
+                : 0;
+
             $view->with('sidebarPendingBookings', $pendingBookings);
             $view->with('sidebarAvailableJobs', $availableJobs);
             $view->with('sidebarMyServiceIds', $myServiceIds);
+            $view->with('sidebarPendingOrders', $pendingOrders);
             $view->with('sidebarUnreadNotifications', Auth::check()
                 ? Notification::where('user_id', Auth::id())->whereNull('read_at')->count()
                 : 0);
+        });
+
+        // Cart badge in the main site header, consumers only.
+        View::composer('layouts.app', function ($view) {
+            $user = Auth::user();
+
+            $count = $user && $user->isConsumer()
+                ? (int) ($user->cart?->items()->sum('quantity') ?? 0)
+                : 0;
+
+            $view->with('navCartCount', $count);
+
+            $wishlistCount = $user && $user->isConsumer()
+                ? $user->wishlistItems()->count()
+                : 0;
+
+            $view->with('navWishlistCount', $wishlistCount);
         });
 
         // Saved-address quick-pick, wherever <x-address-input> renders (booking/job/contract/emergency forms).

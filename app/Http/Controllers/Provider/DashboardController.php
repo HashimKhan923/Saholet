@@ -7,6 +7,8 @@ use App\Models\Bid;
 use App\Models\Booking;
 use App\Models\JobPost;
 use App\Models\LedgerEntry;
+use App\Models\Order;
+use App\Models\Product;
 use App\Models\ProviderProfile;
 use App\Services\WalletService;
 use Illuminate\Http\Request;
@@ -40,6 +42,9 @@ class DashboardController extends Controller
             'bidsPending'      => 0,
             'todaySchedule'    => collect(),
             'activity'         => collect(),
+            'outOfStockProducts' => collect(),
+            'deactivatedProducts' => collect(),
+            'topSellingProducts' => collect(),
         ];
 
         if (! $profile || ! $profile->isApproved()) {
@@ -146,6 +151,40 @@ class DashboardController extends Controller
 
         /* ── Activity feed ────────────────────────────────────────────── */
         $data['activity'] = $this->activityFeed($profile, $wallet->id);
+
+        /* ── Shop: stock alerts + top sellers ──────────────────────────── */
+        $data['outOfStockProducts'] = Product::where('provider_profile_id', $profile->id)
+            ->where('is_active', true)
+            ->where('stock_quantity', 0)
+            ->orderByDesc('id')
+            ->get();
+
+        $data['deactivatedProducts'] = Product::where('provider_profile_id', $profile->id)
+            ->where('is_active', false)
+            ->whereNotNull('deactivation_reason')
+            ->orderByDesc('id')
+            ->get();
+
+        $topSellers = \App\Models\OrderItem::query()
+            ->join('orders', 'orders.id', '=', 'order_items.order_id')
+            ->join('products', 'products.id', '=', 'order_items.product_id')
+            ->where('products.provider_profile_id', $profile->id)
+            ->where('orders.status', '!=', Order::STATUS_CANCELLED)
+            ->selectRaw('order_items.product_id, SUM(order_items.quantity) as units_sold')
+            ->groupBy('order_items.product_id')
+            ->orderByDesc('units_sold')
+            ->take(5)
+            ->pluck('units_sold', 'product_id');
+
+        $data['topSellingProducts'] = Product::whereIn('id', $topSellers->keys())
+            ->get()
+            ->map(function (Product $product) use ($topSellers) {
+                $product->units_sold = (int) $topSellers[$product->id];
+
+                return $product;
+            })
+            ->sortByDesc('units_sold')
+            ->values();
 
         return view('provider.dashboard', $data);
     }

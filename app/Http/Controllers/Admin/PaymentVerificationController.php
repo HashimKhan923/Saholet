@@ -40,7 +40,7 @@ class PaymentVerificationController extends Controller
         }
 
         $query = Payment::where('gateway', Payment::GATEWAY_BANK_TRANSFER)
-            ->with(['booking.service', 'contractMilestone.contract', 'consumer'])
+            ->with(['booking.service', 'contractMilestone.contract', 'order', 'consumer'])
             ->latest();
 
         match ($status) {
@@ -63,7 +63,7 @@ class PaymentVerificationController extends Controller
     {
         abort_unless($payment->isBankTransfer(), 404);
 
-        $payment->load(['booking.service', 'booking.providerProfile.user', 'contractMilestone.contract.consumer', 'consumer', 'verifier']);
+        $payment->load(['booking.service', 'booking.providerProfile.user', 'contractMilestone.contract.consumer', 'order.providerProfile.user', 'order.items', 'consumer', 'verifier']);
 
         return view('admin.payments.show', compact('payment'));
     }
@@ -78,6 +78,10 @@ class PaymentVerificationController extends Controller
 
         if ($payment->contract_milestone_id) {
             return $this->verifyMilestonePayment($payment, $request->user());
+        }
+
+        if ($payment->order_id) {
+            return $this->verifyOrderPayment($payment, $request->user());
         }
 
         $payment->load('booking.providerProfile.user');
@@ -104,7 +108,7 @@ class PaymentVerificationController extends Controller
                 route('consumer.bookings.show', $booking)
             );
 
-            return back()->with('success', 'Payment verified and held in escrow until the job is complete.');
+            return back()->with('success', 'Payment verified and held pending until the job is complete.');
         }
 
         $this->wallets->verifyAndReleaseBankTransfer($payment, $booking->providerProfile->user, $request->user());
@@ -149,6 +153,67 @@ class PaymentVerificationController extends Controller
         return back()->with('success', 'Payment verified and held in escrow for this contract.');
     }
 
+    /**
+     * An order's bank transfer is normally paid before fulfillment (see
+     * CheckoutService), so verifying it here usually just moves it into
+     * escrow — releasing happens later, when the provider marks the order
+     * complete (see OrderFulfillmentService::complete()). But that release
+     * is only triggered *at the moment* an order transitions to completed;
+     * if the order is fast-fulfilled (e.g. self-pickup) before an admin
+     * gets around to checking the bank statement, that trigger fires while
+     * the payment is still `pending` and finds nothing to release — nothing
+     * else ever re-checks it afterwards. So mirror the booking flow below:
+     * if the order is already completed by the time this runs, release
+     * straight to the provider's wallet instead of parking it in escrow.
+     */
+    private function verifyOrderPayment(Payment $payment, User $admin): RedirectResponse
+    {
+        $payment->load('order.providerProfile.user', 'order.consumer');
+        $order = $payment->order;
+
+        if ($order->isCompleted()) {
+            $this->wallets->verifyAndReleaseBankTransfer($payment, $order->providerProfile->user, $admin);
+
+            app(Notifier::class)->notify(
+                $order->providerProfile->user,
+                'payment',
+                'Payment verified',
+                'The bank transfer for order ' . $order->reference . ' has been verified and released to your wallet.',
+                route('provider.orders.show', $order)
+            );
+
+            app(Notifier::class)->notify(
+                $order->consumer,
+                'payment',
+                'Payment confirmed',
+                'Your bank transfer for order ' . $order->reference . ' has been confirmed. Thank you!',
+                route('consumer.orders.show', $order)
+            );
+
+            return back()->with('success', 'Payment verified and released to the provider.');
+        }
+
+        $this->wallets->verifyBankTransferToEscrow($payment, $order->providerProfile->user, $admin);
+
+        app(Notifier::class)->notify(
+            $order->providerProfile->user,
+            'payment',
+            'Payment verified',
+            'The bank transfer for order ' . $order->reference . ' has been verified and is held pending until fulfilled.',
+            route('provider.orders.show', $order)
+        );
+
+        app(Notifier::class)->notify(
+            $order->consumer,
+            'payment',
+            'Payment confirmed',
+            'Your bank transfer for order ' . $order->reference . ' has been confirmed.',
+            route('consumer.orders.show', $order)
+        );
+
+        return back()->with('success', 'Payment verified and held pending until the order is fulfilled.');
+    }
+
     public function reject(Request $request, Payment $payment): RedirectResponse
     {
         abort_unless($payment->isBankTransfer(), 404);
@@ -176,6 +241,21 @@ class PaymentVerificationController extends Controller
             );
 
             return back()->with('success', 'Payment rejected. The customer has been notified to resubmit.');
+        }
+
+        if ($payment->order_id) {
+            $payment->load('order.consumer');
+            $order = $payment->order;
+
+            app(Notifier::class)->notify(
+                $order->consumer,
+                'payment',
+                'Payment could not be verified',
+                $data['notes'] . ' Please contact support about order ' . $order->reference . '.',
+                route('consumer.orders.show', $order)
+            );
+
+            return back()->with('success', 'Payment rejected. The customer has been notified.');
         }
 
         $payment->load('booking.consumer');

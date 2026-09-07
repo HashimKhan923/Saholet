@@ -4,12 +4,18 @@ return [
     'portal_label' => 'Provider',
 
     'nav' => [
+        'dashboard_section' => 'Dashboard',
         'dashboard' => 'Dashboard',
         'notifications' => 'Notifications',
         'work_section' => 'Work',
-        'bookings' => 'Bookings',
-        'available_jobs' => 'Available jobs',
+        'bookings' => 'My bookings',
+        'available_jobs' => 'My jobs',
         'my_bids' => 'My bids',
+        'shop_section' => 'My Shop',
+        'products' => 'Products',
+        'orders' => 'Orders',
+        'coupons' => 'Coupons',
+        'shop_settings' => 'Shop settings',
         'business_section' => 'Business',
         'my_services' => 'My services',
         'portfolio' => 'Portfolio',
@@ -75,6 +81,16 @@ return [
 
         'earnings_title' => 'Earnings',
         'earnings_subtitle' => 'Last 6 months, after commission',
+
+        'out_of_stock_title' => 'Out of stock',
+        'out_of_stock_desc' => 'These products are live but can\'t be bought until you restock them.',
+        'restock' => 'Restock',
+        'deactivated_title' => 'Deactivated by Sahoulat',
+        'deactivated_desc' => 'These products were hidden by our team — open one to see why and what to fix.',
+        'review' => 'Review',
+        'top_selling_title' => 'Top selling products',
+        'top_selling_desc' => 'Your best movers — keep these stocked up.',
+        'units_sold' => 'sold',
 
         'recent_activity' => 'Recent activity',
         'no_activity' => 'No activity yet. Your bookings, bids and payouts will show up here.',

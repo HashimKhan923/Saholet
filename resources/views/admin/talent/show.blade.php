@@ -6,13 +6,6 @@
 <section class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
     <a href="{{ route('admin.talent.index') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Job seekers</a>
 
-    @if (session('success'))
-        <div class="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-400">{{ session('success') }}</div>
-    @endif
-    @if (session('error'))
-        <div class="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">{{ session('error') }}</div>
-    @endif
-
     <div class="mt-4 flex items-center gap-4">
         <x-avatar :url="$profile->user->avatar_url" :name="$profile->user->name" size="lg" />
         <div>

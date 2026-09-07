@@ -13,10 +13,6 @@
         <a href="{{ route('admin.service-areas.create') }}" class="inline-flex items-center rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">+ New area</a>
     </div>
 
-    @if (session('success'))
-        <div class="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-400">{{ session('success') }}</div>
-    @endif
-
     <div class="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border p-5 {{ $geofencingEnabled ? 'border-brand-200 bg-brand-50 dark:border-brand-900 dark:bg-brand-950/30' : 'border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/60' }}">
         <div>
             <p class="flex items-center gap-2 text-sm font-bold {{ $geofencingEnabled ? 'text-brand-800 dark:text-brand-300' : 'text-slate-700 dark:text-slate-200' }}">

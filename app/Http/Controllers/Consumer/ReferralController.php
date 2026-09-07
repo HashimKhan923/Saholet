@@ -17,9 +17,12 @@ class ReferralController extends Controller
             $user->update(['referral_code' => User::generateUniqueReferralCode()]);
         }
 
-        $referredUsers = $user->referredUsers()->latest()->get();
+        $referredUsers = $user->referredUsers()->latest()->paginate(15)->withQueryString();
 
-        $rewards = $user->referralRewardsGiven()->latest()->get()->keyBy('referred_user_id');
+        $rewards = $user->referralRewardsGiven()
+            ->whereIn('referred_user_id', $referredUsers->pluck('id'))
+            ->get()
+            ->keyBy('referred_user_id');
 
         return view('consumer.referrals.index', [
             'user' => $user,

@@ -53,6 +53,9 @@
                             @elseif ($payment->contractMilestone)
                                 <div class="font-medium text-slate-900 dark:text-white">{{ $payment->contractMilestone->title }}</div>
                                 <div class="text-xs text-slate-500 dark:text-slate-400">{{ $payment->contractMilestone->contract?->reference ?? '—' }}</div>
+                            @elseif ($payment->order)
+                                <div class="font-medium text-slate-900 dark:text-white">Shop order</div>
+                                <a href="{{ route('admin.orders.show', $payment->order) }}" class="text-xs font-semibold text-brand-700 hover:text-brand-800 dark:text-brand-400">{{ $payment->order->reference }}</a>
                             @else
                                 <div class="text-slate-400 dark:text-slate-500">—</div>
                             @endif
@@ -61,7 +64,7 @@
                         <td class="px-5 py-3 font-semibold text-slate-900 dark:text-white">Rs. {{ number_format((float) $payment->amount, 0) }}</td>
                         <td class="px-5 py-3">
                             <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusTones[$payment->status] ?? '' }}">
-                                {{ $payment->status === 'failed' ? 'Rejected' : ucfirst($payment->status) }}
+                                {{ match ($payment->status) { 'failed' => 'Rejected', 'escrow', 'released' => 'Verified', default => ucfirst($payment->status) } }}
                             </span>
                         </td>
                         <td class="px-5 py-3 text-slate-600 dark:text-slate-400">

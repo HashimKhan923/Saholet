@@ -191,7 +191,7 @@
                 </span>
                 <h3 class="mt-5 font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('messages.landing.flow_bid_title') }}</h3>
                 <p class="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_bid_desc') }}</p>
-                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.jobs.create') : route('login') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg border-2 border-slate-800 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-800 hover:text-white dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
+                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.jobs.create') : route('login', ['redirect' => route('consumer.jobs.create')]) }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg border-2 border-slate-800 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-800 hover:text-white dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
                     {{ __('messages.landing.flow_bid_cta') }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
                 </a>
             </div>
@@ -215,7 +215,7 @@
                 </span>
                 <h3 class="mt-5 font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('messages.landing.flow_contract_title') }}</h3>
                 <p class="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_contract_desc') }}</p>
-                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.contracts.create') : route('login') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700">
+                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.contracts.create') : route('login', ['redirect' => route('consumer.contracts.create')]) }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700">
                     {{ __('messages.landing.flow_contract_cta') }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
                 </a>
             </div>
@@ -228,7 +228,7 @@
                 </span>
                 <h3 class="mt-5 font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('messages.landing.flow_sos_title') }}</h3>
                 <p class="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_sos_desc') }}</p>
-                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.emergencies.create') : route('login') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-accent-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-700">
+                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.emergencies.create') : route('login', ['redirect' => route('consumer.emergencies.create')]) }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-accent-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-700">
                     {{ __('messages.landing.flow_sos_cta') }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
                 </a>
             </div>
@@ -244,7 +244,7 @@
             'title' => __('messages.landing.milestone_bid_title'),
             'desc' => __('messages.landing.milestone_bid_desc'),
             'cta_label' => __('messages.landing.flow_bid_cta'),
-            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.jobs.create') : route('login'),
+            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.jobs.create') : route('login', ['redirect' => route('consumer.jobs.create')]),
             'image' => 'Job.jpeg', 'ratio' => '1536/1024',
         ],
         [
@@ -260,7 +260,7 @@
             'title' => __('messages.landing.milestone_contract_title'),
             'desc' => __('messages.landing.milestone_contract_desc'),
             'cta_label' => __('messages.landing.flow_contract_cta'),
-            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.contracts.create') : route('login'),
+            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.contracts.create') : route('login', ['redirect' => route('consumer.contracts.create')]),
             'image' => 'Contract.jpeg', 'ratio' => '1536/1024',
         ],
         [
@@ -268,7 +268,7 @@
             'title' => __('messages.landing.milestone_sos_title'),
             'desc' => __('messages.landing.milestone_sos_desc'),
             'cta_label' => __('messages.landing.flow_sos_cta'),
-            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.emergencies.create') : route('login'),
+            'cta_href' => auth()->check() && auth()->user()->isConsumer() ? route('consumer.emergencies.create') : route('login', ['redirect' => route('consumer.emergencies.create')]),
             'image' => 'Emergency.jpeg', 'ratio' => '1448/1086',
         ],
     ];
