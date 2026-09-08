@@ -34,10 +34,9 @@ class PaymentController extends Controller
             ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false))
             ->values();
 
-        $maxCreditApplicable = min((float) $request->user()->credit_balance, (float) $booking->price);
         $companyAccount = config('payments.company_account');
 
-        return view('consumer.payments.create', compact('booking', 'gateways', 'maxCreditApplicable', 'companyAccount'));
+        return view('consumer.payments.create', compact('booking', 'gateways', 'companyAccount'));
     }
 
     public function store(Request $request, Booking $booking): RedirectResponse|View
@@ -53,10 +52,6 @@ class PaymentController extends Controller
         }
 
         $consumer = $request->user();
-        $creditApplied = $request->boolean('apply_credit')
-            ? min((float) $consumer->credit_balance, (float) $booking->price)
-            : 0.0;
-        $fullyCoveredByCredit = $creditApplied >= (float) $booking->price;
 
         $available = collect($this->payments->all())
             ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false))
@@ -66,33 +61,15 @@ class PaymentController extends Controller
             ->all();
 
         $data = $request->validate([
-            'gateway' => [$fullyCoveredByCredit ? 'nullable' : 'required', Rule::in($available)],
+            'gateway' => ['required', Rule::in($available)],
             'screenshot' => [
-                Rule::requiredIf(! $fullyCoveredByCredit && $request->input('gateway') === Payment::GATEWAY_BANK_TRANSFER),
+                Rule::requiredIf($request->input('gateway') === Payment::GATEWAY_BANK_TRANSFER),
                 'nullable', 'image', 'mimes:jpg,jpeg,png,webp,heic,heif', 'max:8192',
             ],
         ]);
 
-        if (! $fullyCoveredByCredit && in_array($data['gateway'], [Payment::GATEWAY_CASH, Payment::GATEWAY_BANK_TRANSFER], true)) {
-            return $this->storeCashOrBankTransfer($request, $booking, $consumer, $data, $creditApplied);
-        }
-
-        if ($fullyCoveredByCredit) {
-            $payment = Payment::create([
-                'reference' => $this->generateReference(),
-                'booking_id' => $booking->id,
-                'consumer_id' => $consumer->id,
-                'gateway' => 'credit',
-                'amount' => $booking->price,
-                'credit_applied' => $creditApplied,
-                'status' => Payment::STATUS_PENDING,
-            ]);
-
-            $this->finalizer->finalizeBookingPayment($payment, 'CREDIT-' . $payment->reference);
-
-            return redirect()
-                ->route('consumer.bookings.show', $booking)
-                ->with('success', 'Paid entirely with your referral credit — held safely in escrow until the job is complete.');
+        if (in_array($data['gateway'], [Payment::GATEWAY_CASH, Payment::GATEWAY_BANK_TRANSFER], true)) {
+            return $this->storeCashOrBankTransfer($request, $booking, $consumer, $data);
         }
 
         $gateway = $this->payments->driver($data['gateway']);
@@ -107,7 +84,6 @@ class PaymentController extends Controller
             'consumer_id' => $consumer->id,
             'gateway' => $gateway->key(),
             'amount' => $booking->price,
-            'credit_applied' => $creditApplied,
             'status' => Payment::STATUS_PENDING,
         ]);
 
@@ -147,8 +123,7 @@ class PaymentController extends Controller
         Request $request,
         Booking $booking,
         \App\Models\User $consumer,
-        array $data,
-        float $creditApplied
+        array $data
     ): RedirectResponse {
         $payment = Payment::create([
             'reference' => $this->generateReference(),
@@ -156,7 +131,6 @@ class PaymentController extends Controller
             'consumer_id' => $consumer->id,
             'gateway' => $data['gateway'],
             'amount' => $booking->price,
-            'credit_applied' => $creditApplied,
             'status' => Payment::STATUS_PENDING,
         ]);
 

@@ -29,6 +29,7 @@ class BidController extends Controller
         if (! $profile || ! $profile->isApproved()) {
             return response()->json([
                 'bids' => [],
+                'pagination' => ['current_page' => 1, 'last_page' => 1, 'total' => 0],
                 'counts' => array_fill_keys(self::BID_FILTERS, 0),
                 'filter' => $filter,
                 'win_rate' => null,
@@ -64,10 +65,11 @@ class BidController extends Controller
         $bids = $query
             ->orderByRaw("CASE WHEN status = 'accepted' THEN 0 WHEN status = 'pending' THEN 1 ELSE 2 END")
             ->latest()
-            ->get();
+            ->paginate(15);
 
         return response()->json([
-            'bids' => BidResource::collection($bids),
+            'bids' => BidResource::collection($bids->getCollection()),
+            'pagination' => ['current_page' => $bids->currentPage(), 'last_page' => $bids->lastPage(), 'total' => $bids->total()],
             'counts' => $counts,
             'filter' => $filter,
             'win_rate' => $winRate,

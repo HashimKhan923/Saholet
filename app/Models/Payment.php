@@ -27,7 +27,6 @@ class Payment extends Model
         'consumer_id',
         'gateway',
         'amount',
-        'credit_applied',
         'commission_rate',
         'commission_amount',
         'provider_amount',
@@ -46,7 +45,6 @@ class Payment extends Model
     {
         return [
             'amount' => 'decimal:2',
-            'credit_applied' => 'decimal:2',
             'commission_rate' => 'decimal:2',
             'commission_amount' => 'decimal:2',
             'provider_amount' => 'decimal:2',
@@ -98,17 +96,6 @@ class Payment extends Model
     public function isBankTransfer(): bool
     {
         return $this->gateway === self::GATEWAY_BANK_TRANSFER;
-    }
-
-    /** What actually needs to go through a payment gateway, after referral credit. */
-    public function chargeAmount(): float
-    {
-        return max(0.0, (float) $this->amount - (float) $this->credit_applied);
-    }
-
-    public function isFullyCoveredByCredit(): bool
-    {
-        return $this->chargeAmount() <= 0.0;
     }
 
     public function isPending(): bool

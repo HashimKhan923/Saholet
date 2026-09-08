@@ -162,7 +162,6 @@ class ContractController extends Controller
             $booking = Booking::create([
                 'reference' => $this->generateBookingReference(),
                 'consumer_id' => $contract->consumer_id,
-                'corporate_account_id' => $contract->corporate_account_id,
                 'provider_profile_id' => $provider->id,
                 'service_id' => $item->service_id,
                 'contract_item_id' => $item->id,

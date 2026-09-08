@@ -23,7 +23,7 @@ class PaymentController extends Controller
         private PaymentFinalizer $finalizer,
     ) {}
 
-    /** Available gateways + how much referral credit can be applied, before paying. */
+    /** Available gateways, before paying. */
     public function options(Request $request, Booking $booking): JsonResponse
     {
         $this->authorize('pay', $booking);
@@ -41,13 +41,12 @@ class PaymentController extends Controller
 
         return response()->json([
             'gateways' => $gateways,
-            'max_credit_applicable' => min((float) $request->user()->credit_balance, (float) $booking->price),
             'amount' => (float) $booking->price,
             'company_account' => config('payments.company_account'),
         ]);
     }
 
-    /** Pay a pending booking into escrow. Body: gateway (required unless credit fully covers it), apply_credit (bool). */
+    /** Pay a pending booking into escrow. Body: gateway (required). */
     public function store(Request $request, Booking $booking): JsonResponse
     {
         $this->authorize('pay', $booking);
@@ -59,10 +58,6 @@ class PaymentController extends Controller
         }
 
         $consumer = $request->user();
-        $creditApplied = $request->boolean('apply_credit')
-            ? min((float) $consumer->credit_balance, (float) $booking->price)
-            : 0.0;
-        $fullyCoveredByCredit = $creditApplied >= (float) $booking->price;
 
         $available = collect($this->payments->all())
             ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false))
@@ -72,34 +67,15 @@ class PaymentController extends Controller
             ->all();
 
         $data = $request->validate([
-            'gateway' => [$fullyCoveredByCredit ? 'nullable' : 'required', Rule::in($available)],
+            'gateway' => ['required', Rule::in($available)],
             'screenshot' => [
-                Rule::requiredIf(! $fullyCoveredByCredit && $request->input('gateway') === Payment::GATEWAY_BANK_TRANSFER),
+                Rule::requiredIf($request->input('gateway') === Payment::GATEWAY_BANK_TRANSFER),
                 'nullable', 'image', 'mimes:jpg,jpeg,png,webp,heic,heif', 'max:8192',
             ],
         ]);
 
-        if (! $fullyCoveredByCredit && in_array($data['gateway'], [Payment::GATEWAY_CASH, Payment::GATEWAY_BANK_TRANSFER], true)) {
-            return $this->storeCashOrBankTransfer($request, $booking, $consumer, $data, $creditApplied);
-        }
-
-        if ($fullyCoveredByCredit) {
-            $payment = Payment::create([
-                'reference' => $this->generateReference(),
-                'booking_id' => $booking->id,
-                'consumer_id' => $consumer->id,
-                'gateway' => 'credit',
-                'amount' => $booking->price,
-                'credit_applied' => $creditApplied,
-                'status' => Payment::STATUS_PENDING,
-            ]);
-
-            $this->finalizer->finalizeBookingPayment($payment, 'CREDIT-' . $payment->reference);
-
-            return response()->json([
-                'message' => 'Paid entirely with your referral credit — held safely in escrow until the job is complete.',
-                'payment' => new PaymentResource($payment->fresh()),
-            ], 201);
+        if (in_array($data['gateway'], [Payment::GATEWAY_CASH, Payment::GATEWAY_BANK_TRANSFER], true)) {
+            return $this->storeCashOrBankTransfer($request, $booking, $consumer, $data);
         }
 
         $gateway = $this->payments->driver($data['gateway']);
@@ -114,7 +90,6 @@ class PaymentController extends Controller
             'consumer_id' => $consumer->id,
             'gateway' => $gateway->key(),
             'amount' => $booking->price,
-            'credit_applied' => $creditApplied,
             'status' => Payment::STATUS_PENDING,
         ]);
 
@@ -153,8 +128,7 @@ class PaymentController extends Controller
         Request $request,
         Booking $booking,
         \App\Models\User $consumer,
-        array $data,
-        float $creditApplied
+        array $data
     ): JsonResponse {
         $payment = Payment::create([
             'reference' => $this->generateReference(),
@@ -162,7 +136,6 @@ class PaymentController extends Controller
             'consumer_id' => $consumer->id,
             'gateway' => $data['gateway'],
             'amount' => $booking->price,
-            'credit_applied' => $creditApplied,
             'status' => Payment::STATUS_PENDING,
         ]);
 

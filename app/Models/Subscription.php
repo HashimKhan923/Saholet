@@ -17,7 +17,6 @@ class Subscription extends Model
         'reference',
         'subscription_plan_id',
         'consumer_id',
-        'corporate_account_id',
         'provider_profile_id',
         'address',
         'latitude',
@@ -49,11 +48,6 @@ class Subscription extends Model
     public function consumer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'consumer_id');
-    }
-
-    public function corporateAccount(): BelongsTo
-    {
-        return $this->belongsTo(CorporateAccount::class);
     }
 
     public function providerProfile(): BelongsTo

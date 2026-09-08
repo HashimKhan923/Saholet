@@ -62,8 +62,7 @@ class JazzCashGateway implements PaymentGateway
             'pp_ProductID' => '',
             'pp_TxnRefNo' => $payment->reference,
             // JazzCash amounts are in paisas (PKR × 100), no decimal point.
-            // Charged amount excludes any referral credit already applied to this payment.
-            'pp_Amount' => (string) (int) round($payment->chargeAmount() * 100),
+            'pp_Amount' => (string) (int) round((float) $payment->amount * 100),
             'pp_TxnCurrency' => 'PKR',
             'pp_TxnDateTime' => $now->format('YmdHis'),
             'pp_BillReference' => $payment->reference,

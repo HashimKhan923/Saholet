@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
  */
 class PaymentFinalizer
 {
-    public function __construct(private WalletService $wallets, private ReferralService $referrals) {}
+    public function __construct(private WalletService $wallets) {}
 
     public function finalizeBookingPayment(Payment $payment, string $gatewayReference): void
     {
@@ -30,10 +30,7 @@ class PaymentFinalizer
             ]);
 
             $this->wallets->holdInEscrow($payment, $payment->booking->providerProfile->user);
-            $this->redeemCredit($payment);
         });
-
-        $this->referrals->rewardFirstPayment($payment);
     }
 
     public function finalizeMilestonePayment(Payment $payment, string $gatewayReference): void
@@ -58,26 +55,6 @@ class PaymentFinalizer
             if ($milestone->contract->isAccepted()) {
                 $milestone->contract->update(['status' => Contract::STATUS_IN_PROGRESS]);
             }
-
-            $this->redeemCredit($payment);
         });
-
-        $this->referrals->rewardFirstPayment($payment);
-    }
-
-    /**
-     * Debits the consumer's referral credit balance for the amount already
-     * baked into this payment's escrow — done only once, at the moment the
-     * payment actually clears, so an abandoned/failed attempt never touches
-     * the balance.
-     */
-    private function redeemCredit(Payment $payment): void
-    {
-        if ((float) $payment->credit_applied <= 0) {
-            return;
-        }
-
-        $payment->loadMissing('consumer');
-        $payment->consumer?->decrement('credit_balance', (float) $payment->credit_applied);
     }
 }

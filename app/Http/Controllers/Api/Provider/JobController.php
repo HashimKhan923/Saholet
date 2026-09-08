@@ -18,7 +18,7 @@ class JobController extends Controller
         $profile = $request->user()->providerProfile;
 
         if (! $profile || ! $profile->isApproved()) {
-            return response()->json(['jobs' => []]);
+            return response()->json(['jobs' => [], 'pagination' => ['current_page' => 1, 'last_page' => 1, 'total' => 0]]);
         }
 
         $serviceIds = $profile->providerServices()->where('is_active', true)->pluck('service_id');
@@ -28,18 +28,21 @@ class JobController extends Controller
             ->whereIn('service_id', $serviceIds)
             ->withCount(['bids', 'photos'])
             ->latest()
-            ->get();
+            ->paginate(15);
 
         $myBids = Bid::where('provider_profile_id', $profile->id)
-            ->whereIn('job_post_id', $jobs->pluck('id'))
+            ->whereIn('job_post_id', $jobs->getCollection()->pluck('id'))
             ->get()
             ->keyBy('job_post_id');
 
-        $jobs->each(function (JobPost $job) use ($myBids) {
+        $jobs->getCollection()->each(function (JobPost $job) use ($myBids) {
             $job->setRelation('myBid', $myBids->get($job->id));
         });
 
-        return response()->json(['jobs' => JobPostResource::collection($jobs)]);
+        return response()->json([
+            'jobs' => JobPostResource::collection($jobs->getCollection()),
+            'pagination' => ['current_page' => $jobs->currentPage(), 'last_page' => $jobs->lastPage(), 'total' => $jobs->total()],
+        ]);
     }
 
     public function show(Request $request, JobPost $jobPost): JsonResponse

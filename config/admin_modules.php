@@ -18,7 +18,6 @@ return [
     'invoices' => ['label' => 'Invoices', 'actions' => ['view', 'create', 'edit']],
     'contracts' => ['label' => 'Contracts', 'actions' => ['view', 'edit']],
     'subscriptions' => ['label' => 'Subscriptions & plans', 'actions' => ['view', 'create', 'edit', 'delete']],
-    'corporate-accounts' => ['label' => 'Corporate accounts', 'actions' => ['view']],
     'providers' => ['label' => 'Providers', 'actions' => ['view', 'edit']],
     'careers' => ['label' => 'Careers & applications', 'actions' => ['view', 'create', 'edit', 'delete']],
     'talent' => ['label' => 'Job seekers', 'actions' => ['view']],

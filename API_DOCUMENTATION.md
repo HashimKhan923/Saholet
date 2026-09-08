@@ -81,7 +81,6 @@ All amounts are numbers (PKR), not strings, e.g. `"price": 3000` not `"price": "
 | `role` | string | required — `consumer`, `provider`, or `job_seeker` |
 | `password` | string | required, min 8 |
 | `password_confirmation` | string | required, must match `password` |
-| `referral_code` | string | optional |
 | `device_name` | string | required — label for this token, e.g. `"iPhone 15"` |
 
 Pakistani phone numbers are reformatted to `03XX-XXXXXXX` on save (a leading `+92`/`92` country code is stripped and replaced with a trunk `0` first). The stored/returned value may therefore differ from what was submitted — e.g. `+923001234567` or `03001234567` both come back as `0300-1234567`. Numbers that aren't 11 digits after stripping non-digits are left as-is.
@@ -91,8 +90,7 @@ Pakistani phone numbers are reformatted to `03XX-XXXXXXX` on save (a leading `+9
 {
   "user": {
     "id": 22, "name": "Test Consumer", "email": "test@example.com",
-    "phone": "0300-1234567", "role": "consumer", "referral_code": "OG1EGG",
-    "credit_balance": 0, "is_suspended": false,
+    "phone": "0300-1234567", "role": "consumer", "is_suspended": false,
     "provider_status": null,
     "created_at": "2026-07-21T12:12:07+00:00"
   },
@@ -323,9 +321,9 @@ Response `201`: `{ "booking": {...BookingResource...} }`. `422` if the *customer
 
 **`POST /bookings/{id}/cancel`** — only while cancellable by the consumer (not yet in progress). Auto-refunds escrow if already paid. `{ "message": "...", "booking": {...} }`
 
-**`GET /bookings/{id}/payment-options`** — `{ "gateways": [{"key":"mock","label":"Test payment (sandbox)"}, {"key":"cash","label":"Cash"}, {"key":"bank_transfer","label":"Bank transfer"}], "max_credit_applicable": 0, "amount": 3000, "company_account": {...} }`. `mock` only ever appears outside production (`APP_ENV`) or when explicitly forced on via `MOCK_PAYMENTS_ENABLED` — it must never be reachable on the live site, since it always succeeds instantly with no real money. `jazzcash`/`easypaisa` only appear once their env credentials + `*_ENABLED=true` are configured. **`cash` and `bank_transfer` are always included** (same reasoning as milestones below) so pre-payment never dead-ends into an empty gateway list when no online gateway is configured. `company_account` is the same shape as `completion-payment-options` below — needed for the bank-transfer instructions.
+**`GET /bookings/{id}/payment-options`** — `{ "gateways": [{"key":"mock","label":"Test payment (sandbox)"}, {"key":"cash","label":"Cash"}, {"key":"bank_transfer","label":"Bank transfer"}], "amount": 3000, "company_account": {...} }`. `mock` only ever appears outside production (`APP_ENV`) or when explicitly forced on via `MOCK_PAYMENTS_ENABLED` — it must never be reachable on the live site, since it always succeeds instantly with no real money. `jazzcash`/`easypaisa` only appear once their env credentials + `*_ENABLED=true` are configured. **`cash` and `bank_transfer` are always included** (same reasoning as milestones below) so pre-payment never dead-ends into an empty gateway list when no online gateway is configured. `company_account` is the same shape as `completion-payment-options` below — needed for the bank-transfer instructions.
 
-**`POST /bookings/{id}/pay`** — Body: `gateway` (required unless referral credit fully covers the amount — must be one of the keys returned by `payment-options` above), `apply_credit` (bool, optional — applies available referral credit first), `screenshot` (required if `gateway=bank_transfer`, image, multipart, max 8MB). Response `201`: `{ "message": "...", "payment": {...} }`, or, for gateways needing an off-site redirect: `{ "status": "pending", "redirect_url": "...", "redirect_fields": {...} }`.
+**`POST /bookings/{id}/pay`** — Body: `gateway` (required — must be one of the keys returned by `payment-options` above), `screenshot` (required if `gateway=bank_transfer`, image, multipart, max 8MB). Response `201`: `{ "message": "...", "payment": {...} }`, or, for gateways needing an off-site redirect: `{ "status": "pending", "redirect_url": "...", "redirect_fields": {...} }`.
 
 `gateway=cash` here is a *commitment*, not an instant charge — nothing can really be "prepaid" in cash before the provider has shown up. The payment is recorded `pending` and only actually settled (commission deducted, invoice emailed) once the job is later marked complete. `gateway=bank_transfer` behaves like a real gateway: it's recorded `pending` with the screenshot and, once an admin verifies it, held in escrow (not released) until the job is completed and the consumer calls `/release` — unlike the completion-payment bank transfer below, which verifies straight to released since the job is already done by then.
 
@@ -451,13 +449,12 @@ Response `201`: `{ "contract": {...} }` — status starts as `submitted`; an adm
     {"key": "cash", "label": "Cash"},
     {"key": "bank_transfer", "label": "Bank transfer"}
   ],
-  "max_credit_applicable": 0,
   "amount": 3000,
   "company_account": { "...": "same shape as the booking completion-payment endpoint" }
 }
 ```
 
-**`POST /contracts/{id}/milestones/{milestoneId}/pay`** — Body: `gateway` (required unless credit fully covers it — one of the keys from `payment-options`), `apply_credit` (bool, optional), `screenshot` (required if `gateway=bank_transfer`, image, multipart, max 8MB).
+**`POST /contracts/{id}/milestones/{milestoneId}/pay`** — Body: `gateway` (required — one of the keys from `payment-options`), `screenshot` (required if `gateway=bank_transfer`, image, multipart, max 8MB).
 - `gateway=cash` — trusted immediately, no proof required (same as a real gateway success): the payment and milestone both move straight to escrow.
 - `gateway=bank_transfer` — the payment stays `pending` until an admin verifies the screenshot in the admin panel; only then does it move to escrow. The consumer isn't blocked from anything in the meantime — this is just slower than cash.
 - A real gateway key — unchanged, synchronous success moves straight to escrow (or `{"status":"pending","redirect_url":...}` for an off-site redirect gateway).
@@ -513,7 +510,7 @@ An admin can deactivate a product (`is_active: false`) instead of deleting it, a
 
 | Method | Path | Body | Notes |
 |---|---|---|---|
-| GET | `/consumer/wishlist` | – | `{ "products": [...] }` |
+| GET | `/consumer/wishlist` | – | 16/page, paginated. `{ "products": [...], "pagination": {...} }` |
 | POST | `/consumer/wishlist/toggle` | `product_id` (required) | Adds if not already wishlisted, removes if it is. `{ "wishlisted": true\|false, "message": "..." }`, `201` when added |
 
 **Cart** — one persistent cart per consumer, items can span multiple providers.
@@ -648,13 +645,13 @@ Response: `{ "message": "...", "booking": {...} }`
 
 ### Jobs & bids
 
-**`GET /jobs`** — open jobs matching services this provider offers; each job includes `my_bid` (null if not yet bid).
+**`GET /jobs`** — 15/page, paginated. Open jobs matching services this provider offers; each job includes `my_bid` (null if not yet bid). Response: `{ "jobs": [...], "pagination": {...} }`
 
 **`GET /jobs/{id}`** — `{ "job": {...}, "offers_service": true, "slot_options": [{"value":"09:00","label":"9:00 AM"}, ...] }`
 
 **`POST /jobs/{id}/bids`** — Body: `amount` (required, numeric), `proposed_date` (required, ≥ today), `proposed_time` (required, one of `slot_options`), `message` (optional). One bid per provider per job. Response `201`: `{ "bid": {...} }`
 
-**`GET /bids`** — **Query:** `status` (`all`\|`pending`\|`accepted`\|`rejected`\|`withdrawn`). Response: `{ "bids": [...], "counts": {...}, "win_rate": 100, "pipeline": 2800 }` (`pipeline` = sum of pending bid amounts).
+**`GET /bids`** — 15/page, paginated. **Query:** `status` (`all`\|`pending`\|`accepted`\|`rejected`\|`withdrawn`). `counts`/`win_rate`/`pipeline` are always computed across *all* of this provider's bids, not just the current page. Response: `{ "bids": [...], "pagination": {...}, "counts": {...}, "win_rate": 100, "pipeline": 2800 }` (`pipeline` = sum of pending bid amounts).
 
 **`PUT /bids/{id}`** — same body as create; only while pending and the job is still open.
 
@@ -740,7 +737,7 @@ Shipping is intentionally simple and address-blind: a flat fee, a percentage of 
 
 | Method | Path | Body | Notes |
 |---|---|---|---|
-| GET | `/coupons` | – | `{ "coupons": [...] }` — this provider's own codes, with redemption counts |
+| GET | `/coupons` | – | 15/page, paginated. `{ "coupons": [...], "pagination": {...} }` — this provider's own codes, with redemption counts |
 | POST | `/coupons` | `code` (required, alphanumeric, unique per provider — case-insensitive, stored uppercase), `type` (`flat`\|`percentage`, required), `value` (required, numeric; ≤100 if `type=percentage`), `expires_at` (nullable, must be in the future) | `201`, `{ "coupon": {...} }` |
 | POST | `/coupons/{id}/toggle-active` | – | – |
 | DELETE | `/coupons/{id}` | – | – |
@@ -802,7 +799,7 @@ Quick field reference for nested objects that recur throughout the API.
 
 **SubscriptionResource** — `{ "id","reference","status","plan","provider","address","city","next_visit_date","visits_used","is_cancellable","bookings","cancelled_at","created_at" }`. `status` ∈ `pending_assignment` \| `active` \| `cancelled` \| `completed`.
 
-**PaymentResource** — `{ "id","reference","gateway","amount","credit_applied","commission_rate","commission_amount","provider_amount","status","screenshot_url","paid_at","released_at","refunded_at" }`. `status` ∈ `pending` \| `escrow` \| `released` \| `refunded` \| `failed`. `screenshot_url` is only non-null for `gateway=bank_transfer` payments — the consumer's own uploaded transfer proof, absolute URL ready to display/download. `commission_rate`/`commission_amount`/`provider_amount` are only ever non-null once a payment is `released` (they're written by `WalletService::release()`/`chargeCashCommission()`), **and only visible to the requesting user if they're an admin or a provider** — a consumer viewing their own booking's payment always gets `null` for these three, since the commission split is between the platform and the provider, not the consumer's business. Commission is per-provider now (see `ProviderProfile.commission_rate`, set by an admin at approval time), not a single platform-wide rate.
+**PaymentResource** — `{ "id","reference","gateway","amount","commission_rate","commission_amount","provider_amount","status","screenshot_url","paid_at","released_at","refunded_at" }`. `status` ∈ `pending` \| `escrow` \| `released` \| `refunded` \| `failed`. `screenshot_url` is only non-null for `gateway=bank_transfer` payments — the consumer's own uploaded transfer proof, absolute URL ready to display/download. `commission_rate`/`commission_amount`/`provider_amount` are only ever non-null once a payment is `released` (they're written by `WalletService::release()`/`chargeCashCommission()`), **and only visible to the requesting user if they're an admin or a provider** — a consumer viewing their own booking's payment always gets `null` for these three, since the commission split is between the platform and the provider, not the consumer's business. Commission is per-provider now (see `ProviderProfile.commission_rate`, set by an admin at approval time), not a single platform-wide rate.
 
 **WithdrawalRequestResource** — `{ "id","reference","amount","status","payout_method","method_label","admin_notes","screenshot_url","processed_at","created_at" }`. `screenshot_url` is the admin's proof-of-transfer for a `bank`-method payout once processed (null until then) — same absolute-URL pattern as `PaymentResource`.
 
@@ -814,7 +811,6 @@ Quick field reference for nested objects that recur throughout the API.
 
 - **Admin panel** — stays web-only; not part of this API.
 - **Job seeker (careers/recruitment) flows** — the mobile app is for customers + professionals, not the internal hiring board. The web-only flow (`app/Http/Controllers/JobSeeker/*`, `app/Http/Controllers/Admin/CareerApplicationController.php`) covers: a profile with `skills` stored as a real JSON array (tag/pill UI, not a comma string), an explicit "use my saved resume vs. upload a different one" choice when applying, and a per-application audit trail (`career_application_events` — one row per submit/status-change/note/withdrawal, so admin review history is never overwritten). None of this has an API surface; add one under `/api/job-seeker/*` the same way the consumer/provider routes were mirrored if the app ever needs it.
-- **Corporate/B2B accounts, referrals dashboard** — not wired into this API pass; can be added the same way (they already have web controllers to mirror) if the app needs them later.
 - **Push notification delivery** — this API stores/reads in-app `Notification` rows (badge counts, notification center), but does not yet register Expo/FCM/APNs device tokens or send pushes. That's a separate small piece of work (a `device_tokens` table + a dispatch step in `Notifier`) worth doing once the app shell exists.
 - **Real payment gateways** — JazzCash/Easypaisa drivers exist server-side but are disabled by default (`config/payments.php`); only the `mock` gateway is enabled out of the box, same as the web app.
 

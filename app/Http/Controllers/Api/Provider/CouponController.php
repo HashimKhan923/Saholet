@@ -16,9 +16,12 @@ class CouponController extends Controller
     public function index(Request $request): JsonResponse
     {
         $profile = $this->profileFor($request);
-        $coupons = $profile->coupons()->withCount('redemptions')->latest()->get();
+        $coupons = $profile->coupons()->withCount('redemptions')->latest()->paginate(15);
 
-        return response()->json(['coupons' => CouponResource::collection($coupons)]);
+        return response()->json([
+            'coupons' => CouponResource::collection($coupons->getCollection()),
+            'pagination' => ['current_page' => $coupons->currentPage(), 'last_page' => $coupons->lastPage(), 'total' => $coupons->total()],
+        ]);
     }
 
     /** Body: code, type (flat|percentage), value, expires_at?. */

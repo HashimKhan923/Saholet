@@ -51,8 +51,7 @@ class EasypaisaGateway implements PaymentGateway
 
         $fields = [
             'storeId' => $cfg['store_id'],
-            // Charged amount excludes any referral credit already applied to this payment.
-            'amount' => number_format($payment->chargeAmount(), 2, '.', ''),
+            'amount' => number_format((float) $payment->amount, 2, '.', ''),
             'postBackURL' => route('payments.return', ['gateway' => 'easypaisa']),
             'orderRefNum' => $payment->reference,
             'expiryDate' => $expiry,

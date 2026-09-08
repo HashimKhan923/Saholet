@@ -74,7 +74,6 @@ class ContractController extends Controller
             $contract = Contract::create([
                 'reference' => $this->generateReference(),
                 'consumer_id' => $request->user()->id,
-                'corporate_account_id' => $request->user()->corporate_account_id,
                 'title' => $data['title'],
                 'description' => $data['description'],
                 'address' => $data['address'],
@@ -205,13 +204,12 @@ class ContractController extends Controller
 
         return response()->json([
             'gateways' => $gateways,
-            'max_credit_applicable' => min((float) $request->user()->credit_balance, (float) $milestone->amount),
             'amount' => (float) $milestone->amount,
             'company_account' => config('payments.company_account'),
         ]);
     }
 
-    /** Pay a milestone. Body: gateway (required unless credit fully covers it), apply_credit (bool). */
+    /** Pay a milestone. Body: gateway (required). */
     public function payMilestone(Request $request, Contract $contract, ContractMilestone $milestone): JsonResponse
     {
         $this->authorize('pay', $contract);
@@ -222,10 +220,6 @@ class ContractController extends Controller
         }
 
         $consumer = $request->user();
-        $creditApplied = $request->boolean('apply_credit')
-            ? min((float) $consumer->credit_balance, (float) $milestone->amount)
-            : 0.0;
-        $fullyCoveredByCredit = $creditApplied >= (float) $milestone->amount;
 
         $available = collect($this->payments->all())
             ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false))
@@ -235,21 +229,20 @@ class ContractController extends Controller
             ->all();
 
         $data = $request->validate([
-            'gateway' => [$fullyCoveredByCredit ? 'nullable' : 'required', Rule::in($available)],
+            'gateway' => ['required', Rule::in($available)],
             'screenshot' => [
-                Rule::requiredIf(! $fullyCoveredByCredit && $request->input('gateway') === Payment::GATEWAY_BANK_TRANSFER),
+                Rule::requiredIf($request->input('gateway') === Payment::GATEWAY_BANK_TRANSFER),
                 'nullable', 'image', 'mimes:jpg,jpeg,png,webp,heic,heif', 'max:8192',
             ],
         ]);
 
-        if (! $fullyCoveredByCredit && in_array($data['gateway'], [Payment::GATEWAY_CASH, Payment::GATEWAY_BANK_TRANSFER], true)) {
+        if (in_array($data['gateway'], [Payment::GATEWAY_CASH, Payment::GATEWAY_BANK_TRANSFER], true)) {
             $payment = Payment::create([
                 'reference' => $this->generatePaymentReference(),
                 'contract_milestone_id' => $milestone->id,
                 'consumer_id' => $consumer->id,
                 'gateway' => $data['gateway'],
                 'amount' => $milestone->amount,
-                'credit_applied' => $creditApplied,
                 'status' => Payment::STATUS_PENDING,
             ]);
 
@@ -285,32 +278,6 @@ class ContractController extends Controller
             ], 201);
         }
 
-        if ($fullyCoveredByCredit) {
-            $payment = Payment::create([
-                'reference' => $this->generatePaymentReference(),
-                'contract_milestone_id' => $milestone->id,
-                'consumer_id' => $consumer->id,
-                'gateway' => 'credit',
-                'amount' => $milestone->amount,
-                'credit_applied' => $creditApplied,
-                'status' => Payment::STATUS_PENDING,
-            ]);
-
-            $this->finalizer->finalizeMilestonePayment($payment, 'CREDIT-' . $payment->reference);
-
-            app(Notifier::class)->notifyAdmins(
-                'contract',
-                'Milestone paid with referral credit',
-                $milestone->title . ' for ' . $contract->reference . ' was paid entirely with referral credit.',
-                route('admin.contracts.show', $contract)
-            );
-
-            return response()->json([
-                'message' => 'Milestone paid entirely with your referral credit.',
-                'payment' => new PaymentResource($payment->fresh()),
-            ], 201);
-        }
-
         $gateway = $this->payments->driver($data['gateway']);
 
         if (! $gateway->isAvailable()) {
@@ -323,7 +290,6 @@ class ContractController extends Controller
             'consumer_id' => $consumer->id,
             'gateway' => $gateway->key(),
             'amount' => $milestone->amount,
-            'credit_applied' => $creditApplied,
             'status' => Payment::STATUS_PENDING,
         ]);
 

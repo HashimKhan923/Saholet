@@ -19,7 +19,6 @@ class PaymentResource extends JsonResource
             'reference' => $this->reference,
             'gateway' => $this->gateway,
             'amount' => (float) $this->amount,
-            'credit_applied' => (float) $this->credit_applied,
             'commission_rate' => $showCommission && $this->commission_rate !== null ? (float) $this->commission_rate : null,
             'commission_amount' => $showCommission && $this->commission_amount !== null ? (float) $this->commission_amount : null,
             'provider_amount' => $showCommission && $this->provider_amount !== null ? (float) $this->provider_amount : null,

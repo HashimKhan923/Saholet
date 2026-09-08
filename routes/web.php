@@ -6,7 +6,6 @@ use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\CareerApplicationController as AdminCareerApplicationController;
 use App\Http\Controllers\Admin\CareerCategoryController as AdminCareerCategoryController;
 use App\Http\Controllers\Admin\CareerListingController as AdminCareerListingController;
-use App\Http\Controllers\Admin\CorporateAccountController as AdminCorporateAccountController;
 use App\Http\Controllers\Admin\PaymentVerificationController as AdminPaymentVerificationController;
 use App\Http\Controllers\Admin\ProviderSettlementController as AdminProviderSettlementController;
 use App\Http\Controllers\Admin\RequestsInboxController as AdminRequestsInboxController;
@@ -47,8 +46,6 @@ use App\Http\Controllers\Consumer\CheckoutController as ConsumerCheckoutControll
 use App\Http\Controllers\Consumer\OrderController as ConsumerOrderController;
 use App\Http\Controllers\Consumer\WishlistController as ConsumerWishlistController;
 use App\Http\Controllers\Consumer\ContractController as ConsumerContractController;
-use App\Http\Controllers\Consumer\CorporateAccountController as ConsumerCorporateAccountController;
-use App\Http\Controllers\Consumer\ReferralController as ConsumerReferralController;
 use App\Http\Controllers\Consumer\DashboardController as ConsumerDashboardController;
 use App\Http\Controllers\Consumer\EmergencyController as ConsumerEmergencyController;
 use App\Http\Controllers\Consumer\JobController as ConsumerJobController;
@@ -198,22 +195,12 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
         Route::put('addresses/{address}', [ConsumerAddressController::class, 'update'])->name('consumer.addresses.update');
         Route::delete('addresses/{address}', [ConsumerAddressController::class, 'destroy'])->name('consumer.addresses.destroy');
 
-        // Referral program
-        Route::get('referrals', [ConsumerReferralController::class, 'index'])->name('consumer.referrals.index');
-
         // Subscription / AMC plans
         Route::get('subscriptions', [ConsumerSubscriptionController::class, 'index'])->name('consumer.subscriptions.index');
         Route::get('subscriptions/{plan:slug}/subscribe', [ConsumerSubscriptionController::class, 'create'])->name('consumer.subscriptions.create');
         Route::post('subscriptions/{plan:slug}/subscribe', [ConsumerSubscriptionController::class, 'store'])->name('consumer.subscriptions.store');
         Route::get('subscriptions/{subscription}', [ConsumerSubscriptionController::class, 'show'])->name('consumer.subscriptions.show');
         Route::post('subscriptions/{subscription}/cancel', [ConsumerSubscriptionController::class, 'cancel'])->name('consumer.subscriptions.cancel');
-
-        // Corporate / B2B accounts
-        Route::get('company', [ConsumerCorporateAccountController::class, 'create'])->name('consumer.corporate.create');
-        Route::post('company', [ConsumerCorporateAccountController::class, 'store'])->name('consumer.corporate.store');
-        Route::get('company/dashboard', [ConsumerCorporateAccountController::class, 'show'])->name('consumer.corporate.show');
-        Route::post('company/members', [ConsumerCorporateAccountController::class, 'inviteMember'])->name('consumer.corporate.members.invite');
-        Route::delete('company/members/{member}', [ConsumerCorporateAccountController::class, 'removeMember'])->name('consumer.corporate.members.remove');
 
         // Consumer bookings (Flow A — Direct)
         Route::get('bookings', [ConsumerBookingController::class, 'index'])->name('consumer.bookings.index');
@@ -403,12 +390,6 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
             Route::get('subscriptions', [AdminSubscriptionController::class, 'index'])->name('subscriptions.index');
             Route::get('subscriptions/{subscription}', [AdminSubscriptionController::class, 'show'])->name('subscriptions.show');
             Route::post('subscriptions/{subscription}/assign', [AdminSubscriptionController::class, 'assignProvider'])->name('subscriptions.assign');
-        });
-
-        // Corporate / B2B accounts (read-only)
-        Route::middleware('permission:corporate-accounts')->group(function () {
-            Route::get('corporate-accounts', [AdminCorporateAccountController::class, 'index'])->name('corporate-accounts.index');
-            Route::get('corporate-accounts/{corporateAccount}', [AdminCorporateAccountController::class, 'show'])->name('corporate-accounts.show');
         });
 
         // Withdrawals — money-related, admin-only, never delegable to staff.

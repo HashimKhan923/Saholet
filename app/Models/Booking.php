@@ -33,7 +33,6 @@ class Booking extends Model implements Payable
         'service_id',
         'contract_item_id',
         'subscription_id',
-        'corporate_account_id',
         'scheduled_date',
         'scheduled_time',
         'price',
@@ -128,11 +127,6 @@ class Booking extends Model implements Payable
     public function subscription(): BelongsTo
     {
         return $this->belongsTo(Subscription::class);
-    }
-
-    public function corporateAccount(): BelongsTo
-    {
-        return $this->belongsTo(CorporateAccount::class);
     }
 
     public function messages(): HasMany

@@ -53,7 +53,6 @@ class SubscriptionService
         $booking = Booking::create([
             'reference' => $this->generateBookingReference(),
             'consumer_id' => $subscription->consumer_id,
-            'corporate_account_id' => $subscription->corporate_account_id,
             'provider_profile_id' => $subscription->provider_profile_id,
             'service_id' => $plan->service_id,
             'subscription_id' => $subscription->id,

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -32,11 +31,6 @@ class User extends Authenticatable
         'permissions',
         'password',
         'suspended_at',
-        'referral_code',
-        'referred_by',
-        'credit_balance',
-        'corporate_account_id',
-        'corporate_role',
     ];
 
     protected $hidden = [
@@ -59,7 +53,6 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'suspended_at' => 'datetime',
             'password' => 'hashed',
-            'credit_balance' => 'decimal:2',
             'permissions' => 'array',
         ];
     }
@@ -124,45 +117,6 @@ class User extends Authenticatable
     public function subscriptions(): HasMany
     {
         return $this->hasMany(Subscription::class, 'consumer_id');
-    }
-
-    public function referrer(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(User::class, 'referred_by');
-    }
-
-    public function referredUsers(): HasMany
-    {
-        return $this->hasMany(User::class, 'referred_by');
-    }
-
-    public function referralRewardsGiven(): HasMany
-    {
-        return $this->hasMany(ReferralReward::class, 'referrer_id');
-    }
-
-    public function corporateAccount(): BelongsTo
-    {
-        return $this->belongsTo(CorporateAccount::class);
-    }
-
-    public function ownedCorporateAccount(): HasOne
-    {
-        return $this->hasOne(CorporateAccount::class, 'owner_id');
-    }
-
-    public function isCorporateOwner(): bool
-    {
-        return $this->corporate_account_id !== null && $this->corporate_role === CorporateAccount::ROLE_OWNER;
-    }
-
-    public static function generateUniqueReferralCode(): string
-    {
-        do {
-            $code = strtoupper(Str::random(6));
-        } while (self::where('referral_code', $code)->exists());
-
-        return $code;
     }
 
     public function isConsumer(): bool

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Services\ReferralService;
 use App\Support\PakFormat;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -22,7 +21,7 @@ class AuthController extends Controller
      *
      * Roles: consumer, provider, job_seeker.
      */
-    public function register(Request $request, ReferralService $referrals): JsonResponse
+    public function register(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -30,7 +29,6 @@ class AuthController extends Controller
             'phone' => ['required', 'string', 'max:20'],
             'role' => ['required', Rule::in(['consumer', 'provider', 'job_seeker'])],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'referral_code' => ['nullable', 'string', 'max:12'],
             'device_name' => ['required', 'string', 'max:255'],
         ]);
 
@@ -40,10 +38,7 @@ class AuthController extends Controller
             'phone' => PakFormat::phone($validated['phone']),
             'role' => $validated['role'],
             'password' => $validated['password'],
-            'referral_code' => User::generateUniqueReferralCode(),
         ]);
-
-        $referrals->captureReferral($user, $validated['referral_code'] ?? null);
 
         event(new Registered($user));
 
