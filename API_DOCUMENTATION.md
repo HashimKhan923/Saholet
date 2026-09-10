@@ -535,6 +535,8 @@ Each response returns the full cart, grouped by provider — this is exactly the
 
 **`POST /consumer/cart/coupon/preview`** — Body: `provider_profile_id`, `code`. Doesn't persist anything server-side. `422` with `{ "valid": false, "message": "..." }` if the code is unknown, inactive, expired, or already used by this customer. On success: `{ "valid": true, "code": "SAVE10", "label": "10% off", "discount": 200 }` (discount computed against that provider's current cart subtotal).
 
+**`GET /consumer/checkout/company-account`** — `{ "company_account": {...} }`, same static shape as the booking/contract `company_account` block (bank name, account title/number, IBAN, SWIFT, branch, JazzCash/Easypaisa numbers) — needed here since shop checkout has no other payment-options-style call that would otherwise carry it. Fetch this only when at least one order entry is paying by `bank_transfer`.
+
 **`POST /consumer/checkout`** — Body: `orders[]`, one entry per provider group from the cart (a mismatched cart → order split returns `422`). Multipart when any entry pays by `bank_transfer`.
 
 | Field | Required when | Notes |

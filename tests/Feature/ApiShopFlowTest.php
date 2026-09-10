@@ -117,4 +117,76 @@ class ApiShopFlowTest extends TestCase
     {
         $this->postJson('/api/consumer/checkout', ['orders' => []])->assertUnauthorized();
     }
+
+    /**
+     * Cart::itemsByProvider() used to eager-load only `product.providerProfile` —
+     * enough to compute shipping, but leaving `product.photos`, `product.category`
+     * and `providerProfile.user` entirely absent from the JSON (not null/[], just
+     * missing keys) rather than the full shape every other product-browsing endpoint
+     * returns. The mobile cart screen rendered `product.photos[0]` unguarded and
+     * would crash on any real cart; a provider with no business_name would also show
+     * a blank name, since ProviderProfileResource falls back to the (unloaded) user.
+     */
+    public function test_cart_response_includes_full_product_and_provider_shape(): void
+    {
+        $consumer = $this->consumer();
+        $provider = ProviderProfile::factory()->sellsProducts()->create(['business_name' => null]);
+        $category = \App\Models\Category::create(['name' => 'Tools', 'slug' => 'tools-cart-shape', 'is_active' => true]);
+        $product = Product::factory()->for($provider, 'providerProfile')->create(['category_id' => $category->id]);
+        $product->photos()->create([
+            'path' => 'products/test.jpg',
+            'original_name' => 'test.jpg',
+            'mime_type' => 'image/jpeg',
+            'size' => 1000,
+            'sort_order' => 1,
+        ]);
+
+        Sanctum::actingAs($consumer);
+        $this->postJson('/api/consumer/cart/items', ['product_id' => $product->id])->assertCreated();
+
+        $this->getJson('/api/consumer/cart')
+            ->assertOk()
+            ->assertJsonCount(1, 'groups.0.items.0.product.photos')
+            ->assertJsonPath('groups.0.items.0.product.category.id', $category->id)
+            ->assertJsonPath('groups.0.provider.name', $provider->user->name);
+    }
+
+    /**
+     * The mobile client updates a product via a spoofed PUT (`_method=PUT` on a real
+     * POST, since apiUpload always issues POST — see lib/api/provider/products.ts).
+     * Nullable fields it wants to clear (category, discount price) must be sent as an
+     * empty string, not omitted: Laravel's `$request->validate()` only returns keys
+     * actually present in the request body, so an omitted field would leave the
+     * column's previous value untouched instead of nulling it out.
+     */
+    public function test_provider_can_clear_nullable_product_fields_via_update(): void
+    {
+        $provider = ProviderProfile::factory()->sellsProducts()->create();
+        $category = \App\Models\Category::create(['name' => 'Electrical', 'slug' => 'electrical-clear-fields', 'is_active' => true]);
+        $product = Product::factory()->for($provider, 'providerProfile')->create([
+            'category_id' => $category->id,
+            'discount_price' => 800,
+            'sku' => 'OLD-SKU',
+            'price' => 1000,
+        ]);
+
+        Sanctum::actingAs($provider->user);
+
+        $this->post("/api/provider/products/{$product->id}", [
+            '_method' => 'PUT',
+            'category_id' => '',
+            'name' => $product->name,
+            'description' => '',
+            'price' => 1000,
+            'discount_price' => '',
+            'stock_quantity' => 10,
+            'sku' => '',
+            'is_active' => '1',
+        ])->assertOk()
+            ->assertJsonPath('product.category', null)
+            ->assertJsonPath('product.discount_price', null)
+            ->assertJsonPath('product.sku', null);
+
+        $this->assertNull($product->fresh()->category_id);
+    }
 }

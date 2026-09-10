@@ -17,6 +17,16 @@ class CheckoutController extends Controller
 {
     public function __construct(private CheckoutService $checkout) {}
 
+    /**
+     * Static bank-transfer details for a shop order's payment_method=bank_transfer —
+     * same config every other payment-options endpoint bundles in, exposed here on
+     * its own since shop checkout has no other per-request "payment options" call.
+     */
+    public function companyAccount(): JsonResponse
+    {
+        return response()->json(['company_account' => config('payments.company_account')]);
+    }
+
     /** Body: orders[] — one entry per provider group. Multipart when any entry pays by bank_transfer. */
     public function store(Request $request): JsonResponse
     {

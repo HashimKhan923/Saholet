@@ -168,6 +168,7 @@ Route::middleware(['auth:sanctum', 'api.not.suspended'])->group(function () {
         Route::get('wishlist', [ConsumerWishlistController::class, 'index'])->name('wishlist.index');
         Route::post('wishlist/toggle', [ConsumerWishlistController::class, 'toggle'])->name('wishlist.toggle');
 
+        Route::get('checkout/company-account', [ConsumerCheckoutController::class, 'companyAccount'])->name('checkout.company-account');
         Route::post('checkout', [ConsumerCheckoutController::class, 'store'])->name('checkout.store');
 
         Route::get('orders', [ConsumerOrderController::class, 'index'])->name('orders.index');
