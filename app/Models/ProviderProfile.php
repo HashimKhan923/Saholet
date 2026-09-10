@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\NormalizesCity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProviderProfile extends Model
 {
-    use HasFactory;
+    use HasFactory, NormalizesCity;
 
     public const STATUS_DRAFT = 'draft';
     public const STATUS_PENDING = 'pending';

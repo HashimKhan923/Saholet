@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\NormalizesCity;
 use App\Contracts\Payable;
 use App\Services\CommissionService;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,7 +14,9 @@ use Illuminate\Support\Collection;
 
 class Order extends Model implements Payable
 {
-    use HasFactory;
+    use HasFactory, NormalizesCity;
+
+    protected string $cityColumn = 'shipping_city';
 
     public const STATUS_PENDING = 'pending';
     public const STATUS_CONFIRMED = 'confirmed';

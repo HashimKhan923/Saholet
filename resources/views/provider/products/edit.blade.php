@@ -54,5 +54,29 @@
                 title="Delete this product?" message="This can't be undone." confirm-label="Delete" />
         </div>
     </form>
+
+    @if ($product->photos->isNotEmpty())
+        {{-- Deliberately outside the update <form> above: nesting a <form> inside
+             another <form> is invalid HTML and browsers close the outer form early
+             at the first nested </form>, which silently breaks the Save button's
+             Alpine scope. --}}
+        <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Current photos</h3>
+            <div class="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
+                @foreach ($product->photos as $photo)
+                    <div class="group relative aspect-square overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
+                        <img src="{{ $photo->url() }}" class="h-full w-full object-cover">
+                        <form method="POST" action="{{ route('provider.products.photos.destroy', $photo) }}" class="absolute right-1 top-1 opacity-0 transition group-hover:opacity-100">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-900/70 text-white transition hover:bg-red-600" aria-label="Remove photo" onclick="return confirm('Remove this photo?')">
+                                <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg>
+                            </button>
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
 </section>
 @endsection

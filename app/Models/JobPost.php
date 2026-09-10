@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\NormalizesCity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class JobPost extends Model
 {
+    use NormalizesCity;
+
     public const STATUS_OPEN = 'open';
     public const STATUS_AWARDED = 'awarded';
     public const STATUS_CANCELLED = 'cancelled';

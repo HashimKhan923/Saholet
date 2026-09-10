@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Concerns\NormalizesCity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Contract extends Model
 {
+    use NormalizesCity;
+
     public const STATUS_SUBMITTED = 'submitted';
     public const STATUS_QUOTED = 'quoted';
     public const STATUS_ACCEPTED = 'accepted';
