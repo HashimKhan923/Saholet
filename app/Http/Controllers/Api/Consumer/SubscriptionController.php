@@ -55,7 +55,6 @@ class SubscriptionController extends Controller
             'reference' => $this->generateReference(),
             'subscription_plan_id' => $plan->id,
             'consumer_id' => $request->user()->id,
-            'corporate_account_id' => $request->user()->corporate_account_id,
             'address' => $data['address'],
             'latitude' => $data['latitude'] ?? null,
             'longitude' => $data['longitude'] ?? null,

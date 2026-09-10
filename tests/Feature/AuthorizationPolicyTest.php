@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Address;
 use App\Models\Category;
-use App\Models\CorporateAccount;
 use App\Models\EmergencyRequest;
 use App\Models\JobPost;
 use App\Models\Notification;
@@ -99,16 +98,5 @@ class AuthorizationPolicyTest extends TestCase
 
         $this->actingAs($stranger)->get("/emergencies/{$emergency->id}")->assertForbidden();
         $this->actingAs($owner)->get("/emergencies/{$emergency->id}")->assertOk();
-    }
-
-    public function test_corporate_account_create_gate_blocks_a_user_who_already_has_one(): void
-    {
-        $owner = $this->consumer('corp-owner@example.com');
-        $account = CorporateAccount::create([
-            'name' => 'Acme', 'owner_id' => $owner->id, 'billing_email' => 'billing@acme.com',
-        ]);
-        $owner->update(['corporate_account_id' => $account->id, 'corporate_role' => CorporateAccount::ROLE_OWNER]);
-
-        $this->actingAs($owner)->get('/company')->assertForbidden();
     }
 }

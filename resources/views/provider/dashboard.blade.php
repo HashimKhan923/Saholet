@@ -273,6 +273,57 @@
                         @endforeach
                     </div>
                 </section>
+
+                {{-- Deactivated by admin --}}
+                @if ($deactivatedProducts->isNotEmpty())
+                    <section class="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm dark:border-red-900 dark:bg-red-950/30">
+                        <h2 class="font-display text-base font-bold text-red-900 dark:text-red-300">{{ __('provider.dashboard.deactivated_title') }}</h2>
+                        <p class="mt-0.5 text-xs text-red-700 dark:text-red-400">{{ __('provider.dashboard.deactivated_desc') }}</p>
+                        <ul class="mt-4 divide-y divide-red-200/60 dark:divide-red-900/60">
+                            @foreach ($deactivatedProducts as $product)
+                                <li class="py-2.5">
+                                    <div class="flex items-center justify-between gap-3">
+                                        <span class="truncate text-sm font-semibold text-red-900 dark:text-red-300">{{ $product->name }}</span>
+                                        <a href="{{ route('provider.products.edit', $product) }}" class="shrink-0 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-700">{{ __('provider.dashboard.review') }}</a>
+                                    </div>
+                                    <p class="mt-1 truncate text-xs text-red-700 dark:text-red-400">{{ $product->deactivation_reason }}</p>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </section>
+                @endif
+
+                {{-- Out of stock --}}
+                @if ($outOfStockProducts->isNotEmpty())
+                    <section class="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm dark:border-red-900 dark:bg-red-950/30">
+                        <h2 class="font-display text-base font-bold text-red-900 dark:text-red-300">{{ __('provider.dashboard.out_of_stock_title') }}</h2>
+                        <p class="mt-0.5 text-xs text-red-700 dark:text-red-400">{{ __('provider.dashboard.out_of_stock_desc') }}</p>
+                        <ul class="mt-4 divide-y divide-red-200/60 dark:divide-red-900/60">
+                            @foreach ($outOfStockProducts as $product)
+                                <li class="flex items-center justify-between gap-3 py-2.5">
+                                    <span class="truncate text-sm font-semibold text-red-900 dark:text-red-300">{{ $product->name }}</span>
+                                    <a href="{{ route('provider.products.edit', $product) }}" class="shrink-0 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-700">{{ __('provider.dashboard.restock') }}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </section>
+                @endif
+
+                {{-- Top selling products --}}
+                @if ($topSellingProducts->isNotEmpty())
+                    <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                        <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.top_selling_title') }}</h2>
+                        <p class="mt-0.5 text-xs text-slate-400">{{ __('provider.dashboard.top_selling_desc') }}</p>
+                        <ul class="mt-4 divide-y divide-slate-100 dark:divide-slate-800">
+                            @foreach ($topSellingProducts as $product)
+                                <li class="flex items-center justify-between gap-3 py-2.5">
+                                    <a href="{{ route('provider.products.edit', $product) }}" class="truncate text-sm font-medium text-slate-800 hover:text-brand-700 dark:text-slate-200 dark:hover:text-brand-400">{{ $product->name }}</a>
+                                    <span class="shrink-0 text-sm font-semibold text-slate-500 dark:text-slate-400">{{ (int) $product->units_sold }} {{ __('provider.dashboard.units_sold') }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </section>
+                @endif
             </div>
 
             {{-- ═══ Right: activity + quick actions ═══ --}}

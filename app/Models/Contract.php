@@ -19,7 +19,6 @@ class Contract extends Model
     protected $fillable = [
         'reference',
         'consumer_id',
-        'corporate_account_id',
         'title',
         'description',
         'address',
@@ -55,11 +54,6 @@ class Contract extends Model
     public function consumer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'consumer_id');
-    }
-
-    public function corporateAccount(): BelongsTo
-    {
-        return $this->belongsTo(CorporateAccount::class);
     }
 
     public function quotedBy(): BelongsTo

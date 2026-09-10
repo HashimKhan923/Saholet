@@ -103,7 +103,7 @@ class WithdrawalTest extends TestCase
 
         $withdrawal = WithdrawalRequest::firstOrFail();
 
-        $this->actingAs($admin)->post("/admin/withdrawals/{$withdrawal->id}/paid")->assertRedirect();
+        $this->actingAs($admin)->post("/admin/withdrawals/{$withdrawal->id}/paid-cash")->assertRedirect();
 
         $withdrawal->refresh();
         $this->assertSame('paid', $withdrawal->status);

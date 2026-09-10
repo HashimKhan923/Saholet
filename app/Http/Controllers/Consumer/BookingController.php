@@ -84,7 +84,6 @@ class BookingController extends Controller
         $booking = Booking::create([
             'reference' => $this->generateReference(),
             'consumer_id' => $request->user()->id,
-            'corporate_account_id' => $request->user()->corporate_account_id,
             'provider_profile_id' => $provider->id,
             'service_id' => $service->id,
             'scheduled_date' => $validated['scheduled_date'],

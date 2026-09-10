@@ -74,6 +74,14 @@
             <h2 class="mt-4 font-display text-base font-bold text-slate-900 dark:text-white">My subscriptions</h2>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Recurring maintenance plans — never miss a service again.</p>
         </a>
+
+        <a href="{{ route('consumer.orders.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
+            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/40 dark:text-brand-400">
+                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 7l-8-4-8 4m16 0-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <h2 class="mt-4 font-display text-base font-bold text-slate-900 dark:text-white">My orders</h2>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Track products you've bought from Sahoulat's shops.</p>
+        </a>
     </div>
 
     {{-- Recent bookings --}}

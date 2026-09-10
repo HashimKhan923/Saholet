@@ -8,7 +8,7 @@
     // bookings/providers/finance are daily-driver pages, catalog/content are
     // occasional setup pages, accounts/insights are the least-visited.
     $showBookingsSection = $u->hasPermission('bookings') || $u->hasPermission('emergencies') || $u->hasPermission('contracts')
-        || $u->hasPermission('subscriptions');
+        || $u->hasPermission('subscriptions') || $u->hasPermission('orders');
     $showUsersSection = $u->hasPermission('providers') || $u->hasPermission('talent') || $u->isAdmin();
     $showFinanceSection = $u->hasPermission('invoices') || $u->isAdmin();
     $showTrustSection = $u->hasPermission('disputes') || $u->hasPermission('fraud');
@@ -54,6 +54,12 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M17 2.1l4 4-4 4M7 21.9l-4-4 4-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 12a8.5 8.5 0 0 1 14.5-6h-4M20.5 12a8.5 8.5 0 0 1-14.5 6h4" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </x-portal-nav-link>
     @endif
+    @if (auth()->user()->hasPermission('orders'))
+    <x-portal-nav-link :href="route('admin.orders.index')" :label="__('admin.nav.orders')" :active="request()->routeIs('admin.orders.*')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 7l-8-4-8 4m16 0-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </x-portal-nav-link>
+    @endif
+
     @if ($showUsersSection)
     <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.users_section') }}</p>
     @endif

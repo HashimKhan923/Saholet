@@ -80,6 +80,30 @@
                 </dl>
             </div>
 
+            {{-- Shop --}}
+            @if ($shopCounts['products'] > 0 || $shopCounts['orders'] > 0)
+                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <div class="flex items-center justify-between">
+                        <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Shop</h2>
+                        <a href="{{ route('admin.providers.shop', $provider) }}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">View &rarr;</a>
+                    </div>
+                    <div class="mt-4 grid grid-cols-3 gap-3">
+                        <div class="rounded-xl bg-slate-50 p-4 text-center dark:bg-slate-800">
+                            <p class="font-display text-xl font-extrabold text-slate-900 dark:text-white">{{ $shopCounts['products'] }}</p>
+                            <p class="mt-0.5 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Products</p>
+                        </div>
+                        <div class="rounded-xl bg-slate-50 p-4 text-center dark:bg-slate-800">
+                            <p class="font-display text-xl font-extrabold text-slate-900 dark:text-white">{{ $shopCounts['orders'] }}</p>
+                            <p class="mt-0.5 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Orders</p>
+                        </div>
+                        <div class="rounded-xl bg-slate-50 p-4 text-center dark:bg-slate-800">
+                            <p class="font-display text-xl font-extrabold text-slate-900 dark:text-white">{{ $shopCounts['rating_count'] > 0 ? number_format((float) $shopCounts['rating_avg'], 1) : '—' }}</p>
+                            <p class="mt-0.5 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Rating</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             {{-- Payout details --}}
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Payout details</h2>

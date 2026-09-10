@@ -38,6 +38,11 @@
                         <div><dt class="text-slate-500 dark:text-slate-400">Contract</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->contractMilestone->contract?->reference ?? '—' }}</dd></div>
                         <div><dt class="text-slate-500 dark:text-slate-400">Milestone</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->contractMilestone->title }}</dd></div>
                         <div><dt class="text-slate-500 dark:text-slate-400">Customer</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->consumer->name ?? '—' }}</dd></div>
+                    @elseif ($payment->order)
+                        <div><dt class="text-slate-500 dark:text-slate-400">Order</dt><dd class="font-medium text-slate-800 dark:text-slate-200"><a href="{{ route('admin.orders.show', $payment->order) }}" class="text-brand-700 hover:text-brand-800 dark:text-brand-400">{{ $payment->order->reference }}</a></dd></div>
+                        <div><dt class="text-slate-500 dark:text-slate-400">Customer</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->consumer->name ?? '—' }}</dd></div>
+                        <div><dt class="text-slate-500 dark:text-slate-400">Provider</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->order->providerProfile?->business_name ?? $payment->order->providerProfile?->user?->name ?? '—' }}</dd></div>
+                        <div class="sm:col-span-2"><dt class="text-slate-500 dark:text-slate-400">Items</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->order->items->pluck('product_name')->implode(', ') }}</dd></div>
                     @endif
                     <div><dt class="text-slate-500 dark:text-slate-400">Amount</dt><dd class="font-medium text-slate-800 dark:text-slate-200">Rs. {{ number_format((float) $payment->amount, 0) }}</dd></div>
                     <div><dt class="text-slate-500 dark:text-slate-400">Submitted</dt><dd class="font-medium text-slate-800 dark:text-slate-200">{{ $payment->created_at->format('d M Y, h:i A') }}</dd></div>
@@ -71,7 +76,7 @@
                     <form method="POST" action="{{ route('admin.payments.verify', $payment) }}" class="mt-4">
                         @csrf
                         <button type="submit" class="w-full rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
-                            {{ $payment->booking ? 'Verify & release to provider' : 'Verify & hold in escrow' }}
+                            {{ $payment->booking && $payment->booking->isCompleted() ? 'Verify & release to provider' : 'Verify & hold as pending' }}
                         </button>
                     </form>
 

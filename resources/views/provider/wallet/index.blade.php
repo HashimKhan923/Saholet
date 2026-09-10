@@ -277,6 +277,7 @@
                     </li>
                 @endforeach
             </ul>
+            <div class="mt-4">{{ $withdrawalRequests->links() }}</div>
         </section>
     @endif
 

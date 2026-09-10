@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Contracts\Payable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -22,10 +23,10 @@ class Payment extends Model
         'reference',
         'booking_id',
         'contract_milestone_id',
+        'order_id',
         'consumer_id',
         'gateway',
         'amount',
-        'credit_applied',
         'commission_rate',
         'commission_amount',
         'provider_amount',
@@ -44,7 +45,6 @@ class Payment extends Model
     {
         return [
             'amount' => 'decimal:2',
-            'credit_applied' => 'decimal:2',
             'commission_rate' => 'decimal:2',
             'commission_amount' => 'decimal:2',
             'provider_amount' => 'decimal:2',
@@ -65,6 +65,19 @@ class Payment extends Model
         return $this->belongsTo(ContractMilestone::class);
     }
 
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
+    }
+
+    /** Whichever of booking/order this payment is tied to — never both, and never neither for a payment WalletService actually processes. */
+    public function payable(): ?Payable
+    {
+        $this->loadMissing(['booking', 'order']);
+
+        return $this->booking ?? $this->order;
+    }
+
     public function consumer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'consumer_id');
@@ -83,17 +96,6 @@ class Payment extends Model
     public function isBankTransfer(): bool
     {
         return $this->gateway === self::GATEWAY_BANK_TRANSFER;
-    }
-
-    /** What actually needs to go through a payment gateway, after referral credit. */
-    public function chargeAmount(): float
-    {
-        return max(0.0, (float) $this->amount - (float) $this->credit_applied);
-    }
-
-    public function isFullyCoveredByCredit(): bool
-    {
-        return $this->chargeAmount() <= 0.0;
     }
 
     public function isPending(): bool

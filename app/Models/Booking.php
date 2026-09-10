@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Contracts\Payable;
+use App\Services\CommissionService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
-class Booking extends Model
+class Booking extends Model implements Payable
 {
     public const STATUS_PENDING = 'pending';
     public const STATUS_CONFIRMED = 'confirmed';
@@ -31,7 +33,6 @@ class Booking extends Model
         'service_id',
         'contract_item_id',
         'subscription_id',
-        'corporate_account_id',
         'scheduled_date',
         'scheduled_time',
         'price',
@@ -72,6 +73,24 @@ class Booking extends Model
         ];
     }
 
+    /**
+     * The provider's own negotiated rate, set by an admin at approval time —
+     * a last-resort default only covers a provider somehow left without one.
+     */
+    public function commissionRate(): float
+    {
+        $this->loadMissing('providerProfile');
+
+        return $this->providerProfile?->commission_rate !== null
+            ? (float) $this->providerProfile->commission_rate
+            : CommissionService::DEFAULT_RATE;
+    }
+
+    public function referenceLabel(): string
+    {
+        return 'booking ' . $this->reference;
+    }
+
     /** Provider kept the whole thing — never touches commission or the platform wallet. */
     public function hasVisitChargeCollected(): bool
     {
@@ -108,11 +127,6 @@ class Booking extends Model
     public function subscription(): BelongsTo
     {
         return $this->belongsTo(Subscription::class);
-    }
-
-    public function corporateAccount(): BelongsTo
-    {
-        return $this->belongsTo(CorporateAccount::class);
     }
 
     public function messages(): HasMany

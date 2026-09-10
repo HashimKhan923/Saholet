@@ -16,8 +16,6 @@ class UserResource extends JsonResource
             'phone' => $this->phone,
             'role' => $this->role,
             'avatar_url' => $this->avatar_url,
-            'referral_code' => $this->referral_code,
-            'credit_balance' => (float) $this->credit_balance,
             'is_suspended' => $this->isSuspended(),
             'provider_status' => $this->when(
                 $this->role === 'provider',

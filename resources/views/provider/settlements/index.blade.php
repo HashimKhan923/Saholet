@@ -23,12 +23,6 @@
         <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">When a customer pays you in cash, our commission on that job is deducted from your wallet. Pay it back here to clear the balance.</p>
     </div>
 
-    @if (session('success'))
-        <div class="rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm font-medium text-brand-800 dark:border-brand-800 dark:bg-brand-950/40 dark:text-brand-300">{{ session('success') }}</div>
-    @endif
-    @if (session('error'))
-        <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">{{ session('error') }}</div>
-    @endif
     @if ($errors->any())
         <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">
             <ul class="list-inside list-disc space-y-1">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>

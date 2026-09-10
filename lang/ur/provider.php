@@ -4,12 +4,18 @@ return [
     'portal_label' => 'فراہم کنندہ',
 
     'nav' => [
+        'dashboard_section' => 'ڈیش بورڈ',
         'dashboard' => 'ڈیش بورڈ',
         'notifications' => 'اطلاعات',
         'work_section' => 'کام',
-        'bookings' => 'بکنگز',
-        'available_jobs' => 'دستیاب ملازمتیں',
+        'bookings' => 'میری بکنگز',
+        'available_jobs' => 'میری ملازمتیں',
         'my_bids' => 'میری بولیاں',
+        'shop_section' => 'میری دکان',
+        'products' => 'پروڈکٹس',
+        'orders' => 'آرڈرز',
+        'coupons' => 'کوپنز',
+        'shop_settings' => 'دکان کی ترتیبات',
         'business_section' => 'کاروبار',
         'my_services' => 'میری خدمات',
         'portfolio' => 'پورٹ فولیو',
@@ -75,6 +81,16 @@ return [
 
         'earnings_title' => 'کمائی',
         'earnings_subtitle' => 'کمیشن کے بعد پچھلے 6 مہینے',
+
+        'out_of_stock_title' => 'اسٹاک ختم',
+        'out_of_stock_desc' => 'یہ پروڈکٹس فعال ہیں لیکن جب تک آپ اسٹاک نہیں بھریں گے خریدی نہیں جا سکیں گی۔',
+        'restock' => 'اسٹاک بھریں',
+        'deactivated_title' => 'سہولت کی جانب سے غیر فعال',
+        'deactivated_desc' => 'یہ پروڈکٹس ہماری ٹیم نے چھپا دی ہیں — وجہ اور حل جاننے کے لیے کھولیں۔',
+        'review' => 'جائزہ لیں',
+        'top_selling_title' => 'زیادہ فروخت ہونے والی پروڈکٹس',
+        'top_selling_desc' => 'آپ کی بہترین فروخت — انہیں اسٹاک میں رکھیں۔',
+        'units_sold' => 'فروخت ہوئیں',
 
         'recent_activity' => 'حالیہ سرگرمی',
         'no_activity' => 'ابھی تک کوئی سرگرمی نہیں۔ آپ کی بکنگز، بولیاں اور ادائیگیاں یہاں نظر آئیں گی۔',

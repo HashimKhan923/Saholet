@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\LedgerEntry;
+use App\Models\Order;
+use App\Models\Product;
 use App\Models\ProviderProfile;
 use App\Models\WithdrawalRequest;
 use App\Services\WalletService;
@@ -102,7 +104,45 @@ class ProviderController extends Controller
             'completed_value' => $completedValue,
         ];
 
-        return view('admin.providers.show', compact('provider', 'bookings', 'bookingCounts', 'earnings'));
+        $productIds = Product::where('provider_profile_id', $provider->id)->pluck('id');
+
+        $shopCounts = [
+            'products' => $productIds->count(),
+            'orders' => Order::where('provider_profile_id', $provider->id)->count(),
+            'rating_avg' => \App\Models\ProductReview::whereIn('product_id', $productIds)->avg('rating'),
+            'rating_count' => \App\Models\ProductReview::whereIn('product_id', $productIds)->count(),
+        ];
+
+        return view('admin.providers.show', compact('provider', 'bookings', 'bookingCounts', 'earnings', 'shopCounts'));
+    }
+
+    /** Products, orders and product ratings for one provider — reached from the "Shop" card on their profile. */
+    public function shop(ProviderProfile $provider): View
+    {
+        $productIds = Product::where('provider_profile_id', $provider->id)->pluck('id');
+
+        $products = Product::where('provider_profile_id', $provider->id)
+            ->with('category')
+            ->latest()
+            ->paginate(15, ['*'], 'products_page')
+            ->withQueryString();
+
+        $orders = Order::where('provider_profile_id', $provider->id)
+            ->with('consumer')
+            ->latest()
+            ->paginate(15, ['*'], 'orders_page')
+            ->withQueryString();
+
+        $reviewsQuery = \App\Models\ProductReview::whereIn('product_id', $productIds);
+        $ratingAvg = (clone $reviewsQuery)->avg('rating');
+        $ratingCount = (clone $reviewsQuery)->count();
+
+        $reviews = $reviewsQuery->with(['product', 'user'])
+            ->latest()
+            ->paginate(15, ['*'], 'reviews_page')
+            ->withQueryString();
+
+        return view('admin.providers.shop', compact('provider', 'products', 'orders', 'reviews', 'ratingAvg', 'ratingCount'));
     }
 
     public function approve(Request $request, ProviderProfile $provider): RedirectResponse

@@ -6,13 +6,23 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-    public function create(): View
+    public function create(Request $request): View
     {
+        // A plain "Log in" link (as opposed to auth middleware bouncing a guest
+        // off a protected page, which already sets this automatically) can
+        // carry ?redirect=/wherever so login sends them back afterwards.
+        // Only ever a same-site relative path — never an absolute/external URL.
+        $redirect = $request->query('redirect');
+        if (is_string($redirect) && Str::startsWith($redirect, '/') && ! Str::startsWith($redirect, '//')) {
+            $request->session()->put('url.intended', url($redirect));
+        }
+
         return view('auth.login');
     }
 

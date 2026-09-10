@@ -18,10 +18,13 @@ return [
     'invoices' => ['label' => 'Invoices', 'actions' => ['view', 'create', 'edit']],
     'contracts' => ['label' => 'Contracts', 'actions' => ['view', 'edit']],
     'subscriptions' => ['label' => 'Subscriptions & plans', 'actions' => ['view', 'create', 'edit', 'delete']],
-    'corporate-accounts' => ['label' => 'Corporate accounts', 'actions' => ['view']],
     'providers' => ['label' => 'Providers', 'actions' => ['view', 'edit']],
     'careers' => ['label' => 'Careers & applications', 'actions' => ['view', 'create', 'edit', 'delete']],
     'talent' => ['label' => 'Job seekers', 'actions' => ['view']],
+    // Moderation only — a product publishes immediately when its provider adds it,
+    // so staff never create one here, only deactivate/remove after the fact.
+    'products' => ['label' => 'Shop products', 'actions' => ['view', 'edit', 'delete']],
+    'orders' => ['label' => 'Shop orders', 'actions' => ['view']],
     'disputes' => ['label' => 'Disputes', 'actions' => ['view', 'edit']],
     'fraud' => ['label' => 'Fraud signals', 'actions' => ['view']],
 

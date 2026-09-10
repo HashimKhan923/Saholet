@@ -73,7 +73,6 @@ class ContractController extends Controller
             $contract = Contract::create([
                 'reference' => $this->generateReference(),
                 'consumer_id' => $request->user()->id,
-                'corporate_account_id' => $request->user()->corporate_account_id,
                 'title' => $data['title'],
                 'description' => $data['description'],
                 'address' => $data['address'],
@@ -203,10 +202,9 @@ class ContractController extends Controller
             ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false))
             ->values();
 
-        $maxCreditApplicable = min((float) $request->user()->credit_balance, (float) $milestone->amount);
         $companyAccount = config('payments.company_account');
 
-        return view('consumer.contracts.pay-milestone', compact('contract', 'milestone', 'gateways', 'maxCreditApplicable', 'companyAccount'));
+        return view('consumer.contracts.pay-milestone', compact('contract', 'milestone', 'gateways', 'companyAccount'));
     }
 
     public function storeMilestonePayment(Request $request, Contract $contract, ContractMilestone $milestone): RedirectResponse|View
@@ -221,10 +219,6 @@ class ContractController extends Controller
         }
 
         $consumer = $request->user();
-        $creditApplied = $request->boolean('apply_credit')
-            ? min((float) $consumer->credit_balance, (float) $milestone->amount)
-            : 0.0;
-        $fullyCoveredByCredit = $creditApplied >= (float) $milestone->amount;
 
         $available = collect($this->payments->all())
             ->filter(fn ($g) => config("payments.gateways.{$g->key()}.enabled", false))
@@ -234,40 +228,15 @@ class ContractController extends Controller
             ->all();
 
         $data = $request->validate([
-            'gateway' => [$fullyCoveredByCredit ? 'nullable' : 'required', Rule::in($available)],
+            'gateway' => ['required', Rule::in($available)],
             'screenshot' => [
-                Rule::requiredIf(! $fullyCoveredByCredit && $request->input('gateway') === Payment::GATEWAY_BANK_TRANSFER),
+                Rule::requiredIf($request->input('gateway') === Payment::GATEWAY_BANK_TRANSFER),
                 'nullable', 'image', 'mimes:jpg,jpeg,png,webp,heic,heif', 'max:8192',
             ],
         ]);
 
-        if (! $fullyCoveredByCredit && in_array($data['gateway'], [Payment::GATEWAY_CASH, Payment::GATEWAY_BANK_TRANSFER], true)) {
-            return $this->storeMilestoneCashOrBankTransfer($request, $contract, $milestone, $consumer, $data, $creditApplied);
-        }
-
-        if ($fullyCoveredByCredit) {
-            $payment = Payment::create([
-                'reference' => $this->generatePaymentReference(),
-                'contract_milestone_id' => $milestone->id,
-                'consumer_id' => $consumer->id,
-                'gateway' => 'credit',
-                'amount' => $milestone->amount,
-                'credit_applied' => $creditApplied,
-                'status' => Payment::STATUS_PENDING,
-            ]);
-
-            $this->finalizer->finalizeMilestonePayment($payment, 'CREDIT-' . $payment->reference);
-
-            app(Notifier::class)->notifyAdmins(
-                'contract',
-                'Milestone paid with referral credit',
-                $milestone->title . ' for ' . $contract->reference . ' was paid entirely with referral credit.',
-                route('admin.contracts.show', $contract)
-            );
-
-            return redirect()
-                ->route('consumer.contracts.show', $contract)
-                ->with('success', 'Milestone paid entirely with your referral credit.');
+        if (in_array($data['gateway'], [Payment::GATEWAY_CASH, Payment::GATEWAY_BANK_TRANSFER], true)) {
+            return $this->storeMilestoneCashOrBankTransfer($request, $contract, $milestone, $consumer, $data);
         }
 
         $gateway = $this->payments->driver($data['gateway']);
@@ -282,7 +251,6 @@ class ContractController extends Controller
             'consumer_id' => $consumer->id,
             'gateway' => $gateway->key(),
             'amount' => $milestone->amount,
-            'credit_applied' => $creditApplied,
             'status' => Payment::STATUS_PENDING,
         ]);
 
@@ -327,8 +295,7 @@ class ContractController extends Controller
         Contract $contract,
         ContractMilestone $milestone,
         User $consumer,
-        array $data,
-        float $creditApplied
+        array $data
     ): RedirectResponse {
         $payment = Payment::create([
             'reference' => $this->generatePaymentReference(),
@@ -336,7 +303,6 @@ class ContractController extends Controller
             'consumer_id' => $consumer->id,
             'gateway' => $data['gateway'],
             'amount' => $milestone->amount,
-            'credit_applied' => $creditApplied,
             'status' => Payment::STATUS_PENDING,
         ]);
 

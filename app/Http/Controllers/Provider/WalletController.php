@@ -19,8 +19,8 @@ class WalletController extends Controller
         $wallet = $this->wallets->walletFor($request->user());
         $profile = $request->user()->providerProfile;
         $withdrawalRequests = $profile
-            ? $profile->withdrawalRequests()->latest()->limit(10)->get()
-            : collect();
+            ? $profile->withdrawalRequests()->latest()->paginate(10, ['*'], 'withdrawals_page')->withQueryString()
+            : \App\Models\WithdrawalRequest::whereRaw('1 = 0')->paginate(10, ['*'], 'withdrawals_page');
         $minWithdrawal = (float) config('payments.min_withdrawal');
 
         $bucket = (string) $request->query('bucket', 'all');

@@ -191,6 +191,8 @@
                 </template>
             </div>
         </div>
+
+        <div class="mt-4">{{ $jobs->links() }}</div>
     @endif
 </div>
 @endsection

@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Mail\InvoicePaidMail;
+use App\Mail\OrderInvoicePaidMail;
 use App\Models\Booking;
 use App\Models\Invoice;
+use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -18,6 +20,69 @@ class InvoiceService
             ->where('invoiceable_id', $booking->id)
             ->latest()
             ->first();
+    }
+
+    /** The invoice tied to a product order, if one already exists (created once payment is finalized). */
+    public function findForOrder(Order $order): ?Invoice
+    {
+        return Invoice::where('invoiceable_type', Order::class)
+            ->where('invoiceable_id', $order->id)
+            ->latest()
+            ->first();
+    }
+
+    /** Email the order's invoice to the customer once its payment is confirmed. */
+    public function emailOrderPaymentConfirmation(Order $order, Payment $payment): void
+    {
+        $invoice = $this->findForOrder($order) ?? $this->createForOrder($order);
+
+        if (! $order->consumer?->email) {
+            return;
+        }
+
+        Mail::to($order->consumer->email)->send(new OrderInvoicePaidMail($invoice, $order, $payment));
+    }
+
+    public function createForOrder(Order $order): Invoice
+    {
+        $order->loadMissing(['items', 'consumer']);
+
+        return DB::transaction(function () use ($order) {
+            $invoice = Invoice::create([
+                'type' => Invoice::TYPE_INVOICE,
+                'reference' => Invoice::generateReference(Invoice::TYPE_INVOICE),
+                'invoiceable_type' => Order::class,
+                'invoiceable_id' => $order->id,
+                'consumer_id' => $order->consumer_id,
+                'bill_to_name' => $order->consumer->name,
+                'bill_to_email' => $order->consumer->email,
+                'bill_to_phone' => $order->consumer->phone,
+                'bill_to_address' => $order->shipping_address,
+                'total' => $order->total_amount,
+            ]);
+
+            foreach ($order->items as $index => $item) {
+                $invoice->items()->create([
+                    'description' => $item->product_name . ' x' . $item->quantity,
+                    'quantity' => $item->quantity,
+                    'unit_price' => $item->unit_price,
+                    'total' => $item->line_total,
+                    'sort_order' => $index + 1,
+                ]);
+            }
+
+            if ((float) $order->shipping_amount > 0) {
+                $invoice->items()->create([
+                    'description' => 'Shipping',
+                    'quantity' => 1,
+                    'unit_price' => $order->shipping_amount,
+                    'total' => $order->shipping_amount,
+                    'sort_order' => $order->items->count() + 1,
+                ]);
+            }
+
+            return $invoice;
+        });
     }
 
     /** Email the booking's invoice to the customer once a payment is confirmed. */

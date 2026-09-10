@@ -91,25 +91,29 @@ document.addEventListener('alpine:init', () => {
                     serviceAreaPolygons.push(new google.maps.Polygon({
                         paths: area.boundary,
                         fillColor: '#1a7a35',
-                        fillOpacity: 0.08,
+                        fillOpacity: 0.16,
                         strokeColor: '#1a7a35',
-                        strokeOpacity: 0.6,
-                        strokeWeight: 1.5,
+                        strokeOpacity: 0.9,
+                        strokeWeight: 2,
                         clickable: false,
                         map: this.map,
                     }));
                 });
 
-                this.marker = new google.maps.marker.AdvancedMarkerElement({
+                // Classic google.maps.Marker — its stock icon is already the
+                // familiar red pin, and it doesn't depend on a vector-enabled
+                // Map ID the way AdvancedMarkerElement does, so it renders
+                // reliably regardless of the map's rendering mode.
+                this.marker = new google.maps.Marker({
                     position: start,
                     map: this.map,
-                    gmpDraggable: true,
+                    draggable: true,
                 });
 
                 this.marker.addListener('dragend', () => this.applyPosition(this.markerPosition()));
                 this.map.addListener('click', (e) => {
                     const pos = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-                    this.marker.position = pos;
+                    this.marker.setPosition(pos);
                     this.applyPosition(pos);
                 });
 
@@ -126,7 +130,7 @@ document.addEventListener('alpine:init', () => {
                         const pos = { lat: place.location.lat(), lng: place.location.lng() };
                         this.map.setCenter(pos);
                         this.map.setZoom(16);
-                        this.marker.position = pos;
+                        this.marker.setPosition(pos);
                         this.setLatLng(pos.lat, pos.lng);
                         if (place.formattedAddress) this.setAddressField(place.formattedAddress);
                         this.reverseGeocode(pos, false);
@@ -140,10 +144,9 @@ document.addEventListener('alpine:init', () => {
                 }
             },
 
-            /** AdvancedMarkerElement.position can read back as a plain literal or a LatLng-like object depending on how it was last set — normalize either shape. */
             markerPosition() {
-                const pos = this.marker.position;
-                return typeof pos.lat === 'function' ? { lat: pos.lat(), lng: pos.lng() } : { lat: pos.lat, lng: pos.lng };
+                const pos = this.marker.getPosition();
+                return { lat: pos.lat(), lng: pos.lng() };
             },
 
             applyPosition(pos) {
@@ -179,7 +182,12 @@ document.addEventListener('alpine:init', () => {
                         return;
                     }
                     if (updateAddress) this.setAddressField(results[0].formatted_address);
-                    const cityTypes = ['locality', 'postal_town', 'administrative_area_level_2', 'sublocality', 'administrative_area_level_1'];
+                    // administrative_area_level_2 first — in Pakistan that's the city/district
+                    // (e.g. "Karachi"), which is what providers set their per-area shipping
+                    // rates against. `locality`/`sublocality` often resolve to a much smaller
+                    // neighbourhood (e.g. "Goth Nabi Bux Gabole") that never matches a rate a
+                    // provider actually configured, wrongly blocking delivery.
+                    const cityTypes = ['administrative_area_level_2', 'locality', 'postal_town', 'sublocality', 'administrative_area_level_1'];
                     let comp = null;
                     for (const type of cityTypes) {
                         comp = results[0].address_components.find((c) => c.types.includes(type));
@@ -218,7 +226,7 @@ document.addEventListener('alpine:init', () => {
                         const pos = { lat: posResult.coords.latitude, lng: posResult.coords.longitude };
                         this.map.setCenter(pos);
                         this.map.setZoom(16);
-                        this.marker.position = pos;
+                        this.marker.setPosition(pos);
                         this.applyPosition(pos);
                         this.locating = false;
                     },

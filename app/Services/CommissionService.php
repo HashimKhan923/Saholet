@@ -2,24 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\Booking;
+use App\Contracts\Payable;
 
 class CommissionService
 {
     public const DEFAULT_RATE = 10.0;
 
-    /**
-     * Resolve the commission percent for a booking: the provider's own
-     * negotiated rate, set by an admin at approval time — a last-resort
-     * default only covers a provider somehow left without one.
-     */
-    public function rateFor(Booking $booking): float
+    /** Resolve the commission percent for whatever a payment is actually tied to. */
+    public function rateFor(Payable $payable): float
     {
-        $booking->loadMissing('providerProfile');
-
-        return $booking->providerProfile?->commission_rate !== null
-            ? (float) $booking->providerProfile->commission_rate
-            : self::DEFAULT_RATE;
+        return $payable->commissionRate();
     }
 
     /**

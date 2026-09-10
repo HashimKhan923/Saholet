@@ -13,25 +13,28 @@ class Notifier
     /**
      * Write the in-app notification and fan out to enabled channels.
      * Entirely best-effort: never throws into the caller.
+     *
+     * @param array<int, string> $excludeChannels Channel keys (e.g. 'mail') to skip for this call, in-app is always written regardless.
      */
-    public function notify(?User $recipient, string $type, string $title, string $body, ?string $url = null): void
+    public function notify(?User $recipient, string $type, string $title, string $body, ?string $url = null, array $excludeChannels = []): void
     {
         if (! $recipient) {
             return;
         }
 
-        $this->deliver($recipient, $type, $title, $body, $url);
+        $this->deliver($recipient, $type, $title, $body, $url, $excludeChannels);
     }
 
     /** Notify every admin user (e.g. a new contract/application landed in their queue). */
-    public function notifyAdmins(string $type, string $title, string $body, ?string $url = null): void
+    public function notifyAdmins(string $type, string $title, string $body, ?string $url = null, array $excludeChannels = []): void
     {
         User::where('role', User::ROLE_ADMIN)->get()->each(
-            fn (User $admin) => $this->deliver($admin, $type, $title, $body, $url)
+            fn (User $admin) => $this->deliver($admin, $type, $title, $body, $url, $excludeChannels)
         );
     }
 
-    private function deliver(User $recipient, string $type, string $title, string $body, ?string $url): void
+    /** @param array<int, string> $excludeChannels */
+    private function deliver(User $recipient, string $type, string $title, string $body, ?string $url, array $excludeChannels = []): void
     {
         try {
             $notification = Notification::create([
@@ -56,7 +59,7 @@ class Notifier
         $payload = ['type' => $type, 'title' => $title, 'body' => $body, 'url' => $url];
 
         try {
-            DeliverNotificationChannels::dispatch($recipient, $payload);
+            DeliverNotificationChannels::dispatch($recipient, $payload, $excludeChannels);
         } catch (\Throwable $e) {
             Log::warning('[notify] failed to queue channel delivery', ['error' => $e->getMessage()]);
         }

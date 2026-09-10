@@ -59,10 +59,18 @@
     {{-- Structured data (JSON-LD) — pushed by individual pages for rich search results --}}
     @stack('jsonld')
 </head>
-<body class="min-h-screen bg-slate-50 font-sans text-slate-700 antialiased dark:bg-slate-950 dark:text-slate-300">
+<body class="flex min-h-screen flex-col bg-slate-50 font-sans text-slate-700 antialiased dark:bg-slate-950 dark:text-slate-300">
 
     {{-- ========================================================= Topbar --}}
-    <div class="sticky top-0 z-40 bg-brand-700 text-xs text-white dark:bg-brand-950">
+    <div class="sticky top-0 z-40 bg-brand-700 text-xs text-white dark:bg-brand-950"
+        x-data="{
+            dark: document.documentElement.classList.contains('dark'),
+            toggleTheme() {
+                this.dark = ! this.dark;
+                document.documentElement.classList.toggle('dark', this.dark);
+                localStorage.setItem('theme', this.dark ? 'dark' : 'light');
+            },
+        }">
         <div class="mx-auto flex h-9 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
             {{-- Contact --}}
             <div class="flex items-center gap-4 sm:gap-5">
@@ -78,6 +86,17 @@
 
             {{-- Socials + language --}}
             <div class="flex items-center gap-3">
+                {{-- Theme toggle — iOS/Android-style switch --}}
+                <button type="button" @click="toggleTheme()" role="switch" :aria-checked="dark.toString()" aria-label="Toggle dark mode"
+                    class="relative inline-flex h-5 w-10 shrink-0 items-center rounded-full transition-colors duration-300"
+                    :class="dark ? 'bg-slate-900/70' : 'bg-white/25'">
+                    <span class="pointer-events-none absolute start-0.5 inline-flex h-4 w-4 transform items-center justify-center rounded-full bg-white shadow transition-transform duration-300"
+                        :class="dark ? 'translate-x-5 rtl:-translate-x-5' : 'translate-x-0'">
+                        <svg x-show="!dark" viewBox="0 0 24 24" class="h-2.5 w-2.5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="4.5"/><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke-linecap="round"/></svg>
+                        <svg x-show="dark" x-cloak viewBox="0 0 24 24" class="h-2.5 w-2.5 text-brand-700" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z" stroke-linejoin="round"/></svg>
+                    </span>
+                </button>
+                <div class="h-4 w-px bg-white/20"></div>
                 <a href="https://www.facebook.com/profile.php?id=61592766283756" target="_blank" rel="noopener" aria-label="Facebook" class="grid h-6 w-6 place-items-center rounded bg-white/15 transition-colors hover:bg-white/30">
                     <svg viewBox="0 0 24 24" class="h-3 w-3 fill-current"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                 </a>
@@ -130,6 +149,7 @@
             {{-- Desktop nav --}}
             <nav class="hidden items-center gap-6 md:flex">
                 <a href="{{ route('services.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('services.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.services') }}</a>
+                <a href="{{ route('shop.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('shop.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">Products</a>
                 <a href="{{ route('providers.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('providers.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.providers.nav_label') }}</a>
                 <a href="{{ route('careers.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('careers.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.careers') }}</a>
                 <a href="{{ route('subscription-plans.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('subscription-plans.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.plans') }}</a>
@@ -141,16 +161,27 @@
 
             {{-- Right side --}}
             <div class="hidden items-center gap-3 md:flex">
-                {{-- Theme toggle --}}
-                <x-theme-toggle />
-
                 @guest
-                    <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-xl border-2 border-brand-600 px-4 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-600 hover:text-white dark:text-brand-400 dark:hover:text-white">{{ __('messages.nav.login') }}</a>
+                    <a href="{{ route('login', ['redirect' => url()->current()]) }}" class="inline-flex items-center justify-center rounded-xl border-2 border-brand-600 px-4 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-600 hover:text-white dark:text-brand-400 dark:hover:text-white">{{ __('messages.nav.login') }}</a>
                     <a href="{{ route('register') }}" class="btn-shine inline-flex items-center justify-center rounded-xl border-2 border-brand-600 bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
                         {{ __('messages.nav.signup') }}
                     </a>
                 @endguest
                 @auth
+                    @if (auth()->user()->isConsumer())
+                        <a href="{{ route('consumer.wishlist.index') }}" class="relative inline-flex items-center justify-center rounded-xl p-2.5 text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800" aria-label="Wishlist">
+                            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4 6 4c2.2 0 3.7 1.2 6 3.5C14.3 5.2 15.8 4 18 4c4 0 5.6 3.8 4 7.2-2.5 4.7-10 9.3-10 9.3Z" stroke-linejoin="round"/></svg>
+                            @if ($navWishlistCount > 0)
+                                <span class="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">{{ $navWishlistCount }}</span>
+                            @endif
+                        </a>
+                        <a href="{{ route('consumer.cart.index') }}" class="relative inline-flex items-center justify-center rounded-xl p-2.5 text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800" aria-label="Cart">
+                            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            @if ($navCartCount > 0)
+                                <span class="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">{{ $navCartCount }}</span>
+                            @endif
+                        </a>
+                    @endif
                     <x-notification-bell />
 
                     {{-- Profile dropdown --}}
@@ -207,6 +238,7 @@
              class="border-t-2 border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 md:hidden">
             <nav class="space-y-1 px-4 py-3">
                 <a href="{{ route('services.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.services') }}</a>
+                <a href="{{ route('shop.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">Products</a>
                 <a href="{{ route('providers.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.providers.nav_label') }}</a>
                 <a href="{{ route('careers.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.careers') }}</a>
                 <a href="{{ route('subscription-plans.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.plans') }}</a>
@@ -215,13 +247,25 @@
                 @endif
                 <a href="{{ route('home') }}#contact" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.contact') }}</a>
 
-                <x-theme-toggle mobile />
-
                 @guest
-                    <a href="{{ route('login') }}" @click="open = false" class="block rounded-lg border-2 border-brand-600 px-3 py-2 text-center text-sm font-semibold text-brand-700 transition hover:bg-brand-600 hover:text-white dark:text-brand-400 dark:hover:text-white">{{ __('messages.nav.login') }}</a>
+                    <a href="{{ route('login', ['redirect' => url()->current()]) }}" @click="open = false" class="block rounded-lg border-2 border-brand-600 px-3 py-2 text-center text-sm font-semibold text-brand-700 transition hover:bg-brand-600 hover:text-white dark:text-brand-400 dark:hover:text-white">{{ __('messages.nav.login') }}</a>
                     <a href="{{ route('register') }}" @click="open = false" class="mt-1 block rounded-lg border-2 border-brand-600 bg-brand-600 px-3 py-2 text-center text-sm font-semibold text-white transition hover:bg-brand-700">{{ __('messages.nav.signup') }}</a>
                 @endguest
                 @auth
+                    @if (auth()->user()->isConsumer())
+                        <a href="{{ route('consumer.wishlist.index') }}" @click="open = false" class="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">
+                            <span>Wishlist</span>
+                            @if ($navWishlistCount > 0)
+                                <span class="inline-flex min-w-4.5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">{{ $navWishlistCount }}</span>
+                            @endif
+                        </a>
+                        <a href="{{ route('consumer.cart.index') }}" @click="open = false" class="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">
+                            <span>Cart</span>
+                            @if ($navCartCount > 0)
+                                <span class="inline-flex min-w-4.5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">{{ $navCartCount }}</span>
+                            @endif
+                        </a>
+                    @endif
                     <a href="{{ route('notifications.index') }}" @click="open = false" class="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">
                         <span>{{ __('messages.nav.notifications') }}</span>
                         <span x-show="$store.notifications.unreadCount > 0" x-cloak
@@ -251,8 +295,8 @@
         </div>
     @endif
 
-    {{-- Page content --}}
-    <main>
+    {{-- Page content — flex-1 so short pages still push the footer to the bottom of the viewport instead of leaving a gap below it. --}}
+    <main class="flex-1">
         @yield('content')
     </main>
 
@@ -290,6 +334,7 @@
                     <p class="text-sm font-bold uppercase text-white dark:text-white">{{ __('messages.nav.services') }}</p>
                     <nav class="mt-4 space-y-2.5">
                         <a href="{{ route('services.index') }}" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">{{ __('messages.landing.browse_all') }}</a>
+                        <a href="{{ route('shop.index') }}" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">Products</a>
                         <a href="{{ route('providers.index') }}" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">{{ __('messages.providers.nav_label') }}</a>
                         <a href="{{ route('careers.index') }}" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">{{ __('messages.nav.careers') }}</a>
                         <a href="{{ route('subscription-plans.index') }}" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">{{ __('messages.nav.plans') }}</a>
