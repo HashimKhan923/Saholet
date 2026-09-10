@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Concerns\NormalizesCity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
 class JobSeekerProfile extends Model
 {
+    use NormalizesCity;
+
     /** Pre-defined so admins reviewing candidates get a consistent, filterable value instead of free text. */
     public const QUALIFICATIONS = [
         'middle' => 'Middle',

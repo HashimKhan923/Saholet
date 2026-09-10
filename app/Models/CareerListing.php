@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\NormalizesCity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,8 @@ use Illuminate\Support\Str;
 
 class CareerListing extends Model
 {
+    use NormalizesCity;
+
     public const STATUS_DRAFT = 'draft';
     public const STATUS_OPEN = 'open';
     public const STATUS_CLOSED = 'closed';

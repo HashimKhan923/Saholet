@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Concerns\NormalizesCity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EmergencyRequest extends Model
 {
+    use NormalizesCity;
+
     public const STATUS_OPEN = 'open';
     public const STATUS_QUOTED = 'quoted';
     public const STATUS_ACCEPTED = 'accepted';
