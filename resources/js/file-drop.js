@@ -51,7 +51,6 @@ document.addEventListener('alpine:init', () => {
 
         handleChange(e) {
             this.addFiles(e.target.files);
-            e.target.value = '';
         },
 
         remove(index) {

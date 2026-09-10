@@ -43,7 +43,16 @@
                         @foreach ($products as $product)
                             <tr>
                                 <td class="py-2.5 pr-3">
-                                    <a href="{{ route('admin.products.show', $product) }}" class="font-medium text-slate-800 hover:text-brand-700 dark:text-slate-200 dark:hover:text-brand-400">{{ $product->name }}</a>
+                                    <a href="{{ route('admin.products.show', $product) }}" class="flex items-center gap-2.5 font-medium text-slate-800 hover:text-brand-700 dark:text-slate-200 dark:hover:text-brand-400">
+                                        @if ($product->photos->isNotEmpty())
+                                            <img src="{{ $product->photos->first()->url() }}" class="h-8 w-8 shrink-0 rounded-md object-cover">
+                                        @else
+                                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-400 dark:bg-slate-800">
+                                                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16v12H4z" stroke-linejoin="round"/><path d="m4 16 4.5-4.5 3 3L16 9l4 4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="8.5" r="1.25"/></svg>
+                                            </span>
+                                        @endif
+                                        {{ $product->name }}
+                                    </a>
                                 </td>
                                 <td class="py-2.5 pr-3 text-slate-600 dark:text-slate-400">Rs. {{ number_format((float) $product->price, 0) }}</td>
                                 <td class="py-2.5 pr-3 text-slate-600 dark:text-slate-400">{{ $product->stock_quantity }}</td>
