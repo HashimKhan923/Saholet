@@ -122,7 +122,7 @@ class ProviderController extends Controller
         $productIds = Product::where('provider_profile_id', $provider->id)->pluck('id');
 
         $products = Product::where('provider_profile_id', $provider->id)
-            ->with('category')
+            ->with(['category', 'photos'])
             ->latest()
             ->paginate(15, ['*'], 'products_page')
             ->withQueryString();
