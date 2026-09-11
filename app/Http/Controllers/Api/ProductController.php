@@ -59,6 +59,7 @@ class ProductController extends Controller
         abort_unless($product->providerProfile?->isApproved(), 404);
 
         $related = Product::active()
+            ->with(['category', 'photos', 'providerProfile.user'])
             ->where('provider_profile_id', $product->provider_profile_id)
             ->where('id', '!=', $product->id)
             ->limit(4)
