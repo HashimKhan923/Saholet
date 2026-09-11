@@ -65,7 +65,8 @@ class ProductController extends Controller
                 : $product->slug,
         ]);
 
-        $this->storePhotos($request, $product);
+        $newPhotos = $this->storePhotos($request, $product);
+        $this->applyPhotoOrder($request, $product, $newPhotos);
 
         return response()->json(['product' => new ProductResource($product->fresh(['category', 'photos']))]);
     }
@@ -95,29 +96,67 @@ class ProductController extends Controller
         return response()->json(['message' => 'Photo removed.']);
     }
 
-    private function storePhotos(Request $request, Product $product): void
+    /** @return ProductPhoto[] the newly created photos, in upload order (index matters — applyPhotoOrder's "new:N" tokens refer to this order). */
+    private function storePhotos(Request $request, Product $product): array
     {
         if (! $request->hasFile('photos')) {
-            return;
+            return [];
         }
 
         $remaining = self::MAX_PHOTOS - $product->photos()->count();
         if ($remaining <= 0) {
-            return;
+            return [];
         }
 
         $nextSort = (int) ($product->photos()->max('sort_order') ?? 0);
+        $created = [];
 
         foreach (array_slice($request->file('photos', []), 0, $remaining) as $photo) {
             $path = $photo->store("products/{$product->id}", 'public');
 
-            $product->photos()->create([
+            $created[] = $product->photos()->create([
                 'path' => $path,
                 'original_name' => $photo->getClientOriginalName(),
                 'mime_type' => $photo->getClientMimeType(),
                 'size' => $photo->getSize(),
                 'sort_order' => ++$nextSort,
             ]);
+        }
+
+        return $created;
+    }
+
+    /**
+     * `photo_order[]` (optional) is the final on-screen order from the mobile app's drag-to-reorder
+     * grid — a mix of existing photo IDs (as numeric strings) and, for photos uploaded in this same
+     * request, the token "new:{N}" where N is that photo's index in the `photos[]` upload array
+     * (see storePhotos's return order). Without this, a provider dragging an existing photo to the
+     * front (to make it the cover) saw the reorder revert after saving, since sort_order was
+     * otherwise only ever set once, at upload time, and never touched again.
+     */
+    private function applyPhotoOrder(Request $request, Product $product, array $newPhotos): void
+    {
+        $order = $request->input('photo_order');
+        if (! is_array($order) || empty($order)) {
+            return;
+        }
+
+        $existingIds = $product->photos()->pluck('id')->all();
+
+        $sort = 0;
+        foreach ($order as $token) {
+            $photoId = null;
+
+            if (is_string($token) && str_starts_with($token, 'new:')) {
+                $index = (int) substr($token, 4);
+                $photoId = $newPhotos[$index]->id ?? null;
+            } elseif (is_numeric($token) && in_array((int) $token, $existingIds, true)) {
+                $photoId = (int) $token;
+            }
+
+            if ($photoId !== null) {
+                ProductPhoto::where('id', $photoId)->where('product_id', $product->id)->update(['sort_order' => ++$sort]);
+            }
         }
     }
 
@@ -134,9 +173,11 @@ class ProductController extends Controller
             'is_active' => ['nullable', 'boolean'],
             'photos' => ['nullable', 'array', 'max:' . self::MAX_PHOTOS],
             'photos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'photo_order' => ['nullable', 'array', 'max:' . self::MAX_PHOTOS],
+            'photo_order.*' => ['string'],
         ]);
 
-        unset($data['photos']);
+        unset($data['photos'], $data['photo_order']);
         $data['is_active'] = $request->boolean('is_active', true);
 
         return $data;
