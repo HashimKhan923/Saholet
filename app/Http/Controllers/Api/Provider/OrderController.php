@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Services\OrderFulfillmentService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -40,9 +41,19 @@ class OrderController extends Controller
             }
         }
 
+        $search = trim((string) $request->query('q', ''));
+
         $query = Order::with(['consumer', 'items'])->where('provider_profile_id', $profile->id);
         if ($filter !== 'all') {
             $query->where('status', $filter);
+        }
+
+        if ($search !== '') {
+            $query->where(function (Builder $q) use ($search) {
+                $q->where('reference', 'like', "%{$search}%")
+                    ->orWhereHas('consumer', fn (Builder $c) => $c->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%"))
+                    ->orWhereHas('items', fn (Builder $i) => $i->where('product_name', 'like', "%{$search}%"));
+            });
         }
 
         $orders = $query->latest()->paginate(12);

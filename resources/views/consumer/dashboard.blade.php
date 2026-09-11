@@ -27,7 +27,7 @@
 
     {{-- Quick links --}}
     <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <a href="{{ route('consumer.bookings.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
+        <a href="{{ route('consumer.bookings.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
             <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/40 dark:text-brand-400">
                 <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 10h16" stroke-linecap="round"/></svg>
             </span>
@@ -35,7 +35,7 @@
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('messages.consumer_dashboard.my_bookings_desc') }}</p>
         </a>
 
-        <a href="{{ route('consumer.jobs.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
+        <a href="{{ route('consumer.jobs.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
             <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/40 dark:text-brand-400">
                 <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"/></svg>
             </span>
@@ -43,7 +43,7 @@
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('messages.consumer_dashboard.my_jobs_desc') }}</p>
         </a>
 
-        <a href="{{ route('consumer.contracts.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
+        <a href="{{ route('consumer.contracts.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
             <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/40 dark:text-brand-400">
                 <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 4h6l4 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 12h6M9 16h6" stroke-linecap="round"/></svg>
             </span>
@@ -59,7 +59,7 @@
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('messages.consumer_dashboard.emergencies_desc') }}</p>
         </a>
 
-        <a href="{{ route('consumer.addresses.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
+        <a href="{{ route('consumer.addresses.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
             <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/40 dark:text-brand-400">
                 <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="10" r="3"/><path d="M12 2c4.4 0 8 3.6 8 8 0 5-8 12-8 12S4 15 4 10c0-4.4 3.6-8 8-8z" stroke-linejoin="round"/></svg>
             </span>
@@ -67,7 +67,7 @@
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Save places for one-click checkout.</p>
         </a>
 
-        <a href="{{ route('consumer.subscriptions.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
+        <a href="{{ route('consumer.subscriptions.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
             <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/40 dark:text-brand-400">
                 <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M17 2.1l4 4-4 4M7 21.9l-4-4 4-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 12a8.5 8.5 0 0 1 14.5-6h-4M20.5 12a8.5 8.5 0 0 1-14.5 6h4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
@@ -75,7 +75,7 @@
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Recurring maintenance plans — never miss a service again.</p>
         </a>
 
-        <a href="{{ route('consumer.orders.index') }}" class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">
+        <a href="{{ route('consumer.orders.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
             <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-950/40 dark:text-brand-400">
                 <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 7l-8-4-8 4m16 0-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>

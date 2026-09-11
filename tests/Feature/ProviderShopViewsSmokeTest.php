@@ -13,11 +13,13 @@ class ProviderShopViewsSmokeTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_provider_shop_settings_page_renders(): void
+    public function test_provider_shop_settings_pages_render(): void
     {
         $provider = ProviderProfile::factory()->sellsProducts()->create();
 
-        $this->actingAs($provider->user)->get('/provider/shop-settings')->assertOk();
+        $this->actingAs($provider->user)->get('/provider/shop-settings/profile')->assertOk();
+        $this->actingAs($provider->user)->get('/provider/shop-settings/shipping')->assertOk();
+        $this->actingAs($provider->user)->get('/provider/shop-settings/pickup')->assertOk();
     }
 
     public function test_provider_products_index_and_create_pages_render(): void

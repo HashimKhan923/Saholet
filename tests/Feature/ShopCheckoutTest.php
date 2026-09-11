@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -194,6 +195,40 @@ class ShopCheckoutTest extends TestCase
         $this->assertDatabaseHas('ledger_entries', [
             'wallet_id' => $wallet->id, 'payment_id' => $payment->id, 'type' => 'cash_commission_due',
         ]);
+    }
+
+    /**
+     * Regression: production uses real SMTP, so a mail-server hiccup while emailing the
+     * invoice can throw — that call used to be unguarded inside the same DB::transaction()
+     * that marks the order completed and charges commission, so the exception rolled back
+     * the whole completion (order silently stuck on "ready") and surfaced as a 500 to the
+     * provider. The invoice email must be best-effort, matching Notifier's "never throws
+     * into the caller" contract.
+     */
+    public function test_completing_a_cash_order_survives_an_invoice_email_failure(): void
+    {
+        Mail::shouldReceive('to')->andReturnSelf();
+        Mail::shouldReceive('send')->andThrow(new \RuntimeException('SMTP connection failed'));
+
+        $consumer = $this->consumer();
+        $provider = ProviderProfile::factory()->sellsProducts()->create(['product_commission_rate' => 10]);
+        $product = Product::factory()->for($provider, 'providerProfile')->create(['price' => 1000, 'stock_quantity' => 5]);
+
+        $this->actingAs($consumer)->post('/cart/items', ['product_id' => $product->id, 'quantity' => 1]);
+        $this->actingAs($consumer)->post('/checkout', [
+            'orders' => [['provider_profile_id' => $provider->id, 'fulfillment_method' => 'pickup', 'payment_method' => 'cash']],
+        ]);
+
+        $order = Order::firstOrFail();
+        $providerUser = $provider->user;
+        $this->actingAs($providerUser)->post("/provider/orders/{$order->id}/confirm")->assertRedirect();
+        $this->actingAs($providerUser)->post("/provider/orders/{$order->id}/ready")->assertRedirect();
+
+        $this->actingAs($providerUser)->post("/provider/orders/{$order->id}/complete")->assertRedirect();
+
+        $order->refresh();
+        $this->assertSame('completed', $order->status);
+        $this->assertSame(1, Payment::count());
     }
 
     // ─── Full flow: delivery + bank transfer ───────────────────────

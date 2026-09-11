@@ -286,22 +286,22 @@
 
                 @foreach ($summary as $label => $value)
                     <div>
-                        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ $label }}</dt>
+                        <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">{{ $label }}</dt>
                         <dd class="mt-1 font-medium text-slate-800 dark:text-slate-200">{{ $value }}</dd>
                     </div>
                 @endforeach
 
                 <div class="sm:col-span-2">
-                    <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Address</dt>
+                    <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Address</dt>
                     <dd class="mt-1 font-medium text-slate-800 dark:text-slate-200">{{ $profile->address ?: '—' }}</dd>
                 </div>
                 <div class="sm:col-span-2">
-                    <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">About</dt>
+                    <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">About</dt>
                     <dd class="mt-1 leading-relaxed text-slate-700 dark:text-slate-300">{{ $profile->bio ?: '—' }}</dd>
                 </div>
             </dl>
 
-            <h3 class="mt-8 text-xs font-semibold uppercase tracking-wide text-slate-400">Documents</h3>
+            <h3 class="mt-8 text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Documents</h3>
             <ul class="mt-3 space-y-2">
                 @forelse ($profile->documents as $doc)
                     <li class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3 dark:bg-slate-800">

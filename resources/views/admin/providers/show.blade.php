@@ -34,28 +34,28 @@
     {{-- ═══ Earnings & activity strip ═══ --}}
     <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Lifetime earned</p>
+            <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Lifetime earned</p>
             <p class="mt-1.5 font-display text-lg font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($earnings['lifetime_earned'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Available balance</p>
+            <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Available balance</p>
             <p class="mt-1.5 font-display text-lg font-extrabold text-brand-700 dark:text-brand-400">Rs. {{ number_format($earnings['available_balance'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Pending</p>
+            <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Pending</p>
             <p class="mt-1.5 font-display text-lg font-extrabold text-amber-600 dark:text-amber-400">Rs. {{ number_format($earnings['escrow_balance'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Withdrawn</p>
+            <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Withdrawn</p>
             <p class="mt-1.5 font-display text-lg font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($earnings['total_withdrawn'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Bookings</p>
+            <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Bookings</p>
             <p class="mt-1.5 font-display text-lg font-extrabold text-slate-900 dark:text-white">{{ $bookingCounts['total'] }}</p>
             <p class="text-[11px] text-slate-400">{{ $bookingCounts['completed'] }} completed</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Rating</p>
+            <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Rating</p>
             <p class="mt-1.5 font-display text-lg font-extrabold text-slate-900 dark:text-white">
                 {{ $provider->reviews_count > 0 ? number_format((float) $provider->rating_avg, 1) : '—' }}
             </p>
@@ -90,15 +90,15 @@
                     <div class="mt-4 grid grid-cols-3 gap-3">
                         <div class="rounded-xl bg-slate-50 p-4 text-center dark:bg-slate-800">
                             <p class="font-display text-xl font-extrabold text-slate-900 dark:text-white">{{ $shopCounts['products'] }}</p>
-                            <p class="mt-0.5 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Products</p>
+                            <p class="mt-0.5 text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Products</p>
                         </div>
                         <div class="rounded-xl bg-slate-50 p-4 text-center dark:bg-slate-800">
                             <p class="font-display text-xl font-extrabold text-slate-900 dark:text-white">{{ $shopCounts['orders'] }}</p>
-                            <p class="mt-0.5 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Orders</p>
+                            <p class="mt-0.5 text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Orders</p>
                         </div>
                         <div class="rounded-xl bg-slate-50 p-4 text-center dark:bg-slate-800">
                             <p class="font-display text-xl font-extrabold text-slate-900 dark:text-white">{{ $shopCounts['rating_count'] > 0 ? number_format((float) $shopCounts['rating_avg'], 1) : '—' }}</p>
-                            <p class="mt-0.5 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Rating</p>
+                            <p class="mt-0.5 text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Rating</p>
                         </div>
                     </div>
                 </div>
@@ -177,7 +177,7 @@
                 @else
                     <div class="mt-4 overflow-x-auto">
                         <table class="min-w-full divide-y divide-slate-100 text-sm dark:divide-slate-800">
-                            <thead class="text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">
+                            <thead class="bg-slate-100 text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:bg-slate-800 dark:text-slate-100">
                                 <tr>
                                     <th class="py-2 pr-3">Service</th>
                                     <th class="py-2 pr-3">Customer</th>

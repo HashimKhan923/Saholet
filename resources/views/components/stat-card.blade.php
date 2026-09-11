@@ -12,21 +12,21 @@
 
 @php
     $tones = [
-        'brand'  => ['from-brand-500 to-brand-700', 'bg-brand-500/10'],
-        'amber'  => ['from-amber-400 to-amber-600', 'bg-amber-500/10'],
-        'sky'    => ['from-sky-400 to-sky-600', 'bg-sky-500/10'],
-        'violet' => ['from-violet-400 to-violet-600', 'bg-violet-500/10'],
-        'red'    => ['from-red-400 to-red-600', 'bg-red-500/10'],
-        'slate'  => ['from-slate-400 to-slate-600', 'bg-slate-500/10'],
-        'pink'   => ['from-pink-400 to-pink-600', 'bg-pink-500/10'],
+        'brand'  => ['from-brand-500 to-brand-700', 'bg-brand-500/10', 'from-white to-brand-50/70'],
+        'amber'  => ['from-amber-400 to-amber-600', 'bg-amber-500/10', 'from-white to-amber-50/70'],
+        'sky'    => ['from-sky-400 to-sky-600', 'bg-sky-500/10', 'from-white to-sky-50/70'],
+        'violet' => ['from-violet-400 to-violet-600', 'bg-violet-500/10', 'from-white to-violet-50/70'],
+        'red'    => ['from-red-400 to-red-600', 'bg-red-500/10', 'from-white to-red-50/70'],
+        'slate'  => ['from-slate-400 to-slate-600', 'bg-slate-500/10', 'from-white to-slate-100/70'],
+        'pink'   => ['from-pink-400 to-pink-600', 'bg-pink-500/10', 'from-white to-pink-50/70'],
     ];
-    [$iconGradient, $glowTone] = $tones[$tone] ?? $tones['brand'];
+    [$iconGradient, $glowTone, $bgGradient] = $tones[$tone] ?? $tones['brand'];
     $tag = $href ? 'a' : 'div';
     $up = ! is_null($delta) && $delta >= 0;
 @endphp
 
 <{{ $tag }} @if ($href) href="{{ $href }}" @endif
-    class="card-lift group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-900/[0.03] dark:border-slate-800 dark:bg-slate-900">
+    class="card-lift group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-br {{ $bgGradient }} p-5 shadow-sm shadow-slate-900/[0.03] dark:border-slate-800 dark:from-slate-900 dark:to-slate-900">
 
     <div class="pointer-events-none absolute -end-8 -top-8 h-28 w-28 rounded-full {{ $glowTone }} blur-2xl transition duration-500 group-hover:scale-125"></div>
 

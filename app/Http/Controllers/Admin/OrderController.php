@@ -18,6 +18,8 @@ class OrderController extends Controller
             $filter = 'all';
         }
 
+        $search = trim((string) $request->query('q', ''));
+
         $tally = Order::selectRaw('status, COUNT(*) as aggregate')->groupBy('status')->pluck('aggregate', 'status');
 
         $counts = ['all' => (int) $tally->sum()];
@@ -32,9 +34,19 @@ class OrderController extends Controller
             $query->where('status', $filter);
         }
 
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('reference', 'like', "%{$search}%")
+                    ->orWhereHas('consumer', fn ($c) => $c->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%"))
+                    ->orWhereHas('providerProfile', fn ($p) => $p->where('business_name', 'like', "%{$search}%"))
+                    ->orWhereHas('providerProfile.user', fn ($u) => $u->where('name', 'like', "%{$search}%"))
+                    ->orWhereHas('items', fn ($i) => $i->where('product_name', 'like', "%{$search}%"));
+            });
+        }
+
         $orders = $query->latest()->paginate(20)->withQueryString();
 
-        return view('admin.orders.index', compact('orders', 'counts', 'filter'));
+        return view('admin.orders.index', compact('orders', 'counts', 'filter', 'search'));
     }
 
     public function show(Order $order): View

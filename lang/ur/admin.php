@@ -48,6 +48,7 @@ return [
         'subtitle' => 'مارکیٹ پلیس چلائیں اور نیچے پلیٹ فارم کی صحت کا جائزہ لیں۔',
         'approved_providers' => 'منظور شدہ فراہم کنندگان',
         'total_bookings' => 'کل بکنگز',
+        'total_orders' => 'کل آرڈرز',
         'commission_earned' => 'کمائی گئی کمیشن',
         'operations_section' => 'آپریشنز',
         'categories_title' => 'زمرے',

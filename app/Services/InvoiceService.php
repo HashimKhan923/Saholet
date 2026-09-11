@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class InvoiceService
@@ -40,7 +41,14 @@ class InvoiceService
             return;
         }
 
-        Mail::to($order->consumer->email)->send(new OrderInvoicePaidMail($invoice, $order, $payment));
+        // Best-effort: an SMTP hiccup here must never roll back the order completion
+        // (and its commission/ledger writes) that this runs inside of.
+        try {
+            Mail::to($order->consumer->email)->send(new OrderInvoicePaidMail($invoice, $order, $payment));
+        } catch (\Throwable $e) {
+            report($e);
+            Log::warning('[invoice] failed to email order invoice', ['order_id' => $order->id, 'error' => $e->getMessage()]);
+        }
     }
 
     public function createForOrder(Order $order): Invoice
@@ -94,7 +102,14 @@ class InvoiceService
             return;
         }
 
-        Mail::to($booking->consumer->email)->send(new InvoicePaidMail($invoice, $booking, $payment));
+        // Best-effort: an SMTP hiccup here must never roll back the booking payment
+        // release (and its ledger writes) that this runs inside of.
+        try {
+            Mail::to($booking->consumer->email)->send(new InvoicePaidMail($invoice, $booking, $payment));
+        } catch (\Throwable $e) {
+            report($e);
+            Log::warning('[invoice] failed to email booking invoice', ['booking_id' => $booking->id, 'error' => $e->getMessage()]);
+        }
     }
 
     public function createForBooking(Booking $booking): Invoice

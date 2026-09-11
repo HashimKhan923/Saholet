@@ -14,7 +14,7 @@
             <p class="mt-2 font-display text-2xl font-extrabold text-brand-900 dark:text-brand-300">Rs. {{ number_format($money['commission_earned'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">GMV (completed)</p>
+            <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">GMV (completed)</p>
             <p class="mt-2 font-display text-2xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($money['gmv_completed'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-sky-200 bg-sky-50 p-5 dark:border-sky-800 dark:bg-sky-950/40">
@@ -22,11 +22,11 @@
             <p class="mt-2 font-display text-2xl font-extrabold text-sky-900 dark:text-sky-300">Rs. {{ number_format($money['escrow_held'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Released</p>
+            <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Released</p>
             <p class="mt-2 font-display text-2xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($money['released'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Refunded</p>
+            <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Refunded</p>
             <p class="mt-2 font-display text-2xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($money['refunded'], 0) }}</p>
         </div>
     </div>

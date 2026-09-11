@@ -1,7 +1,7 @@
 @props(['href', 'label', 'active' => false, 'badge' => null])
 
 <a href="{{ $href }}"
-    class="group relative flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition
+    class="group relative flex items-center justify-between rounded-xl px-3 py-2.5 text-base font-medium transition
         {{ $active
             ? 'bg-brand-600 text-white shadow-sm shadow-brand-900/20 dark:bg-brand-600'
             : 'text-slate-600 hover:translate-x-0.5 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white' }}">
@@ -10,7 +10,7 @@
             {{ $active
                 ? 'bg-white/15 text-white'
                 : 'text-slate-400 group-hover:bg-white group-hover:text-slate-600 group-hover:shadow-sm dark:group-hover:bg-slate-900 dark:group-hover:text-slate-300' }}">
-            <span class="h-4 w-4">{{ $slot }}</span>
+            <span class="h-5 w-5">{{ $slot }}</span>
         </span>
         <span class="{{ $active ? 'font-semibold' : '' }}">{{ $label }}</span>
     </span>

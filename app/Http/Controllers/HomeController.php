@@ -68,6 +68,16 @@ class HomeController extends Controller
 
         $banners = Cache::remember('landing.banners', 600, fn () => Banner::active()->orderBy('sort_order')->get());
 
+        // Shops teaser — 4 approved providers with at least one active product.
+        $shops = Cache::remember('landing.shops', 600, function () {
+            return ProviderProfile::approved()
+                ->withCount(['products as products_count' => fn ($q) => $q->active()])
+                ->whereHas('products', fn ($q) => $q->active())
+                ->latest()
+                ->limit(4)
+                ->get();
+        });
+
         return [
             'categories' => $categories,
             'cheapestService' => $cheapestService,
@@ -75,6 +85,7 @@ class HomeController extends Controller
             'testimonials' => $testimonials,
             'faqs' => $faqs,
             'banners' => $banners,
+            'shops' => $shops,
             'serviceSearchIndex' => $serviceSearchIndex,
         ];
     }

@@ -11,7 +11,7 @@
         <div class="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-14 text-center dark:border-slate-700 dark:bg-slate-900">
             <svg viewBox="0 0 24 24" class="mx-auto h-10 w-10 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4 6 4c2.2 0 3.7 1.2 6 3.5C14.3 5.2 15.8 4 18 4c4 0 5.6 3.8 4 7.2-2.5 4.7-10 9.3-10 9.3Z" stroke-linejoin="round"/></svg>
             <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">Nothing wishlisted yet.</p>
-            <a href="{{ route('shop.index') }}" class="mt-5 inline-flex items-center rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Browse products</a>
+            <a href="{{ route('shops.index') }}" class="mt-5 inline-flex items-center rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Browse products</a>
         </div>
     @else
         <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

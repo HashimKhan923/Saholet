@@ -6,6 +6,8 @@ use App\Models\Product;
 use App\Models\ProviderProfile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -26,7 +28,7 @@ class ProviderShopManagementTest extends TestCase
     {
         [$user, $profile] = $this->approvedProvider();
 
-        $this->actingAs($user)->post('/provider/shop-settings', [
+        $this->actingAs($user)->post('/provider/shop-settings/shipping', [
             'shipping_type' => 'flat',
             'shipping_flat_rate' => 250,
         ])->assertRedirect();
@@ -39,12 +41,41 @@ class ProviderShopManagementTest extends TestCase
     {
         [$user, $profile] = $this->approvedProvider();
 
-        $this->actingAs($user)->post('/provider/shop-settings', [
+        $this->actingAs($user)->post('/provider/shop-settings/shipping', [
             'shipping_type' => 'free',
         ])->assertRedirect();
 
         $this->assertSame('free', $profile->fresh()->shipping_type);
         $this->assertNull($profile->fresh()->shipping_flat_rate);
+    }
+
+    public function test_provider_can_configure_pickup(): void
+    {
+        [$user, $profile] = $this->approvedProvider();
+
+        $this->actingAs($user)->post('/provider/shop-settings/pickup', [
+            'pickup_enabled' => 1,
+            'pickup_hours' => 'Mon-Sat 9am-8pm',
+        ])->assertRedirect();
+
+        $profile->refresh();
+        $this->assertTrue($profile->pickup_enabled);
+        $this->assertSame('Mon-Sat 9am-8pm', $profile->pickup_hours);
+    }
+
+    public function test_provider_can_set_shop_name_and_logo(): void
+    {
+        Storage::fake('public');
+        [$user, $profile] = $this->approvedProvider();
+
+        $this->actingAs($user)->post('/provider/shop-settings/profile', [
+            'shop_name' => "Ali's Hardware",
+            'logo' => UploadedFile::fake()->image('logo.jpg'),
+        ])->assertRedirect();
+
+        $profile->refresh();
+        $this->assertSame("Ali's Hardware", $profile->shop_name);
+        Storage::disk('public')->assertExists($profile->shop_logo);
     }
 
     // ─── Products (web) ─────────────────────────────────────────────
@@ -118,7 +149,7 @@ class ProviderShopManagementTest extends TestCase
     {
         $user = User::factory()->create(['role' => User::ROLE_PROVIDER]);
 
-        $this->actingAs($user)->post('/provider/shop-settings', ['shipping_type' => 'flat', 'shipping_flat_rate' => 100])
+        $this->actingAs($user)->post('/provider/shop-settings/shipping', ['shipping_type' => 'flat', 'shipping_flat_rate' => 100])
             ->assertForbidden();
     }
 

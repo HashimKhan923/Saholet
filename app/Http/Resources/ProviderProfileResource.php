@@ -31,6 +31,8 @@ class ProviderProfileResource extends JsonResource
             'portfolio' => ProviderPortfolioPhotoResource::collection($this->whenLoaded('portfolioPhotos')),
             'shop' => [
                 'shop_name' => $this->shop_name ?: $this->business_name,
+                'shop_logo_url' => $this->shopLogoUrl(),
+                'products_count' => $this->whenCounted('products'),
                 'sells_products' => $this->canSellProducts(),
                 'offers_delivery' => $this->offersDelivery(),
                 'shipping_type' => $this->shipping_type,

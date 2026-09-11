@@ -15,7 +15,7 @@
     @endif
 
     <div class="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
-        <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">English</p>
+        <p class="mb-3 text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">English</p>
 
         <div>
             <label for="question_en" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Question</label>
@@ -37,7 +37,7 @@
     </div>
 
     <div class="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
-        <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">اردو (Urdu) <span class="normal-case text-slate-400">— optional, falls back to English</span></p>
+        <p class="mb-3 text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">اردو (Urdu) <span class="normal-case text-slate-400">— optional, falls back to English</span></p>
 
         <div>
             <label for="question_ur" class="block text-sm font-medium text-slate-700 dark:text-slate-300">سوال (Question)</label>

@@ -60,36 +60,36 @@
 
                 <dl class="mt-5 grid gap-x-8 gap-y-5 text-sm sm:grid-cols-2">
                     <div>
-                        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Category</dt>
+                        <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Category</dt>
                         <dd class="mt-1 font-medium text-slate-800 dark:text-slate-200">{{ $jobPost->service->category->name }}</dd>
                     </div>
                     <div>
-                        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Customer budget</dt>
+                        <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Customer budget</dt>
                         <dd class="mt-1 font-display text-lg font-extrabold text-brand-700 dark:text-brand-400">
                             {{ $jobPost->budget ? 'Rs. ' . number_format((float) $jobPost->budget, 0) : 'Open' }}
                         </dd>
                     </div>
                     <div>
-                        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Preferred date</dt>
+                        <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Preferred date</dt>
                         <dd class="mt-1 font-medium text-slate-800 dark:text-slate-200">{{ $jobPost->preferred_date?->format('D, d M Y') ?? 'Flexible' }}</dd>
                     </div>
                     <div>
-                        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">City</dt>
+                        <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">City</dt>
                         <dd class="mt-1 font-medium text-slate-800 dark:text-slate-200">{{ $jobPost->city }}</dd>
                     </div>
                     <div class="sm:col-span-2">
-                        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Address</dt>
+                        <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Address</dt>
                         <dd class="mt-1 font-medium text-slate-800 dark:text-slate-200">{{ $jobPost->address }}</dd>
                     </div>
                     <div class="sm:col-span-2">
-                        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Description</dt>
+                        <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Description</dt>
                         <dd class="mt-1 leading-relaxed text-slate-700 dark:text-slate-300">{{ $jobPost->description }}</dd>
                     </div>
                 </dl>
 
                 @if ($jobPost->photos->isNotEmpty())
                     <div class="mt-6 border-t-2 border-slate-100 pt-6 dark:border-slate-800">
-                        <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Photos from the customer</p>
+                        <p class="mb-3 text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Photos from the customer</p>
                         <x-photo-gallery :photos="$jobPost->photos" />
                     </div>
                 @endif

@@ -32,7 +32,7 @@
     @endif
 
     @if ($showBookingsSection)
-    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.bookings_section') }}</p>
+    <p class="mt-5 px-3 text-sm font-display font-bold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.bookings_section') }}</p>
     @endif
     @if (auth()->user()->hasPermission('bookings'))
     <x-portal-nav-link :href="route('admin.bookings.index')" :label="__('admin.nav.bookings')" :active="request()->routeIs('admin.bookings.*')">
@@ -61,7 +61,7 @@
     @endif
 
     @if ($showUsersSection)
-    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.users_section') }}</p>
+    <p class="mt-5 px-3 text-sm font-display font-bold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.users_section') }}</p>
     @endif
     @if (auth()->user()->hasPermission('providers'))
     <x-portal-nav-link :href="route('admin.providers.index')" :label="__('admin.nav.providers')" :active="request()->routeIs('admin.providers.*')" :badge="$sidebarPendingProviders ?: null">
@@ -85,7 +85,7 @@
     @endif
 
     @if ($showFinanceSection)
-    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.finance_section') }}</p>
+    <p class="mt-5 px-3 text-sm font-display font-bold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.finance_section') }}</p>
     @endif
     @if (auth()->user()->hasPermission('invoices'))
     <x-portal-nav-link :href="route('admin.invoices.index')" :label="__('admin.nav.invoices')" :active="request()->routeIs('admin.invoices.*')">
@@ -105,7 +105,7 @@
     @endif
 
     @if ($showTrustSection)
-    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.trust_section') }}</p>
+    <p class="mt-5 px-3 text-sm font-display font-bold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.trust_section') }}</p>
     @endif
     @if (auth()->user()->hasPermission('disputes'))
     <x-portal-nav-link :href="route('admin.disputes.index')" :label="__('admin.nav.disputes')" :active="request()->routeIs('admin.disputes.*')" :badge="$sidebarOpenDisputes ?: null">
@@ -119,7 +119,7 @@
     @endif
 
     @if ($showCatalogSection)
-    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.catalog_section') }}</p>
+    <p class="mt-5 px-3 text-sm font-display font-bold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.catalog_section') }}</p>
     @endif
     @if (auth()->user()->hasPermission('categories'))
     <x-portal-nav-link :href="route('admin.categories.index')" :label="__('admin.nav.categories')" :active="request()->routeIs('admin.categories.*')">
@@ -138,7 +138,7 @@
     @endif
 
     @if ($showContentSection)
-    <p class="mt-5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.content_section') }}</p>
+    <p class="mt-5 px-3 text-sm font-display font-bold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.nav.content_section') }}</p>
     @endif
     @if (auth()->user()->hasPermission('faqs'))
     <x-portal-nav-link :href="route('admin.faqs.index')" :label="__('admin.nav.faqs')" :active="request()->routeIs('admin.faqs.*')">

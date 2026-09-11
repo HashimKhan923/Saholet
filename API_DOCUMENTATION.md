@@ -498,9 +498,18 @@ Body: `address`, `city` (required), `latitude`, `longitude` (optional), `start_d
 
 Browsing is public (no auth) at top level, not under `/consumer`; cart/checkout/orders require the `consumer` role.
 
-**`GET /shop/products`** *(public)* — Query: `q`, `category` (id), `city`, `provider` (id, for one provider's own shop). Response: `{ "products": [...], "pagination": {...} }` — only active, in-an-approved-provider's-shop products.
+**`GET /shop/products`** *(public)* — Query: `q`, `category` (id), `city`, `provider` (id, for one provider's own shop). Response: `{ "products": [...], "pagination": {...} }` — only active, in-an-approved-provider's-shop products. This is the flat, all-shops-at-once listing; still live and still what `/shop/products/{id}` (below) belongs to, but the web app's main nav now points people at the shops directory first (below) instead of here.
 
 **`GET /shop/products/{id}`** *(public)* — `{ "product": {...}, "related_products": [...up to 4, same provider...] }`. `404` if inactive or the provider is no longer approved.
+
+**Shops directory** *(public)* — browse by shop first, then that shop's own products; this is what the web app's "Shops" nav item and homepage section use.
+
+| Method | Path | Query | Notes |
+|---|---|---|---|
+| GET | `/shops` | `q` (shop/business name), `city` | Every **approved** provider with **at least one active product**. `{ "shops": [...ProviderProfileResource...], "pagination": {...} }` |
+| GET | `/shops/{providerId}` | `q` (product name), `category` (id) | One shop's storefront. `404` if the provider isn't approved or has no active products. `{ "shop": {...ProviderProfileResource...}, "categories": [...CategoryResource...], "products": [...ProductResource...], "pagination": {...} }` |
+
+`categories` on the shop-show endpoint is scoped to only the categories **that shop actually stocks** (not every category site-wide) — use it directly to populate that shop's category filter dropdown, no client-side filtering needed. A shop's display name/logo are `shop.shop_name`/`shop.shop_logo_url` (see `ProviderProfileResource`, §7) — `shop_name` falls back to `business_name` and `shop_logo_url` is `null` until the provider uploads one (see `POST /provider/shop-profile`, §6).
 
 A product carries an optional sale price: `price` (regular), `discount_price` (nullable, must be lower than `price`), plus computed `has_discount`, `effective_price` (what's actually charged — always use this, never raw `price`, for any total/cart/order math), and `discount_percentage` (rounded int, `0` when there's no discount).
 
@@ -724,6 +733,8 @@ A provider must configure at least one fulfillment method — delivery (`shippin
 
 **`GET /shop-settings`** / **`PUT /shop-settings`** — Body (PUT): `shipping_type` (`flat`\|`percentage`\|`free`\|`null`, nullable), `shipping_flat_rate` (required if `shipping_type=flat`), `shipping_percentage` (required if `shipping_type=percentage`, 0–100), `pickup_enabled` (bool — when true, the provider's own `address`/`latitude`/`longitude` double as the pickup location shown to customers), `pickup_hours` (nullable string, e.g. `"Mon-Sat 9am-8pm"` — cleared automatically if `pickup_enabled` is false). Response: `{ "provider": {...} }` (see `shop` block in the provider resource, §7).
 
+**`POST /shop-profile`** — the shop's public identity, shown on the storefront (shop directory + shop page) — kept as its own endpoint/screen from `/shop-settings` above (fulfillment) since they're different concerns. Multipart when uploading a logo. Body: `shop_name` (nullable string, max 255 — falls back to `business_name` when blank), `logo` (nullable image: jpg/jpeg/png/webp, max 2MB), `remove_logo` (nullable bool — clears the current logo; ignored if `logo` is also present). Response: `{ "provider": {...} }`, same shape as `/shop-settings`.
+
 Shipping is intentionally simple and address-blind: a flat fee, a percentage of the order, or free — never priced by the customer's city or checked against a coverage map (that's the admin-side Geo-fencing feature, a separate, platform-wide "do we operate here at all" gate — see §4's Geo-fencing note). If a provider genuinely can't reach wherever an order needs to go, the expectation is they call the customer or cancel the order themselves, the same way a small local business would.
 
 | Method | Path | Body | Notes |
@@ -752,7 +763,7 @@ Drives an order through `pending` → `confirmed` → `ready` → `completed`, o
 
 | Method | Path | Body | Notes |
 |---|---|---|---|
-| GET | `/orders` | – | Query: `status` (`all`\|`pending`\|`confirmed`\|`ready`\|`completed`\|`cancelled`). `{ "orders": [...], "counts": {...}, "pagination": {...} }` |
+| GET | `/orders` | – | Query: `status` (`all`\|`pending`\|`confirmed`\|`ready`\|`completed`\|`cancelled`), `q` (searches order reference, customer name, customer email, and product name). `{ "orders": [...], "counts": {...}, "pagination": {...} }` |
 | GET | `/orders/{id}` | – | `{ "order": {...} }` |
 | POST | `/orders/{id}/confirm` | – | `pending` → `confirmed` |
 | POST | `/orders/{id}/ready` | `delivery_method` (optional free text, max 1000 chars — most local delivery here is a rider service (Bykea/InDrive/Yango) or the provider themselves, not a trackable courier waybill, so there's nothing to require or validate the shape of) | `confirmed` → `ready`. Ignored/cleared for a `pickup` order |
@@ -776,14 +787,14 @@ Quick field reference for nested objects that recur throughout the API.
   "services": [ {...ProviderServiceResource, when loaded...} ],
   "portfolio": [ {...ProviderPortfolioPhotoResource, when loaded...} ],
   "shop": {
-    "shop_name": "Test Pro", "sells_products": true, "offers_delivery": true,
+    "shop_name": "Test Pro", "shop_logo_url": null, "products_count": null, "sells_products": true, "offers_delivery": true,
     "shipping_type": "flat", "shipping_flat_rate": 250, "shipping_percentage": null,
     "pickup_enabled": true, "pickup_hours": "Mon-Sat 9am-8pm",
     "maps_url": "https://www.google.com/maps/search/?api=1&query=24.86,67.03"
   }
 }
 ```
-`status` ∈ `draft` \| `pending` \| `approved` \| `rejected`. `shop.sells_products` is true once at least one fulfillment method is configured (delivery or pickup) — that's the gate on whether this provider can have any product go live. `shop.maps_url` is `null` until the provider has a pinned `latitude`/`longitude` on their profile; `shop.pickup_hours` is free text, shown to a customer choosing self-pickup.
+`status` ∈ `draft` \| `pending` \| `approved` \| `rejected`. `shop.sells_products` is true once at least one fulfillment method is configured (delivery or pickup) — that's the gate on whether this provider can have any product go live. `shop.maps_url` is `null` until the provider has a pinned `latitude`/`longitude` on their profile; `shop.pickup_hours` is free text, shown to a customer choosing self-pickup. `shop.shop_logo_url` is `null` until the provider uploads a logo via `POST /provider/shop-profile` (§6) — an absolute URL when set, same pattern as `avatar_url`. `shop.products_count` is only populated on the `GET /shops` and `GET /shops/{providerId}` endpoints (§3) — it's `null` everywhere else this resource is used, since it requires a `withCount()` the other endpoints don't do.
 
 **ProductResource** — `{ "id","provider_profile_id","provider":{...ProviderProfileResource, when loaded...},"category":{...CategoryResource, when loaded...},"name","slug","description","price","stock_quantity","in_stock","sku","is_active","photos":[{"id","url","sort_order"}],"created_at" }`
 

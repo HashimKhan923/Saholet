@@ -20,7 +20,7 @@
         <div class="rounded-2xl border border-amber-200 bg-amber-50 p-6 dark:border-amber-900/60 dark:bg-amber-950/30">
             <h2 class="font-display text-base font-bold text-amber-900 dark:text-amber-300">Set up your shop first</h2>
             <p class="mt-1 text-sm text-amber-800 dark:text-amber-400/90">Configure delivery or pickup before customers can buy from you.</p>
-            <a href="{{ route('provider.shop-settings.edit') }}" class="btn-shine mt-4 inline-flex items-center rounded-xl bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-700">Go to shop settings</a>
+            <a href="{{ route('provider.shop-settings.shipping.edit') }}" class="btn-shine mt-4 inline-flex items-center rounded-xl bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-700">Go to shop settings</a>
         </div>
     @endif
 

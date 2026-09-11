@@ -79,7 +79,7 @@
 
             <div class="mt-5 overflow-x-auto">
                 <table class="min-w-full divide-y divide-slate-100 text-sm dark:divide-slate-800">
-                    <thead class="text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">
+                    <thead class="bg-slate-100 text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:bg-slate-800 dark:text-slate-100">
                         <tr>
                             <th class="py-2 pr-4">Page</th>
                             @foreach ($actionLabels as $label)
