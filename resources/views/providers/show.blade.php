@@ -150,7 +150,7 @@
                             </span>
                             <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">Products</h2>
                         </div>
-                        <a href="{{ route('shop.index', ['provider' => $provider->id]) }}" class="text-xs font-semibold text-brand-700 hover:text-brand-800 dark:text-brand-400">View all &rarr;</a>
+                        <a href="{{ route('shops.show', $provider) }}" class="text-xs font-semibold text-brand-700 hover:text-brand-800 dark:text-brand-400">View all &rarr;</a>
                     </div>
                     <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
                         @foreach ($provider->products as $product)

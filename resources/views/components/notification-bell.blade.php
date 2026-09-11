@@ -7,6 +7,7 @@
         window.__notifUnreadCount = {{ (int) ($unreadNotifications ?? 0) }};
         window.__notifSeed = {!! ($recentNotifications ?? collect())->toJson() !!};
         window.__notificationsReadAllUrl = @json(route('notifications.read-all'));
+        window.__notificationsPollUrl = @json(route('notifications.poll'));
         window.__vapidPublicKey = @json(config('notifications.channels.push.vapid_public_key'));
     </script>
     <div x-data="{

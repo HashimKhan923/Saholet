@@ -174,6 +174,101 @@
     </div>
 </section>
 
+@if ($shops->isNotEmpty())
+{{-- ======================================================== Shops --}}
+<section class="bg-white py-12 dark:bg-slate-900 sm:py-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="reveal max-w-4xl">
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent-600">{{ __('messages.nav.shops') }}</p>
+            <h2 class="mt-2 font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.shops_title') }}</h2>
+            <p class="mt-3 text-slate-600 dark:text-slate-400">{{ __('messages.landing.shops_sub') }}</p>
+        </div>
+
+        <div class="mt-10 grid grid-cols-2 gap-5 lg:grid-cols-4">
+            @foreach ($shops as $i => $shop)
+                <div class="reveal" style="--reveal-delay: {{ ($i % 4) * 70 }}ms">
+                    <x-shop-card :provider="$shop" />
+                </div>
+            @endforeach
+        </div>
+
+        <div class="reveal mt-8">
+            <a href="{{ route('shops.index') }}" class="btn-shine group inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
+                {{ __('messages.landing.browse_all_shops') }}
+                <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+        </div>
+    </div>
+</section>
+@endif
+
+{{-- ============================================= Make a shop & sell --}}
+<section class="bg-brand-50/60 py-16 dark:bg-slate-900/40 sm:py-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+            {{-- Left: content --}}
+            <div class="reveal {{ $isUrdu ? 'text-right' : '' }}">
+                <div class="mb-3 inline-flex items-center gap-2 {{ $isUrdu ? 'flex-row-reverse' : '' }}">
+                    <span class="h-0.5 w-5 rounded bg-brand-600"></span>
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-600 {{ $isUrdu ? 'font-urdu text-sm not-italic tracking-normal' : '' }}">{{ __('messages.landing.shop_join_eyebrow') }}</span>
+                </div>
+                <h2 class="mb-4 font-display text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.shop_join_title') }}</h2>
+                <p class="mb-8 leading-relaxed text-slate-500 dark:text-slate-400 {{ $isUrdu ? 'font-urdu text-lg leading-loose' : '' }}">{{ __('messages.landing.shop_join_sub') }}</p>
+
+                @php
+                    $shopBenefits = [
+                        ['icon' => 'box', 'tone' => 'green', 'title' => __('messages.landing.shop_join_b1_t'), 'desc' => __('messages.landing.shop_join_b1_d')],
+                        ['icon' => 'users', 'tone' => 'red', 'title' => __('messages.landing.shop_join_b2_t'), 'desc' => __('messages.landing.shop_join_b2_d')],
+                        ['icon' => 'truck', 'tone' => 'green', 'title' => __('messages.landing.shop_join_b3_t'), 'desc' => __('messages.landing.shop_join_b3_d')],
+                        ['icon' => 'rupee', 'tone' => 'red', 'title' => __('messages.landing.shop_join_b4_t'), 'desc' => __('messages.landing.shop_join_b4_d')],
+                    ];
+                @endphp
+
+                <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    @foreach ($shopBenefits as $b)
+                        <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-4 transition-colors hover:border-brand-400 dark:border-slate-800 dark:bg-slate-900 {{ $isUrdu ? 'flex-row-reverse' : '' }}">
+                            <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg {{ $b['tone'] === 'green' ? 'bg-brand-50 dark:bg-brand-950/50' : 'bg-accent-50 dark:bg-accent-950/40' }}">
+                                @switch($b['icon'])
+                                    @case('box')
+                                        <svg viewBox="0 0 24 24" class="h-4 w-4 {{ $b['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9l1.5-5h15L21 9M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9h18M9 13a3 3 0 0 0 6 0" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        @break
+                                    @case('users')
+                                        <svg viewBox="0 0 24 24" class="h-4 w-4 {{ $b['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 2.7-5 6-5s6 2 6 5M16 11h5M18.5 8.5v5" stroke-linecap="round"/></svg>
+                                        @break
+                                    @case('truck')
+                                        <svg viewBox="0 0 24 24" class="h-4 w-4 {{ $b['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7z" stroke-linejoin="round"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>
+                                        @break
+                                    @case('rupee')
+                                        <span class="text-sm font-bold leading-none {{ $b['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}">₨</span>
+                                        @break
+                                @endswitch
+                            </span>
+                            <div class="{{ $isUrdu ? 'text-right' : '' }}">
+                                <p class="mb-0.5 text-xs font-semibold text-slate-900 dark:text-white {{ $isUrdu ? 'font-urdu text-sm' : '' }}">{{ $b['title'] }}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 {{ $isUrdu ? 'font-urdu leading-loose' : '' }}">{{ $b['desc'] }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="flex flex-col items-start gap-3 sm:flex-row sm:items-center {{ $isUrdu ? 'sm:flex-row-reverse' : '' }}">
+                    <a href="{{ route('register') }}" class="btn-shine inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3.5 font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700 {{ $isUrdu ? 'font-urdu flex-row-reverse text-base' : '' }}">
+                        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l1.5-5h15L21 9M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9h18M9 13a3 3 0 0 0 6 0" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        {{ __('messages.landing.shop_join_cta') }}
+                    </a>
+                    <span class="text-xs text-slate-400 {{ $isUrdu ? 'font-urdu text-sm' : '' }}">{{ __('messages.landing.shop_join_cta_sub') }}</span>
+                </div>
+            </div>
+
+            {{-- Right: image --}}
+            <div class="relative">
+                <div class="reveal overflow-hidden rounded-3xl shadow-xl">
+                    <img src="{{ asset('images/JoinBanner.jpeg') }}?v={{ filemtime(public_path('images/JoinBanner.jpeg')) }}" alt="Sahoulat shop owner listing products" class="w-full object-cover">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 {{-- ================================================= Three flows band --}}
 <section class="border-t-2 border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">

@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Payment;
 use App\Services\InvoiceService;
 use App\Services\WalletService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;

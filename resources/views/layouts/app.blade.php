@@ -149,7 +149,7 @@
             {{-- Desktop nav --}}
             <nav class="hidden items-center gap-6 md:flex">
                 <a href="{{ route('services.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('services.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.services') }}</a>
-                <a href="{{ route('shop.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('shop.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">Products</a>
+                <a href="{{ route('shops.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('shops.*', 'shop.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.shops') }}</a>
                 <a href="{{ route('providers.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('providers.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.providers.nav_label') }}</a>
                 <a href="{{ route('careers.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('careers.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.careers') }}</a>
                 <a href="{{ route('subscription-plans.index') }}" class="nav-underline text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 {{ request()->routeIs('subscription-plans.*') ? '!text-brand-700 dark:!text-brand-400' : '' }}">{{ __('messages.nav.plans') }}</a>
@@ -238,7 +238,7 @@
              class="border-t-2 border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 md:hidden">
             <nav class="space-y-1 px-4 py-3">
                 <a href="{{ route('services.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.services') }}</a>
-                <a href="{{ route('shop.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">Products</a>
+                <a href="{{ route('shops.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.shops') }}</a>
                 <a href="{{ route('providers.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.providers.nav_label') }}</a>
                 <a href="{{ route('careers.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.careers') }}</a>
                 <a href="{{ route('subscription-plans.index') }}" @click="open = false" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('messages.nav.plans') }}</a>
@@ -334,7 +334,7 @@
                     <p class="text-sm font-bold uppercase text-white dark:text-white">{{ __('messages.nav.services') }}</p>
                     <nav class="mt-4 space-y-2.5">
                         <a href="{{ route('services.index') }}" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">{{ __('messages.landing.browse_all') }}</a>
-                        <a href="{{ route('shop.index') }}" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">Products</a>
+                        <a href="{{ route('shops.index') }}" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">{{ __('messages.nav.shops') }}</a>
                         <a href="{{ route('providers.index') }}" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">{{ __('messages.providers.nav_label') }}</a>
                         <a href="{{ route('careers.index') }}" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">{{ __('messages.nav.careers') }}</a>
                         <a href="{{ route('subscription-plans.index') }}" class="block text-sm text-white transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400">{{ __('messages.nav.plans') }}</a>

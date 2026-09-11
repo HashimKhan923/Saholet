@@ -4,6 +4,7 @@ return [
     // Chrome
     'nav' => [
         'services' => 'Services',
+        'shops' => 'Shops',
         'careers' => 'Careers',
         'plans' => 'Maintenance Plans',
         'how' => 'How it works',
@@ -35,6 +36,9 @@ return [
         'services_sub' => 'From everyday repairs to specialised installations we cover every corner of your home.',
         'services_count' => '{0} No services yet|{1} :count service|[2,*] :count services',
         'browse_all' => 'Browse all services',
+        'shops_title' => 'Shop From Trusted Local Businesses',
+        'shops_sub' => 'Genuine parts and everyday essentials, delivered or ready for pickup — sold directly by verified shops on Sahoulat.',
+        'browse_all_shops' => 'View all shops',
         'how_eyebrow' => 'How it works',
         'how_title' => 'How it will work',
         'how_sub' => 'Four simple steps from problem to solved.',
@@ -151,7 +155,7 @@ return [
         // Join as Pro
         'join_eyebrow' => 'For Service Professionals',
         'join_title' => 'Grow Your Business with Sahoulat',
-        'join_sub' => 'Are you a skilled electrician, plumber, carpenter, AC technician or any other home service professional? Join Sahoulat and get more customers, better earnings, and a trusted brand behind you.',
+        'join_sub' => 'Are you a skilled electrician, plumber, carpenter, AC technician or any other home service professional? Join Sahoulat and get more customers, better earnings, and a trusted brand behind you — or open your own shop to list products and sell directly to customers.',
         'join_b1_t' => 'Free Registration',
         'join_b1_d' => 'Sign up at zero cost. No joining fee, no hidden charges.',
         'join_b2_t' => 'More Work, More Earn',
@@ -162,6 +166,21 @@ return [
         'join_b4_d' => 'Accumulate ratings and reviews to grow faster.',
         'join_cta' => 'Apply to Join as a Service Pro',
         'join_cta_sub' => 'Takes less than 5 minutes',
+
+        // Make a shop & sell products
+        'shop_join_eyebrow' => 'For Shop Owners',
+        'shop_join_title' => 'Make Your Shop & Start Earning',
+        'shop_join_sub' => 'Do you sell hardware, parts, or everyday essentials? Open your own shop on Sahoulat, list your products, and reach customers actively looking to buy — no technical skills required.',
+        'shop_join_b1_t' => 'Free to Set Up',
+        'shop_join_b1_d' => 'List your first product in minutes, at zero cost.',
+        'shop_join_b2_t' => 'Reach More Customers',
+        'shop_join_b2_d' => 'Get discovered by shoppers browsing Sahoulat every day.',
+        'shop_join_b3_t' => 'Delivery or Pickup',
+        'shop_join_b3_d' => 'Offer delivery, in-store pickup, or both — you decide.',
+        'shop_join_b4_t' => 'Fast, Fair Payouts',
+        'shop_join_b4_d' => 'Track every order and get paid with low commission.',
+        'shop_join_cta' => 'Start Selling on Sahoulat',
+        'shop_join_cta_sub' => 'Takes less than 5 minutes',
     ],
 
     // Public provider directory

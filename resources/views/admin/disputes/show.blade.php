@@ -35,7 +35,7 @@
 
                 @if ($dispute->photos->isNotEmpty())
                     <div class="mt-4">
-                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Photo evidence</p>
+                        <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Photo evidence</p>
                         <div class="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
                             @foreach ($dispute->photos as $photo)
                                 <a href="{{ $photo->url() }}" target="_blank" rel="noopener" class="group relative aspect-square overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">

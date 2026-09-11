@@ -11,7 +11,7 @@
         <div class="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-14 text-center dark:border-slate-700 dark:bg-slate-900">
             <svg viewBox="0 0 24 24" class="mx-auto h-10 w-10 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">Your cart is empty.</p>
-            <a href="{{ route('shop.index') }}" class="mt-5 inline-flex items-center rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Browse the shop</a>
+            <a href="{{ route('shops.index') }}" class="mt-5 inline-flex items-center rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Browse the shop</a>
         </div>
     @else
         @php

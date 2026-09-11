@@ -53,24 +53,24 @@
 
                     @foreach ($rows as [$label, $value, $wide])
                         <div>
-                            <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ $label }}</dt>
+                            <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">{{ $label }}</dt>
                             <dd class="mt-1 font-medium text-slate-800 dark:text-slate-200">{{ $value }}</dd>
                         </div>
                     @endforeach
 
                     <div>
-                        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Price</dt>
+                        <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Price</dt>
                         <dd class="mt-1 font-display text-lg font-extrabold text-brand-700 dark:text-brand-400">Rs. {{ number_format((float) $booking->price, 0) }}</dd>
                     </div>
 
                     <div class="sm:col-span-2">
-                        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Service address</dt>
+                        <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Service address</dt>
                         <dd class="mt-1 font-medium text-slate-800 dark:text-slate-200">{{ $booking->address }}</dd>
                     </div>
 
                     @if ($booking->notes)
                         <div class="sm:col-span-2">
-                            <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Customer notes</dt>
+                            <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Customer notes</dt>
                             <dd class="mt-1 rounded-xl bg-slate-50 px-4 py-3 text-slate-700 dark:bg-slate-800 dark:text-slate-300">{{ $booking->notes }}</dd>
                         </div>
                     @endif
@@ -95,14 +95,14 @@
                     @endif
 
                     @if ($booking->beforePhotos->isNotEmpty())
-                        <p class="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400">Before</p>
+                        <p class="mt-4 text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Before</p>
                         <div class="mt-2">
                             <x-photo-grid :photos="$booking->beforePhotos->map(fn ($p) => ['url' => $p->url()])->all()" />
                         </div>
                     @endif
 
                     @if ($booking->afterPhotos->isNotEmpty())
-                        <p class="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400">After</p>
+                        <p class="mt-4 text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">After</p>
                         <div class="mt-2">
                             <x-photo-grid :photos="$booking->afterPhotos->map(fn ($p) => ['url' => $p->url()])->all()" />
                         </div>

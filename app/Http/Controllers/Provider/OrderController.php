@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Provider;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Services\OrderFulfillmentService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -24,11 +25,14 @@ class OrderController extends Controller
             $filter = 'all';
         }
 
+        $search = trim((string) $request->query('q', ''));
+
         if (! $profile) {
             return view('provider.orders.index', [
                 'orders' => Order::whereRaw('1 = 0')->paginate(12),
                 'counts' => array_fill_keys(self::FILTERS, 0),
                 'filter' => $filter,
+                'search' => $search,
             ]);
         }
 
@@ -49,9 +53,17 @@ class OrderController extends Controller
             $query->where('status', $filter);
         }
 
+        if ($search !== '') {
+            $query->where(function (Builder $q) use ($search) {
+                $q->where('reference', 'like', "%{$search}%")
+                    ->orWhereHas('consumer', fn (Builder $c) => $c->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%"))
+                    ->orWhereHas('items', fn (Builder $i) => $i->where('product_name', 'like', "%{$search}%"));
+            });
+        }
+
         $orders = $query->latest()->paginate(12)->withQueryString();
 
-        return view('provider.orders.index', compact('orders', 'counts', 'filter'));
+        return view('provider.orders.index', compact('orders', 'counts', 'filter', 'search'));
     }
 
     public function show(Request $request, Order $order): View

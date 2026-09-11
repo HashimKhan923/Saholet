@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BookingRoomController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController as ShopProductController;
+use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\DeviceTokenController;
 use App\Http\Controllers\Api\DisputeController;
 use App\Http\Controllers\Api\NotificationController;
@@ -43,6 +44,7 @@ use App\Http\Controllers\Api\Provider\PortfolioController as ProviderPortfolioCo
 use App\Http\Controllers\Api\Provider\ProductController as ProviderProductController;
 use App\Http\Controllers\Api\Provider\ProviderServiceController;
 use App\Http\Controllers\Api\Provider\ShopSettingsController as ProviderShopSettingsController;
+use App\Http\Controllers\Api\Provider\ShopProfileController as ProviderShopProfileController;
 use App\Http\Controllers\Api\Provider\WalletController as ProviderWalletController;
 use App\Http\Controllers\Api\Provider\WithdrawalController as ProviderWithdrawalController;
 use Illuminate\Support\Facades\Route;
@@ -77,6 +79,10 @@ Route::get('providers/{provider}/services/{service}/availability', [Availability
 
 Route::get('shop/products', [ShopProductController::class, 'index'])->name('api.shop.products.index');
 Route::get('shop/products/{product}', [ShopProductController::class, 'show'])->name('api.shop.products.show');
+
+// Shops directory — browse by shop, then that shop's own storefront (mirrors the web /shops pages).
+Route::get('shops', [ShopController::class, 'index'])->name('api.shops.index');
+Route::get('shops/{provider}', [ShopController::class, 'show'])->name('api.shops.show');
 
 Route::get('subscription-plans', [SubscriptionPlanController::class, 'index'])->name('api.subscription-plans.index');
 Route::get('cities', [ServiceAreaController::class, 'index'])->name('api.cities.index');
@@ -224,6 +230,9 @@ Route::middleware(['auth:sanctum', 'api.not.suspended'])->group(function () {
 
         Route::get('shop-settings', [ProviderShopSettingsController::class, 'show'])->name('shop-settings.show');
         Route::put('shop-settings', [ProviderShopSettingsController::class, 'update'])->name('shop-settings.update');
+
+        // Multipart (logo upload) — POST, not PUT, per this app's upload convention.
+        Route::post('shop-profile', [ProviderShopProfileController::class, 'update'])->name('shop-profile.update');
 
         Route::get('products', [ProviderProductController::class, 'index'])->name('products.index');
         Route::post('products', [ProviderProductController::class, 'store'])->name('products.store');

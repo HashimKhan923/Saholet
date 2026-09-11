@@ -56,7 +56,7 @@
         @else
             <div class="mt-4 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
                 <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
-                    <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:bg-slate-800 dark:text-slate-100">
+                    <thead class="bg-slate-100 text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:bg-slate-800 dark:text-slate-100">
                         <tr>
                             <th class="px-4 py-2.5">Provider</th>
                             <th class="px-4 py-2.5">Disputes</th>

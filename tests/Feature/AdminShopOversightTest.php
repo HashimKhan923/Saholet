@@ -59,6 +59,24 @@ class AdminShopOversightTest extends TestCase
         $this->actingAs($admin)->get("/admin/orders/{$order->id}")->assertOk();
     }
 
+    public function test_admin_can_search_orders_by_product_name(): void
+    {
+        $admin = $this->admin();
+        $provider = ProviderProfile::factory()->sellsProducts()->create();
+
+        $match = \App\Models\Order::factory()->for($provider, 'providerProfile')->create(['reference' => 'ORD-MATCHIT']);
+        $match->items()->create(['product_name' => 'Pipe Wrench', 'unit_price' => 100, 'quantity' => 1, 'line_total' => 100]);
+
+        $other = \App\Models\Order::factory()->for($provider, 'providerProfile')->create(['reference' => 'ORD-OTHERONE']);
+        $other->items()->create(['product_name' => 'Screwdriver', 'unit_price' => 100, 'quantity' => 1, 'line_total' => 100]);
+
+        $response = $this->actingAs($admin)->get('/admin/orders?q=Wrench');
+
+        $response->assertOk();
+        $response->assertSee('ORD-MATCHIT');
+        $response->assertDontSee('ORD-OTHERONE');
+    }
+
     public function test_staff_without_the_products_permission_cannot_moderate_products(): void
     {
         $staff = User::create([

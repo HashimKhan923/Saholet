@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class ProviderProfile extends Model
 {
@@ -44,6 +45,7 @@ class ProviderProfile extends Model
         'suspension_reason',
         'commission_rate',
         'shop_name',
+        'shop_logo',
         'shipping_type',
         'shipping_flat_rate',
         'shipping_percentage',
@@ -141,6 +143,17 @@ class ProviderProfile extends Model
     public function coupons(): HasMany
     {
         return $this->hasMany(Coupon::class);
+    }
+
+    /** The public-facing shop name — falls back to the business name if not set. */
+    public function shopName(): string
+    {
+        return $this->shop_name ?: $this->business_name;
+    }
+
+    public function shopLogoUrl(): ?string
+    {
+        return $this->shop_logo ? Storage::disk('public')->url($this->shop_logo) : null;
     }
 
     /** Google Maps link to this provider's pinned location, for a customer choosing self-pickup. */

@@ -25,26 +25,26 @@
     @endif
 
     {{-- ═══ Hero ═══ --}}
-    <section class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-8">
-        <div class="pointer-events-none absolute -end-20 -top-20 h-64 w-64 rounded-full bg-brand-500/10 blur-3xl"></div>
+    <section class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-white to-brand-200 shadow-lg dark:from-slate-900 dark:to-brand-900">
+        <div class="absolute inset-0 bg-dot-grid opacity-40"></div>
 
-        <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div class="relative flex flex-col gap-6 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
             <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">{{ now()->format('l, d M Y') }}</p>
+                    <span class="inline-flex items-center rounded-full bg-brand-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.15em] text-brand-700 ring-1 ring-inset ring-brand-100 dark:bg-slate-800 dark:text-brand-400 dark:ring-slate-700">{{ now()->format('l, d M Y') }}</span>
                     @if ($approved)
-                        <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-2.5 py-0.5 text-[11px] font-bold text-brand-700 dark:bg-brand-950/50 dark:text-brand-400">
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-sm">
                             <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12.5 10 17l9-10" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             {{ __('provider.dashboard.verified') }}
                         </span>
                     @endif
                 </div>
 
-                <h1 class="mt-2 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+                <h1 class="mt-3 font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
                     {{ __('provider.dashboard.' . $greetingKey) }}, {{ auth()->user()->name }}
                 </h1>
 
-                <p class="mt-2 max-w-prose text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+                <p class="mt-2 max-w-prose text-base leading-relaxed text-slate-600 dark:text-slate-400">
                     @if ($approved)
                         {{ __('provider.dashboard.matching_services_line', [
                             'active' => trans_choice('provider.dashboard.active_bookings_choice', $activeBookings, ['count' => $activeBookings]),
@@ -56,8 +56,10 @@
                 </p>
 
                 @if ($approved && (float) $profile->rating_avg > 0)
-                    <div class="mt-3">
-                        <x-rating-stars :rating="$profile->rating_avg" :count="$profile->reviews_count" />
+                    @php $rounded = (int) round($profile->rating_avg); @endphp
+                    <div class="mt-3 flex items-center gap-1.5">
+                        <span class="text-sm tracking-tight text-amber-500">{{ str_repeat('★', $rounded) }}{{ str_repeat('☆', 5 - $rounded) }}</span>
+                        <span class="text-sm text-slate-500 dark:text-slate-400">({{ $profile->reviews_count }})</span>
                     </div>
                 @endif
             </div>
@@ -71,6 +73,22 @@
                 </div>
             @endif
         </div>
+
+        @if ($approved)
+        <div class="relative border-t border-brand-100 bg-white px-6 py-6 dark:border-slate-800 dark:bg-slate-900 sm:px-8">
+            <div class="grid gap-4 sm:grid-cols-3">
+                <x-dashboard-stat :label="__('provider.dashboard.available_balance')" value="Rs. {{ number_format($walletAvailable, 0) }}" :href="route('provider.wallet.index')">
+                    <svg viewBox="0 0 24 24" class="h-full w-full" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h2M3 10h18" stroke-linecap="round"/></svg>
+                </x-dashboard-stat>
+                <x-dashboard-stat :label="__('provider.dashboard.jobs_completed')" :value="$jobsCompleted" :href="route('provider.bookings.index')">
+                    <svg viewBox="0 0 24 24" class="h-full w-full" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 7 9.5 17.5 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </x-dashboard-stat>
+                <x-dashboard-stat :label="__('provider.dashboard.average_rating')" value="{{ number_format((float) $profile->rating_avg, 1) }} / 5">
+                    <svg viewBox="0 0 20 20" class="h-full w-full" fill="currentColor"><path d="M10 1.6l2.5 5.1 5.6.8-4 3.9 1 5.6L10 14.4 5 17l1-5.6-4-3.9 5.6-.8L10 1.6z"/></svg>
+                </x-dashboard-stat>
+            </div>
+        </div>
+        @endif
     </section>
 
     {{-- ═══ Verification state (unverified only) ═══ --}}
@@ -82,7 +100,7 @@
                         <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </span>
                     <div>
-                        <h2 class="font-display text-lg font-bold text-amber-900 dark:text-amber-300">{{ __('provider.dashboard.app_under_review_title') }}</h2>
+                        <h2 class="font-display text-xl font-bold text-amber-900 dark:text-amber-300">{{ __('provider.dashboard.app_under_review_title') }}</h2>
                         <p class="mt-1 text-sm text-amber-800 dark:text-amber-400/90">{{ __('provider.dashboard.app_under_review_desc') }}</p>
                         <a href="{{ route('provider.onboarding') }}" class="mt-3 inline-block text-sm font-semibold text-amber-900 underline dark:text-amber-300">{{ __('provider.dashboard.view_submission') }}</a>
                     </div>
@@ -95,7 +113,7 @@
                         <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7l10 10M17 7 7 17" stroke-linecap="round"/></svg>
                     </span>
                     <div>
-                        <h2 class="font-display text-lg font-bold text-red-900 dark:text-red-300">{{ __('provider.dashboard.app_needs_changes_title') }}</h2>
+                        <h2 class="font-display text-xl font-bold text-red-900 dark:text-red-300">{{ __('provider.dashboard.app_needs_changes_title') }}</h2>
                         @if ($profile?->rejection_reason)
                             <p class="mt-1 text-sm text-red-800 dark:text-red-400/90"><span class="font-semibold">{{ __('provider.dashboard.reason_label') }}</span> {{ $profile->rejection_reason }}</p>
                         @endif
@@ -111,7 +129,7 @@
                             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 5 6v5c0 4.5 3.2 7.8 8 9 4.8-1.2 8-4.5 8-9V6l-8-3z" stroke-linejoin="round"/><path d="M9 12.5l2 2 4-4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                         <div>
-                            <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.complete_verification_title') }}</h2>
+                            <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.complete_verification_title') }}</h2>
                             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('provider.dashboard.complete_verification_desc') }}</p>
                         </div>
                     </div>
@@ -149,7 +167,7 @@
 
         {{-- ═══ Performance ═══ --}}
         <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.performance_title') }}</h2>
+            <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.performance_title') }}</h2>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('provider.dashboard.performance_subtitle') }}</p>
 
             <div class="mt-5 grid gap-6 sm:grid-cols-3">
@@ -163,7 +181,7 @@
                 @foreach ($metrics as [$label, $val, $unit, $hint, $bar])
                     <div>
                         <div class="flex items-baseline justify-between">
-                            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ $label }}</p>
+                            <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">{{ $label }}</p>
                             <p class="font-display text-lg font-extrabold text-slate-900 dark:text-white">
                                 {{ is_null($val) ? '—' : $val . $unit }}
                             </p>
@@ -177,7 +195,7 @@
 
                 <div>
                     <div class="flex items-baseline justify-between">
-                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ __('provider.dashboard.response_time') }}</p>
+                        <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">{{ __('provider.dashboard.response_time') }}</p>
                         <p class="font-display text-lg font-extrabold text-slate-900 dark:text-white">
                             @if (is_null($responseMinutes))
                                 —
@@ -206,7 +224,7 @@
                 <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
                         <div>
-                            <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.todays_schedule') }}</h2>
+                            <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.todays_schedule') }}</h2>
                             <p class="mt-0.5 text-xs text-slate-400">{{ now()->format('D, d M') }}</p>
                         </div>
                         <a href="{{ route('provider.bookings.index') }}" class="text-sm font-semibold text-brand-700 transition hover:text-brand-800 dark:text-brand-400">{{ __('provider.dashboard.all_bookings') }}</a>
@@ -250,7 +268,7 @@
                 <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between">
                         <div>
-                            <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.earnings_title') }}</h2>
+                            <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.earnings_title') }}</h2>
                             <p class="mt-0.5 text-xs text-slate-400">{{ __('provider.dashboard.earnings_subtitle') }}</p>
                         </div>
                         <p class="font-display text-xl font-extrabold text-brand-700 dark:text-brand-400">Rs. {{ number_format($earningsTotal, 0) }}</p>
@@ -312,7 +330,7 @@
                 {{-- Top selling products --}}
                 @if ($topSellingProducts->isNotEmpty())
                     <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.top_selling_title') }}</h2>
+                        <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.top_selling_title') }}</h2>
                         <p class="mt-0.5 text-xs text-slate-400">{{ __('provider.dashboard.top_selling_desc') }}</p>
                         <ul class="mt-4 divide-y divide-slate-100 dark:divide-slate-800">
                             @foreach ($topSellingProducts as $product)
@@ -332,7 +350,7 @@
                 {{-- Activity feed --}}
                 <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="border-b border-slate-100 px-5 py-4 dark:border-slate-800">
-                        <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.recent_activity') }}</h2>
+                        <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.recent_activity') }}</h2>
                     </div>
 
                     @if ($activity->isEmpty())
@@ -378,7 +396,7 @@
 
                 {{-- Quick actions --}}
                 <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.quick_actions') }}</h2>
+                    <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.quick_actions') }}</h2>
 
                     @php
                         $actions = [

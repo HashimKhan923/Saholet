@@ -10,15 +10,15 @@
     <div class="mt-6 grid grid-cols-3 gap-3 sm:max-w-md">
         <div class="rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <p class="font-display text-xl font-extrabold text-slate-900 dark:text-white">{{ $products->total() }}</p>
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Products</p>
+            <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Products</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <p class="font-display text-xl font-extrabold text-slate-900 dark:text-white">{{ $orders->total() }}</p>
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Orders</p>
+            <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Orders</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <p class="font-display text-xl font-extrabold text-slate-900 dark:text-white">{{ $ratingCount > 0 ? number_format((float) $ratingAvg, 1) : '—' }}</p>
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Rating ({{ $ratingCount }})</p>
+            <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Rating ({{ $ratingCount }})</p>
         </div>
     </div>
 
@@ -30,7 +30,7 @@
         @else
             <div class="mt-4 overflow-x-auto">
                 <table class="min-w-full divide-y divide-slate-100 text-sm dark:divide-slate-800">
-                    <thead class="text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">
+                    <thead class="bg-slate-100 text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:bg-slate-800 dark:text-slate-100">
                         <tr>
                             <th class="py-2 pr-3">Product</th>
                             <th class="py-2 pr-3">Price</th>
@@ -90,7 +90,7 @@
         @else
             <div class="mt-4 overflow-x-auto">
                 <table class="min-w-full divide-y divide-slate-100 text-sm dark:divide-slate-800">
-                    <thead class="text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:text-slate-100">
+                    <thead class="bg-slate-100 text-left text-xs font-semibold uppercase tracking-wide text-slate-900 dark:bg-slate-800 dark:text-slate-100">
                         <tr>
                             <th class="py-2 pr-3">Reference</th>
                             <th class="py-2 pr-3">Customer</th>

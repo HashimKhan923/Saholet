@@ -9,7 +9,7 @@
             <a href="{{ route('consumer.dashboard') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Dashboard</a>
             <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">My orders</h1>
         </div>
-        <a href="{{ route('shop.index') }}" class="inline-flex items-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Browse products</a>
+        <a href="{{ route('shops.index') }}" class="inline-flex items-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Browse products</a>
     </div>
 
     <div class="mt-8 space-y-3">
@@ -37,7 +37,7 @@
             <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-700 dark:bg-slate-900">
                 <p class="font-display text-lg font-bold text-slate-900 dark:text-white">No orders yet</p>
                 <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">Buy parts and products from Sahoulat's providers.</p>
-                <a href="{{ route('shop.index') }}" class="mt-4 inline-flex items-center rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700">Browse the shop</a>
+                <a href="{{ route('shops.index') }}" class="mt-4 inline-flex items-center rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700">Browse the shop</a>
             </div>
         @endforelse
     </div>

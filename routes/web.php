@@ -37,6 +37,7 @@ use App\Http\Controllers\BookingRoomController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\CategoryController as PublicCategoryController;
 use App\Http\Controllers\ProductController as ShopProductController;
+use App\Http\Controllers\ShopController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CareerResumeController;
 use App\Http\Controllers\Consumer\AddressController as ConsumerAddressController;
@@ -73,7 +74,9 @@ use App\Http\Controllers\Provider\PortfolioController as ProviderPortfolioContro
 use App\Http\Controllers\Provider\CouponController as ProviderCouponController;
 use App\Http\Controllers\Provider\OrderController as ProviderOrderController;
 use App\Http\Controllers\Provider\ProductController as ProviderProductController;
-use App\Http\Controllers\Provider\ShopSettingsController as ProviderShopSettingsController;
+use App\Http\Controllers\Provider\ShopProfileController as ProviderShopProfileController;
+use App\Http\Controllers\Provider\ShopShippingController as ProviderShopShippingController;
+use App\Http\Controllers\Provider\ShopPickupController as ProviderShopPickupController;
 use App\Http\Controllers\Provider\ProviderServiceController;
 use App\Http\Controllers\Provider\PayoutMethodController as ProviderPayoutMethodController;
 use App\Http\Controllers\Provider\WalletController as ProviderWalletController;
@@ -107,8 +110,16 @@ Route::get('providers/{provider}', [ProviderDirectoryController::class, 'show'])
 // Public shop (products) — deliberately separate from the service/category
 // pages above: a product click goes straight to a buyable item, a service
 // click goes to a provider-selection list, so they don't share one page.
+// shop.index (the flat, all-shops product grid) is no longer linked from the
+// main nav — browsing now starts at the Shops directory below — but the route
+// stays live since shop.show (the product detail page) is still linked from
+// everywhere (cart, wishlist, shop cards) and shares this controller.
 Route::get('shop', [ShopProductController::class, 'index'])->name('shop.index');
 Route::get('shop/{product}', [ShopProductController::class, 'show'])->name('shop.show');
+
+// Public shops directory — browse by shop, then that shop's own storefront.
+Route::get('shops', [ShopController::class, 'index'])->name('shops.index');
+Route::get('shops/{provider}', [ShopController::class, 'show'])->name('shops.show');
 
 // Public careers (recruitment) board
 Route::get('careers', [CareerController::class, 'index'])->name('careers.index');
@@ -154,6 +165,7 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
 
     // Notifications (all roles)
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('notifications/poll', [NotificationController::class, 'poll'])->name('notifications.poll');
     Route::post('notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
     Route::post('notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
 
@@ -309,9 +321,15 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
         Route::post('portfolio', [ProviderPortfolioController::class, 'store'])->name('portfolio.store');
         Route::delete('portfolio/{photo}', [ProviderPortfolioController::class, 'destroy'])->name('portfolio.destroy');
 
-        // Shop: shipping/pickup settings + product catalog.
-        Route::get('shop-settings', [ProviderShopSettingsController::class, 'edit'])->name('shop-settings.edit');
-        Route::post('shop-settings', [ProviderShopSettingsController::class, 'update'])->name('shop-settings.update');
+        // Shop: profile (name + logo), shipping and pickup settings, each its own page.
+        Route::get('shop-settings/profile', [ProviderShopProfileController::class, 'edit'])->name('shop-settings.profile.edit');
+        Route::post('shop-settings/profile', [ProviderShopProfileController::class, 'update'])->name('shop-settings.profile.update');
+
+        Route::get('shop-settings/shipping', [ProviderShopShippingController::class, 'edit'])->name('shop-settings.shipping.edit');
+        Route::post('shop-settings/shipping', [ProviderShopShippingController::class, 'update'])->name('shop-settings.shipping.update');
+
+        Route::get('shop-settings/pickup', [ProviderShopPickupController::class, 'edit'])->name('shop-settings.pickup.edit');
+        Route::post('shop-settings/pickup', [ProviderShopPickupController::class, 'update'])->name('shop-settings.pickup.update');
 
         Route::get('products', [ProviderProductController::class, 'index'])->name('products.index');
         Route::get('products/create', [ProviderProductController::class, 'create'])->name('products.create');

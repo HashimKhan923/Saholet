@@ -4,7 +4,7 @@
 @section('page_title', 'Edit product')
 
 @section('content')
-<section class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+<section class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
     <a href="{{ route('provider.products.index') }}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">
         <svg viewBox="0 0 24 24" class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Products

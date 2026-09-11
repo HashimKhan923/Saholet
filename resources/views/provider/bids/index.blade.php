@@ -30,19 +30,19 @@
     @if ($counts['all'] > 0)
         <div class="grid gap-4 sm:grid-cols-3">
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">In the pipeline</p>
+                <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">In the pipeline</p>
                 <p class="mt-1 font-display text-2xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($pipeline, 0) }}</p>
                 <p class="mt-1 text-xs text-slate-400">{{ $counts['pending'] }} pending {{ \Illuminate\Support\Str::plural('bid', $counts['pending']) }}</p>
             </div>
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Win rate</p>
+                <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Win rate</p>
                 <p class="mt-1 font-display text-2xl font-extrabold text-slate-900 dark:text-white">{{ is_null($winRate) ? '—' : $winRate . '%' }}</p>
                 <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                     <div class="h-full rounded-full bg-brand-500 transition-[width] duration-700 ease-out" style="width: {{ (int) ($winRate ?? 0) }}%"></div>
                 </div>
             </div>
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Jobs won</p>
+                <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Jobs won</p>
                 <p class="mt-1 font-display text-2xl font-extrabold text-brand-700 dark:text-brand-400">{{ $counts['accepted'] }}</p>
                 <p class="mt-1 text-xs text-slate-400">out of {{ $counts['all'] }} {{ \Illuminate\Support\Str::plural('bid', $counts['all']) }} placed</p>
             </div>

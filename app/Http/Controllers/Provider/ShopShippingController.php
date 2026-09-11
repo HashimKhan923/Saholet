@@ -10,13 +10,13 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
-class ShopSettingsController extends Controller
+class ShopShippingController extends Controller
 {
     public function edit(Request $request): View
     {
         $profile = $this->profileFor($request);
 
-        return view('provider.shop-settings', compact('profile'));
+        return view('provider.shop-settings.shipping', compact('profile'));
     }
 
     public function update(Request $request): RedirectResponse
@@ -27,19 +27,15 @@ class ShopSettingsController extends Controller
             'shipping_type' => ['nullable', Rule::in(['flat', 'percentage', 'free'])],
             'shipping_flat_rate' => ['required_if:shipping_type,flat', 'nullable', 'numeric', 'min:0', 'max:99999'],
             'shipping_percentage' => ['required_if:shipping_type,percentage', 'nullable', 'numeric', 'min:0', 'max:100'],
-            'pickup_enabled' => ['nullable', 'boolean'],
-            'pickup_hours' => ['nullable', 'string', 'max:255'],
         ]);
 
         $profile->update([
             'shipping_type' => $data['shipping_type'] ?: null,
             'shipping_flat_rate' => $data['shipping_type'] === 'flat' ? $data['shipping_flat_rate'] : null,
             'shipping_percentage' => $data['shipping_type'] === 'percentage' ? $data['shipping_percentage'] : null,
-            'pickup_enabled' => $request->boolean('pickup_enabled'),
-            'pickup_hours' => $request->boolean('pickup_enabled') ? ($data['pickup_hours'] ?? null) : null,
         ]);
 
-        return back()->with('success', 'Shop settings saved.');
+        return back()->with('success', 'Shipping settings saved.');
     }
 
     private function profileFor(Request $request): ProviderProfile

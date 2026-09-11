@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Dispute;
+use App\Models\Order;
 use App\Models\Payment;
 use App\Models\ProviderProfile;
 use Illuminate\View\View;
@@ -19,6 +20,7 @@ class DashboardController extends Controller
         $metrics = [
             'providers_approved' => ProviderProfile::where('status', ProviderProfile::STATUS_APPROVED)->count(),
             'bookings_total' => Booking::count(),
+            'orders_total' => Order::count(),
             'commission_earned' => (float) Payment::where('status', Payment::STATUS_RELEASED)->sum('commission_amount'),
         ];
 

@@ -30,7 +30,7 @@
     @endif
 
     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Outstanding balance</p>
+        <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Outstanding balance</p>
         <p class="mt-1.5 font-display text-2xl font-extrabold {{ $owed > 0 ? 'text-red-600 dark:text-red-400' : 'text-brand-700 dark:text-brand-400' }}">
             {{ $owed > 0 ? 'Rs. ' . number_format($owed, 0) . ' owed' : 'All settled up' }}
         </p>

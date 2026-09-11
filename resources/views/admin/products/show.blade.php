@@ -32,7 +32,7 @@
     <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <dl class="grid gap-x-8 gap-y-4 text-sm sm:grid-cols-2">
             <div>
-                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Shop</dt>
+                <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Shop</dt>
                 <dd class="mt-1 font-medium text-slate-800 dark:text-slate-200">
                     <a href="{{ route('admin.providers.show', $product->providerProfile) }}" class="hover:text-brand-700 dark:hover:text-brand-400">
                         {{ $product->providerProfile->business_name ?: $product->providerProfile->user?->name }}
@@ -40,26 +40,26 @@
                 </dd>
             </div>
             <div>
-                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Category</dt>
+                <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Category</dt>
                 <dd class="mt-1 font-medium text-slate-800 dark:text-slate-200">{{ $product->category->name ?? '—' }}</dd>
             </div>
             <div>
-                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Price</dt>
+                <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Price</dt>
                 <dd class="mt-1 font-display text-lg font-extrabold text-brand-700 dark:text-brand-400">Rs. {{ number_format((float) $product->price, 0) }}</dd>
             </div>
             <div>
-                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Stock</dt>
+                <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Stock</dt>
                 <dd class="mt-1 font-medium text-slate-800 dark:text-slate-200">{{ $product->stock_quantity }}</dd>
             </div>
             @if ($product->sku)
                 <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">SKU</dt>
+                    <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">SKU</dt>
                     <dd class="mt-1 font-mono font-medium text-slate-800 dark:text-slate-200">{{ $product->sku }}</dd>
                 </div>
             @endif
             @if ($product->description)
                 <div class="sm:col-span-2">
-                    <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Description</dt>
+                    <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Description</dt>
                     <dd class="mt-1 text-slate-700 dark:text-slate-300">{{ $product->description }}</dd>
                 </div>
             @endif

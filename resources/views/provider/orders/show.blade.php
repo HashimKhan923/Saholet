@@ -66,21 +66,21 @@
                 <h2 class="font-display text-base font-bold text-slate-900 dark:text-white">{{ $order->isPickup() ? 'Pickup' : 'Delivery' }} details</h2>
                 <dl class="mt-4 grid gap-x-8 gap-y-4 text-sm sm:grid-cols-2">
                     <div>
-                        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Customer</dt>
+                        <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Customer</dt>
                         <dd class="mt-1 font-medium text-slate-800 dark:text-slate-200">{{ $order->consumer->name }}</dd>
                     </div>
                     <div>
-                        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Phone</dt>
+                        <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Phone</dt>
                         <dd class="mt-1 font-medium text-slate-800 dark:text-slate-200">{{ $order->consumer->phone ?: '—' }}</dd>
                     </div>
                     @if ($order->isDelivery())
                         <div class="sm:col-span-2">
-                            <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Delivery address</dt>
+                            <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Delivery address</dt>
                             <dd class="mt-1 font-medium text-slate-800 dark:text-slate-200">{{ $order->shipping_address }}, {{ $order->shipping_city }}</dd>
                         </div>
                         @if ($order->delivery_method)
                             <div class="sm:col-span-2">
-                                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Tracking information</dt>
+                                <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Tracking information</dt>
                                 <dd class="mt-1 whitespace-pre-line font-medium text-slate-800 dark:text-slate-200">{{ $order->delivery_method }}</dd>
                             </div>
                         @endif

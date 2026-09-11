@@ -48,6 +48,7 @@ return [
         'subtitle' => 'Operate the marketplace and review platform health below.',
         'approved_providers' => 'Approved providers',
         'total_bookings' => 'Total bookings',
+        'total_orders' => 'Total orders',
         'commission_earned' => 'Commission earned',
         'operations_section' => 'Operations',
         'categories_title' => 'Categories',

@@ -26,23 +26,41 @@
 
 @section('content')
 <div class="mx-auto max-w-5xl space-y-6 px-4 sm:px-6 lg:px-8">
-    <div>
-        <a href="{{ route('provider.dashboard') }}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 transition hover:text-brand-600 dark:text-slate-400">
-            <svg viewBox="0 0 24 24" class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Dashboard
-        </a>
-        <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Orders</h1>
-        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            {{ $counts['all'] }} total ·
-            <span class="font-semibold text-amber-600 dark:text-amber-400">{{ $counts['pending'] }} awaiting your decision</span>
-        </p>
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <a href="{{ route('provider.dashboard') }}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 transition hover:text-brand-600 dark:text-slate-400">
+                <svg viewBox="0 0 24 24" class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Dashboard
+            </a>
+            <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Orders</h1>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                {{ $counts['all'] }} total ·
+                <span class="font-semibold text-amber-600 dark:text-amber-400">{{ $counts['pending'] }} awaiting your decision</span>
+            </p>
+        </div>
+
+        {{-- Search --}}
+        <form method="GET" action="{{ route('provider.orders.index') }}" class="relative w-full sm:w-72">
+            <input type="hidden" name="status" value="{{ $filter }}">
+            <span class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5 text-slate-400">
+                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
+            </span>
+            <input type="search" name="q" value="{{ $search }}" placeholder="Reference, customer, email, product…"
+                class="block w-full rounded-xl border border-slate-200 bg-white py-2.5 pe-10 ps-10 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:ring-brand-950">
+            @if ($search !== '')
+                <a href="{{ route('provider.orders.index', ['status' => $filter]) }}"
+                   class="absolute inset-y-0 end-0 flex items-center pe-3.5 text-slate-400 transition hover:text-slate-600" aria-label="Clear search">
+                    <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg>
+                </a>
+            @endif
+        </form>
     </div>
 
     <div class="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
         <nav class="flex min-w-max gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-sm dark:border-slate-800 dark:bg-slate-900" aria-label="Filter orders by status">
             @foreach ($tabs as $key => $label)
                 @php $active = $filter === $key; @endphp
-                <a href="{{ route('provider.orders.index', ['status' => $key]) }}"
+                <a href="{{ route('provider.orders.index', array_filter(['status' => $key, 'q' => $search])) }}"
                    @if ($active) aria-current="page" @endif
                    class="flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold transition
                        {{ $active ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white' }}">
@@ -96,8 +114,17 @@
                 <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 text-slate-300 dark:bg-slate-800 dark:text-slate-600">
                     <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 7l-8-4-8 4m16 0-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
-                <p class="mt-4 font-display text-lg font-bold text-slate-900 dark:text-white">{{ $emptyTitle }}</p>
-                <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">{{ $emptyBody }}</p>
+                <p class="mt-4 font-display text-lg font-bold text-slate-900 dark:text-white">
+                    {{ $search !== '' ? 'No matches found' : $emptyTitle }}
+                </p>
+                <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                    {{ $search !== '' ? 'Try a different reference, customer, email or product name.' : $emptyBody }}
+                </p>
+                @if ($search !== '' || $filter !== 'all')
+                    <a href="{{ route('provider.orders.index') }}" class="mt-5 inline-flex items-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
+                        Clear filters
+                    </a>
+                @endif
             </div>
         @endforelse
     </div>
