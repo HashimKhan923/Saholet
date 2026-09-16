@@ -145,6 +145,62 @@ class ProviderShopManagementTest extends TestCase
         $this->actingAs($user)->delete("/provider/products/{$product->id}")->assertForbidden();
     }
 
+    public function test_provider_can_delete_a_product_photo_via_json(): void
+    {
+        [$user, $profile] = $this->approvedProvider();
+        $product = Product::factory()->for($profile, 'providerProfile')->create();
+        $photo = $product->photos()->create(['path' => 'a.jpg', 'original_name' => 'a.jpg', 'mime_type' => 'image/jpeg', 'size' => 100, 'sort_order' => 1]);
+
+        $this->actingAs($user)->deleteJson("/provider/products/photos/{$photo->id}")
+            ->assertOk()
+            ->assertJsonPath('message', 'Photo removed.');
+
+        $this->assertDatabaseMissing('product_photos', ['id' => $photo->id]);
+    }
+
+    public function test_provider_edit_page_renders_with_existing_photos(): void
+    {
+        [$user, $profile] = $this->approvedProvider();
+        $product = Product::factory()->for($profile, 'providerProfile')->create();
+        $product->photos()->create(['path' => 'a.jpg', 'original_name' => 'a.jpg', 'mime_type' => 'image/jpeg', 'size' => 100, 'sort_order' => 1]);
+        $product->photos()->create(['path' => 'b.jpg', 'original_name' => 'b.jpg', 'mime_type' => 'image/jpeg', 'size' => 100, 'sort_order' => 2]);
+
+        $this->actingAs($user)->get("/provider/products/{$product->id}/edit")
+            ->assertOk()
+            ->assertSee('Cover', false)
+            ->assertSee('Drag photos to reorder');
+    }
+
+    public function test_provider_can_reorder_product_photos_to_change_the_cover(): void
+    {
+        [$user, $profile] = $this->approvedProvider();
+        $product = Product::factory()->for($profile, 'providerProfile')->create();
+
+        $first = $product->photos()->create(['path' => 'a.jpg', 'original_name' => 'a.jpg', 'mime_type' => 'image/jpeg', 'size' => 100, 'sort_order' => 1]);
+        $second = $product->photos()->create(['path' => 'b.jpg', 'original_name' => 'b.jpg', 'mime_type' => 'image/jpeg', 'size' => 100, 'sort_order' => 2]);
+        $third = $product->photos()->create(['path' => 'c.jpg', 'original_name' => 'c.jpg', 'mime_type' => 'image/jpeg', 'size' => 100, 'sort_order' => 3]);
+
+        $this->actingAs($user)->postJson("/provider/products/{$product->id}/photos/reorder", [
+            'photo_ids' => [$third->id, $first->id, $second->id],
+        ])->assertOk();
+
+        $product->refresh();
+        $ordered = $product->photos()->orderBy('sort_order')->pluck('id')->all();
+        $this->assertSame([$third->id, $first->id, $second->id], $ordered);
+    }
+
+    public function test_provider_cannot_reorder_another_providers_product_photos(): void
+    {
+        [$user] = $this->approvedProvider();
+        [, $otherProfile] = $this->approvedProvider();
+        $product = Product::factory()->for($otherProfile, 'providerProfile')->create();
+        $photo = $product->photos()->create(['path' => 'a.jpg', 'original_name' => 'a.jpg', 'mime_type' => 'image/jpeg', 'size' => 100, 'sort_order' => 1]);
+
+        $this->actingAs($user)->postJson("/provider/products/{$product->id}/photos/reorder", [
+            'photo_ids' => [$photo->id],
+        ])->assertForbidden();
+    }
+
     public function test_non_approved_provider_cannot_manage_shop(): void
     {
         $user = User::factory()->create(['role' => User::ROLE_PROVIDER]);
