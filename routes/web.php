@@ -338,6 +338,7 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
         Route::put('products/{product}', [ProviderProductController::class, 'update'])->name('products.update');
         Route::delete('products/{product}', [ProviderProductController::class, 'destroy'])->name('products.destroy');
         Route::delete('products/photos/{photo}', [ProviderProductController::class, 'destroyPhoto'])->name('products.photos.destroy');
+        Route::post('products/{product}/photos/reorder', [ProviderProductController::class, 'reorderPhotos'])->name('products.photos.reorder');
 
         Route::get('orders', [ProviderOrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{order}', [ProviderOrderController::class, 'show'])->name('orders.show');

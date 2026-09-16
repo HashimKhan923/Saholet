@@ -34,6 +34,7 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('photoPicker', (max = 5) => ({
         dragging: false,
         photos: [],
+        dragIndex: null,
 
         addFiles(fileList) {
             const incoming = Array.from(fileList).filter((f) => f.type.startsWith('image/'));
@@ -56,6 +57,20 @@ document.addEventListener('alpine:init', () => {
         remove(index) {
             URL.revokeObjectURL(this.photos[index].url);
             this.photos.splice(index, 1);
+            this.sync();
+        },
+
+        // Reordering (drag a thumbnail onto another to swap its position — the
+        // first photo becomes the cover, same as the "Current photos" grid).
+        reorderStart(index) {
+            this.dragIndex = index;
+        },
+
+        reorderDrop(index) {
+            if (this.dragIndex === null || this.dragIndex === index) return;
+            const [moved] = this.photos.splice(this.dragIndex, 1);
+            this.photos.splice(index, 0, moved);
+            this.dragIndex = null;
             this.sync();
         },
 

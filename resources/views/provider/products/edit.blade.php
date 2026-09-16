@@ -60,22 +60,51 @@
              another <form> is invalid HTML and browsers close the outer form early
              at the first nested </form>, which silently breaks the Save button's
              Alpine scope. --}}
-        <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+             x-data="{
+                photos: @js($product->photos->map(fn ($p) => ['id' => $p->id, 'url' => $p->url()])->values()),
+                dragIndex: null,
+                reorderStart(index) { this.dragIndex = index; },
+                async reorderDrop(index) {
+                    if (this.dragIndex === null || this.dragIndex === index) return;
+                    const [moved] = this.photos.splice(this.dragIndex, 1);
+                    this.photos.splice(index, 0, moved);
+                    this.dragIndex = null;
+                    try {
+                        await window.axios.post(@js(route('provider.products.photos.reorder', $product)), {
+                            photo_ids: this.photos.map((p) => p.id),
+                        });
+                    } catch (e) { /* best-effort — order is still shown correctly here even if the save fails */ }
+                },
+                async remove(index) {
+                    if (! confirm('Remove this photo?')) return;
+                    const photo = this.photos[index];
+                    try {
+                        await window.axios.delete(`{{ url('provider/products/photos') }}/${photo.id}`);
+                        this.photos.splice(index, 1);
+                    } catch (e) { alert('Could not remove that photo — please try again.'); }
+                },
+             }">
             <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Current photos</h3>
             <div class="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
-                @foreach ($product->photos as $photo)
-                    <div class="group relative aspect-square overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
-                        <img src="{{ $photo->url() }}" class="h-full w-full object-cover">
-                        <form method="POST" action="{{ route('provider.products.photos.destroy', $photo) }}" class="absolute right-1 top-1 opacity-0 transition group-hover:opacity-100">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-900/70 text-white transition hover:bg-red-600" aria-label="Remove photo" onclick="return confirm('Remove this photo?')">
-                                <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg>
-                            </button>
-                        </form>
+                <template x-for="(photo, index) in photos" :key="photo.id">
+                    <div class="group relative aspect-square cursor-move overflow-hidden rounded-lg border-2 transition"
+                        draggable="true"
+                        @dragstart="reorderStart(index)"
+                        @dragover.prevent
+                        @drop.prevent="reorderDrop(index)"
+                        :class="dragIndex === index ? 'border-brand-400 opacity-50' : 'border-slate-200 dark:border-slate-700'">
+                        <img :src="photo.url" class="h-full w-full object-cover">
+                        <span x-show="index === 0" class="absolute left-1 top-1 rounded-full bg-brand-600 px-1.5 py-0.5 text-[10px] font-bold text-white shadow-sm">Cover</span>
+                        <button type="button" @click.stop="remove(index)"
+                            class="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-slate-900/70 text-white opacity-0 transition group-hover:opacity-100"
+                            aria-label="Remove photo">
+                            <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg>
+                        </button>
                     </div>
-                @endforeach
+                </template>
             </div>
+            <p class="mt-2 text-[11px] text-slate-400" x-show="photos.length > 1">Drag photos to reorder — the first one is used as the cover photo.</p>
         </div>
     @endif
 </section>

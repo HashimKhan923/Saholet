@@ -9,6 +9,7 @@
     <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-50 to-slate-50 dark:from-brand-950 dark:to-slate-950"></div>
     <div class="absolute inset-0 -z-10 bg-dot-grid opacity-50"></div>
     <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <img src="{{ asset('images/ShopBanner.png') }}?v={{ filemtime(public_path('images/ShopBanner.png')) }}" alt="Sahoulat shops" class="animate-fade-up mb-8 w-full rounded-2xl object-cover shadow-sm md:h-100" loading="eager">
         <h1 class="animate-fade-up font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Shops</h1>
         <p class="animate-fade-up mt-3 max-w-2xl text-slate-600 dark:text-slate-400">Browse shops selling parts and products directly on Sahoulat.</p>
 

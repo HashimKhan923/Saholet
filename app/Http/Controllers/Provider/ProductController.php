@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductPhoto;
 use App\Models\ProviderProfile;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -95,7 +96,7 @@ class ProductController extends Controller
         return redirect()->route('provider.products.index')->with('success', 'Product removed from your shop.');
     }
 
-    public function destroyPhoto(Request $request, ProductPhoto $photo): RedirectResponse
+    public function destroyPhoto(Request $request, ProductPhoto $photo): JsonResponse
     {
         $this->profileFor($request);
         $this->authorize('delete', $photo);
@@ -103,7 +104,27 @@ class ProductController extends Controller
         Storage::disk('public')->delete($photo->path);
         $photo->delete();
 
-        return back()->with('success', 'Photo removed.');
+        return response()->json(['message' => 'Photo removed.']);
+    }
+
+    /** Body: photo_ids — every existing photo's id, in the new display order. The first one becomes the cover photo. */
+    public function reorderPhotos(Request $request, Product $product): JsonResponse
+    {
+        $this->profileFor($request);
+        $this->authorize('update', $product);
+
+        $data = $request->validate([
+            'photo_ids' => ['required', 'array'],
+            'photo_ids.*' => ['integer'],
+        ]);
+
+        $photos = $product->photos()->whereIn('id', $data['photo_ids'])->get()->keyBy('id');
+
+        foreach ($data['photo_ids'] as $index => $id) {
+            $photos->get($id)?->update(['sort_order' => $index + 1]);
+        }
+
+        return response()->json(['message' => 'Photo order updated.']);
     }
 
     private function storePhotos(Request $request, Product $product): void
