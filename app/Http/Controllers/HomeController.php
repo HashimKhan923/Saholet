@@ -6,7 +6,7 @@ use App\Models\Banner;
 use App\Models\Booking;
 use App\Models\Faq;
 use App\Models\ProviderProfile;
-use App\Models\Review;
+use App\Models\VideoReview;
 use App\Services\CatalogCache;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
@@ -54,15 +54,9 @@ class HomeController extends Controller
             ];
         });
 
-        // Real 5★ reviews power the testimonials when available.
-        $testimonials = Cache::remember('landing.testimonials', 600, function () {
-            return Review::with(['consumer:id,name', 'service:id,name'])
-                ->where('rating', 5)
-                ->whereNotNull('comment')
-                ->latest()
-                ->limit(3)
-                ->get();
-        });
+        // Not cached: an admin adding/removing a review video should show up on the
+        // homepage immediately, not up to 10 minutes later.
+        $videoReviews = VideoReview::active()->ordered()->get();
 
         $faqs = Cache::remember('landing.faqs', 600, fn () => Faq::active()->ordered()->get());
 
@@ -82,7 +76,7 @@ class HomeController extends Controller
             'categories' => $categories,
             'cheapestService' => $cheapestService,
             'stats' => $stats,
-            'testimonials' => $testimonials,
+            'videoReviews' => $videoReviews,
             'faqs' => $faqs,
             'banners' => $banners,
             'shops' => $shops,

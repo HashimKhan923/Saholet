@@ -683,49 +683,74 @@
     </div>
 </section>
 
-{{-- ==================================================== Testimonials --}}
+{{-- ==================================================== Video reviews --}}
+@if ($videoReviews->isNotEmpty())
 <section class="border-t-2 border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-352 px-4 sm:px-6 lg:px-8">
         <div class="reveal mx-auto max-w-2xl text-center">
-            <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.testimonials_title') }}</h2>
-            <p class="mt-3 text-slate-600 dark:text-slate-400">{{ __('messages.landing.testimonials_sub') }}</p>
+            <div class="mb-3 inline-flex items-center justify-center gap-2">
+                <span class="h-0.5 w-5 rounded bg-brand-600"></span>
+                <span class="text-xs font-bold uppercase tracking-widest text-brand-600">{{ __('messages.landing.video_reviews_eyebrow') }}</span>
+                <span class="h-0.5 w-5 rounded bg-brand-600"></span>
+            </div>
+            <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.video_reviews_title') }}</h2>
+            <p class="mt-3 text-slate-600 dark:text-slate-400">{{ __('messages.landing.video_reviews_sub') }}</p>
         </div>
 
-        @php
-            $fallbackTestimonials = collect([
-                ['name' => 'Ayesha K.', 'service' => 'AC Repair — Karachi', 'comment' => 'Technician arrived on time, price matched the quote exactly, and I could watch him approach on the live map. Booked again the next week.'],
-                ['name' => 'Muhammad B.', 'service' => 'Plumbing — Lahore', 'comment' => 'Posted my job at 9am, had four bids by lunch, and the leak was fixed before dinner. The chat inside the booking made everything easy.'],
-                ['name' => 'Sana R.', 'service' => 'Deep Cleaning — Islamabad', 'comment' => 'Finally a service where the pros are actually verified. Professional team, upfront pricing, and paying by JazzCash took seconds.'],
-            ]);
-            $cards = $testimonials->count() >= 3
-                ? $testimonials->map(fn ($r) => ['name' => $r->consumer?->name ?? 'Verified customer', 'service' => $r->service?->name ?? '', 'comment' => $r->comment])
-                : $fallbackTestimonials;
-            $avatarColors = ['#1A7A35', '#C0272D', '#4F46E5'];
-        @endphp
-
-        <div class="mt-12 grid gap-6 md:grid-cols-3">
-            @foreach ($cards as $i => $card)
-                <figure class="reveal card-lift flex flex-col rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-brand-400 hover:shadow-md dark:border-slate-800 dark:bg-slate-900" style="--reveal-delay: {{ $i * 100 }}ms">
-                    <div class="mb-4 flex gap-0.5 text-amber-400" aria-label="5 out of 5 stars">
-                        @for ($s = 0; $s < 5; $s++)
-                            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="m12 2 2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 16.9 5.9 20.4l1.5-6.8L2.2 9l6.9-.7L12 2z"/></svg>
-                        @endfor
-                    </div>
-                    <blockquote class="flex-1 text-sm italic leading-relaxed text-slate-500 dark:text-slate-400">“{{ $card['comment'] }}”</blockquote>
-                    <figcaption class="mt-6 flex items-center gap-3">
-                        <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white" style="background: {{ $avatarColors[$i % 3] }}">{{ mb_substr($card['name'], 0, 1) }}</span>
-                        <div>
-                            <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ $card['name'] }}</p>
-                            @if ($card['service'])
-                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ $card['service'] }}</p>
-                            @endif
+        <div class="reveal relative mt-12" x-data="{
+            videos: @js($videoReviews->map(fn ($v) => ['title' => $v->title, 'description' => $v->description, 'thumb' => $v->thumbnail_url, 'embed' => $v->embed_url])),
+            playing: null,
+            scrollByCard(dir) {
+                const track = this.$refs.track;
+                const card = track.querySelector('[data-video-card]');
+                const step = card ? card.offsetWidth + 16 : track.clientWidth / 3;
+                track.scrollBy({ left: dir * step, behavior: 'smooth' });
+            },
+        }">
+            <div x-ref="track" class="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <template x-for="(video, index) in videos" :key="index">
+                    <div data-video-card class="w-full shrink-0 snap-start sm:w-[calc(33.333%-11px)]">
+                        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md transition-shadow hover:shadow-xl dark:border-slate-800 dark:bg-slate-900">
+                            <div class="relative aspect-75/88 bg-slate-900">
+                                <template x-if="playing !== index">
+                                    <button type="button" @click="playing = index" class="group absolute inset-0 h-full w-full" :aria-label="`Play ${video.title}`">
+                                        <img :src="video.thumb" :alt="video.title" class="h-full w-full object-cover opacity-90">
+                                        <span class="absolute inset-0 flex items-center justify-center">
+                                            <span class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-white shadow-lg transition group-hover:scale-105 sm:h-24 sm:w-24">
+                                                <svg viewBox="0 0 24 24" class="block h-12 w-12 text-brand-600 sm:h-14 sm:w-14" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>
+                                            </span>
+                                        </span>
+                                    </button>
+                                </template>
+                                <template x-if="playing === index">
+                                    <iframe :src="video.embed" class="h-full w-full" allow="accelerated-video; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                                </template>
+                            </div>
+                            <div class="p-4">
+                                <p class="font-display text-sm font-bold text-slate-900 dark:text-white" x-text="video.title"></p>
+                                <p x-show="video.description" class="mt-1 text-xs text-slate-500 dark:text-slate-400 line-clamp-1" x-text="video.description"></p>
+                            </div>
                         </div>
-                    </figcaption>
-                </figure>
-            @endforeach
+                    </div>
+                </template>
+            </div>
+
+            <template x-if="videos.length > 1">
+                <div class="mt-6 flex items-center justify-center gap-3">
+                    <button type="button" @click="scrollByCard(-1)" aria-label="Previous videos"
+                        class="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-brand-400 hover:text-brand-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                        <svg viewBox="0 0 24 24" class="h-5 w-5 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <button type="button" @click="scrollByCard(1)" aria-label="Next videos"
+                        class="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-brand-400 hover:text-brand-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                        <svg viewBox="0 0 24 24" class="h-5 w-5 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
+            </template>
         </div>
     </div>
 </section>
+@endif
 
 {{-- ======================================================= Careers band --}}
 <section class="border-t-2 border-slate-100 py-16 dark:border-slate-800 sm:py-20">
