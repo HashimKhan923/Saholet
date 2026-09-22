@@ -35,7 +35,10 @@ class VideoReview extends Model
 
     public function getEmbedUrlAttribute(): string
     {
-        return "https://www.youtube-nocookie.com/embed/{$this->youtube_id}?autoplay=1&rel=0";
+        // youtube-nocookie.com's embed is stricter about matching the request's
+        // origin and throws "Error 153" for videos that work fine on this domain
+        // — the regular embed host doesn't have that problem.
+        return "https://www.youtube.com/embed/{$this->youtube_id}?autoplay=1&rel=0";
     }
 
     public function scopeActive(Builder $query): Builder
