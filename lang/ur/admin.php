@@ -14,6 +14,7 @@ return [
         'content_section' => 'مواد',
         'faqs' => 'اکثر پوچھے گئے سوالات',
         'banners' => 'بینرز',
+        'video_reviews' => 'ریویو ویڈیوز',
         'contact_messages' => 'رابطہ پیغامات',
         'bookings_section' => 'بکنگز اور آرڈرز',
         'bookings' => 'بکنگز',

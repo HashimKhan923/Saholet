@@ -114,9 +114,10 @@ return [
         'about_work_title' => 'How we work',
         'about_work_desc' => 'Direct booking, post-a-job bidding, multi-service contracts, and emergency response — one platform, every way you need help.',
 
-        // Testimonials
-        'testimonials_title' => 'Loved by homes like yours',
-        'testimonials_sub' => 'Real feedback from real bookings.',
+        // Video reviews
+        'video_reviews_eyebrow' => 'Reviews',
+        'video_reviews_title' => 'Customer Experience',
+        'video_reviews_sub' => 'Real feedback from customers who\'ve experienced our services firsthand.',
 
         // FAQ
         'faq_eyebrow' => 'FAQ',

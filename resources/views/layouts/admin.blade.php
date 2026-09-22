@@ -13,7 +13,7 @@
     $showFinanceSection = $u->hasPermission('invoices') || $u->isAdmin();
     $showTrustSection = $u->hasPermission('disputes') || $u->hasPermission('fraud');
     $showCatalogSection = $u->hasPermission('categories') || $u->hasPermission('services') || $u->hasPermission('service-areas');
-    $showContentSection = $u->hasPermission('faqs') || $u->hasPermission('banners') || $u->hasPermission('careers');
+    $showContentSection = $u->hasPermission('faqs') || $u->hasPermission('banners') || $u->hasPermission('video_reviews') || $u->hasPermission('careers');
 @endphp
 
 @section('nav')
@@ -148,6 +148,11 @@
     @if (auth()->user()->hasPermission('banners'))
     <x-portal-nav-link :href="route('admin.banners.index')" :label="__('admin.nav.banners')" :active="request()->routeIs('admin.banners.*')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="9" r="1.5"/></svg>
+    </x-portal-nav-link>
+    @endif
+    @if (auth()->user()->hasPermission('video_reviews'))
+    <x-portal-nav-link :href="route('admin.video-reviews.index')" :label="__('admin.nav.video_reviews')" :active="request()->routeIs('admin.video-reviews.*')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="m17 10 4-2.5v9L17 14" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 9.5v5l4-2.5-4-2.5z" fill="currentColor" stroke="none"/></svg>
     </x-portal-nav-link>
     @endif
     @if (auth()->user()->hasPermission('careers'))

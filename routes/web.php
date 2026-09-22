@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\VideoReviewController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\CareerApplicationController as AdminCareerApplicationController;
 use App\Http\Controllers\Admin\CareerCategoryController as AdminCareerCategoryController;
@@ -388,6 +389,9 @@ Route::middleware(['auth', 'not.suspended'])->group(function () {
         });
         Route::middleware('permission:banners')->group(function () {
             Route::resource('banners', BannerController::class)->except(['show']);
+        });
+        Route::middleware('permission:video_reviews')->group(function () {
+            Route::resource('video-reviews', VideoReviewController::class)->except(['show']);
         });
 
         Route::middleware('permission:careers')->group(function () {
