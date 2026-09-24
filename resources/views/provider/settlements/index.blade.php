@@ -19,7 +19,7 @@
             <svg viewBox="0 0 24 24" class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Wallet
         </a>
-        <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Settle commission</h1>
+        <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Settle commission</h1>
         <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">When a customer pays you in cash, our commission on that job is deducted from your wallet. Pay it back here to clear the balance.</p>
     </div>
 
@@ -31,7 +31,7 @@
 
     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Outstanding balance</p>
-        <p class="mt-1.5 font-display text-2xl font-extrabold {{ $owed > 0 ? 'text-red-600 dark:text-red-400' : 'text-brand-700 dark:text-brand-400' }}">
+        <p class="mt-1.5 font-display text-2xl font-bold {{ $owed > 0 ? 'text-red-600 dark:text-red-400' : 'text-brand-700 dark:text-brand-400' }}">
             {{ $owed > 0 ? 'Rs. ' . number_format($owed, 0) . ' owed' : 'All settled up' }}
         </p>
         @if ($owed > 0)

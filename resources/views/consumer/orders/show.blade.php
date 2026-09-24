@@ -10,7 +10,7 @@
 
     <div class="mt-2 flex flex-wrap items-start justify-between gap-3">
         <div class="flex flex-wrap items-center gap-3">
-            <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $order->reference }}</h1>
+            <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $order->reference }}</h1>
             <x-order-status :status="$order->status" />
         </div>
         @if ($order->canBeCancelled())
@@ -86,7 +86,7 @@
                 <div class="flex justify-between text-brand-700 dark:text-brand-400"><span>Coupon{{ $order->coupon ? ' (' . $order->coupon->code . ')' : '' }}</span><span>&minus; Rs. {{ number_format((float) $order->discount_amount, 0) }}</span></div>
             @endif
             <div class="flex justify-between text-slate-500 dark:text-slate-400"><span>Shipping</span><span>Rs. {{ number_format((float) $order->shipping_amount, 0) }}</span></div>
-            <div class="flex justify-between font-display text-base font-extrabold text-slate-900 dark:text-white"><span>Total</span><span>Rs. {{ number_format((float) $order->total_amount, 0) }}</span></div>
+            <div class="flex justify-between font-display text-base font-bold text-slate-900 dark:text-white"><span>Total</span><span>Rs. {{ number_format((float) $order->total_amount, 0) }}</span></div>
         </div>
     </div>
 

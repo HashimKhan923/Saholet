@@ -9,7 +9,7 @@
     </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
-        <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $settlement->reference }}</h1>
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $settlement->reference }}</h1>
         @php
             $statusTones = [
                 'pending' => 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400',

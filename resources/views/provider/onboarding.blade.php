@@ -19,7 +19,7 @@
             <svg viewBox="0 0 24 24" class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Dashboard
         </a>
-        <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Provider verification</h1>
+        <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Provider verification</h1>
         <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Verified providers get listed in search, matched to jobs, and paid safely once each job is confirmed.</p>
     </div>
 

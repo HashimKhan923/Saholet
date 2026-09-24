@@ -9,7 +9,7 @@
     </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
-        <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $contract->title }}</h1>
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $contract->title }}</h1>
         <x-contract-status :status="$contract->status" />
     </div>
     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ $contract->reference }} · {{ $contract->consumer->name }} ({{ $contract->consumer->email }})</p>
@@ -180,7 +180,7 @@
                             <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ $milestone->title }}</p>
                         </div>
                         <div class="flex items-center gap-3">
-                            <p class="font-display text-base font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($milestone->amount, 0) }}</p>
+                            <p class="font-display text-base font-bold text-slate-900 dark:text-white">Rs. {{ number_format($milestone->amount, 0) }}</p>
                             <x-payment-status :status="$milestone->status" />
                             @if ($milestone->isEscrow())
                                 <x-confirm-form :action="route('admin.contracts.milestones.release', [$contract, $milestone])"

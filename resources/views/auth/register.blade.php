@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-    <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">{{ __('messages.auth.create_account') }}</h1>
+    <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900">{{ __('messages.auth.create_account') }}</h1>
     <p class="mt-1.5 text-sm text-slate-500">{{ __('messages.auth.register_sub') }}</p>
 
     @if ($errors->any())

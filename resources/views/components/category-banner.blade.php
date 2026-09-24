@@ -3,8 +3,8 @@
 @php
     $isLg = $size === 'lg';
     $titleClass = $isLg
-        ? 'font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl'
-        : 'font-display text-xl font-extrabold tracking-tight text-slate-900 dark:text-white';
+        ? 'font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl'
+        : 'font-display text-xl font-bold tracking-tight text-slate-900 dark:text-white';
     $iconBoxClass = $isLg ? 'h-14 w-14' : 'h-11 w-11';
     $iconClass = $isLg ? 'h-7 w-7' : 'h-6 w-6';
     $titleTag = $isLg ? 'h1' : 'h2';

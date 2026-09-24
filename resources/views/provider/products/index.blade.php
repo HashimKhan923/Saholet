@@ -7,7 +7,7 @@
 <div class="mx-auto max-w-6xl space-y-6 px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Products</h1>
+            <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Products</h1>
             <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Physical goods customers can buy from your shop, separate from your bookable services.</p>
         </div>
         <a href="{{ route('provider.products.create') }}" class="btn-shine inline-flex items-center gap-1.5 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
@@ -57,7 +57,7 @@
                             <p class="mt-2 rounded-lg bg-red-50 px-2.5 py-1.5 text-xs text-red-700 dark:bg-red-950/40 dark:text-red-400">{{ $product->deactivation_reason }}</p>
                         @endif
                         <div class="mt-3 flex items-center justify-between">
-                            <span class="font-display text-lg font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format((float) $product->price, 0) }}</span>
+                            <span class="font-display text-lg font-bold text-slate-900 dark:text-white">Rs. {{ number_format((float) $product->price, 0) }}</span>
                             <span class="text-xs {{ $product->isInStock() ? 'text-slate-500 dark:text-slate-400' : 'font-semibold text-red-600 dark:text-red-400' }}">
                                 {{ $product->isInStock() ? $product->stock_quantity . ' in stock' : 'Out of stock' }}
                             </span>

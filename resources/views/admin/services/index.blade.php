@@ -7,7 +7,7 @@
     <div class="flex items-center justify-between">
         <div>
             <a href="{{ route('admin.dashboard') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Dashboard</a>
-            <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Services</h1>
+            <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Services</h1>
         </div>
         <a href="{{ route('admin.services.create') }}" class="inline-flex items-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">+ New service</a>
     </div>

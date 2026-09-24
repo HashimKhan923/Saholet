@@ -151,7 +151,7 @@
 
             <div class="flex items-center justify-end gap-3">
                 <span class="text-sm text-slate-500 dark:text-slate-400">Total</span>
-                <span class="font-display text-xl font-extrabold text-slate-900 dark:text-white">Rs. <span x-text="total.toLocaleString()"></span></span>
+                <span class="font-display text-xl font-bold text-slate-900 dark:text-white">Rs. <span x-text="total.toLocaleString()"></span></span>
             </div>
 
             <template x-if="hasAnyActualPrice">

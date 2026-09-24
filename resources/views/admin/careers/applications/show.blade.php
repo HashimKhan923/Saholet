@@ -9,7 +9,7 @@
     </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
-        <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $application->jobSeeker->name }}</h1>
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $application->jobSeeker->name }}</h1>
         <span class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ ucfirst(str_replace('_', ' ', $application->status)) }}</span>
     </div>
     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Applied for {{ $listing->title }} on {{ $application->created_at->format('d M Y') }}</p>

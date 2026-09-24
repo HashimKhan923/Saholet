@@ -5,29 +5,29 @@
 @section('content')
 <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
     <a href="{{ route('admin.dashboard') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400">&larr; Dashboard</a>
-    <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Analytics</h1>
+    <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Analytics</h1>
 
     {{-- Money --}}
     <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <div class="rounded-2xl border border-brand-200 bg-brand-50 p-5 dark:border-brand-800 dark:bg-brand-950/40">
             <p class="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-400">Commission earned</p>
-            <p class="mt-2 font-display text-2xl font-extrabold text-brand-900 dark:text-brand-300">Rs. {{ number_format($money['commission_earned'], 0) }}</p>
+            <p class="mt-2 font-display text-2xl font-bold text-brand-900 dark:text-brand-300">Rs. {{ number_format($money['commission_earned'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">GMV (completed)</p>
-            <p class="mt-2 font-display text-2xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($money['gmv_completed'], 0) }}</p>
+            <p class="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-white">Rs. {{ number_format($money['gmv_completed'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-sky-200 bg-sky-50 p-5 dark:border-sky-800 dark:bg-sky-950/40">
             <p class="text-xs font-semibold uppercase tracking-wide text-sky-700 dark:text-sky-400">Pending held</p>
-            <p class="mt-2 font-display text-2xl font-extrabold text-sky-900 dark:text-sky-300">Rs. {{ number_format($money['escrow_held'], 0) }}</p>
+            <p class="mt-2 font-display text-2xl font-bold text-sky-900 dark:text-sky-300">Rs. {{ number_format($money['escrow_held'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Released</p>
-            <p class="mt-2 font-display text-2xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($money['released'], 0) }}</p>
+            <p class="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-white">Rs. {{ number_format($money['released'], 0) }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Refunded</p>
-            <p class="mt-2 font-display text-2xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($money['refunded'], 0) }}</p>
+            <p class="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-white">Rs. {{ number_format($money['refunded'], 0) }}</p>
         </div>
     </div>
 

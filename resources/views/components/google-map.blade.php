@@ -3,7 +3,7 @@
 <div {{ $attributes->merge(['class' => 'reveal']) }}>
     @if ($heading)
         <div class="mb-6 text-center">
-            <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">{{ $heading }}</h2>
+            <h2 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">{{ $heading }}</h2>
             @if ($subheading)
                 <p class="mt-2 text-slate-600 dark:text-slate-400">{{ $subheading }}</p>
             @endif

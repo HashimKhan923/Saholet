@@ -7,7 +7,7 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
         <div>
             <a href="{{ route('admin.careers.index') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Job listings</a>
-            <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Edit job listing</h1>
+            <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Edit job listing</h1>
         </div>
         <a href="{{ route('admin.careers.applications.index', $listing) }}" class="inline-flex items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">Applications ({{ $applicationsCount }})</a>
     </div>

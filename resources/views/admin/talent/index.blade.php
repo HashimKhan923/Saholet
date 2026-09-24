@@ -6,7 +6,7 @@
 <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
     <div>
         <a href="{{ route('admin.dashboard') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Dashboard</a>
-        <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Job seekers</h1>
+        <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Job seekers</h1>
         <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Every job seeker who's signed up — not just active applicants. Candidates with a resume on file are shown first.</p>
     </div>
 

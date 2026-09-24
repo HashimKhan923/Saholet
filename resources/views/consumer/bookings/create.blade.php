@@ -5,7 +5,7 @@
 @section('content')
 <section class="mx-auto max-w-2xl px-4 py-12 sm:px-6 lg:px-8">
     <a href="{{ route('services.show', $service) }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Back to {{ $service->name }}</a>
-    <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Book this service</h1>
+    <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Book this service</h1>
 
     {{-- Summary --}}
     <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -17,7 +17,7 @@
                 </p>
             </div>
             <div class="text-right">
-                <p class="font-display text-lg font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($providerService->price, 0) }}</p>
+                <p class="font-display text-lg font-bold text-slate-900 dark:text-white">Rs. {{ number_format($providerService->price, 0) }}</p>
                 <p class="text-xs text-slate-400 dark:text-slate-500">~ {{ $service->duration_minutes }} min</p>
             </div>
         </div>

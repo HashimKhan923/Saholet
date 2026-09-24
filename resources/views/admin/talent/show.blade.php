@@ -9,7 +9,7 @@
     <div class="mt-4 flex items-center gap-4">
         <x-avatar :url="$profile->user->avatar_url" :name="$profile->user->name" size="lg" />
         <div>
-            <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $profile->user->name }}</h1>
+            <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $profile->user->name }}</h1>
             <p class="text-sm text-slate-500 dark:text-slate-400">{{ $profile->headline ?: ($profile->current_position ?: 'Job seeker') }}</p>
         </div>
     </div>

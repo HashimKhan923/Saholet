@@ -49,7 +49,7 @@
 
     <p class="relative mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ $label }}</p>
 
-    <p class="relative mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+    <p class="relative mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
         @if ($prefix)<span class="text-base font-bold text-slate-400">{{ $prefix }}</span>@endif<span
             x-data="{
                 n: 0,

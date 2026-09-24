@@ -10,7 +10,7 @@
 
     <div class="mt-1 flex flex-wrap items-center justify-between gap-3">
         <div>
-            <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $booking->service->name ?? 'Booking' }}</h1>
+            <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $booking->service->name ?? 'Booking' }}</h1>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ $booking->reference }} · Booked {{ $booking->created_at->format('d M Y, g:i A') }}</p>
         </div>
         <x-booking-status :status="$booking->status" />

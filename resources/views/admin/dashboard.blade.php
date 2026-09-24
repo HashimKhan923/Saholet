@@ -20,7 +20,7 @@
                     <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 6v5c0 4.5 3.2 7.8 8 9 4.8-1.2 8-4.5 8-9V6l-8-3z" stroke-linejoin="round"/></svg>
                     {{ $u->isStaff() ? __('admin.dashboard.badge_staff') : __('admin.dashboard.badge') }}
                 </span>
-                <h1 class="mt-4 font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('admin.dashboard.welcome', ['name' => $u->name]) }}</h1>
+                <h1 class="mt-4 font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('admin.dashboard.welcome', ['name' => $u->name]) }}</h1>
                 <p class="mt-3 max-w-prose text-base leading-relaxed text-slate-600 dark:text-slate-400">{{ __('admin.dashboard.subtitle') }}</p>
             </div>
 

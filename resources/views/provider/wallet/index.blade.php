@@ -36,7 +36,7 @@
             <svg viewBox="0 0 24 24" class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Dashboard
         </a>
-        <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Wallet</h1>
+        <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Wallet</h1>
         <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Every rupee, tracked on an append-only ledger.</p>
     </div>
 
@@ -55,7 +55,7 @@
                     <p class="text-sm font-semibold text-brand-100">Available balance</p>
                 </div>
 
-                <p class="mt-4 font-display text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+                <p class="mt-4 font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">
                     <span class="text-2xl font-bold text-brand-200">Rs.</span> {{ number_format((float) $wallet->available_balance, 0) }}
                 </p>
 
@@ -137,7 +137,7 @@
                 <p class="text-sm font-semibold text-sky-800 dark:text-sky-300">Pending balance</p>
             </div>
 
-            <p class="mt-4 font-display text-3xl font-extrabold text-sky-900 dark:text-sky-200">Rs. {{ number_format((float) $wallet->escrow_balance, 0) }}</p>
+            <p class="mt-4 font-display text-3xl font-bold text-sky-900 dark:text-sky-200">Rs. {{ number_format((float) $wallet->escrow_balance, 0) }}</p>
             <p class="mt-2 text-xs leading-relaxed text-sky-700 dark:text-sky-400/90">
                 Customer funds waiting on job completion. Released to your available balance once confirmed.
             </p>
@@ -385,7 +385,7 @@
 
                         {{-- Amount --}}
                         <div class="shrink-0 text-end">
-                            <p class="font-display text-sm font-extrabold tabular-nums
+                            <p class="font-display text-sm font-bold tabular-nums
                                 {{ $isCredit ? 'text-brand-700 dark:text-brand-400' : 'text-slate-400' }}">
                                 {{ $isCredit ? '+' : '−' }} Rs. {{ number_format(abs($amount), 0) }}
                             </p>

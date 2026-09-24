@@ -24,7 +24,7 @@
     @endphp
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
-        <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Rs. {{ number_format($withdrawal->amount, 0) }}</h1>
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Rs. {{ number_format($withdrawal->amount, 0) }}</h1>
         <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusTones[$withdrawal->status] ?? '' }}">{{ $statusLabels[$withdrawal->status] ?? ucfirst($withdrawal->status) }}</span>
     </div>
     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ $withdrawal->reference }} · requested {{ $withdrawal->created_at->format('d M Y, g:i A') }}</p>

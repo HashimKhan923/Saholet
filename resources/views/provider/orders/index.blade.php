@@ -32,7 +32,7 @@
                 <svg viewBox="0 0 24 24" class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Dashboard
             </a>
-            <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Orders</h1>
+            <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Orders</h1>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 {{ $counts['all'] }} total ·
                 <span class="font-semibold text-amber-600 dark:text-amber-400">{{ $counts['pending'] }} awaiting your decision</span>
@@ -102,7 +102,7 @@
 
                     <div class="flex shrink-0 items-center justify-between gap-4 sm:justify-end">
                         <div class="text-start sm:text-end">
-                            <p class="font-display text-base font-extrabold text-brand-700 dark:text-brand-400">Rs. {{ number_format((float) $order->total_amount, 0) }}</p>
+                            <p class="font-display text-base font-bold text-brand-700 dark:text-brand-400">Rs. {{ number_format((float) $order->total_amount, 0) }}</p>
                             <p class="mt-0.5 text-[11px] text-slate-400">{{ $order->created_at->diffForHumans() }}</p>
                         </div>
                         <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-brand-600 rtl:rotate-180 dark:text-slate-600" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>

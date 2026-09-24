@@ -39,7 +39,7 @@
                 </span>
                 <div>
                     <span class="inline-flex items-center rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-950/40 dark:text-brand-400">{{ $service->category->name }}</span>
-                    <h1 class="mt-2 font-display text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl dark:text-white">{{ $service->name }}</h1>
+                    <h1 class="mt-2 font-display text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-white">{{ $service->name }}</h1>
                 </div>
             </div>
 
@@ -73,12 +73,12 @@
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex items-baseline justify-between">
                     <span class="text-sm text-slate-500 dark:text-slate-400">Starting from</span>
-                    <span class="font-display text-2xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($service->base_price, 0) }}</span>
+                    <span class="font-display text-2xl font-bold text-slate-900 dark:text-white">Rs. {{ number_format($service->base_price, 0) }}</span>
                 </div>
                 @if ($service->visit_charge !== null && (float) $service->visit_charge > 0)
                     <div class="mt-4 flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-900 dark:bg-amber-950/30">
                         <span class="text-sm font-semibold text-amber-800 dark:text-amber-300">Visit charges</span>
-                        <span class="font-display text-xl font-extrabold text-amber-800 dark:text-amber-300">Rs. {{ number_format($service->visit_charge, 0) }}</span>
+                        <span class="font-display text-xl font-bold text-amber-800 dark:text-amber-300">Rs. {{ number_format($service->visit_charge, 0) }}</span>
                     </div>
                     <p class="mt-2 flex items-start gap-1.5 text-xs text-slate-500 dark:text-slate-400">
                         <svg viewBox="0 0 24 24" class="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01" stroke-linecap="round"/></svg>

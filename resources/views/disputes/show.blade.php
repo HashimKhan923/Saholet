@@ -9,7 +9,7 @@
     </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
-        <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Dispute {{ $dispute->reference }}</h1>
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900">Dispute {{ $dispute->reference }}</h1>
         <x-dispute-status :status="$dispute->status" />
     </div>
     <p class="mt-1 text-sm text-slate-500">{{ $dispute->booking->service->name }} · {{ $dispute->booking->reference }}</p>

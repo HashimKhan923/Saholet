@@ -9,7 +9,7 @@
         <svg viewBox="0 0 24 24" class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Products
     </a>
-    <h1 class="mt-2 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Add a product</h1>
+    <h1 class="mt-2 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Add a product</h1>
 
     @if (! $profile->canSellProducts())
         <div class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-6 dark:border-amber-900/60 dark:bg-amber-950/30">

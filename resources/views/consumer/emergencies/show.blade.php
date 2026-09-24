@@ -9,7 +9,7 @@
     </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
-        <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $emergencyRequest->service->name }}</h1>
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $emergencyRequest->service->name }}</h1>
         <x-emergency-status :status="$emergencyRequest->status" />
     </div>
     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Reference {{ $emergencyRequest->reference }}</p>
@@ -35,7 +35,7 @@
                 </span>
                 <div class="flex-1">
                     <h2 class="font-display text-lg font-bold text-sky-900 dark:text-sky-300">Your quote is ready</h2>
-                    <p class="mt-1 font-display text-2xl font-extrabold text-sky-900 dark:text-sky-300">Rs. {{ number_format((float) $emergencyRequest->quoted_price, 0) }}</p>
+                    <p class="mt-1 font-display text-2xl font-bold text-sky-900 dark:text-sky-300">Rs. {{ number_format((float) $emergencyRequest->quoted_price, 0) }}</p>
                     @if ($emergencyRequest->admin_note)
                         <p class="mt-1 text-sm text-sky-800 dark:text-sky-400/90">{{ $emergencyRequest->admin_note }}</p>
                     @endif

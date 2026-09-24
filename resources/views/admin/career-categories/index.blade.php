@@ -7,7 +7,7 @@
     <div class="flex items-center justify-between">
         <div>
             <a href="{{ route('admin.careers.index') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Careers</a>
-            <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Career categories</h1>
+            <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Career categories</h1>
         </div>
         <a href="{{ route('admin.career-categories.create') }}" class="inline-flex items-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">+ New category</a>
     </div>

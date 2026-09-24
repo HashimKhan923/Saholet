@@ -5,7 +5,7 @@
 @section('content')
 <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
     <a href="{{ route('consumer.dashboard') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Dashboard</a>
-    <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">My wishlist</h1>
+    <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">My wishlist</h1>
 
     @if ($products->isEmpty())
         <div class="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-14 text-center dark:border-slate-700 dark:bg-slate-900">
@@ -35,11 +35,11 @@
                         <div class="mt-auto pt-3">
                             @if ($product->hasDiscount())
                                 <span class="flex items-baseline gap-1.5">
-                                    <span class="font-display text-base font-extrabold text-brand-600 dark:text-brand-400">Rs. {{ number_format($product->effectivePrice(), 0) }}</span>
+                                    <span class="font-display text-base font-bold text-brand-600 dark:text-brand-400">Rs. {{ number_format($product->effectivePrice(), 0) }}</span>
                                     <span class="text-xs text-red-600 line-through dark:text-red-400">Rs. {{ number_format((float) $product->price, 0) }}</span>
                                 </span>
                             @else
-                                <span class="font-display text-base font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format((float) $product->price, 0) }}</span>
+                                <span class="font-display text-base font-bold text-slate-900 dark:text-white">Rs. {{ number_format((float) $product->price, 0) }}</span>
                             @endif
                         </div>
                     </div>

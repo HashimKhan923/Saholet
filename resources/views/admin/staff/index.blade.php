@@ -8,7 +8,7 @@
 
     <div class="mt-1 flex flex-wrap items-center justify-between gap-3">
         <div>
-            <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Staff</h1>
+            <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Staff</h1>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Internal team accounts with page-level admin access.</p>
         </div>
         <a href="{{ route('admin.staff.create') }}" class="btn-shine rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">

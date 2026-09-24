@@ -67,7 +67,7 @@
 
         {{-- Details --}}
         <div>
-            <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">{{ $product->name }}</h1>
+            <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">{{ $product->name }}</h1>
 
             <div class="mt-1.5"><x-rating-stars :product="$product" size="base" /></div>
 
@@ -87,11 +87,11 @@
             {{-- Price --}}
             <div class="mt-6 flex items-baseline gap-3">
                 @if ($product->hasDiscount())
-                    <span class="font-display text-3xl font-extrabold text-brand-600 dark:text-brand-400">Rs. {{ number_format($product->effectivePrice(), 0) }}</span>
+                    <span class="font-display text-3xl font-bold text-brand-600 dark:text-brand-400">Rs. {{ number_format($product->effectivePrice(), 0) }}</span>
                     <span class="text-lg font-medium text-red-600 line-through dark:text-red-400">Rs. {{ number_format((float) $product->price, 0) }}</span>
                     <span class="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-bold text-brand-600 dark:bg-brand-950/40 dark:text-brand-400">{{ $product->discountPercentage() }}% off</span>
                 @else
-                    <span class="font-display text-3xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format((float) $product->price, 0) }}</span>
+                    <span class="font-display text-3xl font-bold text-slate-900 dark:text-white">Rs. {{ number_format((float) $product->price, 0) }}</span>
                 @endif
             </div>
 

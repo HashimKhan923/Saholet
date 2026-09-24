@@ -6,7 +6,7 @@
 @section('content')
 <div class="mx-auto max-w-4xl space-y-6 px-4 sm:px-6 lg:px-8">
     <div>
-        <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Coupons</h1>
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Coupons</h1>
         <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Discount codes for your shop only — each customer can use a given code once.</p>
     </div>
 

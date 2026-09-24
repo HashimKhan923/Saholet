@@ -5,7 +5,7 @@
 
 @section('content')
 <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Checkout</h1>
+    <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Checkout</h1>
 
     @if ($errors->any())
         <div class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">
@@ -230,7 +230,7 @@
                                     </div>
                                 </dl>
 
-                                <div class="mt-4 flex justify-between border-t-2 border-slate-100 pt-4 font-display text-base font-extrabold text-slate-900 dark:border-slate-800 dark:text-white">
+                                <div class="mt-4 flex justify-between border-t-2 border-slate-100 pt-4 font-display text-base font-bold text-slate-900 dark:border-slate-800 dark:text-white">
                                     <span>Order total</span>
                                     <span x-text="total === null ? '—' : 'Rs. ' + Number(total).toLocaleString()"></span>
                                 </div>
