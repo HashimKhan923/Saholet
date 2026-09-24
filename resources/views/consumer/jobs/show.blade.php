@@ -9,7 +9,7 @@
     </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
-        <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $jobPost->service->name }}</h1>
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $jobPost->service->name }}</h1>
         <x-job-status :status="$jobPost->status" />
     </div>
     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Reference {{ $jobPost->reference }}</p>
@@ -117,7 +117,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="font-display text-lg font-extrabold text-slate-900 dark:text-white" x-text="'Rs. ' + bid.amount"></p>
+                            <p class="font-display text-lg font-bold text-slate-900 dark:text-white" x-text="'Rs. ' + bid.amount"></p>
                         </div>
                     </div>
 

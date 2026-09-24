@@ -1,7 +1,7 @@
 @php $headingTag = $headingTag ?? 'h1'; @endphp
 
 <span class="inline-flex items-center rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-950/40 dark:text-brand-400">{{ $listing->category->name }}</span>
-<{{ $headingTag }} class="mt-2 font-display text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl dark:text-white">{{ $listing->title }}</{{ $headingTag }}>
+<{{ $headingTag }} class="mt-2 font-display text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-white">{{ $listing->title }}</{{ $headingTag }}>
 <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
     {{ ucfirst(str_replace('_', ' ', $listing->employment_type)) }}
     @if ($listing->is_remote) &middot; {{ __('messages.careers.remote_label') }} @endif

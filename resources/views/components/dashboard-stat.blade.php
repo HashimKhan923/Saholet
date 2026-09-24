@@ -26,7 +26,7 @@
                 <span class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold normal-case tracking-normal text-white shadow-sm">{{ $badge }}</span>
             @endif
         </p>
-        <p class="mt-0.5 font-display text-2xl font-extrabold text-slate-900 dark:text-white">{{ $value }}</p>
+        <p class="mt-0.5 font-display text-2xl font-bold text-slate-900 dark:text-white">{{ $value }}</p>
     </div>
     <span class="pointer-events-none absolute -bottom-4 -end-4 h-20 w-20 p-4 text-brand-100 dark:text-brand-900/40">
         {{ $slot }}

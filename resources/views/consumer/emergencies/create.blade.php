@@ -10,7 +10,7 @@
         <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400">
             <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4 6v5c0 4.5 3.2 7.8 8 9 4.8-1.2 8-4.5 8-9V6l-8-3z" stroke-linejoin="round"/><path d="M12 8v4M12 15.5v.2" stroke-linecap="round"/></svg>
         </span>
-        <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Request emergency help</h1>
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Request emergency help</h1>
     </div>
     <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">We’ll alert available verified providers in your city right away. The first to accept will be assigned instantly.</p>
 

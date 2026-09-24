@@ -4,7 +4,7 @@
         @if ($user->avatar_url)
             <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="h-14 w-14 rounded-2xl object-cover shadow-md shadow-brand-600/25">
         @else
-            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-600 font-display text-xl font-extrabold text-white shadow-md shadow-brand-600/25">
+            <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-600 font-display text-xl font-bold text-white shadow-md shadow-brand-600/25">
                 {{ mb_substr($user->name, 0, 1) }}
             </span>
         @endif

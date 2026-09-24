@@ -44,7 +44,7 @@
              class="animate-fade-up mx-auto h-16 w-auto sm:h-20"> -->
 
         {{-- 2. Title --}}
-        <h1 class="animate-fade-up font-display text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl" style="--reveal-delay: 80ms">
+        <h1 class="animate-fade-up font-display text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl" style="--reveal-delay: 80ms">
             <span class="text-white">{{ __('messages.landing.hero_title_line1') }}</span><br class="hidden sm:block"> <span class="text-white">{{ __('messages.landing.hero_title_line2') }}</span>
         </h1>
 
@@ -113,7 +113,7 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="reveal max-w-4xl">
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent-600">{{ __('messages.nav.services') }}</p>
-            <h2 class="mt-2 font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.services_title') }}</h2>
+            <h2 class="mt-2 font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.services_title') }}</h2>
             <p class="mt-3 text-slate-600 dark:text-slate-400">{{ __('messages.landing.services_sub') }}</p>
         </div>
 
@@ -180,7 +180,7 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="reveal max-w-4xl">
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent-600">{{ __('messages.nav.shops') }}</p>
-            <h2 class="mt-2 font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.shops_title') }}</h2>
+            <h2 class="mt-2 font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.shops_title') }}</h2>
             <p class="mt-3 text-slate-600 dark:text-slate-400">{{ __('messages.landing.shops_sub') }}</p>
         </div>
 
@@ -274,7 +274,7 @@
 <section class="border-t-2 border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="reveal mx-auto max-w-2xl text-center">
-            <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.flows_title') }}</h2>
+            <h2 class="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.flows_title') }}</h2>
             <p class="mt-3 text-slate-600 dark:text-slate-400">{{ __('messages.landing.flows_sub') }}</p>
         </div>
 
@@ -384,7 +384,7 @@
                 {{-- Text side --}}
                 <div class="reveal {{ $i % 2 === 1 ? 'lg:order-1' : '' }} {{ $isUrdu ? 'text-right' : '' }}">
                     <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent-600">{{ $m['eyebrow'] }}</p>
-                    <h3 class="mt-2 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">{{ $m['title'] }}</h3>
+                    <h3 class="mt-2 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">{{ $m['title'] }}</h3>
                     <p class="mt-4 leading-relaxed text-slate-600 dark:text-slate-400">{{ $m['desc'] }}</p>
                     <a href="{{ $m['cta_href'] }}" class="mt-6 inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
                         {{ $m['cta_label'] }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
@@ -478,7 +478,7 @@
             @endphp
             @foreach ($statItems as $i => $stat)
                 <div class="reveal text-center" style="--reveal-delay: {{ $i * 90 }}ms">
-                    <p class="font-display text-3xl font-extrabold text-white sm:text-4xl"
+                    <p class="font-display text-3xl font-bold text-white sm:text-4xl"
                        data-counter="{{ $stat['value'] }}" data-counter-suffix="{{ $stat['suffix'] }}" data-counter-decimals="{{ $stat['decimals'] }}">0</p>
                     <p class="mt-1.5 text-sm font-medium text-brand-100">{{ $stat['label'] }}</p>
                 </div>
@@ -693,7 +693,7 @@
                 <span class="text-xs font-bold uppercase tracking-widest text-brand-600">{{ __('messages.landing.video_reviews_eyebrow') }}</span>
                 <span class="h-0.5 w-5 rounded bg-brand-600"></span>
             </div>
-            <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.video_reviews_title') }}</h2>
+            <h2 class="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.video_reviews_title') }}</h2>
             <p class="mt-3 text-slate-600 dark:text-slate-400">{{ __('messages.landing.video_reviews_sub') }}</p>
         </div>
 
@@ -805,7 +805,7 @@
             <div class="reveal relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-brand-600 to-brand-800 p-10 lg:col-span-3">
                 <span aria-hidden="true" class="urdu-watermark absolute -bottom-8 end-4 text-[7rem] text-white/[0.06]">سہولت</span>
                 <div class="animate-blob absolute -top-16 -end-16 h-56 w-56 rounded-full bg-white/10 blur-2xl"></div>
-                <h2 class="relative font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">{{ __('messages.landing.cta_title') }}</h2>
+                <h2 class="relative font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">{{ __('messages.landing.cta_title') }}</h2>
                 <p class="relative mt-3 max-w-md text-brand-100">{{ __('messages.landing.cta_sub') }}</p>
                 <a href="{{ auth()->check() ? route(auth()->user()->dashboardRoute()) : route('register') }}"
                    class="btn-shine relative mt-7 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-brand-700 shadow-lg transition hover:bg-brand-50">
@@ -817,7 +817,7 @@
             {{-- Provider recruitment CTA --}}
             <div class="reveal relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-10 lg:col-span-2 dark:border-slate-800 dark:bg-slate-900" style="--reveal-delay: 120ms">
                 <div class="absolute -bottom-12 -end-12 h-44 w-44 rounded-full bg-accent-100/60 blur-2xl dark:bg-accent-500/10"></div>
-                <h3 class="relative font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ __('messages.landing.cta_pro_title') }}</h3>
+                <h3 class="relative font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ __('messages.landing.cta_pro_title') }}</h3>
                 <p class="relative mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.cta_pro_sub') }}</p>
                 <a href="{{ route('register') }}" class="relative mt-7 inline-flex items-center gap-2 rounded-xl border-2 border-brand-600 px-6 py-3 text-sm font-bold text-brand-700 transition hover:bg-brand-600 hover:text-white dark:text-brand-400 dark:hover:text-white">
                     {{ __('messages.landing.cta_pro_btn') }}
@@ -841,7 +841,7 @@
 <section id="contact" class="border-t-2 border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="reveal mx-auto max-w-2xl text-center {{ $isUrdu ? 'font-urdu' : '' }}">
-            <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.contact.title') }}</h2>
+            <h2 class="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.contact.title') }}</h2>
             <p class="mt-3 text-slate-600 dark:text-slate-400 {{ $isUrdu ? 'text-lg' : '' }}">{{ __('messages.contact.subtitle') }}</p>
         </div>
 

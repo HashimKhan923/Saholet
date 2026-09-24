@@ -10,7 +10,7 @@
     <div class="absolute inset-0 -z-10 bg-dot-grid opacity-50"></div>
     <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <img src="{{ asset('images/Professionals.jpeg') }}" alt="Sahoulat professionals" class="animate-fade-up mb-8 w-full rounded-2xl md:object-cover object-contain shadow-sm md:h-100 h-32" loading="eager">
-        <h1 class="animate-fade-up font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.providers.title') }}</h1>
+        <h1 class="animate-fade-up font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.providers.title') }}</h1>
         <p class="animate-fade-up mt-3 max-w-2xl text-slate-600 dark:text-slate-400">{{ __('messages.providers.subtitle') }}</p>
 
         {{-- Search + city filter --}}
@@ -55,7 +55,7 @@
                             @if ($provider->user?->avatar_url)
                                 <img src="{{ $provider->user->avatar_url }}" alt="" class="h-12 w-12 shrink-0 rounded-2xl object-cover">
                             @else
-                                <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 font-display text-base font-extrabold text-brand-700 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-900 dark:text-brand-300">
+                                <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 font-display text-base font-bold text-brand-700 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-900 dark:text-brand-300">
                                     {{ mb_substr($provider->business_name ?: ($provider->user?->name ?? 'S'), 0, 1) }}
                                 </span>
                             @endif

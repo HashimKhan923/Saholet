@@ -45,13 +45,13 @@
             @if ($provider->user?->avatar_url)
                 <img src="{{ $provider->user->avatar_url }}" alt="{{ $displayName }}" class="h-20 w-20 rounded-3xl object-cover shadow-lg shadow-brand-600/25">
             @else
-                <span class="flex h-20 w-20 items-center justify-center rounded-3xl bg-brand-600 font-display text-3xl font-extrabold text-white shadow-lg shadow-brand-600/25">
+                <span class="flex h-20 w-20 items-center justify-center rounded-3xl bg-brand-600 font-display text-3xl font-bold text-white shadow-lg shadow-brand-600/25">
                     {{ mb_substr($displayName, 0, 1) }}
                 </span>
             @endif
             <div>
                 <div class="flex flex-wrap items-center gap-2.5">
-                    <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">{{ $displayName }}</h1>
+                    <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">{{ $displayName }}</h1>
                     <span class="inline-flex items-center gap-1 rounded-full bg-brand-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-700 dark:bg-brand-900 dark:text-brand-300">
                         <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m5 12 5 5 9-10" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         {{ __('messages.providers.verified_badge') }}

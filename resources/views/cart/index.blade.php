@@ -5,7 +5,7 @@
 
 @section('content')
 <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Your cart</h1>
+    <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Your cart</h1>
 
     @if ($groups->isEmpty())
         <div class="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-14 text-center dark:border-slate-700 dark:bg-slate-900">
@@ -124,7 +124,7 @@
                             @endif
                         </div>
 
-                        <div class="mt-4 flex justify-between border-t-2 border-slate-100 pt-4 font-display text-base font-extrabold text-slate-900 dark:border-slate-800 dark:text-white">
+                        <div class="mt-4 flex justify-between border-t-2 border-slate-100 pt-4 font-display text-base font-bold text-slate-900 dark:border-slate-800 dark:text-white">
                             <span>Total</span>
                             <span>Rs. {{ number_format($group['subtotal'] - $group['discount'], 0) }}</span>
                         </div>
@@ -137,8 +137,8 @@
                         <p class="text-xs text-slate-500 dark:text-slate-400">{{ $groups->count() }} orders will be placed — one per shop.</p>
                     @endif
                     <div class="mt-1 flex items-center justify-between">
-                        <span class="font-display text-lg font-extrabold text-slate-900 dark:text-white">Grand total</span>
-                        <span class="font-display text-xl font-extrabold text-brand-700 dark:text-brand-400">Rs. {{ number_format($grandTotal, 0) }}</span>
+                        <span class="font-display text-lg font-bold text-slate-900 dark:text-white">Grand total</span>
+                        <span class="font-display text-xl font-bold text-brand-700 dark:text-brand-400">Rs. {{ number_format($grandTotal, 0) }}</span>
                     </div>
                     <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Shipping isn't included yet — it's calculated on the next page once you pick an address.</p>
                     <a href="{{ route('consumer.checkout.show') }}" class="btn-shine mt-4 block w-full rounded-xl bg-brand-600 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Proceed to checkout</a>

@@ -32,7 +32,7 @@
     {{-- ═══ Header ═══ --}}
     <div>
         <div class="flex flex-wrap items-center gap-3">
-            <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $jobPost->service->name }}</h1>
+            <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $jobPost->service->name }}</h1>
             <x-job-status :status="$jobPost->status" />
         </div>
         <p class="mt-1 font-mono text-sm text-slate-400">{{ $jobPost->reference }}</p>
@@ -65,7 +65,7 @@
                     </div>
                     <div>
                         <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Customer budget</dt>
-                        <dd class="mt-1 font-display text-lg font-extrabold text-brand-700 dark:text-brand-400">
+                        <dd class="mt-1 font-display text-lg font-bold text-brand-700 dark:text-brand-400">
                             {{ $jobPost->budget ? 'Rs. ' . number_format((float) $jobPost->budget, 0) : 'Open' }}
                         </dd>
                     </div>
@@ -105,7 +105,7 @@
                     {{-- Settled: accepted / rejected / withdrawn --}}
                     <div class="mt-4 rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/60">
                         <x-bid-status :status="$myBid->status" />
-                        <p class="mt-3 font-display text-xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format((float) $myBid->amount, 0) }}</p>
+                        <p class="mt-3 font-display text-xl font-bold text-slate-900 dark:text-white">Rs. {{ number_format((float) $myBid->amount, 0) }}</p>
                         <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ $myBid->dateLabel() }} at {{ $myBid->timeLabel() }}</p>
                     </div>
 

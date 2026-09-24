@@ -11,7 +11,7 @@
 @if ($isProvider)
     <div class="mx-auto max-w-3xl space-y-6 px-4 sm:px-6 lg:px-8">
         <div>
-            <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ __('messages.profile.title') }}</h1>
+            <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ __('messages.profile.title') }}</h1>
             <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">{{ __('messages.profile.subtitle') }}</p>
         </div>
 
@@ -29,7 +29,7 @@
         <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-50 to-slate-50 dark:from-brand-950 dark:to-slate-950"></div>
         <div class="absolute inset-0 -z-10 bg-dot-grid opacity-50"></div>
         <div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-            <h1 class="animate-fade-up font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ __('messages.profile.title') }}</h1>
+            <h1 class="animate-fade-up font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{{ __('messages.profile.title') }}</h1>
             <p class="animate-fade-up mt-2 text-slate-600 dark:text-slate-400">{{ __('messages.profile.subtitle') }}</p>
         </div>
     </section>

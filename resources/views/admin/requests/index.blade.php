@@ -6,7 +6,7 @@
 <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
     <div>
         <a href="{{ route('admin.dashboard') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Dashboard</a>
-        <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ __('admin.requests.title') }}</h1>
+        <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ __('admin.requests.title') }}</h1>
         <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
             @if ($totalPending > 0)
                 {{ __('admin.requests.subtitle_pending', ['count' => $totalPending, 'items' => __('admin.requests.' . ($totalPending === 1 ? 'item' : 'items'))]) }}
@@ -82,7 +82,7 @@
                 <span class="flex h-9 w-9 items-center justify-center rounded-lg {{ $toneClasses[$s['tone']][0] }}">
                     <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7">{!! $s['icon'] !!}</svg>
                 </span>
-                <p class="mt-3 font-display text-2xl font-extrabold text-slate-900 dark:text-white">{{ $s['items']->count() }}</p>
+                <p class="mt-3 font-display text-2xl font-bold text-slate-900 dark:text-white">{{ $s['items']->count() }}</p>
                 <p class="mt-0.5 text-xs font-medium leading-snug text-slate-500 dark:text-slate-400">{{ $s['title'] }}</p>
             </a>
         @endforeach

@@ -10,7 +10,7 @@
         Products
     </a>
     <div class="mt-2 flex flex-wrap items-center gap-3">
-        <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $product->name }}</h1>
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $product->name }}</h1>
         @if ($product->is_active)
             <a href="{{ route('shop.show', $product) }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400">
                 View on website

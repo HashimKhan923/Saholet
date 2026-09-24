@@ -5,7 +5,7 @@
 @section('content')
 <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
     <a href="{{ route('admin.careers.index') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Job listings</a>
-    <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Applications — {{ $listing->title }}</h1>
+    <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Applications — {{ $listing->title }}</h1>
 
     <div class="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">

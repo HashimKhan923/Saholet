@@ -4,9 +4,9 @@
 
 @theme {
     /* Typography */
-    --font-sans: "Nunito", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-    --font-display: "Nunito", ui-sans-serif, system-ui, sans-serif;
-    --font-urdu: "Noto Nastaliq Urdu", "Nunito", ui-sans-serif, system-ui, sans-serif;
+    --font-sans: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-display: "Poppins", ui-sans-serif, system-ui, sans-serif;
+    --font-urdu: "Noto Naskh Arabic", "Poppins", ui-sans-serif, system-ui, sans-serif;
 
     /*
      * Brand — Sahoulat green, anchored on the primary #1a7a35.
@@ -41,12 +41,13 @@
     --color-accent-950: #3d0f09;
 
     /*
-     * Client feedback (21 Aug demo): text throughout felt too small and too
-     * light, so the whole type scale is shifted up one step (text-sm now
-     * renders at the old text-base size, etc.) and the semibold/bold/
-     * extrabold weights are each bumped one step heavier. Every existing
-     * text-* / font-* utility class picks this up automatically — nothing
-     * else in the codebase needs to change.
+     * Client feedback (21 Aug demo): text throughout felt too small, so the
+     * whole type scale is shifted up one step (text-sm now renders at the old
+     * text-base size, etc.). Every existing text-* utility class picks this up
+     * automatically — nothing else in the codebase needs to change. Font
+     * weights are left at Tailwind's defaults: Poppins is already a sturdy
+     * face, so the old one-step-heavier bump (tuned for the lighter Nunito)
+     * made headings far too heavy.
      */
     --text-xs: 0.875rem;
     --text-xs--line-height: calc(1.25 / 0.875);
@@ -68,11 +69,6 @@
     --text-5xl--line-height: 1;
     --text-6xl: 4.5rem;
     --text-6xl--line-height: 1;
-
-    --font-weight-normal: 500;
-    --font-weight-semibold: 700;
-    --font-weight-bold: 800;
-    --font-weight-extrabold: 900;
 }
 
 /* Hide elements until Alpine initializes */
@@ -95,18 +91,18 @@
     border-width: 1.5px;
 }
 
-/* Urdu / RTL: switch font and give headings room for Nastaliq */
+/* Urdu / RTL: switch font and give headings a little room for Naskh */
 [dir="rtl"] body {
     font-family: var(--font-urdu);
 }
 [dir="rtl"] .font-display {
     font-family: var(--font-urdu);
-    line-height: 2.1;
+    line-height: 1.8;
 }
 /* Decorative Urdu accents shown even in LTR mode */
 .font-urdu {
     font-family: var(--font-urdu);
-    line-height: 2;
+    line-height: 1.7;
 }
 
 /* Dark mode: native form controls/scrollbars follow the theme too */

@@ -13,7 +13,7 @@
             Dashboard
         </a>
         <div class="mt-1 flex flex-wrap items-center gap-3">
-            <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Available jobs</h1>
+            <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Available jobs</h1>
             @if ($approved)
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-700 dark:bg-brand-950/50 dark:text-brand-400">
                     <span class="relative flex h-1.5 w-1.5">
@@ -178,7 +178,7 @@
                             </div>
 
                             <div class="flex shrink-0 items-center justify-between gap-4 sm:flex-col sm:items-end sm:justify-start sm:gap-1">
-                                <p class="font-display text-lg font-extrabold text-brand-700 dark:text-brand-400"
+                                <p class="font-display text-lg font-bold text-brand-700 dark:text-brand-400"
                                    x-text="job.budget ? 'Rs. ' + job.budget : 'Open budget'"></p>
                                 <p class="text-[11px] text-slate-400" x-text="job.posted"></p>
                                 <span class="hidden items-center gap-1 pt-2 text-xs font-semibold text-slate-300 transition group-hover:text-brand-600 sm:inline-flex dark:text-slate-600">

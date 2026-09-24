@@ -7,7 +7,7 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
         <div>
             <a href="{{ route('admin.dashboard') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Dashboard</a>
-            <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
                 {{ ['invoice' => 'Invoices', 'quotation' => 'Quotations'][$type] ?? 'Invoices & quotations' }}
             </h1>
         </div>

@@ -16,7 +16,7 @@
     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
             <div class="flex flex-wrap items-center gap-3">
-                <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $booking->service->name }}</h1>
+                <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $booking->service->name }}</h1>
                 <x-booking-status :status="$booking->status" />
             </div>
             <p class="mt-1 font-mono text-sm text-slate-400">{{ $booking->reference }}</p>
@@ -60,7 +60,7 @@
 
                     <div>
                         <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Price</dt>
-                        <dd class="mt-1 font-display text-lg font-extrabold text-brand-700 dark:text-brand-400">Rs. {{ number_format((float) $booking->price, 0) }}</dd>
+                        <dd class="mt-1 font-display text-lg font-bold text-brand-700 dark:text-brand-400">Rs. {{ number_format((float) $booking->price, 0) }}</dd>
                     </div>
 
                     <div class="sm:col-span-2">
@@ -193,7 +193,7 @@
                         <div class="rounded-2xl border-2 border-amber-300 bg-amber-50 p-4 shadow-sm dark:border-amber-800 dark:bg-amber-950/30">
                             <div class="flex items-center gap-2">
                                 <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 16.5v.5" stroke-linecap="round"/><path d="M10.3 3.3 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0z" stroke-linejoin="round"/></svg>
-                                <h3 class="font-display text-sm font-extrabold uppercase tracking-wide text-amber-900 dark:text-amber-300">Proof of work</h3>
+                                <h3 class="font-display text-sm font-bold uppercase tracking-wide text-amber-900 dark:text-amber-300">Proof of work</h3>
                             </div>
                             <p class="mt-1 text-xs text-amber-800 dark:text-amber-400">Adding before/after photos helps protect you in a dispute — recommended, but not required.</p>
 
@@ -295,12 +295,12 @@
                 </div>
 
                 @if ($payment && $payment->isEscrow())
-                    <p class="mt-3 font-display text-xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format((float) $payment->amount, 0) }}</p>
+                    <p class="mt-3 font-display text-xl font-bold text-slate-900 dark:text-white">Rs. {{ number_format((float) $payment->amount, 0) }}</p>
                     <p class="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
                         Pending. It releases to your wallet once the customer confirms completion @if ($booking->hasOpenDispute()) <span class="font-semibold text-amber-600 dark:text-amber-400">(on hold — open dispute)</span>@endif.
                     </p>
                 @elseif ($payment && $payment->isReleased())
-                    <p class="mt-3 font-display text-xl font-extrabold text-brand-700 dark:text-brand-400">Rs. {{ number_format((float) $payment->amount, 0) }}</p>
+                    <p class="mt-3 font-display text-xl font-bold text-brand-700 dark:text-brand-400">Rs. {{ number_format((float) $payment->amount, 0) }}</p>
                     <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
                         Released to your <a href="{{ route('provider.wallet.index') }}" class="font-semibold text-brand-700 underline underline-offset-2 hover:text-brand-800 dark:text-brand-400">wallet</a>.
                     </p>

@@ -5,7 +5,7 @@
 @section('content')
 <section class="border-b border-slate-100 bg-gradient-to-b from-brand-50 to-slate-50 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950">
     <div class="mx-auto max-w-4xl px-4 py-14 sm:px-6 lg:px-8">
-        <h1 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Terms and Conditions</h1>
+        <h1 class="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Terms and Conditions</h1>
         <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">Effective Date: 17 July 2026 &middot; Last Updated: 17 July 2026</p>
     </div>
 </section>

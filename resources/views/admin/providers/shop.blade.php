@@ -5,19 +5,19 @@
 @section('content')
 <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
     <a href="{{ route('admin.providers.show', $provider) }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; {{ $provider->business_name ?: $provider->user->name }}</a>
-    <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $provider->business_name ?: $provider->user->name }}'s shop</h1>
+    <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $provider->business_name ?: $provider->user->name }}'s shop</h1>
 
     <div class="mt-6 grid grid-cols-3 gap-3 sm:max-w-md">
         <div class="rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="font-display text-xl font-extrabold text-slate-900 dark:text-white">{{ $products->total() }}</p>
+            <p class="font-display text-xl font-bold text-slate-900 dark:text-white">{{ $products->total() }}</p>
             <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Products</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="font-display text-xl font-extrabold text-slate-900 dark:text-white">{{ $orders->total() }}</p>
+            <p class="font-display text-xl font-bold text-slate-900 dark:text-white">{{ $orders->total() }}</p>
             <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Orders</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="font-display text-xl font-extrabold text-slate-900 dark:text-white">{{ $ratingCount > 0 ? number_format((float) $ratingAvg, 1) : '—' }}</p>
+            <p class="font-display text-xl font-bold text-slate-900 dark:text-white">{{ $ratingCount > 0 ? number_format((float) $ratingAvg, 1) : '—' }}</p>
             <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Rating ({{ $ratingCount }})</p>
         </div>
     </div>

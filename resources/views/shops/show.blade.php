@@ -16,12 +16,12 @@
                     @if ($provider->shopLogoUrl())
                         <img src="{{ $provider->shopLogoUrl() }}" alt="{{ $provider->shopName() }}" class="h-full w-full object-cover">
                     @else
-                        <span class="font-display text-2xl font-extrabold text-brand-600 dark:text-brand-400">{{ mb_substr($provider->shopName(), 0, 1) }}</span>
+                        <span class="font-display text-2xl font-bold text-brand-600 dark:text-brand-400">{{ mb_substr($provider->shopName(), 0, 1) }}</span>
                     @endif
                 </div>
 
                 <div class="min-w-0">
-                    <h1 class="truncate font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">{{ $provider->shopName() }}</h1>
+                    <h1 class="truncate font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">{{ $provider->shopName() }}</h1>
                     @if ($provider->city)
                         <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">{{ $provider->city }}</p>
                     @endif

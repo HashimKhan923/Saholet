@@ -26,11 +26,11 @@
         <div class="mt-auto flex items-center justify-between pt-3">
             @if ($product->hasDiscount())
                 <span class="flex items-baseline gap-1.5">
-                    <span class="font-display text-base font-extrabold text-brand-600 dark:text-brand-400">Rs. {{ number_format($product->effectivePrice(), 0) }}</span>
+                    <span class="font-display text-base font-bold text-brand-600 dark:text-brand-400">Rs. {{ number_format($product->effectivePrice(), 0) }}</span>
                     <span class="text-xs text-red-600 line-through dark:text-red-400">Rs. {{ number_format((float) $product->price, 0) }}</span>
                 </span>
             @else
-                <span class="font-display text-base font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format((float) $product->price, 0) }}</span>
+                <span class="font-display text-base font-bold text-slate-900 dark:text-white">Rs. {{ number_format((float) $product->price, 0) }}</span>
             @endif
             @unless ($product->isInStock())
                 <span class="text-[11px] font-semibold text-red-600 dark:text-red-400">Out of stock</span>

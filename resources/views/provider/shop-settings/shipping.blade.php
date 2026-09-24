@@ -5,7 +5,7 @@
 
 @section('content')
 <section class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
-    <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Shipping & delivery</h1>
+    <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Shipping & delivery</h1>
     <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">How you price shipping — pick one, or leave delivery off if you only offer pickup.</p>
 
     @if ($errors->any())

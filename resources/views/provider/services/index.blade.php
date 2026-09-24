@@ -26,7 +26,7 @@
         </a>
         <div class="relative mt-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-                <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">My services</h1>
+                <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">My services</h1>
                 <p class="mt-1.5 max-w-prose text-sm leading-relaxed text-slate-500 dark:text-slate-400">
                     Only <span class="font-semibold text-slate-700 dark:text-slate-200">active</span> services appear in search and match you to jobs.
                 </p>

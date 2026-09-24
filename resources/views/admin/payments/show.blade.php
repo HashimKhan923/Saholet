@@ -9,7 +9,7 @@
     </div>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
-        <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $payment->reference }}</h1>
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $payment->reference }}</h1>
         @switch($payment->status)
             @case('pending')
                 <span class="inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-950/40 dark:text-amber-400">Pending verification</span>

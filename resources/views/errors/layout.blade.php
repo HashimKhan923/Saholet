@@ -12,7 +12,7 @@
     <title>@yield('code') — {{ config('app.name') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css'])
 </head>
 <body class="min-h-screen bg-slate-50 font-sans text-slate-700 antialiased dark:bg-slate-950 dark:text-slate-300">
@@ -21,10 +21,10 @@
             <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600 text-white shadow-sm">
                 <svg viewBox="0 0 24 24" class="h-5 w-5"><path d="M4 11.5 12 5l8 6.5V20a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1v-8.5z" fill="currentColor"/></svg>
             </span>
-            <span class="font-display text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ config('app.name') }}</span>
+            <span class="font-display text-xl font-bold tracking-tight text-slate-900 dark:text-white">{{ config('app.name') }}</span>
         </a>
 
-        <p class="font-display text-6xl font-extrabold text-brand-600">@yield('code')</p>
+        <p class="font-display text-6xl font-bold text-brand-600">@yield('code')</p>
         <h1 class="mt-4 font-display text-2xl font-bold text-slate-900 dark:text-white">@yield('heading')</h1>
         <p class="mt-2 max-w-md text-sm leading-relaxed text-slate-600 dark:text-slate-400">@yield('message')</p>
 

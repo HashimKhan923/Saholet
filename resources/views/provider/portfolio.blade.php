@@ -4,7 +4,7 @@
 
 @section('content')
 <section class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-    <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Portfolio</h1>
+    <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Portfolio</h1>
     <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Show off completed work — before/after shots build trust and win more bookings. Up to 12 photos, visible on your public profile.</p>
 
     @php $remaining = 12 - $photos->count(); @endphp

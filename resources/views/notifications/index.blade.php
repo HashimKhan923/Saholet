@@ -11,7 +11,7 @@
 @if ($isProvider)
     <div class="mx-auto max-w-3xl space-y-6 px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between">
-            <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Notifications</h1>
+            <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Notifications</h1>
             @if ($notifications->getCollection()->whereNull('read_at')->isNotEmpty())
                 <form method="POST" action="{{ route('notifications.read-all') }}">
                     @csrf
@@ -54,7 +54,7 @@
 @else
     <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between">
-            <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Notifications</h1>
+            <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Notifications</h1>
 @if ($notifications->getCollection()->whereNull('read_at')->isNotEmpty())
                 <form method="POST" action="{{ route('notifications.read-all') }}">
                     @csrf

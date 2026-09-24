@@ -15,7 +15,7 @@
     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
             <div class="flex flex-wrap items-center gap-3">
-                <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $order->reference }}</h1>
+                <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $order->reference }}</h1>
                 <x-order-status :status="$order->status" />
                 <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold uppercase text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                     {{ $order->isPickup() ? 'Pickup' : 'Delivery' }}
@@ -55,7 +55,7 @@
                     <div class="flex justify-between text-slate-500 dark:text-slate-400">
                         <span>Shipping</span><span>Rs. {{ number_format((float) $order->shipping_amount, 0) }}</span>
                     </div>
-                    <div class="flex justify-between font-display text-base font-extrabold text-slate-900 dark:text-white">
+                    <div class="flex justify-between font-display text-base font-bold text-slate-900 dark:text-white">
                         <span>Total</span><span>Rs. {{ number_format((float) $order->total_amount, 0) }}</span>
                     </div>
                 </div>

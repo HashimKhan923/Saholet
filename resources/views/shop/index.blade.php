@@ -9,7 +9,7 @@
     <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-50 to-slate-50 dark:from-brand-950 dark:to-slate-950"></div>
     <div class="absolute inset-0 -z-10 bg-dot-grid opacity-50"></div>
     <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <h1 class="animate-fade-up font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+        <h1 class="animate-fade-up font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
             {{ $provider ? $provider->business_name . "'s products" : 'Products' }}
         </h1>
         <p class="animate-fade-up mt-3 max-w-2xl text-slate-600 dark:text-slate-400">

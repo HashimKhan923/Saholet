@@ -14,7 +14,7 @@
     {{-- Progress bar --}}
     <div class="flex items-center justify-between">
         <p class="text-xs font-bold uppercase tracking-wide text-slate-400">Verification progress</p>
-        <p class="font-display text-sm font-extrabold text-brand-700 dark:text-brand-400">{{ $progress }}%</p>
+        <p class="font-display text-sm font-bold text-brand-700 dark:text-brand-400">{{ $progress }}%</p>
     </div>
 
     <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">

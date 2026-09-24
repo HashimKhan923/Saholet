@@ -5,7 +5,7 @@
 @section('content')
 <section class="mx-auto max-w-xl px-4 py-12 sm:px-6 lg:px-8">
     <a href="{{ route('consumer.bookings.show', $booking) }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Back to booking</a>
-    <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Pay securely</h1>
+    <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Pay securely</h1>
     <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Your payment is held pending and only released to the provider after the job is completed and you confirm.</p>
 
     <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -14,7 +14,7 @@
                 <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ $booking->service->name }}</p>
                 <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{{ $booking->providerProfile->business_name ?: $booking->providerProfile->user->name }} · {{ $booking->reference }}</p>
             </div>
-            <p class="font-display text-xl font-extrabold text-slate-900 dark:text-white">Rs. {{ number_format($booking->price, 0) }}</p>
+            <p class="font-display text-xl font-bold text-slate-900 dark:text-white">Rs. {{ number_format($booking->price, 0) }}</p>
         </div>
     </div>
 

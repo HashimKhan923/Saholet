@@ -5,7 +5,7 @@
 @section('content')
 <section class="mx-auto max-w-2xl px-4 py-12 sm:px-6 lg:px-8">
     <a href="{{ route('job-seeker.dashboard') }}" class="text-sm text-slate-500 hover:text-brand-600">&larr; Dashboard</a>
-    <h1 class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">My profile</h1>
+    <h1 class="mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">My profile</h1>
     <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Keep this up to date — it's reused every time you apply.</p>
 
     @if ($errors->any())

@@ -7,7 +7,7 @@
     <a href="{{ route('admin.products.index') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; Shop products</a>
 
     <div class="mt-2 flex flex-wrap items-center gap-3">
-        <h1 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{{ $product->name }}</h1>
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ $product->name }}</h1>
         @if ($product->is_active)
             <span class="inline-flex rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-950/40 dark:text-brand-400">Active</span>
         @else
@@ -45,7 +45,7 @@
             </div>
             <div>
                 <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Price</dt>
-                <dd class="mt-1 font-display text-lg font-extrabold text-brand-700 dark:text-brand-400">Rs. {{ number_format((float) $product->price, 0) }}</dd>
+                <dd class="mt-1 font-display text-lg font-bold text-brand-700 dark:text-brand-400">Rs. {{ number_format((float) $product->price, 0) }}</dd>
             </div>
             <div>
                 <dt class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">Stock</dt>

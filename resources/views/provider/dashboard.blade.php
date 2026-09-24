@@ -40,7 +40,7 @@
                     @endif
                 </div>
 
-                <h1 class="mt-3 font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+                <h1 class="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
                     {{ __('provider.dashboard.' . $greetingKey) }}, {{ auth()->user()->name }}
                 </h1>
 
@@ -182,7 +182,7 @@
                     <div>
                         <div class="flex items-baseline justify-between">
                             <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">{{ $label }}</p>
-                            <p class="font-display text-lg font-extrabold text-slate-900 dark:text-white">
+                            <p class="font-display text-lg font-bold text-slate-900 dark:text-white">
                                 {{ is_null($val) ? '—' : $val . $unit }}
                             </p>
                         </div>
@@ -196,7 +196,7 @@
                 <div>
                     <div class="flex items-baseline justify-between">
                         <p class="text-xs font-bold uppercase tracking-wide text-slate-900 dark:text-slate-200">{{ __('provider.dashboard.response_time') }}</p>
-                        <p class="font-display text-lg font-extrabold text-slate-900 dark:text-white">
+                        <p class="font-display text-lg font-bold text-slate-900 dark:text-white">
                             @if (is_null($responseMinutes))
                                 —
                             @elseif ($responseMinutes < 60)
@@ -245,7 +245,7 @@
                                 <li>
                                     <a href="{{ route('provider.bookings.show', $booking) }}" class="flex items-center gap-4 px-6 py-4 transition hover:bg-slate-50 dark:hover:bg-slate-800/60">
                                         <div class="w-16 shrink-0 text-center">
-                                            <p class="font-display text-sm font-extrabold text-slate-900 dark:text-white">{{ \Illuminate\Support\Carbon::parse($booking->scheduled_time)->format('g:i') }}</p>
+                                            <p class="font-display text-sm font-bold text-slate-900 dark:text-white">{{ \Illuminate\Support\Carbon::parse($booking->scheduled_time)->format('g:i') }}</p>
                                             <p class="text-[10px] font-bold uppercase tracking-wide text-slate-400">{{ \Illuminate\Support\Carbon::parse($booking->scheduled_time)->format('A') }}</p>
                                         </div>
                                         <div class="h-10 w-px shrink-0 bg-slate-200 dark:bg-slate-700"></div>
@@ -271,7 +271,7 @@
                             <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('provider.dashboard.earnings_title') }}</h2>
                             <p class="mt-0.5 text-xs text-slate-400">{{ __('provider.dashboard.earnings_subtitle') }}</p>
                         </div>
-                        <p class="font-display text-xl font-extrabold text-brand-700 dark:text-brand-400">Rs. {{ number_format($earningsTotal, 0) }}</p>
+                        <p class="font-display text-xl font-bold text-brand-700 dark:text-brand-400">Rs. {{ number_format($earningsTotal, 0) }}</p>
                     </div>
 
                     <div class="mt-6 flex h-40 items-end gap-2 sm:gap-4">
