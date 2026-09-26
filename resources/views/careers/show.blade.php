@@ -50,7 +50,7 @@
 @endpush
 
 @section('content')
-<section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+<section class="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
     <a href="{{ route('careers.index') }}" class="text-sm text-slate-500 hover:text-brand-600 dark:text-slate-400">&larr; {{ __('messages.careers.back_link') }}</a>
 
     @include('careers._job-detail', ['listing' => $listing, 'headingTag' => 'h1'])

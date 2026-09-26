@@ -26,12 +26,12 @@
 @endphp
 
 <{{ $tag }} @if ($href) href="{{ $href }}" @endif
-    class="card-lift group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-br {{ $bgGradient }} p-5 shadow-sm shadow-slate-900/[0.03] dark:border-slate-800 dark:from-slate-900 dark:to-slate-900">
+    class="card-lift group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-br {{ $bgGradient }} min-w-0 p-3 shadow-sm sm:p-5 shadow-slate-900/[0.03] dark:border-slate-800 dark:from-slate-900 dark:to-slate-900">
 
     <div class="pointer-events-none absolute -end-8 -top-8 h-28 w-28 rounded-full {{ $glowTone }} blur-2xl transition duration-500 group-hover:scale-125"></div>
 
     <div class="relative flex items-start justify-between gap-3">
-        <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br {{ $iconGradient }} text-white shadow-md shadow-slate-900/10 transition duration-300 group-hover:scale-105 group-hover:-rotate-3">
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br {{ $iconGradient }} sm:h-11 sm:w-11 text-white shadow-md shadow-slate-900/10 transition duration-300 group-hover:scale-105 group-hover:-rotate-3">
             {{ $slot }}
         </span>
 
@@ -47,9 +47,9 @@
         @endif
     </div>
 
-    <p class="relative mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ $label }}</p>
+    <p class="relative mt-3 text-[11px] leading-tight font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 sm:mt-4 sm:text-xs">{{ $label }}</p>
 
-    <p class="relative mt-1 font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+    <p class="relative mt-1 font-display text-xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-2xl">
         @if ($prefix)<span class="text-base font-bold text-slate-400">{{ $prefix }}</span>@endif<span
             x-data="{
                 n: 0,

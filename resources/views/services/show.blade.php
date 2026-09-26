@@ -23,7 +23,7 @@
 @endpush
 
 @section('content')
-<section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+<section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
 
     <nav class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
         <a href="{{ route('services.index') }}" class="hover:text-brand-600 dark:hover:text-brand-400">Services</a>

@@ -3,7 +3,7 @@
 @section('title', $booking->reference . ' — ' . config('app.name'))
 
 @section('content')
-<section class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+<section class="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
     <a href="{{ route('consumer.bookings.index') }}" class="text-sm text-slate-500 hover:text-brand-600">&larr; My bookings</a>
 
     <div class="mt-2 flex flex-wrap items-center justify-between gap-3">

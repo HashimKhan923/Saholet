@@ -20,10 +20,10 @@
             </div>
         @endif
     </div>
-    <div class="flex flex-1 flex-col p-4">
+    <div class="flex flex-1 flex-col p-3 sm:p-4">
         <h3 class="font-display text-sm font-bold text-slate-900 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-400">{{ $product->name }}</h3>
         <p class="mt-0.5 text-xs text-slate-400">{{ $product->providerProfile->shopName() }}</p>
-        <div class="mt-auto flex items-center justify-between pt-3">
+        <div class="mt-auto flex flex-wrap items-center justify-between gap-x-2 pt-2 sm:pt-3">
             @if ($product->hasDiscount())
                 <span class="flex items-baseline gap-1.5">
                     <span class="font-display text-base font-bold text-brand-600 dark:text-brand-400">Rs. {{ number_format($product->effectivePrice(), 0) }}</span>

@@ -34,7 +34,7 @@
     <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-50 to-slate-50 dark:from-brand-950 dark:to-slate-950"></div>
     <div class="absolute inset-0 -z-10 bg-dot-grid opacity-50"></div>
 
-    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {{-- Back link --}}
         <a href="{{ route('providers.index') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-brand-700 dark:text-slate-400">
             <svg viewBox="0 0 24 24" class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -94,7 +94,7 @@
     </div>
 </section>
 
-<section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8"
+<section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8"
     x-data="{ lightboxOpen: false, lightboxSrc: null, lightboxCaption: null,
         openLightbox(src, caption) { this.lightboxSrc = src; this.lightboxCaption = caption; this.lightboxOpen = true; } }">
     <div class="grid gap-8 lg:grid-cols-3">

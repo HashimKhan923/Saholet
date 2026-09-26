@@ -95,7 +95,7 @@
                         @drop.prevent="reorderDrop(index)"
                         :class="dragIndex === index ? 'border-brand-400 opacity-50' : 'border-slate-200 dark:border-slate-700'">
                         <img :src="photo.url" class="h-full w-full object-cover">
-                        <span x-show="index === 0" class="absolute left-1 top-1 rounded-full bg-brand-600 px-1.5 py-0.5 text-[10px] font-bold text-white shadow-sm">Cover</span>
+                        <span x-show="index === 0" class="absolute left-1 top-1 rounded-full bg-brand-600 px-1.5 py-0.5 text-[11px] font-bold text-white shadow-sm">Cover</span>
                         <button type="button" @click.stop="remove(index)"
                             class="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-slate-900/70 text-white opacity-0 transition group-hover:opacity-100"
                             aria-label="Remove photo">

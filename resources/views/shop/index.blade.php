@@ -8,7 +8,7 @@
 <section class="relative overflow-hidden border-b border-slate-100 dark:border-slate-800">
     <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-50 to-slate-50 dark:from-brand-950 dark:to-slate-950"></div>
     <div class="absolute inset-0 -z-10 bg-dot-grid opacity-50"></div>
-    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-14 lg:px-8">
         <h1 class="animate-fade-up font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
             {{ $provider ? $provider->business_name . "'s products" : 'Products' }}
         </h1>
@@ -39,14 +39,14 @@
     </div>
 </section>
 
-<section class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+<section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-14 lg:px-8">
     @if ($products->isEmpty())
         <div class="rounded-3xl border border-dashed border-slate-300 bg-white p-14 text-center dark:border-slate-700 dark:bg-slate-900">
             <svg viewBox="0 0 24 24" class="mx-auto h-10 w-10 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m3 15 4.5-4.5a2 2 0 0 1 2.8 0L15 15M13.5 13.5 15.5 11.5a2 2 0 0 1 2.8 0L21 14.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">No products found.</p>
         </div>
     @else
-        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
             @foreach ($products as $product)
                 <x-product-card :product="$product" :wishlisted="($wishlistedIds ?? collect())->contains($product->id)" />
             @endforeach

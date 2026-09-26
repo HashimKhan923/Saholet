@@ -187,7 +187,7 @@
                                 <div class="min-w-0">
                                     <div class="flex flex-wrap items-center gap-2">
                                         <p class="text-sm font-bold text-slate-900 dark:text-white">{{ $meta['label'] }}</p>
-                                        <span class="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide
+                                        <span class="rounded-full px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide
                                             {{ $required
                                                 ? 'bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400'
                                                 : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500' }}">

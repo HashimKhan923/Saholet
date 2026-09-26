@@ -4,7 +4,7 @@
 
 @section('content')
 <section class="border-b border-slate-100 bg-gradient-to-b from-brand-50 to-slate-50 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950">
-    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-14 lg:px-8">
         <img src="{{ asset('images/Career.jpeg') }}?v={{ filemtime(public_path('images/Career.jpeg')) }}" alt="Careers at Sahoulat" class="mb-8 h-auto w-full rounded-2xl shadow-sm md:h-100 md:object-cover" loading="eager">
         <h1 class="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.careers.title') }}</h1>
         <p class="mt-3 max-w-2xl text-slate-600 dark:text-slate-400">{{ __('messages.careers.subtitle') }}</p>
@@ -34,7 +34,7 @@
     </div>
 </section>
 
-<section class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+<section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-14 lg:px-8">
     @if ($listings->isEmpty())
         <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-700 dark:bg-slate-900">
             <p class="font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('messages.careers.empty_title') }}</p>

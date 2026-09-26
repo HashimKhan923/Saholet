@@ -91,7 +91,7 @@
                         <div class="flex flex-wrap items-center gap-2">
                             <span class="truncate text-sm font-bold text-slate-900 dark:text-white">{{ $order->reference }}</span>
                             <x-order-status :status="$order->status" />
-                            <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                            <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold uppercase text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                                 {{ $order->isPickup() ? 'Pickup' : 'Delivery' }}
                             </span>
                         </div>

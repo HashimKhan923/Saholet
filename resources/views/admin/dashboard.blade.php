@@ -69,46 +69,46 @@
     @if ($showOperationsSection)
     {{-- Operations --}}
     <h2 class="mt-10 font-display text-base font-bold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.dashboard.operations_section') }}</h2>
-    <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+    <div class="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-5">
         @if ($u->hasPermission('bookings'))
-        <a href="{{ route('admin.bookings.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
-            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-600 text-white transition group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 11h16" stroke-linecap="round"/></svg></span>
-            <h3 class="mt-4 font-display text-lg font-bold text-slate-900 dark:text-white">Bookings</h3>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Every booking across direct, bids, contracts, subscriptions & emergencies.</p>
+        <a href="{{ route('admin.bookings.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-4 sm:p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white transition sm:h-11 sm:w-11 group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 11h16" stroke-linecap="round"/></svg></span>
+            <h3 class="mt-3 font-display text-base font-bold leading-snug text-slate-900 dark:text-white sm:mt-4 sm:text-lg">Bookings</h3>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400 sm:text-sm">Every booking across direct, bids, contracts, subscriptions & emergencies.</p>
         </a>
         @endif
         @if ($u->hasPermission('categories'))
-        <a href="{{ route('admin.categories.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
-            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-600 text-white transition group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><x-service-icon name="default" class="h-6 w-6" /></span>
-            <h3 class="mt-4 font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('admin.dashboard.categories_title') }}</h3>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('admin.dashboard.categories_desc') }}</p>
+        <a href="{{ route('admin.categories.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-4 sm:p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white transition sm:h-11 sm:w-11 group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><x-service-icon name="default" class="h-6 w-6" /></span>
+            <h3 class="mt-3 font-display text-base font-bold leading-snug text-slate-900 dark:text-white sm:mt-4 sm:text-lg">{{ __('admin.dashboard.categories_title') }}</h3>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400 sm:text-sm">{{ __('admin.dashboard.categories_desc') }}</p>
         </a>
         @endif
         @if ($u->hasPermission('services'))
-        <a href="{{ route('admin.services.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
-            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-600 text-white transition group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><x-service-icon name="appliance" class="h-6 w-6" /></span>
-            <h3 class="mt-4 font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('admin.dashboard.services_title') }}</h3>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('admin.dashboard.services_desc') }}</p>
+        <a href="{{ route('admin.services.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-4 sm:p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white transition sm:h-11 sm:w-11 group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><x-service-icon name="appliance" class="h-6 w-6" /></span>
+            <h3 class="mt-3 font-display text-base font-bold leading-snug text-slate-900 dark:text-white sm:mt-4 sm:text-lg">{{ __('admin.dashboard.services_title') }}</h3>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400 sm:text-sm">{{ __('admin.dashboard.services_desc') }}</p>
         </a>
         @endif
         @if ($u->hasPermission('providers'))
-        <a href="{{ route('admin.providers.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
+        <a href="{{ route('admin.providers.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-4 sm:p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
             <div class="flex items-start justify-between">
-                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-600 text-white transition group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke-linecap="round"/></svg></span>
+                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white transition sm:h-11 sm:w-11 group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke-linecap="round"/></svg></span>
                 @if ($pendingProviders > 0)<span class="inline-flex items-center rounded-full bg-amber-500 px-2.5 py-1 text-xs font-bold text-white">{{ $pendingProviders }}</span>@endif
             </div>
-            <h3 class="mt-4 font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('admin.dashboard.provider_approvals_title') }}</h3>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('admin.dashboard.provider_approvals_desc') }}</p>
+            <h3 class="mt-3 font-display text-base font-bold leading-snug text-slate-900 dark:text-white sm:mt-4 sm:text-lg">{{ __('admin.dashboard.provider_approvals_title') }}</h3>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400 sm:text-sm">{{ __('admin.dashboard.provider_approvals_desc') }}</p>
         </a>
         @endif
         @if ($u->hasPermission('disputes'))
-        <a href="{{ route('admin.disputes.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
+        <a href="{{ route('admin.disputes.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-4 sm:p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
             <div class="flex items-start justify-between">
-                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-600 text-white transition group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4M12 16.5v.5" stroke-linecap="round"/><path d="M10.3 3.3 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0z" stroke-linejoin="round"/></svg></span>
+                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white transition sm:h-11 sm:w-11 group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4M12 16.5v.5" stroke-linecap="round"/><path d="M10.3 3.3 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0z" stroke-linejoin="round"/></svg></span>
                 @if ($openDisputes > 0)<span class="inline-flex items-center rounded-full bg-red-500 px-2.5 py-1 text-xs font-bold text-white">{{ $openDisputes }}</span>@endif
             </div>
-            <h3 class="mt-4 font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('admin.dashboard.disputes_title') }}</h3>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('admin.dashboard.disputes_desc') }}</p>
+            <h3 class="mt-3 font-display text-base font-bold leading-snug text-slate-900 dark:text-white sm:mt-4 sm:text-lg">{{ __('admin.dashboard.disputes_title') }}</h3>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400 sm:text-sm">{{ __('admin.dashboard.disputes_desc') }}</p>
         </a>
         @endif
     </div>
@@ -117,33 +117,33 @@
     @if ($showToolsSection)
     {{-- Tools --}}
     <h2 class="mt-10 font-display text-base font-bold uppercase tracking-wide text-slate-900 dark:text-slate-100">{{ __('admin.dashboard.tools_section') }}</h2>
-    <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+    <div class="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
         @if ($u->isAdmin())
-        <a href="{{ route('admin.analytics.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
-            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-600 text-white transition group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <h3 class="mt-4 font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('admin.dashboard.analytics_title') }}</h3>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('admin.dashboard.analytics_desc') }}</p>
+        <a href="{{ route('admin.analytics.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-4 sm:p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white transition sm:h-11 sm:w-11 group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <h3 class="mt-3 font-display text-base font-bold leading-snug text-slate-900 dark:text-white sm:mt-4 sm:text-lg">{{ __('admin.dashboard.analytics_title') }}</h3>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400 sm:text-sm">{{ __('admin.dashboard.analytics_desc') }}</p>
         </a>
         @endif
         @if ($u->isAdmin())
-        <a href="{{ route('admin.users.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
-            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-600 text-white transition group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 2.7-5 6-5s6 2 6 5M16 11h5M18.5 8.5v5" stroke-linecap="round"/></svg></span>
-            <h3 class="mt-4 font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('admin.dashboard.users_title') }}</h3>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('admin.dashboard.users_desc') }}</p>
+        <a href="{{ route('admin.users.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-4 sm:p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white transition sm:h-11 sm:w-11 group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 2.7-5 6-5s6 2 6 5M16 11h5M18.5 8.5v5" stroke-linecap="round"/></svg></span>
+            <h3 class="mt-3 font-display text-base font-bold leading-snug text-slate-900 dark:text-white sm:mt-4 sm:text-lg">{{ __('admin.dashboard.users_title') }}</h3>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400 sm:text-sm">{{ __('admin.dashboard.users_desc') }}</p>
         </a>
         @endif
         @if ($u->hasPermission('service-areas'))
-        <a href="{{ route('admin.service-areas.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
-            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-600 text-white transition group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="11" r="3"/><path d="M12 2c4 0 7 3 7 7 0 4.5-7 13-7 13S5 13.5 5 9c0-4 3-7 7-7z" stroke-linejoin="round"/></svg></span>
-            <h3 class="mt-4 font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('admin.dashboard.service_areas_title') }}</h3>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('admin.dashboard.service_areas_desc') }}</p>
+        <a href="{{ route('admin.service-areas.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-4 sm:p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white transition sm:h-11 sm:w-11 group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="11" r="3"/><path d="M12 2c4 0 7 3 7 7 0 4.5-7 13-7 13S5 13.5 5 9c0-4 3-7 7-7z" stroke-linejoin="round"/></svg></span>
+            <h3 class="mt-3 font-display text-base font-bold leading-snug text-slate-900 dark:text-white sm:mt-4 sm:text-lg">{{ __('admin.dashboard.service_areas_title') }}</h3>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400 sm:text-sm">{{ __('admin.dashboard.service_areas_desc') }}</p>
         </a>
         @endif
         @if ($u->hasPermission('fraud'))
-        <a href="{{ route('admin.fraud.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
-            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-600 text-white transition group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 4 6v5c0 4.5 3.2 7.8 8 9 4.8-1.2 8-4.5 8-9V6l-8-3z" stroke-linejoin="round"/><path d="M9.5 12 11 13.5 14.5 10" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <h3 class="mt-4 font-display text-lg font-bold text-slate-900 dark:text-white">{{ __('admin.dashboard.fraud_title') }}</h3>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('admin.dashboard.fraud_desc') }}</p>
+        <a href="{{ route('admin.fraud.index') }}" class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-brand-50/60 p-4 sm:p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md dark:border-slate-800 dark:from-slate-900 dark:to-slate-900 dark:hover:border-brand-800">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white transition sm:h-11 sm:w-11 group-hover:bg-brand-50 group-hover:text-brand-600 dark:bg-brand-500 dark:group-hover:bg-brand-950/50 dark:group-hover:text-brand-400"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 4 6v5c0 4.5 3.2 7.8 8 9 4.8-1.2 8-4.5 8-9V6l-8-3z" stroke-linejoin="round"/><path d="M9.5 12 11 13.5 14.5 10" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <h3 class="mt-3 font-display text-base font-bold leading-snug text-slate-900 dark:text-white sm:mt-4 sm:text-lg">{{ __('admin.dashboard.fraud_title') }}</h3>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400 sm:text-sm">{{ __('admin.dashboard.fraud_desc') }}</p>
         </a>
         @endif
     </div>
