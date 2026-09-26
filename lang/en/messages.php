@@ -115,6 +115,10 @@ return [
         'about_work_desc' => 'Direct booking, post-a-job bidding, multi-service contracts, and emergency response — one platform, every way you need help.',
 
         // Video reviews
+        'brands_eyebrow' => 'Our Clients',
+        'brands_title' => 'Brands We\'ve Worked With',
+        'brands_sub' => 'Businesses that have trusted Sahoulat with their home and facility needs.',
+
         'video_reviews_eyebrow' => 'Reviews',
         'video_reviews_title' => 'Customer Experience',
         'video_reviews_sub' => 'Real feedback from customers who\'ve experienced our services firsthand.',

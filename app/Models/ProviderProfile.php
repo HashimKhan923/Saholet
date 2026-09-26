@@ -223,6 +223,37 @@ class ProviderProfile extends Model
         return $this->documents->firstWhere('type', $type);
     }
 
+    /**
+     * KYC document slots in upload order (config/kyc.php). A slot is locked until
+     * every slot before it has a document, so providers upload in sequence.
+     *
+     * @return array<string, array{label: string, required: bool, order: int, locked: bool, blocked_by: ?string}>
+     */
+    public function documentSlots(): array
+    {
+        $this->loadMissing('documents');
+
+        $slots = [];
+        $blockedBy = null;
+        $order = 0;
+
+        foreach (config('kyc.documents') as $key => $meta) {
+            $slots[$key] = [
+                ...$meta,
+                'required' => (bool) ($meta['required'] ?? false),
+                'order' => ++$order,
+                'locked' => $blockedBy !== null,
+                'blocked_by' => $blockedBy,
+            ];
+
+            if ($blockedBy === null && $this->documentOfType($key) === null) {
+                $blockedBy = $meta['label'];
+            }
+        }
+
+        return $slots;
+    }
+
     public function offeredService(int $serviceId): ?ProviderService
     {
         return $this->providerServices()

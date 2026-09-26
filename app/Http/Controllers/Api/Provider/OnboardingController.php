@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class OnboardingController extends Controller
 {
@@ -22,7 +23,7 @@ class OnboardingController extends Controller
         $profile = $this->profileFor($request);
         $profile->load('documents');
 
-        $documentTypes = config('kyc.documents');
+        $documentTypes = $profile->documentSlots();
         $requiredTypes = collect($documentTypes)->filter(fn (array $meta) => $meta['required'] ?? false);
 
         $uploadedRequired = $requiredTypes
@@ -87,7 +88,7 @@ class OnboardingController extends Controller
         return response()->json(['profile' => new ProviderProfileResource($profile->fresh())]);
     }
 
-    /** Multipart upload. Body: type (one of config('kyc.documents') keys), file. */
+    /** Multipart upload. Body: type (one of config('kyc.documents') keys), file. Slots unlock in order — a locked one is rejected with 422. */
     public function storeDocument(Request $request): JsonResponse
     {
         $profile = $this->profileFor($request);
@@ -104,6 +105,14 @@ class OnboardingController extends Controller
             'type' => ['required', Rule::in($types)],
             'file' => ['required', 'file', "mimes:$mimes", "max:$maxKb"],
         ]);
+
+        $slot = $profile->documentSlots()[$validated['type']];
+
+        if ($slot['locked']) {
+            throw ValidationException::withMessages([
+                'type' => "Please upload {$slot['blocked_by']} first — documents are uploaded in order.",
+            ]);
+        }
 
         $disk = config('kyc.disk');
         $file = $request->file('file');

@@ -752,6 +752,40 @@
 </section>
 @endif
 
+{{-- ==================================================== Brands --}}
+@if ($brands->isNotEmpty())
+@php
+    // One marquee "pass" must be wider than the screen for the loop to look seamless,
+    // so a short brand list is repeated until a pass holds at least 8 logos.
+    $brandPass = collect(range(1, max(1, (int) ceil(8 / $brands->count()))))->flatMap(fn () => $brands);
+@endphp
+<section class="border-t-2 border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-20">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="reveal mx-auto max-w-2xl text-center">
+            <div class="mb-3 inline-flex items-center justify-center gap-2">
+                <span class="h-0.5 w-5 rounded bg-brand-600"></span>
+                <span class="text-xs font-bold uppercase tracking-widest text-brand-600">{{ __('messages.landing.brands_eyebrow') }}</span>
+                <span class="h-0.5 w-5 rounded bg-brand-600"></span>
+            </div>
+            <h2 class="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.brands_title') }}</h2>
+            <p class="mt-3 text-slate-600 dark:text-slate-400">{{ __('messages.landing.brands_sub') }}</p>
+        </div>
+
+        <div class="marquee-mask reveal mt-10 overflow-hidden" dir="ltr">
+            <div class="animate-marquee flex w-max items-center gap-6 py-2">
+                @foreach ([1, 2] as $pass)
+                    @foreach ($brandPass as $brand)
+                        <span class="flex h-20 w-44 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 shadow-sm" @if ($pass === 2) aria-hidden="true" @endif>
+                            <img src="{{ $brand->logo_url }}" alt="{{ $pass === 1 ? $brand->name : '' }}" title="{{ $brand->name }}" loading="lazy" class="max-h-full max-w-full object-contain">
+                        </span>
+                    @endforeach
+                @endforeach
+            </div>
+        </div>
+    </div>
+</section>
+@endif
+
 {{-- ======================================================= Careers band --}}
 <section class="border-t-2 border-slate-100 py-16 dark:border-slate-800 sm:py-20">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

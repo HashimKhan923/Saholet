@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Banner;
 use App\Models\Booking;
+use App\Models\Brand;
 use App\Models\Faq;
 use App\Models\ProviderProfile;
 use App\Models\VideoReview;
@@ -58,6 +59,9 @@ class HomeController extends Controller
         // homepage immediately, not up to 10 minutes later.
         $videoReviews = VideoReview::active()->ordered()->get();
 
+        // Not cached, same reason as the videos above.
+        $brands = Brand::active()->ordered()->get();
+
         $faqs = Cache::remember('landing.faqs', 600, fn () => Faq::active()->ordered()->get());
 
         $banners = Cache::remember('landing.banners', 600, fn () => Banner::active()->orderBy('sort_order')->get());
@@ -77,6 +81,7 @@ class HomeController extends Controller
             'cheapestService' => $cheapestService,
             'stats' => $stats,
             'videoReviews' => $videoReviews,
+            'brands' => $brands,
             'faqs' => $faqs,
             'banners' => $banners,
             'shops' => $shops,

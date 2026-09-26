@@ -6,14 +6,17 @@
     'hasCurrent' => false,
     'removeName' => null,
     'box' => 'h-20 w-28',
+    'optional' => true,
+    'fit' => 'cover',
 ])
 
 @php
     $removeName ??= 'remove_' . $name;
+    $imgFit = $fit === 'contain' ? 'object-contain p-2' : 'object-cover';
 @endphp
 
 <div x-data="{ preview: null }">
-    <label for="{{ $name }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ $label }} <span class="text-slate-400 dark:text-slate-500">(opt)</span></label>
+    <label for="{{ $name }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ $label }} @if ($optional)<span class="text-slate-400 dark:text-slate-500">(opt)</span>@endif</label>
     @if ($help)
         <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ $help }}</p>
     @endif
@@ -21,10 +24,10 @@
     <div class="mt-2.5 flex items-center gap-4">
         <div class="{{ $box }} shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
             <template x-if="preview">
-                <img :src="preview" alt="" class="h-full w-full object-cover">
+                <img :src="preview" alt="" class="h-full w-full {{ $imgFit }}">
             </template>
             @if ($currentUrl)
-                <img x-show="!preview" src="{{ $currentUrl }}" alt="" class="h-full w-full object-cover">
+                <img x-show="!preview" src="{{ $currentUrl }}" alt="" class="h-full w-full {{ $imgFit }}">
             @endif
             <div x-show="!preview" @if ($currentUrl) style="display: none" @endif class="flex h-full w-full items-center justify-center text-slate-300 dark:text-slate-600">
                 <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="9" r="1.5"/></svg>

@@ -15,6 +15,7 @@ return [
         'faqs' => 'اکثر پوچھے گئے سوالات',
         'banners' => 'بینرز',
         'video_reviews' => 'ریویو ویڈیوز',
+        'brands' => 'برانڈز',
         'contact_messages' => 'رابطہ پیغامات',
         'bookings_section' => 'بکنگز اور آرڈرز',
         'bookings' => 'بکنگز',

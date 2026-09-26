@@ -1,11 +1,15 @@
 <?php
 
 return [
-    // Document types collected during provider verification.
+    // Document types collected during provider verification, in upload order:
+    // a slot stays locked until every slot above it has a document
+    // (see ProviderProfile::documentSlots()).
     'documents' => [
         'cnic_front' => ['label' => 'CNIC — Front', 'required' => true],
         'cnic_back'  => ['label' => 'CNIC — Back', 'required' => true],
         'selfie'     => ['label' => 'Selfie holding CNIC', 'required' => true],
+        'police_verification' => ['label' => 'Police verification', 'required' => true],
+        'nadra_verification'  => ['label' => 'NADRA verification', 'required' => true],
         'certificate' => ['label' => 'Trade certificate', 'required' => false],
     ],
 
