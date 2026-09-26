@@ -3,7 +3,7 @@
 @section('title', 'Booking room — ' . config('app.name'))
 
 @section('content')
-<section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+<section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
     <a href="{{ $backUrl }}" class="text-sm text-slate-500 hover:text-brand-600">&larr; Back to booking</a>
 
     <div
@@ -58,7 +58,7 @@
                                 :class="m.sender_id === currentUserId ? 'bg-brand-600 text-white' : 'border border-slate-200 bg-white text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'">
                                 <span x-text="m.body"></span>
                             </div>
-                            <span class="mt-1 text-[10px] text-slate-400 dark:text-slate-500" x-text="m.sender_name + ' · ' + m.created_at"></span>
+                            <span class="mt-1 text-[11px] text-slate-400 dark:text-slate-500" x-text="m.sender_name + ' · ' + m.created_at"></span>
                         </div>
                     </template>
                     <template x-if="messages.length === 0">

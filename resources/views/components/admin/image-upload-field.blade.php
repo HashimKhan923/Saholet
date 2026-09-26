@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <div class="flex-1">
+        <div class="min-w-0 flex-1">
             <input id="{{ $name }}" name="{{ $name }}" type="file" accept="image/png,image/jpeg,image/webp"
                 @change="preview = $event.target.files.length ? URL.createObjectURL($event.target.files[0]) : null"
                 @error($name) aria-invalid="true" @enderror

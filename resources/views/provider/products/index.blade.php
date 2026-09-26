@@ -30,11 +30,11 @@
             <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">Add your first product to start selling.</p>
         </div>
     @else
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
             @foreach ($products as $product)
                 <a href="{{ route('provider.products.edit', $product) }}"
                    class="card-lift group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:border-brand-200 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800 {{ $product->is_active ? '' : 'opacity-60' }}">
-                    <div class="aspect-video w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+                    <div class="aspect-square w-full overflow-hidden bg-slate-100 dark:bg-slate-800 sm:aspect-video">
                         @if ($product->photos->isNotEmpty())
                             <img src="{{ $product->photos->first()->url() }}" class="h-full w-full object-cover transition duration-300 group-hover:scale-105">
                         @else
@@ -47,7 +47,7 @@
                         <div class="flex items-start justify-between gap-2">
                             <h3 class="font-display text-sm font-bold text-slate-900 dark:text-white">{{ $product->name }}</h3>
                             @unless ($product->is_active)
-                                <span class="shrink-0 rounded-full {{ $product->deactivation_reason ? 'bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400' }} px-2 py-0.5 text-[10px] font-bold uppercase">{{ $product->deactivation_reason ? 'Deactivated' : 'Hidden' }}</span>
+                                <span class="shrink-0 rounded-full {{ $product->deactivation_reason ? 'bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400' }} px-2 py-0.5 text-[11px] font-bold uppercase">{{ $product->deactivation_reason ? 'Deactivated' : 'Hidden' }}</span>
                             @endunless
                         </div>
                         @if ($product->category)

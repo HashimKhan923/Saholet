@@ -156,7 +156,7 @@
                                 </div>
                                 <div class="shrink-0 text-right">
                                     <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">Rs. {{ number_format((float) $offering->price, 0) }}</p>
-                                    <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $offering->is_active ? 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-400' : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500' }}">
+                                    <span class="inline-flex rounded-full px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide {{ $offering->is_active ? 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-400' : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500' }}">
                                         {{ $offering->is_active ? 'Active' : 'Paused' }}
                                     </span>
                                 </div>
@@ -392,7 +392,7 @@
                                     <p class="font-semibold text-slate-800 dark:text-slate-200">Rs. {{ number_format((float) $withdrawal->amount, 0) }}</p>
                                     <p class="text-xs text-slate-400">{{ $withdrawal->created_at->format('d M Y') }}</p>
                                 </div>
-                                <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide
+                                <span class="inline-flex rounded-full px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide
                                     {{ match($withdrawal->status) {
                                         'paid' => 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-400',
                                         'rejected' => 'bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400',

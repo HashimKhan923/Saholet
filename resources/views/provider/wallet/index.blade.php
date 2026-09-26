@@ -255,7 +255,7 @@
                             <div class="min-w-0">
                                 <div class="flex items-center gap-2">
                                     <p class="text-sm font-semibold text-slate-900 dark:text-white">Rs. {{ number_format($wd->amount, 0) }}</p>
-                                    <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $wdStatusTones[$wd->status] ?? '' }}">{{ $wdStatusLabels[$wd->status] ?? $wd->status }}</span>
+                                    <span class="inline-flex rounded-full px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide {{ $wdStatusTones[$wd->status] ?? '' }}">{{ $wdStatusLabels[$wd->status] ?? $wd->status }}</span>
                                 </div>
                                 <p class="mt-0.5 text-xs text-slate-400">{{ $wd->reference }} · {{ $wd->methodLabel() }}</p>
                                 @if ($wd->status === 'rejected' && $wd->admin_notes)
@@ -291,7 +291,7 @@
                 @foreach ($series as $point)
                     @php $pct = (int) round(($point['value'] / $maxEarn) * 100); @endphp
                     <div class="group flex flex-1 flex-col items-center gap-2">
-                        <p class="text-[10px] font-bold text-slate-400 opacity-0 transition group-hover:opacity-100">
+                        <p class="text-[11px] font-bold text-slate-400 opacity-0 transition group-hover:opacity-100">
                             {{ $point['value'] > 0 ? number_format($point['value'] / 1000, 1) . 'k' : '0' }}
                         </p>
                         <div class="flex w-full flex-1 items-end">
@@ -366,7 +366,7 @@
                                 <p class="text-sm font-semibold text-slate-900 dark:text-white">
                                     {{ $typeLabels[$entry->type] ?? ucfirst(str_replace('_', ' ', $entry->type)) }}
                                 </p>
-                                <span class="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide
+                                <span class="rounded-full px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide
                                     {{ $isEscrow
                                         ? 'bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-400'
                                         : 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-400' }}">

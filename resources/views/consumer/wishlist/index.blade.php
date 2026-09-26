@@ -14,7 +14,7 @@
             <a href="{{ route('shops.index') }}" class="mt-5 inline-flex items-center rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">Browse products</a>
         </div>
     @else
-        <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
             @foreach ($products as $product)
                 <a href="{{ route('shop.show', $product) }}"
                    class="card-lift group relative flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-800">

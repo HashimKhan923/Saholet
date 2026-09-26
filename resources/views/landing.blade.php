@@ -109,7 +109,7 @@
 @endif -->
 
 {{-- ======================================================== Services --}}
-<section id="services" class="py-16 sm:py-24">
+<section id="services" class="py-10 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="reveal max-w-4xl">
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent-600">{{ __('messages.nav.services') }}</p>
@@ -176,7 +176,7 @@
 
 @if ($shops->isNotEmpty())
 {{-- ======================================================== Shops --}}
-<section class="bg-white py-12 dark:bg-slate-900 sm:py-16">
+<section class="bg-white py-8 dark:bg-slate-900 sm:py-16">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="reveal max-w-4xl">
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent-600">{{ __('messages.nav.shops') }}</p>
@@ -203,7 +203,7 @@
 @endif
 
 {{-- ============================================= Make a shop & sell --}}
-<section class="bg-brand-50/60 py-16 dark:bg-slate-900/40 sm:py-24">
+<section class="bg-brand-50/60 py-10 dark:bg-slate-900/40 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
             {{-- Left: content --}}
@@ -224,9 +224,9 @@
                     ];
                 @endphp
 
-                <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div class="mb-8 grid grid-cols-2 gap-3 sm:gap-4">
                     @foreach ($shopBenefits as $b)
-                        <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-4 transition-colors hover:border-brand-400 dark:border-slate-800 dark:bg-slate-900 {{ $isUrdu ? 'flex-row-reverse' : '' }}">
+                        <div class="flex flex-col items-start gap-2.5 rounded-xl border border-slate-100 bg-white p-3 transition-colors hover:border-brand-400 dark:border-slate-800 dark:bg-slate-900 sm:flex-row sm:gap-3 sm:p-4 {{ $isUrdu ? 'sm:flex-row-reverse' : '' }}">
                             <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg {{ $b['tone'] === 'green' ? 'bg-brand-50 dark:bg-brand-950/50' : 'bg-accent-50 dark:bg-accent-950/40' }}">
                                 @switch($b['icon'])
                                     @case('box')
@@ -271,59 +271,59 @@
 </section>
 
 {{-- ================================================= Three flows band --}}
-<section class="border-t-2 border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
+<section class="border-t-2 border-slate-100 bg-white py-10 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="reveal mx-auto max-w-2xl text-center">
             <h2 class="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.landing.flows_title') }}</h2>
             <p class="mt-3 text-slate-600 dark:text-slate-400">{{ __('messages.landing.flows_sub') }}</p>
         </div>
 
-        <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mt-8 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-6 lg:grid-cols-4">
             {{-- Flow B — post a job & bid --}}
-            <div class="reveal card-lift rounded-3xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white p-7 dark:border-slate-800 dark:from-slate-900/70 dark:to-slate-900">
-                <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-800 text-white shadow-md shadow-slate-800/30 dark:bg-slate-700">
+            <div class="reveal card-lift rounded-2xl sm:rounded-3xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white p-4 sm:p-7 dark:border-slate-800 dark:from-slate-900/70 dark:to-slate-900">
+                <span class="flex h-10 w-10 items-center justify-center rounded-2xl sm:h-12 sm:w-12 bg-slate-800 text-white shadow-md shadow-slate-800/30 dark:bg-slate-700">
                     <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
-                <h3 class="mt-5 font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('messages.landing.flow_bid_title') }}</h3>
-                <p class="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_bid_desc') }}</p>
-                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.jobs.create') : route('login', ['redirect' => route('consumer.jobs.create')]) }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg border-2 border-slate-800 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-800 hover:text-white dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
+                <h3 class="mt-3 font-display text-base font-bold sm:mt-5 sm:text-xl text-slate-900 dark:text-white">{{ __('messages.landing.flow_bid_title') }}</h3>
+                <p class="mt-2 text-xs leading-relaxed sm:mt-2.5 sm:text-sm text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_bid_desc') }}</p>
+                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.jobs.create') : route('login', ['redirect' => route('consumer.jobs.create')]) }}" class="mt-3 inline-flex items-center gap-1.5 rounded-lg sm:mt-5 border-2 border-slate-800 px-3 py-1.5 text-xs font-semibold sm:px-4 sm:py-2 sm:text-sm text-slate-800 transition hover:bg-slate-800 hover:text-white dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
                     {{ __('messages.landing.flow_bid_cta') }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
                 </a>
             </div>
 
             {{-- Flow A — direct booking --}}
-            <div class="reveal card-lift rounded-3xl border border-slate-200 bg-gradient-to-b from-brand-50/70 to-white p-7 dark:border-slate-800 dark:from-brand-950/40 dark:to-slate-900" style="--reveal-delay: 90ms">
-                <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-md shadow-brand-600/30">
+            <div class="reveal card-lift rounded-2xl sm:rounded-3xl border border-slate-200 bg-gradient-to-b from-brand-50/70 to-white p-4 sm:p-7 dark:border-slate-800 dark:from-brand-950/40 dark:to-slate-900" style="--reveal-delay: 90ms">
+                <span class="flex h-10 w-10 items-center justify-center rounded-2xl sm:h-12 sm:w-12 bg-brand-600 text-white shadow-md shadow-brand-600/30">
                     <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 11h16" stroke-linecap="round"/></svg>
                 </span>
-                <h3 class="mt-5 font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('messages.landing.flow_direct_title') }}</h3>
-                <p class="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_direct_desc') }}</p>
-                <a href="{{ route('services.index') }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700">
+                <h3 class="mt-3 font-display text-base font-bold sm:mt-5 sm:text-xl text-slate-900 dark:text-white">{{ __('messages.landing.flow_direct_title') }}</h3>
+                <p class="mt-2 text-xs leading-relaxed sm:mt-2.5 sm:text-sm text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_direct_desc') }}</p>
+                <a href="{{ route('services.index') }}" class="mt-3 inline-flex items-center gap-1.5 rounded-lg sm:mt-5 bg-brand-600 px-3 py-1.5 text-xs font-semibold sm:px-4 sm:py-2 sm:text-sm text-white shadow-sm transition hover:bg-brand-700">
                     {{ __('messages.landing.flow_direct_cta') }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
                 </a>
             </div>
 
             {{-- Flow D — contracts (multi-service projects) --}}
-            <div class="reveal card-lift rounded-3xl border border-slate-200 bg-gradient-to-b from-sky-50/70 to-white p-7 dark:border-slate-800 dark:from-sky-950/30 dark:to-slate-900" style="--reveal-delay: 140ms">
-                <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-600 text-white shadow-md shadow-sky-600/30">
+            <div class="reveal card-lift rounded-2xl sm:rounded-3xl border border-slate-200 bg-gradient-to-b from-sky-50/70 to-white p-4 sm:p-7 dark:border-slate-800 dark:from-sky-950/30 dark:to-slate-900" style="--reveal-delay: 140ms">
+                <span class="flex h-10 w-10 items-center justify-center rounded-2xl sm:h-12 sm:w-12 bg-sky-600 text-white shadow-md shadow-sky-600/30">
                     <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4h6l4 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/><path d="M9 12h6M9 16h6" stroke-linecap="round"/></svg>
                 </span>
-                <h3 class="mt-5 font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('messages.landing.flow_contract_title') }}</h3>
-                <p class="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_contract_desc') }}</p>
-                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.contracts.create') : route('login', ['redirect' => route('consumer.contracts.create')]) }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700">
+                <h3 class="mt-3 font-display text-base font-bold sm:mt-5 sm:text-xl text-slate-900 dark:text-white">{{ __('messages.landing.flow_contract_title') }}</h3>
+                <p class="mt-2 text-xs leading-relaxed sm:mt-2.5 sm:text-sm text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_contract_desc') }}</p>
+                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.contracts.create') : route('login', ['redirect' => route('consumer.contracts.create')]) }}" class="mt-3 inline-flex items-center gap-1.5 rounded-lg sm:mt-5 bg-sky-600 px-3 py-1.5 text-xs font-semibold sm:px-4 sm:py-2 sm:text-sm text-white shadow-sm transition hover:bg-sky-700">
                     {{ __('messages.landing.flow_contract_cta') }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
                 </a>
             </div>
 
             {{-- Flow C — emergency: the one place red owns the card --}}
-            <div class="reveal card-lift rounded-3xl border border-accent-200 bg-gradient-to-b from-accent-50/80 to-white p-7 dark:border-accent-900/60 dark:from-accent-950/40 dark:to-slate-900" style="--reveal-delay: 180ms">
-                <span class="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-600 text-white shadow-md shadow-accent-600/30">
+            <div class="reveal card-lift rounded-2xl sm:rounded-3xl border border-accent-200 bg-gradient-to-b from-accent-50/80 to-white p-4 sm:p-7 dark:border-accent-900/60 dark:from-accent-950/40 dark:to-slate-900" style="--reveal-delay: 180ms">
+                <span class="relative flex h-10 w-10 items-center justify-center rounded-2xl sm:h-12 sm:w-12 bg-accent-600 text-white shadow-md shadow-accent-600/30">
                     <span class="animate-ping-ring absolute inset-0 rounded-2xl bg-accent-500/60"></span>
                     <svg viewBox="0 0 24 24" class="relative h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" stroke-linejoin="round"/></svg>
                 </span>
-                <h3 class="mt-5 font-display text-xl font-bold text-slate-900 dark:text-white">{{ __('messages.landing.flow_sos_title') }}</h3>
-                <p class="mt-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_sos_desc') }}</p>
-                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.emergencies.create') : route('login', ['redirect' => route('consumer.emergencies.create')]) }}" class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-accent-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-700">
+                <h3 class="mt-3 font-display text-base font-bold sm:mt-5 sm:text-xl text-slate-900 dark:text-white">{{ __('messages.landing.flow_sos_title') }}</h3>
+                <p class="mt-2 text-xs leading-relaxed sm:mt-2.5 sm:text-sm text-slate-600 dark:text-slate-400">{{ __('messages.landing.flow_sos_desc') }}</p>
+                <a href="{{ auth()->check() && auth()->user()->isConsumer() ? route('consumer.emergencies.create') : route('login', ['redirect' => route('consumer.emergencies.create')]) }}" class="mt-3 inline-flex items-center gap-1.5 rounded-lg sm:mt-5 bg-accent-600 px-3 py-1.5 text-xs font-semibold sm:px-4 sm:py-2 sm:text-sm text-white shadow-sm transition hover:bg-accent-700">
                     {{ __('messages.landing.flow_sos_cta') }} <span aria-hidden="true" class="rtl:hidden">→</span><span aria-hidden="true" class="hidden rtl:inline">←</span>
                 </a>
             </div>
@@ -368,8 +368,8 @@
         ],
     ];
 @endphp
-<section class="border-t-2 border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
-    <div class="mx-auto max-w-7xl space-y-16 px-4 sm:px-6 lg:space-y-24 lg:px-8">
+<section class="border-t-2 border-slate-100 bg-white py-10 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
+    <div class="mx-auto max-w-7xl space-y-10 px-4 sm:px-6 lg:space-y-24 lg:px-8">
         @foreach ($milestones as $i => $m)
             <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
                 {{-- Image side — alternates left/right via DOM order + lg:order. Each block
@@ -416,12 +416,12 @@
             ];
         @endphp
 
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
             @foreach ($steps as $i => $step)
-                <div class="reveal card-lift relative rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-brand-400 hover:shadow-md dark:border-slate-800 dark:bg-slate-900" style="--reveal-delay: {{ $i * 90 }}ms">
-                    <span class="absolute right-5 top-4 select-none font-display text-5xl font-bold leading-none text-slate-200 dark:text-slate-800">{{ sprintf('%02d', $i + 1) }}</span>
+                <div class="reveal card-lift relative rounded-2xl border border-slate-200 bg-white p-4 transition-all sm:p-6 hover:border-brand-400 hover:shadow-md dark:border-slate-800 dark:bg-slate-900" style="--reveal-delay: {{ $i * 90 }}ms">
+                    <span class="absolute right-3 top-2 select-none font-display text-3xl font-bold sm:right-5 sm:top-4 sm:text-5xl leading-none text-slate-200 dark:text-slate-800">{{ sprintf('%02d', $i + 1) }}</span>
 
-                    <span class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl {{ $step['tone'] === 'green' ? 'bg-brand-50 dark:bg-brand-950/50' : 'bg-accent-50 dark:bg-accent-950/40' }}">
+                    <span class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl sm:mb-4 sm:h-12 sm:w-12 {{ $step['tone'] === 'green' ? 'bg-brand-50 dark:bg-brand-950/50' : 'bg-accent-50 dark:bg-accent-950/40' }}">
                         @switch($step['icon'])
                             @case('search')
                                 <svg viewBox="0 0 24 24" class="h-5 w-5 {{ $step['tone'] === 'green' ? 'text-brand-600' : 'text-accent-600' }}" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/></svg>
@@ -492,7 +492,7 @@
 </section>
 
 {{-- ======================================================== Why Sahoulat --}}
-<section id="why-us" class="bg-white py-16 dark:bg-slate-950 sm:py-24">
+<section id="why-us" class="bg-white py-10 dark:bg-slate-950 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="grid items-start gap-14 lg:grid-cols-2">
             {{-- Left --}}
@@ -513,9 +513,9 @@
                     ];
                 @endphp
 
-                <div class="flex flex-col gap-4">
+                <div class="grid grid-cols-2 gap-3 sm:flex sm:flex-col sm:gap-4">
                     @foreach ($reasons as $r)
-                        <div class="flex items-start gap-4 rounded-2xl border border-slate-100 p-4 transition-colors hover:border-brand-400 dark:border-slate-800 {{ $isUrdu ? 'flex-row-reverse' : '' }}">
+                        <div class="flex flex-col items-start gap-2.5 rounded-2xl border border-slate-100 p-3 transition-colors hover:border-brand-400 dark:border-slate-800 sm:flex-row sm:gap-4 sm:p-4 {{ $isUrdu ? 'sm:flex-row-reverse' : '' }}">
                             <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl {{ $r['tone'] === 'green' ? 'bg-brand-50 dark:bg-brand-950/50' : 'bg-accent-50 dark:bg-accent-950/40' }}">
                                 @switch($r['icon'])
                                     @case('user')
@@ -550,7 +550,7 @@
 </section>
 
 {{-- ======================================================== About Sahoulat --}}
-<section id="about" class="bg-brand-50/60 py-16 dark:bg-slate-900/40 sm:py-24">
+<section id="about" class="bg-brand-50/60 py-10 dark:bg-slate-900/40 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="grid items-start gap-14 lg:grid-cols-2">
             {{-- Left: banner image --}}
@@ -577,9 +577,9 @@
                     ];
                 @endphp
 
-                <div class="flex flex-col gap-4">
+                <div class="grid grid-cols-2 gap-3 sm:flex sm:flex-col sm:gap-4">
                     @foreach ($aboutPoints as $p)
-                        <div class="flex items-start gap-4 rounded-2xl border border-slate-100 bg-white p-4 transition-colors hover:border-brand-400 dark:border-slate-800 dark:bg-slate-900 {{ $isUrdu ? 'flex-row-reverse' : '' }}">
+                        <div class="flex flex-col items-start gap-2.5 rounded-2xl border border-slate-100 bg-white p-3 transition-colors hover:border-brand-400 dark:border-slate-800 dark:bg-slate-900 sm:flex-row sm:gap-4 sm:p-4 {{ $loop->last && $loop->count % 2 ? 'col-span-2 sm:col-span-1' : '' }} {{ $isUrdu ? 'sm:flex-row-reverse' : '' }}">
                             <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl {{ $p['tone'] === 'green' ? 'bg-brand-50 dark:bg-brand-950/50' : 'bg-accent-50 dark:bg-accent-950/40' }}">
                                 @switch($p['icon'])
                                     @case('user')
@@ -606,7 +606,7 @@
 </section>
 
 {{-- ============================================== Subscription plans band --}}
-<section class="border-t-2 border-slate-100 py-16 dark:border-slate-800 sm:py-20">
+<section class="border-t-2 border-slate-100 py-10 dark:border-slate-800 sm:py-20">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <a href="{{ route('subscription-plans.index') }}" class="reveal card-lift block overflow-hidden rounded-3xl shadow-2xl shadow-brand-900/30 ring-1 ring-white/10">
             <img src="/images/MaintenanceHome.jpeg?v={{ filemtime(public_path('images/MaintenanceHome.jpeg')) }}"
@@ -616,7 +616,7 @@
 </section>
 
 {{-- ==================================================== Join as Pro --}}
-<section id="join" class="bg-brand-50/60 py-16 dark:bg-slate-900/40 sm:py-24">
+<section id="join" class="bg-brand-50/60 py-10 dark:bg-slate-900/40 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
             {{-- Left: image --}}
@@ -644,9 +644,9 @@
                     ];
                 @endphp
 
-                <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div class="mb-8 grid grid-cols-2 gap-3 sm:gap-4">
                     @foreach ($joinBenefits as $b)
-                        <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-4 transition-colors hover:border-brand-400 dark:border-slate-800 dark:bg-slate-900 {{ $isUrdu ? 'flex-row-reverse' : '' }}">
+                        <div class="flex flex-col items-start gap-2.5 rounded-xl border border-slate-100 bg-white p-3 transition-colors hover:border-brand-400 dark:border-slate-800 dark:bg-slate-900 sm:flex-row sm:gap-3 sm:p-4 {{ $isUrdu ? 'sm:flex-row-reverse' : '' }}">
                             <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg {{ $b['tone'] === 'green' ? 'bg-brand-50 dark:bg-brand-950/50' : 'bg-accent-50 dark:bg-accent-950/40' }}">
                                 @switch($b['icon'])
                                     @case('check')
@@ -685,7 +685,7 @@
 
 {{-- ==================================================== Video reviews --}}
 @if ($videoReviews->isNotEmpty())
-<section class="border-t-2 border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
+<section class="border-t-2 border-slate-100 bg-white py-10 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
     <div class="mx-auto max-w-352 px-4 sm:px-6 lg:px-8">
         <div class="reveal mx-auto max-w-2xl text-center">
             <div class="mb-3 inline-flex items-center justify-center gap-2">
@@ -759,7 +759,7 @@
     // so a short brand list is repeated until a pass holds at least 8 logos.
     $brandPass = collect(range(1, max(1, (int) ceil(8 / $brands->count()))))->flatMap(fn () => $brands);
 @endphp
-<section class="border-t-2 border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-20">
+<section class="border-t-2 border-slate-100 bg-white py-10 dark:border-slate-800 dark:bg-slate-950 sm:py-20">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="reveal mx-auto max-w-2xl text-center">
             <div class="mb-3 inline-flex items-center justify-center gap-2">
@@ -787,7 +787,7 @@
 @endif
 
 {{-- ======================================================= Careers band --}}
-<section class="border-t-2 border-slate-100 py-16 dark:border-slate-800 sm:py-20">
+<section class="border-t-2 border-slate-100 py-10 dark:border-slate-800 sm:py-20">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <a href="{{ route('careers.index') }}" class="reveal card-lift block overflow-hidden rounded-3xl shadow-2xl shadow-brand-900/20">
             <img src="/images/CareerHome.jpeg?v={{ filemtime(public_path('images/CareerHome.jpeg')) }}"
@@ -797,7 +797,7 @@
 </section>
 
 {{-- ============================================================ FAQ --}}
-<section id="faq" class="bg-brand-50/60 py-16 dark:bg-slate-900/40 sm:py-24">
+<section id="faq" class="bg-brand-50/60 py-10 dark:bg-slate-900/40 sm:py-24">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <div class="reveal mb-12 text-center">
             <div class="mb-3 inline-flex items-center justify-center gap-2">
@@ -872,7 +872,7 @@
 </section>
 
 {{-- ===================================================== Contact form --}}
-<section id="contact" class="border-t-2 border-slate-100 bg-white py-16 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
+<section id="contact" class="border-t-2 border-slate-100 bg-white py-10 dark:border-slate-800 dark:bg-slate-950 sm:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="reveal mx-auto max-w-2xl text-center {{ $isUrdu ? 'font-urdu' : '' }}">
             <h2 class="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.contact.title') }}</h2>

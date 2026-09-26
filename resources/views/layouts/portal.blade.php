@@ -153,7 +153,7 @@
         </div>
 
         {{-- ===== Main content area ===== --}}
-        <div class="flex flex-1 flex-col lg:ps-64">
+        <div class="flex min-w-0 flex-1 flex-col lg:ps-64">
             {{-- Topbar --}}
             <header class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/80 px-4 shadow-sm shadow-slate-900/[0.02] backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-900/80 sm:px-6">
                 <div class="flex items-center gap-3">
@@ -260,7 +260,7 @@
                 </div>
             @endif
 
-            <main class="flex-1 py-6">
+            <main class="min-w-0 flex-1 py-6">
                 @yield('content')
             </main>
         </div>

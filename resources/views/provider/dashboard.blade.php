@@ -246,7 +246,7 @@
                                     <a href="{{ route('provider.bookings.show', $booking) }}" class="flex items-center gap-4 px-6 py-4 transition hover:bg-slate-50 dark:hover:bg-slate-800/60">
                                         <div class="w-16 shrink-0 text-center">
                                             <p class="font-display text-sm font-bold text-slate-900 dark:text-white">{{ \Illuminate\Support\Carbon::parse($booking->scheduled_time)->format('g:i') }}</p>
-                                            <p class="text-[10px] font-bold uppercase tracking-wide text-slate-400">{{ \Illuminate\Support\Carbon::parse($booking->scheduled_time)->format('A') }}</p>
+                                            <p class="text-[11px] font-bold uppercase tracking-wide text-slate-400">{{ \Illuminate\Support\Carbon::parse($booking->scheduled_time)->format('A') }}</p>
                                         </div>
                                         <div class="h-10 w-px shrink-0 bg-slate-200 dark:bg-slate-700"></div>
                                         <div class="min-w-0 flex-1">
@@ -278,7 +278,7 @@
                         @foreach ($earningsSeries as $point)
                             @php $pct = (int) round(($point['value'] / $maxEarn) * 100); @endphp
                             <div class="group flex flex-1 flex-col items-center gap-2">
-                                <p class="text-[10px] font-bold text-slate-400 opacity-0 transition group-hover:opacity-100">
+                                <p class="text-[11px] font-bold text-slate-400 opacity-0 transition group-hover:opacity-100">
                                     {{ $point['value'] > 0 ? number_format($point['value'] / 1000, 1) . 'k' : '0' }}
                                 </p>
                                 <div class="flex w-full flex-1 items-end">

@@ -80,7 +80,7 @@
                     <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">No products found.</p>
                 </div>
             @else
-                <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
                     @foreach ($products as $product)
                         <x-product-card :product="$product" :wishlisted="($wishlistedIds ?? collect())->contains($product->id)" />
                     @endforeach

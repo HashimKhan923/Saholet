@@ -8,7 +8,7 @@
 <section class="relative overflow-hidden border-b border-slate-100 dark:border-slate-800">
     <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-50 to-slate-50 dark:from-brand-950 dark:to-slate-950"></div>
     <div class="absolute inset-0 -z-10 bg-dot-grid opacity-50"></div>
-    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-14 lg:px-8">
         <img src="{{ asset('images/Professionals.jpeg') }}" alt="Sahoulat professionals" class="animate-fade-up mb-8 w-full rounded-2xl md:object-cover object-contain shadow-sm md:h-100 h-32" loading="eager">
         <h1 class="animate-fade-up font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">{{ __('messages.providers.title') }}</h1>
         <p class="animate-fade-up mt-3 max-w-2xl text-slate-600 dark:text-slate-400">{{ __('messages.providers.subtitle') }}</p>
@@ -36,7 +36,7 @@
     </div>
 </section>
 
-<section class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+<section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-14 lg:px-8">
     @if ($providers->isEmpty())
         <div class="rounded-3xl border border-dashed border-slate-300 bg-white p-14 text-center dark:border-slate-700 dark:bg-slate-900">
             <svg viewBox="0 0 24 24" class="mx-auto h-10 w-10 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/></svg>
@@ -71,7 +71,7 @@
                                 @endif
                             </div>
                         </div>
-                        <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-brand-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-brand-700 dark:bg-brand-950/60 dark:text-brand-400">
+                        <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-brand-50 px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-700 dark:bg-brand-950/60 dark:text-brand-400">
                             <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m5 12 5 5 9-10" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             {{ __('messages.providers.verified_badge') }}
                         </span>

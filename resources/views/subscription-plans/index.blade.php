@@ -12,7 +12,7 @@
     <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-50 to-slate-50 dark:from-brand-950 dark:to-slate-950"></div>
     <div class="absolute inset-0 -z-10 bg-dot-grid opacity-50"></div>
 
-    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-14 lg:px-8">
         <img src="{{ asset('images/MaintenancePlans.jpeg') }}?v={{ filemtime(public_path('images/MaintenancePlans.jpeg')) }}" alt="Sahoulat maintenance plans" class="animate-fade-up mb-8 h-auto w-full rounded-2xl shadow-sm md:h-100 md:object-cover" loading="eager">
         <span class="animate-fade-up inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-semibold text-brand-700 shadow-sm dark:bg-slate-900 dark:text-brand-400">Recurring maintenance</span>
         <h1 class="animate-fade-up mt-4 font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Maintenance plans</h1>
@@ -28,7 +28,7 @@
     </div>
 </section>
 
-<section class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+<section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-14 lg:px-8">
     @if ($plans->isNotEmpty())
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($plans as $i => $plan)

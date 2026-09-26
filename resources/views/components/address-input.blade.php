@@ -32,7 +32,7 @@
                     <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21c-4-4-7-7.5-7-11a7 7 0 0 1 14 0c0 3.5-3 7-7 11z" stroke-linejoin="round"/></svg>
                     <span class="truncate">{{ $saved->label }}</span>
                     @if ($saved->is_default)
-                        <span class="shrink-0 text-[10px] font-bold opacity-80">· Default</span>
+                        <span class="shrink-0 text-[11px] font-bold opacity-80">· Default</span>
                     @endif
                 </button>
             @endforeach

@@ -4,14 +4,35 @@
 @section('meta_description', $product->description ?: ('Buy ' . $product->name . ' from ' . ($product->providerProfile->business_name ?: 'a Sahoulat provider')))
 
 @section('content')
-<section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+<section class="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-12 lg:px-8">
 
-    <div class="grid gap-10 lg:grid-cols-2">
+    <div class="grid gap-6 sm:gap-10 lg:grid-cols-2">
         {{-- Photos --}}
-        <div x-data="{ active: 0, photos: @js($product->photos->map(fn ($p) => $p->url())->values()) }">
+        <div x-data="{
+                active: 0,
+                photos: @js($product->photos->map(fn ($p) => $p->url())->values()),
+                open: false,
+                zoomed: false,
+                show(i) { this.active = (i + this.photos.length) % this.photos.length; this.zoomed = false; },
+                close() { this.open = false; this.zoomed = false; },
+                toggleZoom() {
+                    this.zoomed = ! this.zoomed;
+                    this.$nextTick(() => {
+                        const box = this.$refs.zoomBox;
+                        if (this.zoomed) {
+                            box.scrollLeft = (box.scrollWidth - box.clientWidth) / 2;
+                            box.scrollTop = (box.scrollHeight - box.clientHeight) / 2;
+                        }
+                    });
+                },
+            }"
+            x-effect="document.body.classList.toggle('overflow-hidden', open)"
+            @keydown.escape.window="close()"
+            @keydown.arrow-left.window="open && photos.length > 1 && show(active - 1)"
+            @keydown.arrow-right.window="open && photos.length > 1 && show(active + 1)">
             <div class="relative aspect-square w-full overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-800">
                 <template x-if="photos.length > 0">
-                    <img :src="photos[active]" class="h-full w-full object-cover">
+                    <img :src="photos[active]" @click="open = true" class="h-full w-full cursor-zoom-in object-cover" alt="{{ $product->name }}">
                 </template>
                 <template x-if="photos.length === 0">
                     <div class="flex h-full items-center justify-center text-slate-300 dark:text-slate-700">
@@ -53,6 +74,36 @@
                 </template>
             </div>
 
+            {{-- Full-screen viewer: tap the photo to zoom, scroll/drag to pan --}}
+            <div x-show="open" x-cloak x-transition.opacity class="fixed inset-0 z-[100] flex flex-col bg-black/95" role="dialog" aria-modal="true" aria-label="{{ $product->name }} photos">
+                <div class="flex items-center justify-between px-4 py-3 text-white">
+                    <span class="text-sm font-medium" x-text="photos.length > 1 ? (active + 1) + ' / ' + photos.length : ''"></span>
+                    <span class="text-xs text-white/70" x-text="zoomed ? 'Tap to zoom out — drag to move around' : 'Tap the photo to zoom in'"></span>
+                    <button type="button" @click="close()" class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25" aria-label="Close">
+                        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg>
+                    </button>
+                </div>
+
+                <div x-ref="zoomBox" class="relative min-h-0 flex-1 overflow-auto" @click.self="close()">
+                    <div class="flex min-h-full min-w-full items-center justify-center" :class="zoomed ? 'w-[250%] sm:w-[200%]' : ''">
+                        <img :src="photos[active]" @click.stop="toggleZoom()" alt="{{ $product->name }}"
+                            class="select-none object-contain"
+                            :class="zoomed ? 'h-auto w-full cursor-zoom-out' : 'max-h-[calc(100vh-7rem)] max-w-full cursor-zoom-in'">
+                    </div>
+                </div>
+
+                <template x-if="photos.length > 1 && ! zoomed">
+                    <div>
+                        <button type="button" @click="show(active - 1)" class="absolute start-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25" aria-label="Previous photo">
+                            <svg viewBox="0 0 24 24" class="h-6 w-6 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <button type="button" @click="show(active + 1)" class="absolute end-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25" aria-label="Next photo">
+                            <svg viewBox="0 0 24 24" class="h-6 w-6 rtl:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                    </div>
+                </template>
+            </div>
+
             {{-- Thumbnail strip --}}
             @if ($product->photos->count() > 1)
                 <div class="mt-3 flex gap-2">
@@ -79,13 +130,13 @@
                 @if ($product->providerProfile->user?->avatar_url)
                     <img src="{{ $product->providerProfile->user->avatar_url }}" class="h-6 w-6 rounded-lg object-cover">
                 @else
-                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-600 text-[10px] font-bold text-white">{{ mb_substr($product->providerProfile->business_name ?: 'S', 0, 1) }}</span>
+                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-600 text-[11px] font-bold text-white">{{ mb_substr($product->providerProfile->business_name ?: 'S', 0, 1) }}</span>
                 @endif
                 Sold by {{ $product->providerProfile->business_name ?: $product->providerProfile->user?->name }}
             </a>
 
             {{-- Price --}}
-            <div class="mt-6 flex items-baseline gap-3">
+            <div class="mt-4 flex items-baseline gap-3 sm:mt-6">
                 @if ($product->hasDiscount())
                     <span class="font-display text-3xl font-bold text-brand-600 dark:text-brand-400">Rs. {{ number_format($product->effectivePrice(), 0) }}</span>
                     <span class="text-lg font-medium text-red-600 line-through dark:text-red-400">Rs. {{ number_format((float) $product->price, 0) }}</span>
@@ -99,15 +150,15 @@
                 {{ $product->isInStock() ? $product->stock_quantity . ' in stock' : 'Out of stock' }}
             </p>
 
-            <div class="mt-6 flex flex-wrap gap-3">
+            <div class="mt-5 flex flex-wrap gap-2 sm:mt-6 sm:gap-3">
                 @if ($product->providerProfile->offersDelivery())
-                    <span class="inline-flex items-center gap-2 rounded-xl border-2 border-brand-200 bg-brand-50 px-4 py-2.5 text-sm font-bold text-brand-800 dark:border-brand-800 dark:bg-brand-950/40 dark:text-brand-300">
+                    <span class="inline-flex items-center gap-2 rounded-xl border-2 border-brand-200 bg-brand-50 px-3 py-2 text-xs font-bold sm:px-4 sm:py-2.5 sm:text-sm text-brand-800 dark:border-brand-800 dark:bg-brand-950/40 dark:text-brand-300">
                         <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="7" width="15" height="10" rx="1"/><path d="M16 10h3l3 3v4h-6"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg>
                         Delivery available
                     </span>
                 @endif
                 @if ($product->providerProfile->pickup_enabled)
-                    <span class="inline-flex items-center gap-2 rounded-xl border-2 border-sky-200 bg-sky-50 px-4 py-2.5 text-sm font-bold text-sky-800 dark:border-sky-800 dark:bg-sky-950/40 dark:text-sky-300">
+                    <span class="inline-flex items-center gap-2 rounded-xl border-2 border-sky-200 bg-sky-50 px-3 py-2 text-xs font-bold sm:px-4 sm:py-2.5 sm:text-sm text-sky-800 dark:border-sky-800 dark:bg-sky-950/40 dark:text-sky-300">
                         <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-6 9 6v10a1 1 0 0 1-1 1h-4v-6H8v6H4a1 1 0 0 1-1-1V9z" stroke-linejoin="round"/></svg>
                         Self-pickup available
                     </span>
@@ -144,14 +195,14 @@
 
     {{-- Description — full width below the fold, eBay/Amazon-style --}}
     @if ($product->description)
-        <div class="mt-14 border-t-2 border-slate-100 pt-10 dark:border-slate-800">
+        <div class="mt-8 border-t-2 border-slate-100 pt-6 sm:mt-14 sm:pt-10 dark:border-slate-800">
             <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white">Product description</h2>
             <div class="mt-4 max-w-3xl whitespace-pre-line text-sm leading-relaxed text-slate-600 dark:text-slate-400">{{ $product->description }}</div>
         </div>
     @endif
 
     {{-- Reviews --}}
-    <div class="mt-14 border-t-2 border-slate-100 pt-10 dark:border-slate-800">
+    <div class="mt-8 border-t-2 border-slate-100 pt-6 sm:mt-14 sm:pt-10 dark:border-slate-800">
         <div class="flex items-center gap-3">
             <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white">Reviews</h2>
             @if ($product->reviewsCount() > 0)
@@ -182,9 +233,9 @@
     </div>
 
     @if ($related->isNotEmpty())
-        <div class="mt-14 border-t-2 border-slate-100 pt-10 dark:border-slate-800">
+        <div class="mt-8 border-t-2 border-slate-100 pt-6 sm:mt-14 sm:pt-10 dark:border-slate-800">
             <h2 class="font-display text-lg font-bold text-slate-900 dark:text-white">More from this shop</h2>
-            <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="mt-4 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
                 @foreach ($related as $item)
                     <a href="{{ route('shop.show', $item) }}" class="card-lift group overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
                         <div class="aspect-square w-full overflow-hidden bg-slate-100 dark:bg-slate-800">

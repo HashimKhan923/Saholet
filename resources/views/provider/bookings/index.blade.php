@@ -101,7 +101,7 @@
                     <div class="flex min-w-0 items-start gap-4">
                         {{-- Date chip --}}
                         <div class="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
-                            <span class="text-[10px] font-bold uppercase tracking-wide text-slate-400">{{ $booking->scheduled_date->format('M') }}</span>
+                            <span class="text-[11px] font-bold uppercase tracking-wide text-slate-400">{{ $booking->scheduled_date->format('M') }}</span>
                             <span class="font-display text-lg font-bold leading-none text-slate-900 dark:text-white">{{ $booking->scheduled_date->format('d') }}</span>
                         </div>
 

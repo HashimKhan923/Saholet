@@ -41,7 +41,7 @@
                         <span class="flex items-center gap-2">
                             <span class="font-semibold text-slate-900 dark:text-white">{{ $saved->label }}</span>
                             @if ($saved->is_default)
-                                <span class="text-[10px] font-bold uppercase tracking-wide text-brand-600 dark:text-brand-400">Default</span>
+                                <span class="text-[11px] font-bold uppercase tracking-wide text-brand-600 dark:text-brand-400">Default</span>
                             @endif
                         </span>
                         <span class="block text-slate-500 dark:text-slate-400">{{ $saved->address }}</span>

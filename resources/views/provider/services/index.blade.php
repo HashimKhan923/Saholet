@@ -164,11 +164,11 @@
                                 <div class="flex flex-wrap items-center gap-2">
                                     <p class="text-sm font-bold text-slate-900 dark:text-white">{{ $item->service->name }}</p>
                                     @if ($item->is_active)
-                                        <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-700 dark:bg-brand-950/50 dark:text-brand-400">
+                                        <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-brand-700 dark:bg-brand-950/50 dark:text-brand-400">
                                             <span class="h-1.5 w-1.5 rounded-full bg-brand-500"></span> Live
                                         </span>
                                     @else
-                                        <span class="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-500 dark:bg-slate-700 dark:text-slate-400">Paused</span>
+                                        <span class="rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:bg-slate-700 dark:text-slate-400">Paused</span>
                                     @endif
                                 </div>
                                 <p class="mt-0.5 text-xs text-slate-400">
