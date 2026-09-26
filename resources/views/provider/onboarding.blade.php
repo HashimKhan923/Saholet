@@ -157,23 +157,28 @@
             <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">JPG, PNG, WebP, HEIC (iPhone photos) or PDF — up to {{ $maxMb }} MB each. Documents are stored privately and only seen by our review team.</p>
 
             <div class="mt-6 space-y-3">
-                @foreach ($documentTypes as $key => $meta)
+                @foreach ($documentSlots as $key => $meta)
                     @php
                         $doc = $profile->documentOfType($key);
                         $required = $meta['required'] ?? false;
+                        $locked = $meta['locked'];
                     @endphp
 
-                    <div class="rounded-xl border p-4 transition
-                        {{ $doc
-                            ? 'border-brand-200 bg-brand-50/40 dark:border-brand-900/50 dark:bg-brand-950/20'
-                            : ($required ? 'border-slate-200 dark:border-slate-700' : 'border-dashed border-slate-200 dark:border-slate-700') }}">
+                    <div @if ($locked) aria-disabled="true" @endif class="rounded-xl border p-4 transition
+                        {{ $locked
+                            ? 'cursor-not-allowed border-brand-100 bg-brand-50/50 opacity-70 dark:border-brand-900/40 dark:bg-brand-950/20'
+                            : ($doc
+                                ? 'border-brand-200 bg-brand-50/40 dark:border-brand-900/50 dark:bg-brand-950/20'
+                                : ($required ? 'border-slate-200 dark:border-slate-700' : 'border-dashed border-slate-200 dark:border-slate-700')) }}">
 
                         <div class="flex flex-wrap items-start justify-between gap-3">
                             <div class="flex items-start gap-3">
                                 <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg
-                                    {{ $doc ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500' }}">
+                                    {{ $doc ? 'bg-brand-600 text-white' : ($locked ? 'bg-brand-100 text-brand-400 dark:bg-brand-950/50 dark:text-brand-600' : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500') }}">
                                     @if ($doc)
                                         <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12.5 10 17l9-10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    @elseif ($locked)
+                                        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke-linecap="round"/></svg>
                                     @else
                                         <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" stroke-linejoin="round"/><path d="M14 2v6h6" stroke-linejoin="round"/></svg>
                                     @endif
@@ -193,6 +198,8 @@
                                         <p class="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">
                                             {{ $doc->original_name }} · {{ number_format($doc->size / 1024, 0) }} KB
                                         </p>
+                                    @elseif ($locked)
+                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Upload {{ $meta['blocked_by'] }} first to unlock this.</p>
                                     @endif
                                 </div>
                             </div>
@@ -209,6 +216,17 @@
                             @endif
                         </div>
 
+                        @if ($locked)
+                            <div class="mt-3 flex items-center gap-2">
+                                <div class="flex flex-1 items-center gap-3 rounded-lg border-2 border-dashed border-brand-200 bg-brand-50 p-2.5 dark:border-brand-900/50 dark:bg-brand-950/30">
+                                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-brand-100 text-brand-500 dark:bg-brand-950/60 dark:text-brand-600">
+                                        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke-linecap="round"/></svg>
+                                    </span>
+                                    <p class="text-xs font-medium text-brand-600/70 dark:text-brand-500/70">Locked — upload in order</p>
+                                </div>
+                                <button type="button" disabled class="shrink-0 cursor-not-allowed rounded-lg bg-brand-100 px-4 py-2 text-xs font-semibold text-brand-500 dark:bg-brand-950/50 dark:text-brand-600">Upload</button>
+                            </div>
+                        @else
                         <form method="POST" action="{{ route('provider.onboarding.documents.store') }}" enctype="multipart/form-data"
                             class="mt-3 flex items-center gap-2" x-data="{...fileDrop(), submitting: false}" @submit="submitting = true">
                             @csrf
@@ -223,6 +241,7 @@
                                 <span x-show="submitting" x-cloak>Uploading…</span>
                             </button>
                         </form>
+                        @endif
                         @if ($errors->has('file') && old('type') === $key)
                             <p class="mt-2 text-xs font-semibold text-red-600 dark:text-red-400">{{ $errors->first('file') }}</p>
                         @endif

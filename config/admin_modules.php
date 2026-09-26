@@ -12,6 +12,7 @@ return [
     'faqs' => ['label' => 'FAQs', 'actions' => ['view', 'create', 'edit', 'delete']],
     'banners' => ['label' => 'Banners', 'actions' => ['view', 'create', 'edit', 'delete']],
     'video_reviews' => ['label' => 'Review videos', 'actions' => ['view', 'create', 'edit', 'delete']],
+    'brands' => ['label' => 'Brands', 'actions' => ['view', 'create', 'edit', 'delete']],
     'bookings' => ['label' => 'Bookings', 'actions' => ['view', 'create']],
     'emergencies' => ['label' => 'Emergencies', 'actions' => ['view', 'edit']],
     // Delete is deliberately absent — staff can never be granted delete access to

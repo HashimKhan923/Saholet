@@ -600,20 +600,29 @@ Home-screen summary: counters, wallet balances, 6-month earnings trend, completi
 {
   "profile": {...},
   "documents": [ { "id":1, "type":"cnic_front", "original_name":"...", "download_url":"...", "created_at":"..." } ],
-  "document_types": { "cnic_front": {"label":"CNIC — Front","required":true}, "...": "..." },
+  "document_types": {
+    "cnic_front": { "label":"CNIC — Front","required":true,"order":1,"locked":false,"blocked_by":null },
+    "cnic_back": { "label":"CNIC — Back","required":true,"order":2,"locked":false,"blocked_by":null },
+    "selfie": { "label":"Selfie holding CNIC","required":true,"order":3,"locked":true,"blocked_by":"CNIC — Back" },
+    "police_verification": { "label":"Police verification","required":true,"order":4,"locked":true,"blocked_by":"CNIC — Back" },
+    "nadra_verification": { "label":"NADRA verification","required":true,"order":5,"locked":true,"blocked_by":"CNIC — Back" },
+    "certificate": { "label":"Trade certificate","required":false,"order":6,"locked":true,"blocked_by":"CNIC — Back" }
+  },
   "steps": [
     { "label": "Your details", "done": true },
-    { "label": "KYC documents", "done": false, "uploaded": 1, "required": 3 },
+    { "label": "KYC documents", "done": false, "uploaded": 1, "required": 5 },
     { "label": "Review", "done": false, "submitted": false }
   ],
-  "missing": ["CNIC — Back", "Selfie holding CNIC"],
+  "missing": ["CNIC — Back", "Selfie holding CNIC", "Police verification", "NADRA verification"],
   "can_submit": false
 }
 ```
 
+**Documents are uploaded in order.** `document_types` is listed in upload order (`order` is 1-based). A slot is `locked` until every slot above it has a document; `blocked_by` is the label of the first missing document. The app should disable a locked slot's upload control and show "Upload {blocked_by} first". Once `cnic_front` is uploaded, `cnic_back` unlocks, and so on — the required set is `cnic_front`, `cnic_back`, `selfie`, `police_verification`, `nadra_verification`; `certificate` (trade certificate) is optional and comes last. Replacing an already-uploaded document is allowed while every slot above it still has a document.
+
 **`PUT /onboarding`** — Body: `experience_years`, `city`, `cnic_number` (required); `business_name`, `bio`, `address`, `latitude`, `longitude` (optional). Blocked (`422`) once submitted/approved. `cnic_number` accepts any format but is normalized and stored as `42101-1234567-8` (13 digits required after stripping non-digits — an unexpected digit count is left as submitted).
 
-**`POST /onboarding/documents`** — multipart. Body: `type` (one of the `document_types` keys), `file` (jpg/jpeg/png/pdf, max 4MB). Replaces any existing document of the same type. Response `201`: `{ "document": {...} }`
+**`POST /onboarding/documents`** — multipart. Body: `type` (one of the `document_types` keys), `file` (jpg/jpeg/png/webp/heic/heif/pdf, max 8MB). Replaces any existing document of the same type. Response `201`: `{ "document": {...} }`. `422` if the file is invalid, or if the `type` is still `locked` (an earlier document hasn't been uploaded yet): `{ "message": "...", "errors": { "type": ["Please upload CNIC — Front first — documents are uploaded in order."] } }`
 
 **`GET /onboarding/documents/{id}`** — streams the private file (owner only). Not JSON — returns the raw file.
 

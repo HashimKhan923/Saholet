@@ -15,6 +15,7 @@ return [
         'faqs' => 'FAQs',
         'banners' => 'Banners',
         'video_reviews' => 'Review videos',
+        'brands' => 'Brands',
         'contact_messages' => 'Contact messages',
         'bookings_section' => 'Bookings & orders',
         'bookings' => 'Bookings',

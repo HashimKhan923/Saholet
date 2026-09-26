@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class OnboardingController extends Controller
@@ -19,14 +20,14 @@ class OnboardingController extends Controller
         $profile = $this->profileFor($request);
         $profile->load('documents');
 
-        $documentTypes = config('kyc.documents');
+        $documentSlots = $profile->documentSlots();
         $cities = ProviderProfile::approved()->pluck('city')->filter()->unique()->sort()->values();
 
         /* ── Step 1: details ── */
         $detailsDone = filled($profile->city) && filled($profile->cnic_number);
 
         /* ── Step 2: required documents ── */
-        $requiredTypes = collect($documentTypes)->filter(fn (array $meta) => $meta['required'] ?? false);
+        $requiredTypes = collect($documentSlots)->filter(fn (array $meta) => $meta['required'] ?? false);
 
         $uploadedRequired = $requiredTypes
             ->keys()
@@ -76,7 +77,7 @@ class OnboardingController extends Controller
         $canSubmit = $detailsDone && $documentsDone && ! $submitted;
 
         return view('provider.onboarding', compact(
-            'profile', 'documentTypes', 'cities', 'steps', 'progress',
+            'profile', 'documentSlots', 'cities', 'steps', 'progress',
             'missing', 'canSubmit', 'requiredTypes', 'uploadedRequired'
         ));
     }
@@ -123,6 +124,14 @@ class OnboardingController extends Controller
             'type' => ['required', Rule::in($types)],
             'file' => ['required', 'file', "mimes:$mimes", "max:$maxKb"],
         ]);
+
+        $slot = $profile->documentSlots()[$validated['type']];
+
+        if ($slot['locked']) {
+            throw ValidationException::withMessages([
+                'file' => "Please upload {$slot['blocked_by']} first — documents are uploaded in order.",
+            ]);
+        }
 
         $disk = config('kyc.disk');
         $file = $request->file('file');
