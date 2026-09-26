@@ -775,8 +775,8 @@
             <div class="animate-marquee flex w-max items-center gap-6 py-2">
                 @foreach ([1, 2] as $pass)
                     @foreach ($brandPass as $brand)
-                        <span class="flex h-20 w-44 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 shadow-sm" @if ($pass === 2) aria-hidden="true" @endif>
-                            <img src="{{ $brand->logo_url }}" alt="{{ $pass === 1 ? $brand->name : '' }}" title="{{ $brand->name }}" loading="lazy" class="max-h-full max-w-full object-contain">
+                        <span class="flex h-28 w-56 shrink-0 items-center justify-center rounded-2xl bg-white p-1" @if ($pass === 2) aria-hidden="true" @endif>
+                            <img src="{{ $brand->logo_url }}" alt="{{ $pass === 1 ? $brand->name : '' }}" title="{{ $brand->name }}" loading="lazy" class="h-full w-full object-contain">
                         </span>
                     @endforeach
                 @endforeach
